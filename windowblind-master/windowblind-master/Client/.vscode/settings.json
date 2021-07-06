@@ -1,0 +1,27 @@
+{
+  "debug.showInStatusBar": "always",
+  "debug.javascript.usePreview": false,
+  "editor.trimAutoWhitespace": false,
+  "editor.formatOnSave": false,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "eslint.validate": ["markdown"],
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    "dist": true,
+    ".idea": true
+  },
+  "search.exclude": {
+    "dist": true,
+    "node_modules": true,
+    ".idea": true
+  },
+  "vetur.validation.template": false,
+  "vetur.format.styleInitialIndent": false,
+  "vetur.format.scriptInitialIndent": false,
+  "vetur.format.defaultFormatter.html": "none",
+  "vetur.format.defaultFormatter.css": "none",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.tslint": true
+  }
+}

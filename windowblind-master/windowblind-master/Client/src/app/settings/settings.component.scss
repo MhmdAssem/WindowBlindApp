@@ -1,0 +1,13 @@
+.settings {
+  padding: 20px;
+}
+mat-card{
+  width: 100%;
+  height: 100%;
+  mat-card-content{
+    overflow-y: auto;
+    max-height: 21em;
+  
+  }
+}
+

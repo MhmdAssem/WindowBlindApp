@@ -1,0 +1,104 @@
+<div class="container mt-3">
+
+  <div class="row" style="margin-left: -100px;padding-bottom: 7px;">
+    <div>
+      <label> Select a Printer</label>
+      <select class="" name="Printers" id="Printers" style="margin-left: 5px;">
+        <option *ngFor="let printer of PrinterNames" value="{{printer}}" id="PrinterName_{{printer}}">{{printer}}
+        </option>
+      </select>
+    </div>
+
+    <div style="margin-left: 120px;">
+      <label> Select application</label>
+      <select class="" name="Application" id="Application" style="margin-left: 5px;">
+        <option value="Fabric Cutter">Fabric Cutter</option>
+        <option value="Log Cut">Log Cut</option>
+        <option value="EzStop">EzStop</option>
+      </select>
+    </div>
+
+    <div style="margin-left: 120px; margin-top: -13px;">
+      <label>Enter Table Name:</label>
+      <input type="text" id="TableName" style="margin-left: 2px;">
+      <button class="btn btn-primary" style="margin-left: 2px;" (click)="AddToTheTable()">Add</button>
+    </div>
+
+  </div>
+
+
+  <div class="table-responsive mt-3" id="TablePrintersTable">
+    <table datatable [dtOptions]="dtOptions" class="table table-bordered" id="DScenario-table" [dtTrigger]="dtTrigger">
+      <thead class="bg-light">
+        <tr id="DataTableHeader2">
+          <th class="align-baseline  mw-200" *ngFor="let col of Columns; let i=index"
+            id="UniqueDataTableHeader2_{{col}}">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">{{col}}</span>
+
+            </div>
+
+          </th>
+          <th id="theSelectColumn2" *ngIf="Columns.length !=0">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Delete Column</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of PrinterTableArray;let i = index" id="RowNumber_i">
+          <td>{{row.applicationName}}</td>
+          <td>{{row.printerName}}</td>
+          <td>{{row.tableName}}</td>
+          <td>
+            <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="Delete(i);">Delete</button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+  <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="PrinterTableArray.length!=0" style="cursor: pointer;">
+    <div id="Custom_Table_Info2" class="custom-dtable-info"></div>
+    <div id="Custom_Table_Pagination2" class="custom-dtable-pagination"></div>
+  </div>
+
+
+  <div class="row" style="margin-top: 50px;">
+    <div class="col-md-6">
+      <div class="row" *ngFor="let FileSetting of ListOfFiles">
+        <div class="col-3">
+          <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+            FileSetting.settingName}}:</Label>
+        </div>
+        <div class="col-9">
+          <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+            value="{{FileSetting.settingPath}}">
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-md-4 ml-auto">
+
+      <div class="data-scroll">
+        <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+          <input type="checkbox" class="custom-control-input" id="CheckBox_{{col}}" title="{{col}}">
+          <label class="custom-control-label" for="CheckBox_{{col}}">{{col}}</label>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <button type="button" class="btn btn-primary mr-3" style="position: fixed;right:0;bottom:0;float: right;"
+    (click)="SaveSettings()">
+    <span *ngIf="Saving" class="spinner-border spinner-border-sm mr-1"></span>
+    Save Settings</button>

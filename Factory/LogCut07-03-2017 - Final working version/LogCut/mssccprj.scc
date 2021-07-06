@@ -1,0 +1,9 @@
+SCC = This is a Source Code Control file
+
+[LogCutApp.sln]
+SCC_Aux_Path = "\\dsserver\WebApplication"
+SCC_Project_Name = "$/CurrentProjects/LogCutApp/LogCutApp_1", LSMOAAAA
+
+[LogCutApp.vbproj]
+SCC_Aux_Path = "\\dsserver\WebApplication"
+SCC_Project_Name = "$/CurrentProjects/LogCutApp/LogCutApp_1", LSMOAAAA

@@ -1,0 +1,14 @@
+<mat-toolbar color="primary" class="app-header">
+    <a mat-icon-button href="Home" class="home" ><mat-icon [inline]="true">precision_manufacturing</mat-icon></a>
+    <a mat-button href="users" *ngIf="isAdministrator">Users</a>
+    <a mat-button href="settings" *ngIf="isAdministrator">Settings</a>
+    <a mat-button href="fabric-cutter" >Fabric Cutter</a>
+    <a mat-button href="log-cut">Log Cut</a>
+    <a mat-button href="Ez-Stop" >Ezystop</a>
+    <span class="spacer"></span>
+    <span class="current-station">{{currentStation }}</span>
+    <span class="current-table">{{currentTable }}</span>
+    <app-logout></app-logout>
+    
+</mat-toolbar>
+<router-outlet></router-outlet>

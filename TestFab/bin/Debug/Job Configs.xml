@@ -1,0 +1,17 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<ConfigDetails>
+  <XLFilePath>C:\Contract Blinds\Log Cut\LogCut-Code\ctbsodump.xlsx</XLFilePath>
+  <LogFilePath>C:\Contract Blinds\Log Cut\LogCut-Code\</LogFilePath>
+  <RollwidhtPath>C:\Contract Blinds\Log Cut\LogCut-Code\Fabric Rollwidth.xlsx</RollwidhtPath>
+  <LathePath>C:\Contract Blinds\Log Cut\LogCut-Code\PVCLathe Fabric.xlsx</LathePath>
+  <Counter>5</Counter>
+  <SelectColumns>[Department],[W/Order NO],[Customer Name 1],[Qty],[Width],[Drop],[Bind# Type/# Panels/Rope/Operation],[Fabric],[Description],[Colour],[Pull Colour/Bottom Weight/Wand Len],[Colour],[Track Col/Roll Type/Batten Col],[Pull Colour/Bottom Weight/Wand Len],[Line No#],[Cntrl Side]</SelectColumns>
+  <ToEmailAddress>cyberdhaval@gmail.com</ToEmailAddress>
+  <SheetName>ctbsodump</SheetName>
+  <SaveFilesPath>C:\Contract Blinds\Log Cut\LogCut-Code</SaveFilesPath>
+  <FTPSiteName />
+  <Printer>Bullzip PDF Printer</Printer>
+  <WidthDeduction>C:\Contract Blinds\Log Cut\LogCut-Code\Deduction.xlsx</WidthDeduction>
+  <FTPUName />
+  <FTPPassword />
+</ConfigDetails>

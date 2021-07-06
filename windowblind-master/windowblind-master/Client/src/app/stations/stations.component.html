@@ -1,0 +1,14 @@
+<mat-list [ngClass]="{selectable: !readonly}">
+  <ng-container *ngFor="let station of stations | async">
+    <mat-list-item [ngClass]="{station: true, selected: station === selection.station && !selection.table}" (click)="onStationClick(station)">
+      {{station.name}}
+      <button *ngIf="!readonly" mat-icon-button class="add-button" (click)="addTable(station)" >
+        <mat-icon>add</mat-icon>
+      </button>
+    </mat-list-item>
+    <mat-list-item *ngFor="let table of station.tables" (click)="onTableClick(table, station)" [ngClass]="{table: true, selected: table === selection.table}">
+      {{table.name}}
+      <button mat-icon-button (click)="removeTable(station, table)"><mat-icon>remove</mat-icon></button>
+    </mat-list-item>
+  </ng-container>
+</mat-list>

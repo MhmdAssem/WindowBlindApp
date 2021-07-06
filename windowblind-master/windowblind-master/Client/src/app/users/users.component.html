@@ -1,0 +1,68 @@
+<button type="button" name="" id="" class="btn btn-primary btn-lg btn-block mt-2" (click)="openDialog()"> Add New User </button>
+
+<div class="container mt-5">
+ <div class="row">
+   <div class="col-12">
+    <table class="table table-striped  table-bordered " style="table-layout: fixed;width:100%" >
+      <thead >
+        <tr >
+          <th>User</th>
+          <th>Role</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody >
+          <tr *ngFor="let user of users">
+            <td scope="row">{{user.name}}</td>
+            <td>{{user.role}}</td>
+            <td> <a href="javascript:void(0)" (click)="editUser(user.id)">    Edit  </a></td>
+            <td> <a href="javascript:void(0)"  (click)="deleteUser(user.id)" >  Delete </a></td>
+          </tr>
+        </tbody>
+    </table>
+
+   </div>
+ </div>
+</div>
+
+
+
+<div class="modal" id="UserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Choose an option</mat-label>
+          <mat-select [(ngModel)]="role">
+            <mat-option value="Factory staff">Factory staff</mat-option>
+            <mat-option value="Customer service">Customer service</mat-option>
+            <mat-option value="Admin">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input type="password" matInput [(ngModel)]="password">
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="addUser" class="btn btn-success" (click)="addAUser()">Save</button>
+        <button type="button" id="editUser" style="display: none;" class="btn btn-success" (click)="EditAUser()">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>

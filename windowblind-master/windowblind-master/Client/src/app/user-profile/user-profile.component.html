@@ -1,0 +1,28 @@
+<div fxLayout="row" fxLayoutGap="1em">
+<mat-card fxFlex="60%">
+  <mat-card-title>
+    General
+    <button mat-icon-button (click)="onSave()" matTooltip="Save changes"><mat-icon>save</mat-icon></button>
+    <button mat-icon-button (click)="onCancel()" matTooltip="Discard changes"><mat-icon>cancel</mat-icon></button>
+</mat-card-title>
+  <mat-card-content>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="currentUser.name" />
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>
+<mat-card fxFlex>
+<mat-card-title>
+    Fabric cutter columns
+  </mat-card-title>
+  <mat-card-content>
+    <mat-selection-list [(ngModel)]="currentUser.settings.fabricCutterColumns" 
+      [compareWith]="compareColumns">
+      <mat-list-option *ngFor="let column of fabricCutterColumns" [value]="column">
+        {{column.title}}
+      </mat-list-option>
+    </mat-selection-list>
+  </mat-card-content>
+</mat-card>
+</div>

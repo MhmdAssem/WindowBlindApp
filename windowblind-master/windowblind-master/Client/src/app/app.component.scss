@@ -1,0 +1,10 @@
+.spacer {
+  flex: 1 1 auto;
+}
+.current-station, .current-table {
+  color: red;
+  margin-right: 2rem;
+}
+.current-table, .home {
+  font-size: 2rem;
+}

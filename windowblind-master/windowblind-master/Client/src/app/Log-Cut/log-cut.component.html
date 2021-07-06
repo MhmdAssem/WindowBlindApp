@@ -1,0 +1,113 @@
+<div class="container-fluid">
+  <div class="row mt-3">
+
+    <div class="col-lg-3">
+
+      <form class="form-inline">
+        <label> Select a Table</label>
+        <select class="form-control" name="TableNames" id="TableNames" style="display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        text-align: center;
+        min-width:200px ">
+          <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
+        </select>
+      </form>
+    </div>
+
+
+    <div class="col-lg-5" >
+      <form class="form-inline flex-nowrap" style="margin-left: 75px;"> 
+
+        <label> Enter CB Number:</label>
+        <input class="form-control" type="text" name="CBNumber" id="CBNumber" required style="display: inline-block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: center; ">
+        <button style="margin-left: 7px;font-size: 11px;" class="btn btn-primary btn-sm p-2"
+          (click)="GetCBDetails('CB');"> <span *ngIf="CBLoading" class="spinner-border spinner-border-sm mr-1"></span>
+          Get CB Details</button>
+      </form>
+    </div>
+
+    <div class="col-lg-4">
+      <form class="form-inline flex-nowrap">
+        <label> Enter Line No.:</label>
+        <input class="form-control" type="text" name="LineNumber" id="LineNumber" required style="display: inline-block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: center;">
+        <button style="margin-left: 7px;font-size: 11px;" class="btn btn-primary btn-sm p-2"
+          (click)="GetCBDetails('Line');"> <span *ngIf="LineLoading"
+            class="spinner-border spinner-border-sm mr-1"></span>
+          Get Line No. Details</button>
+      </form>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="container">
+
+  <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0">
+    <button class="btn btn-primary mr-2" (click)="Send();"><span *ngIf="SendLoading" class="spinner-border spinner-border-sm mr-1"></span>
+      Send </button>
+
+    <button class="btn btn-primary" (click)="Delete();">
+      Delete</button>
+
+  </div>
+
+</div>
+
+<div class="container-fluid mt-3">
+
+  <div class="table-responsive mt-3" id="TableViewSelect">
+    <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
+      [dtTrigger]="dtTrigger">
+      <thead class="bg-light">
+        <tr id="DataTableHeader">
+          <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
+            id="UniqueDataTableHeader_{{col}}">
+
+
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">{{col}}</span>
+
+            </div>
+
+
+          </th>
+          <th id="theSelectColumn" *ngIf="tableModelColNames.length !=0">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">SelectColumn</span>
+
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
+          <td *ngFor="let col of tableModelColNames" style="background-color: '{{row.row['DropColour']}}'">
+            {{row.row[col]}}</td>
+          <td>
+            <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+  <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
+    <div id="Custom_Table_Info" class="custom-dtable-info"></div>
+    <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
+  </div>
+
+</div>

@@ -1,0 +1,8 @@
+E:\VB.net Based Scada\Dhaval-XMl\EZYStop\EzystopApp\obj\Release\ResolveAssemblyReference.cache
+E:\VB.net Based Scada\Dhaval-XMl\EZYStop\EzystopApp\obj\Release\Interop.Acrobat.dll
+E:\VB.net Based Scada\Dhaval-XMl\EZYStop\EzystopApp\obj\Release\EzystopApp.vbproj.ResolveComReference.cache
+E:\VB.net Based Scada\Dhaval-XMl\EZYStop\EzystopApp\obj\Release\EzystopApp.ReportViewer.resources
+E:\VB.net Based Scada\Dhaval-XMl\EZYStop\EzystopApp\obj\Release\EzystopApp.JobSheet.resources
+E:\VB.net Based Scada\Dhaval-XMl\EZYStop\EzystopApp\obj\Release\EzystopApp.Resources.resources
+E:\VB.net Based Scada\Dhaval-XMl\EZYStop\EzystopApp\obj\Release\EzystopApp.SplashScreen.resources
+E:\VB.net Based Scada\Dhaval-XMl\EZYStop\EzystopApp\obj\Release\EzystopApp.vbproj.GenerateResource.Cache

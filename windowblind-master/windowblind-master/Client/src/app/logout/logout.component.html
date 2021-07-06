@@ -1,0 +1,10 @@
+<div *ngIf="currentUser" class="logout">
+  <span>Hi {{currentUser.name}}</span>
+  <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu" xPosition="before">
+    <a mat-menu-item href="profile">Profile</a>
+    <button mat-menu-item (click)="onSignOut()">Sign out</button>
+  </mat-menu>
+</div>
