@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using AspNetCore.Reporting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using OfficeOpenXml;
@@ -415,7 +415,7 @@ namespace WindowBlind.Api.Controllers
         }
 
 
-        public string GetCutwidth(string width, string value, string fixing, Dictionary<string, int> FixingValues, Dictionary<string, int> ControlTypevalues)
+        private string GetCutwidth(string width, string value, string fixing, Dictionary<string, int> FixingValues, Dictionary<string, int> ControlTypevalues)
         {
             if (width == String.Empty || int.TryParse(width, out int res) == false)
                 return "";
@@ -612,82 +612,96 @@ namespace WindowBlind.Api.Controllers
         {
             try
             {
-                CrystalDecisions.Shared.ConnectionInfo crDbConnection = new CrystalDecisions.Shared.ConnectionInfo();
+                //CrystalDecisions.Shared.ConnectionInfo crDbConnection = new CrystalDecisions.Shared.ConnectionInfo();
 
-                CrystalDecisions.CrystalReports.Engine.ReportDocument oRpt = new CrystalDecisions.CrystalReports.Engine.ReportDocument();
+                //CrystalDecisions.CrystalReports.Engine.ReportDocument oRpt = new CrystalDecisions.CrystalReports.Engine.ReportDocument();
 
-                System.Drawing.Printing.PrintDocument printDoc = new System.Drawing.Printing.PrintDocument();
+                //System.Drawing.Printing.PrintDocument printDoc = new System.Drawing.Printing.PrintDocument();
 
-                System.Drawing.Printing.PaperSize pkSize = new System.Drawing.Printing.PaperSize();
+                //System.Drawing.Printing.PaperSize pkSize = new System.Drawing.Printing.PaperSize();
 
+                string mimtype = "";
+                int extension = 1;
+                var path = Path.Combine(_env.ContentRootPath, StrReportPath);
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("width", "22");
+                //get products from product table 
+                LocalReport localReport = new LocalReport(path);
 
+                var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);
 
-                oRpt.FileName = Path.Combine(_env.ContentRootPath, StrReportPath);
-                oRpt.SetParameterValue("@CBNumber", strParameterArray[0]);
-                oRpt.SetParameterValue("@Width", strParameterArray[1]);
-                oRpt.SetParameterValue("@Drop", strParameterArray[2]);
-                if (strParameterArray[3].Length > 20)
-                    oRpt.SetParameterValue("@Customer", strParameterArray[3].Substring(0, 20));
-                else
-                    oRpt.SetParameterValue("@Customer", strParameterArray[3]);
-
-
-                if (strParameterArray[4].Length > 10)
-                    oRpt.SetParameterValue("@Department", strParameterArray[4].Substring(0, 10));
-                else
-                    oRpt.SetParameterValue("@Department", strParameterArray[4]);
-
-
-                oRpt.SetParameterValue("@Type", strParameterArray[5]);
-
-                if (strParameterArray[6].Length > 12)
-                    oRpt.SetParameterValue("@Fabric", strParameterArray[6].Substring(0, 12));
-                else
-                    oRpt.SetParameterValue("@Fabric", strParameterArray[6]);
-
-
-                if (strParameterArray[7].Length > 12)
-                    oRpt.SetParameterValue("@Color", strParameterArray[7].Substring(0, 12));
-
-                oRpt.SetParameterValue("@Color", strParameterArray[7]);
-
-
-                if (strParameterArray[8].Length > 6)
-                    oRpt.SetParameterValue("@ControlType", strParameterArray[8].Substring(0, 6));
-                else
-                    oRpt.SetParameterValue("@ControlType", strParameterArray[8]);
-
-
-                oRpt.SetParameterValue("@Lathe", strParameterArray[9]);
-                oRpt.SetParameterValue("@Alpha", strParameterArray[10]);
-                oRpt.SetParameterValue("@Barcode", strParameterArray[11]);
-                oRpt.SetParameterValue("@strLineNumber", strParameterArray[12]);
-
-                oRpt.SetParameterValue("@Total", strParameterArray[13]);
-                if (StrType.ToUpper() == "CUTWIDTH")
+                using (FileStream stream = new FileStream(_env.ContentRootPath, FileMode.Create))
                 {
-                    oRpt.SetParameterValue("@CutWidth", strParameterArray[14]);
-                    oRpt.SetParameterValue("@ControlSide", strParameterArray[16]);
+                    stream.Write(result.MainStream, 0, result.MainStream.Length);
                 }
 
-                oRpt.SetParameterValue("@LineNo", strParameterArray[15]);
+                //return File(, "application/pdf");
+                //oRpt.FileName = Path.Combine(_env.ContentRootPath, StrReportPath);
+                //oRpt.SetParameterValue("@CBNumber", strParameterArray[0]);
+                //oRpt.SetParameterValue("@Wiwidthdth", strParameterArray[1]);
+                //oRpt.SetParameterValue("@Drop", strParameterArray[2]);
+                //if (strParameterArray[3].Length > 20)
+                //    oRpt.SetParameterValue("@Customer", strParameterArray[3].Substring(0, 20));
+                //else
+                //    oRpt.SetParameterValue("@Customer", strParameterArray[3]);
 
-                oRpt.PrintOptions.PrinterName = strPrinterName;
+
+                //if (strParameterArray[4].Length > 10)
+                //    oRpt.SetParameterValue("@Department", strParameterArray[4].Substring(0, 10));
+                //else
+                //    oRpt.SetParameterValue("@Department", strParameterArray[4]);
 
 
-                for (int i = 1; i < (strNoCopy).Length; i++)
-                {
-                    try
-                    {
-                        oRpt.PrintToPrinter(1, false, 0, 0);
+                //oRpt.SetParameterValue("@Type", strParameterArray[5]);
 
-                    }
-                    catch (Exception e)
-                    {
+                //if (strParameterArray[6].Length > 12)
+                //    oRpt.SetParameterValue("@Fabric", strParameterArray[6].Substring(0, 12));
+                //else
+                //    oRpt.SetParameterValue("@Fabric", strParameterArray[6]);
 
-                        return false;
-                    }
-                }
+
+                //if (strParameterArray[7].Length > 12)
+                //    oRpt.SetParameterValue("@Color", strParameterArray[7].Substring(0, 12));
+
+                //oRpt.SetParameterValue("@Color", strParameterArray[7]);
+
+
+                //if (strParameterArray[8].Length > 6)
+                //    oRpt.SetParameterValue("@ControlType", strParameterArray[8].Substring(0, 6));
+                //else
+                //    oRpt.SetParameterValue("@ControlType", strParameterArray[8]);
+
+
+                //oRpt.SetParameterValue("@Lathe", strParameterArray[9]);
+                //oRpt.SetParameterValue("@Alpha", strParameterArray[10]);
+                //oRpt.SetParameterValue("@Barcode", strParameterArray[11]);
+                //oRpt.SetParameterValue("@strLineNumber", strParameterArray[12]);
+
+                //oRpt.SetParameterValue("@Total", strParameterArray[13]);
+                //if (StrType.ToUpper() == "CUTWIDTH")
+                //{
+                //    oRpt.SetParameterValue("@CutWidth", strParameterArray[14]);
+                //    oRpt.SetParameterValue("@ControlSide", strParameterArray[16]);
+                //}
+
+                //oRpt.SetParameterValue("@LineNo", strParameterArray[15]);
+
+                //oRpt.PrintOptions.PrinterName = strPrinterName;
+
+
+                //for (int i = 1; i < (strNoCopy).Length; i++)
+                //{
+                //    try
+                //    {
+                //        oRpt.PrintToPrinter(1, false, 0, 0);
+
+                //    }
+                //    catch (Exception e)
+                //    {
+
+                //        return false;
+                //    }
+                //}
                 return true;
             }
             catch (Exception e)
