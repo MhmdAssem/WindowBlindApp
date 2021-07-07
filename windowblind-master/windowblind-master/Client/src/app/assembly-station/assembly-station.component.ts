@@ -2,20 +2,20 @@ import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { EzStopService } from '../ez-stop/ez-stop.service';
 import { FabricCutterService } from '../fabric-cutter/fabric-cutter.service';
 import { FabricCutterCBDetailsModelTableRow, FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetailsModel';
 import { LogCutService } from '../Log-Cut/log-cut.service';
 import { SettingService } from '../settings/setting.service';
-import { EzStopService } from './ez-stop.service';
+import { AssemblyStationService } from './assembly-station.service';
 
 @Component({
-  selector: 'app-ez-stop',
-  templateUrl: './ez-stop.component.html',
-  styleUrls: ['./ez-stop.component.scss']
+  selector: 'app-assembly-station',
+  templateUrl: './assembly-station.component.html',
+  styleUrls: ['./assembly-station.component.scss']
 })
-export class EzStopComponent implements OnInit {
-
-  constructor(private ezStopService: EzStopService, private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
+export class AssemblyStationComponent implements OnInit {
+  constructor(private assemblyService: AssemblyStationService, private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
@@ -56,24 +56,7 @@ export class EzStopComponent implements OnInit {
 
     };
 
-    this.settingService.getTableNumber('EzStopTable').subscribe(data => {
-      if ((data as string).indexOf("@@@@@") != -1) {
-        let entries = (data as string).split("#####");
-
-        entries.forEach(element => {
-
-          let data = element.split("@@@@@");
-          this.TableNames.push(data[1]);
-          this.PrinterTableDictionary[data[1]] = data[0];
-
-        });
-      }
-
-
-    });
     this.Refresh();
-    setInterval(this.Refresh,300000);
-    
   }
 
   ngAfterViewInit(): void {
@@ -130,14 +113,14 @@ export class EzStopComponent implements OnInit {
       columnNames: this.tableModelColNames,
       rows: this.ReviewData
     };
-    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
-    this.ezStopService.EzStopSend(
+    let tableName = "";
+    this.assemblyService.EzStopSend(
       tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false; });
   }
 
   Refresh() {
     this.RefreshLoading = true;
-    this.ezStopService.RefreshEzStopTable().subscribe(data => {
+    this.assemblyService.GetReadyToAssemble().subscribe(data => {
 
       if (data && data.columnNames.length != 0) {
         setTimeout(() => {
@@ -165,5 +148,6 @@ export class EzStopComponent implements OnInit {
     });
 
   }
+
 
 }

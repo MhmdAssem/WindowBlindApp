@@ -443,28 +443,68 @@ namespace WindowBlind.Api.Controllers
 
         }
 
-        public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime)
+        public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime, string item, string ProcessType, FabricCutterCBDetailsModelTableRow row)
         {
-            var logsetting = await _repository.Settings.FindAsync(e => e.settingName == "LogFile");
-            var Path = logsetting.FirstOrDefault().settingPath;
-
-            if (Path == "") return false;
-            FileInfo F = new FileInfo(Path);
-            if (!F.Exists) return (false);
-            using (StreamWriter sw = new StreamWriter(Path, true))
+            try
             {
-                sw.WriteLine(cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+                LogModel log = new LogModel();
+                log.UserName = uName;
+                log.CBNumber = cbNumber;
+                foreach (var key in row.Row.Keys.ToList())
+                {
+                    if (key == "")
+                    {
+                        row.Row.Remove(key); continue;
+                    }
+                    var ind = key.IndexOf(".");
+                    if (ind == -1) continue;
+
+                    var newKey = key.Replace(".", "");
+                    var value = row.Row[key];
+
+                    row.Row[newKey] = value;
+                    row.Row.Remove(key);
+                }
+                log.row = row;
+                log.LineNumber = barCode;
+                log.Item = item;
+                log.dateTime = datetime;
+                log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+                log.ProcessType = ProcessType;
+                await _repository.Logs.InsertOneAsync(log);
+                return true;
             }
-            return true;
+            catch (Exception e)
+            {
+
+                return false;
+            }
+
         }
 
         public void writefile(string data, string filename, string file)
         {
+            filename =Path.Combine(filename, "FabricCutOutput_" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".txt");
             using (StreamWriter sw = new StreamWriter(filename))
             {
                 sw.WriteLine(data);
-
             }
+        }
+
+        private string CalculateAlphabeticFromNumber(int columnNumber)
+        {
+            int dividend = columnNumber;
+            string columnName = String.Empty;
+            int modulo;
+
+            while (dividend > 0)
+            {
+                modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
+                dividend = (int)((dividend - modulo) / 26);
+            }
+
+            return columnName;
         }
 
         [HttpPost("CreateFilesAndLabels")]
@@ -478,7 +518,7 @@ namespace WindowBlind.Api.Controllers
             var FBRPath = FBRSetting.FirstOrDefault().settingPath;
 
             if (FBRPath == "") return new JsonResult(false);
-            FileInfo F = new FileInfo(FBRPath);
+            DirectoryInfo F = new DirectoryInfo(FBRPath);
             if (!F.Exists) return new JsonResult(false);
 
 
@@ -501,13 +541,11 @@ namespace WindowBlind.Api.Controllers
                 sb.Append(Environment.NewLine);
                 sb.Append("FABRIC COLOUR\t" + item.Row["Fabric Colour"].ToString().TrimEnd() + Environment.NewLine);
                 sb.Append("TRIM TYPE\t" + item.Row["Trim Type"].ToString().TrimEnd() + Environment.NewLine);
+                item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
+                bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), TableNumber, UserName, System.DateTime.Now.ToShortDateString(), item.Row["Alpha Number"], "FabricCut", item);
 
-                bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), TableNumber, UserName, System.DateTime.Now.ToShortDateString());
-                if (!res) return new JsonResult(false);
 
                 labels.Append("@" + item.Row["CB Number"].ToString().TrimEnd());
-
-
 
                 if (item.Row["Trim Type"].ToString().TrimEnd() == "FIN 36" && item.Row["Control Type"].ToString().TrimEnd() == "Motorised")
                 {
@@ -531,7 +569,7 @@ namespace WindowBlind.Api.Controllers
                 {
                     labels.Append("@" + item.Row["Track Colour"].ToString().TrimEnd());
                 }
-                item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
+
                 labels.Append("@" + item.Row["Fabric Type"].ToString().TrimEnd().Substring(0, item.Row["Fabric Type"].ToString().TrimEnd().Length - 6).TrimEnd());
                 labels.Append("@" + item.Row["Fabric Colour"].ToString().TrimEnd());
                 labels.Append("@" + item.Row["Trim Type"].ToString().TrimEnd());
@@ -555,22 +593,6 @@ namespace WindowBlind.Api.Controllers
             PrintLabels(PrinterName + "|" + labeldata);
 
             return new JsonResult(true);
-        }
-
-        private string CalculateAlphabeticFromNumber(int columnNumber)
-        {
-            int dividend = columnNumber;
-            string columnName = String.Empty;
-            int modulo;
-
-            while (dividend > 0)
-            {
-                modulo = (dividend - 1) % 26;
-                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
-                dividend = (int)((dividend - modulo) / 26);
-            }
-
-            return columnName;
         }
 
         [HttpPost("PrintLabelsOnly")]

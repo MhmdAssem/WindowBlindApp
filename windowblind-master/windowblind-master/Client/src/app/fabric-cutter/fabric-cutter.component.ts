@@ -42,6 +42,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   ReviewDataWithBlindsObjects: { [Key: string]: FabricCutterCBDetailsModelTableRow } = {}
   newValue = "-1";
   PrinterTableDictionary = {};
+  Printing = false;
+  Creating = false;
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -227,7 +229,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
   PrintLabelsOnly() {
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
-
+this.Printing = true;
     let Data: FabricCutterCBDetailsModel = {
       columnNames: this.tableModelColNames,
       rows: this.ReviewData
@@ -235,21 +237,21 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.FBRservice.PrintLabels(
       tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
-
+        this.Printing = false;
       });
 
   }
 
   CreateFileLabels() {
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
-
+this.Creating = true;
     let Data: FabricCutterCBDetailsModel = {
       columnNames: this.tableModelColNames,
       rows: this.ReviewData
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.FBRservice.CreateFilesAndLabels(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { });
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {this.Creating = false; });
 
   }
 

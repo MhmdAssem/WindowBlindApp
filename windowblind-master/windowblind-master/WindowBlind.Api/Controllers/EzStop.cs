@@ -135,7 +135,7 @@ namespace WindowBlind.Api.Controllers
                     var workbook = package.Workbook;
 
                     var worksheet = workbook.Worksheets.FirstOrDefault();
-                    var FixingSheet = workbook.Worksheets.Where(sheet => sheet.Index == 2).FirstOrDefault();
+                    var FixingSheet = workbook.Worksheets.Where(sheet => sheet.Index == 1).FirstOrDefault();
 
 
                     var start = worksheet.Dimension.Start;
@@ -150,7 +150,8 @@ namespace WindowBlind.Api.Controllers
                     end = FixingSheet.Dimension.End;
                     for (int i = start.Row + 1; i < end.Row; i++)
                     {
-                        FixingValues[FixingSheet.Cells[i, 1].Text.Trim()] = int.Parse(FixingSheet.Cells[i, 2].Text.Trim());
+                        if (FixingSheet.Cells[i, 2].Text.Trim() != "")
+                            FixingValues[FixingSheet.Cells[i, 1].Text.Trim()] = int.Parse(FixingSheet.Cells[i, 2].Text.Trim());
                     }
                 }
 
@@ -293,7 +294,7 @@ namespace WindowBlind.Api.Controllers
 
                 var f = 0;
                 var a = 0;
-                var blindNumber = 1;
+
                 var rowCntr = -1;
                 foreach (var item in Data.Rows)
                 {
@@ -388,6 +389,8 @@ namespace WindowBlind.Api.Controllers
                     item.Row["Alpha"] = item.Row["item"];
                     item.Row["Department"] = item.Row["Department"].Trim();
 
+                    item.Row["Barcode"] = item.Row["Line No."];
+
                     if (item.Row["Fabric"].Length > 6)
                         item.Row["Fabric"] = item.Row["Fabric"].Substring(0, item.Row["Fabric"].Length - 6);
                     else
@@ -415,7 +418,7 @@ namespace WindowBlind.Api.Controllers
         }
 
 
-        public string GetCutwidth(string width, string value, string fixing, Dictionary<string, int> FixingValues, Dictionary<string, int> ControlTypevalues)
+        private string GetCutwidth(string width, string value, string fixing, Dictionary<string, int> FixingValues, Dictionary<string, int> ControlTypevalues)
         {
             if (width == String.Empty || int.TryParse(width, out int res) == false)
                 return "";
@@ -480,12 +483,12 @@ namespace WindowBlind.Api.Controllers
             try
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                var LogCutOutputSettings = await _repository.Settings.FindAsync(e => e.settingName == "EzStop Output");
-                var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().settingPath;
-                if (LogCutOutputPath == "") return new JsonResult(false);
-                FileInfo f = new FileInfo(LogCutOutputPath);
+                var EzStopOutputSetting = await _repository.Settings.FindAsync(e => e.settingName == "EzStop Output");
+                var EzStopFilePath = EzStopOutputSetting.FirstOrDefault().settingPath;
+                if (EzStopFilePath == "") return new JsonResult(false);
+                DirectoryInfo f = new DirectoryInfo(EzStopFilePath);
 
-                if (!f.Exists && !LogCutOutputPath.EndsWith(".xslx")) return new JsonResult(false);
+                if (!f.Exists) return new JsonResult(false);
 
                 if (model.printer == null || model.printer == "") return new JsonResult(false);
 
@@ -510,36 +513,34 @@ namespace WindowBlind.Api.Controllers
                     strconcat += "@" + item.Row["Total"];
                     labels.Add(strconcat);
                     strRS232Width += item.Row["CutWidth"].ToString().Replace("mm", "");
+                    await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToShortDateString(), item.Row["Alpha"], "EzStop", item);
                 }
                 // doing the port thing 
 
                 // add to file 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 /// get old style
-                ExcelPackage ExcelPkgOld = new ExcelPackage(f);
-                ExcelWorksheet wsSheet1Old = ExcelPkgOld.Workbook.Worksheets.Where(e => e.Name == "Logcut").FirstOrDefault();
+
 
 
 
                 ExcelPackage ExcelPkg = new ExcelPackage();
-                ExcelWorksheet wsSheet1 = ExcelPkg.Workbook.Worksheets.Add("Logcut");
+                ExcelWorksheet wsSheet1 = ExcelPkg.Workbook.Worksheets.Add("Ezystop");
 
 
                 wsSheet1.Cells["A1:I1"].Merge = true;
 
-                wsSheet1.Cells[1, 1].Value = "Logcut";
-                wsSheet1.Cells[1, 1].Style.Font = wsSheet1Old.Cells[1, 1].Style.Font;
-                wsSheet1.Cells[1, 1].Style.Font.Size = wsSheet1Old.Cells[1, 1].Style.Font.Size;
-                wsSheet1.Cells[1, 1].Style.Font.Italic = wsSheet1Old.Cells[1, 1].Style.Font.Italic;
-                wsSheet1.Cells[1, 1].Style.Font.UnderLine = wsSheet1Old.Cells[1, 1].Style.Font.UnderLine;
-                wsSheet1.Cells[1, 1].Style.Font.UnderLineType = wsSheet1Old.Cells[1, 1].Style.Font.UnderLineType;
-                wsSheet1.Cells[1, 1].Style.Font.Name = wsSheet1Old.Cells[1, 1].Style.Font.Name;
-                wsSheet1.Cells[1, 1].Style.Font.Bold = wsSheet1Old.Cells[1, 1].Style.Font.Bold;
-                wsSheet1.Cells[1, 1].Style.HorizontalAlignment = wsSheet1Old.Cells[1, 1].Style.HorizontalAlignment;
-                wsSheet1.Cells[1, 1].Style.VerticalAlignment = wsSheet1Old.Cells[1, 1].Style.VerticalAlignment;
-                wsSheet1.Cells[1, 1].Style.Border = wsSheet1Old.Cells[1, 1].Style.Border;
-
+                wsSheet1.Cells[1, 1].Value = "Ezystop";
+                wsSheet1.Cells[1, 1].Style.Font.Size = 20;
+                wsSheet1.Cells[1, 1].Style.Font.Italic = true;
+                wsSheet1.Cells[1, 1].Style.Font.UnderLine = true;
+                wsSheet1.Cells[1, 1].Style.Font.UnderLineType = ExcelUnderLineType.Double;
+                wsSheet1.Cells[1, 1].Style.Font.Name = "Calibri";
+                wsSheet1.Cells[1, 1].Style.Font.Bold = true;
+                wsSheet1.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                wsSheet1.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                 wsSheet1.Cells[1, 1].Style.Font.Color.SetColor(Color.Red);
+
 
                 int cntr = 1;
                 foreach (var col in data.ColumnNames)
@@ -580,9 +581,8 @@ namespace WindowBlind.Api.Controllers
                     cntrRow++;
 
                 }
-
-                f.Delete();
-                ExcelPkg.SaveAs(new FileInfo(LogCutOutputPath));
+                EzStopFilePath = Path.Combine(EzStopFilePath, "EzStopOutput" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".xslx");
+                ExcelPkg.SaveAs(new FileInfo(EzStopFilePath));
 
                 // the printing
 
@@ -594,8 +594,7 @@ namespace WindowBlind.Api.Controllers
 
                     if (strpara.Length == 0) continue;
 
-                    var ret1 = PrintReport("1", printerName, strParameterArray.ToList(), "PrintLabel.rpt", "Width");
-                    var ret2 = PrintReport("1", printerName, strParameterArray.ToList(), "PrintLabelCutWidth.rpt", "CutWidth");
+                    var ret1 = PrintReport("1", printerName, strParameterArray.ToList());
 
                 }
                 return new JsonResult(true);
@@ -604,11 +603,9 @@ namespace WindowBlind.Api.Controllers
             {
                 return new JsonResult(false);
             }
-
-
         }
 
-        public bool PrintReport(string strNoCopy, string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
+        public bool PrintReport(string strNoCopy, string strPrinterName, List<string> strParameterArray)
         {
             try
             {
@@ -622,7 +619,7 @@ namespace WindowBlind.Api.Controllers
 
 
 
-                oRpt.FileName = Path.Combine(_env.ContentRootPath, StrReportPath);
+                oRpt.FileName = Path.Combine(_env.ContentRootPath, "Printer Driver EzStop", "PrintLabel.rpt");
                 oRpt.SetParameterValue("@CBNumber", strParameterArray[0]);
                 oRpt.SetParameterValue("@Width", strParameterArray[1]);
                 oRpt.SetParameterValue("@Drop", strParameterArray[2]);
@@ -661,16 +658,10 @@ namespace WindowBlind.Api.Controllers
                 oRpt.SetParameterValue("@Lathe", strParameterArray[9]);
                 oRpt.SetParameterValue("@Alpha", strParameterArray[10]);
                 oRpt.SetParameterValue("@Barcode", strParameterArray[11]);
-                oRpt.SetParameterValue("@strLineNumber", strParameterArray[12]);
+                oRpt.SetParameterValue("@LineNumber", strParameterArray[12]);
 
                 oRpt.SetParameterValue("@Total", strParameterArray[13]);
-                if (StrType.ToUpper() == "CUTWIDTH")
-                {
-                    oRpt.SetParameterValue("@CutWidth", strParameterArray[14]);
-                    oRpt.SetParameterValue("@ControlSide", strParameterArray[16]);
-                }
 
-                oRpt.SetParameterValue("@LineNo", strParameterArray[15]);
 
                 oRpt.PrintOptions.PrinterName = strPrinterName;
 
@@ -696,5 +687,43 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
+        public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime, string item, string ProcessType, FabricCutterCBDetailsModelTableRow row)
+        {
+            try
+            {
+                LogModel log = new LogModel();
+                log.UserName = uName;
+                log.CBNumber = cbNumber;
+                foreach (var key in row.Row.Keys.ToList())
+                {
+                    if (key == "")
+                    {
+                        row.Row.Remove(key); continue;
+                    }
+                    var ind = key.IndexOf(".");
+                    if (ind == -1) continue;
+
+                    var newKey = key.Replace(".", "");
+                    var value = row.Row[key];
+
+                    row.Row[newKey] = value;
+                    row.Row.Remove(key);
+                }
+                log.row = row;
+                log.LineNumber = barCode;
+                log.Item = item;
+                log.dateTime = datetime;
+                log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+                log.ProcessType = ProcessType;
+                await _repository.Logs.InsertOneAsync(log);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+
+        }
     }
 }
