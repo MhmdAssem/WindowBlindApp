@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using AspNetCore.Reporting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using OfficeOpenXml;
+using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -318,90 +319,154 @@ namespace WindowBlind.Api.Controllers
 
             try
             {
+                string mimtype = "";
+                int extension = 1;
+                var path = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutter.rdlc");
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("width", strParameterArray[1] + " mm");
+                parameters.Add("ccNumber", strParameterArray[0]);
+                parameters.Add("drop", strParameterArray[2] + " mm");
 
-                CrystalDecisions.Shared.ConnectionInfo crDbConnection = new CrystalDecisions.Shared.ConnectionInfo();
-
-                CrystalDecisions.CrystalReports.Engine.ReportDocument oRpt = new CrystalDecisions.CrystalReports.Engine.ReportDocument();
-
-                System.Drawing.Printing.PrintDocument printDoc = new System.Drawing.Printing.PrintDocument();
-
-                System.Drawing.Printing.PaperSize pkSize = new System.Drawing.Printing.PaperSize();
-
-                int rawKind = 0;
-
-                oRpt.PrintOptions.PaperSize = (CrystalDecisions.Shared.PaperSize)rawKind;
-                oRpt.FileName = Path.Combine(_env.ContentRootPath, "Printer Driver", "PrintLabel.rpt");
-                oRpt.SetParameterValue("@CBNumber", strParameterArray[0]);
-                oRpt.SetParameterValue("@Width", strParameterArray[1] + " mm");
-                oRpt.SetParameterValue("@Drop", strParameterArray[2] + " mm");
-                if (((strParameterArray[3]).ToString().Length > 23))
+                if (strParameterArray[6].ToString().Length > 12)
                 {
-
-                    oRpt.SetParameterValue("@Customer", strParameterArray[3].ToString().Substring(0, 20));
+                    parameters.Add("fabric", strParameterArray[6].ToString().Substring(0, 12));
                 }
                 else
                 {
-                    oRpt.SetParameterValue("@Customer", strParameterArray[3]);
+                    parameters.Add("fabric", strParameterArray[6] == "" ? "NA" : strParameterArray[6]);
                 }
 
-                if (((strParameterArray[4]).ToString().Length > 10))
+
+                if (strParameterArray[3].ToString().Length > 23)
                 {
-                    oRpt.SetParameterValue("@Department", strParameterArray[4].ToString().Substring(0, 10));
+                    parameters.Add("broom", strParameterArray[3].ToString().Substring(0, 20));
                 }
                 else
                 {
-                    oRpt.SetParameterValue("@Department", strParameterArray[4]);
+                    parameters.Add("broom", strParameterArray[3] == "" ? "NA" : strParameterArray[3]);
                 }
 
-                oRpt.SetParameterValue("@Type", strParameterArray[5]);
 
-                if (((strParameterArray[6]).ToString().Length > 12))
+                parameters.Add("fin", strParameterArray[1] == "" ? "NA" : strParameterArray[1]);
+                parameters.Add("number", strParameterArray[12] == "" ? "NA" : strParameterArray[12]);
+                parameters.Add("lineNumber", strParameterArray[12] == "" ? "NA" : strParameterArray[12]);
+                parameters.Add("char", strParameterArray[10] == "" ? "NA" : strParameterArray[10]);
+                parameters.Add("sash", strParameterArray[1] == "" ? "NA" : strParameterArray[1]);
+                parameters.Add("of", strParameterArray[1] == "" ? "NA" : strParameterArray[1]);
+
+                LocalReport localReport = new LocalReport(path);
+                var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);
+                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".pdf");
+                using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
-                    oRpt.SetParameterValue("@Fabric", strParameterArray[6].ToString().Substring(0, 12));
+                    stream.Write(result.MainStream, 0, result.MainStream.Length);
                 }
-                else
+
+
+
+                bool printedOK = true;
+                string printErrorMessage = "";
+                try
                 {
-                    oRpt.SetParameterValue("@Fabric", strParameterArray[6]);
+                    PdfDocument pdf = new PdfDocument(outputPath);
+                    pdf.PrintSettings.PrinterName = strPrinterName;
+                    //pdf.PrintSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom", _labelWidth, _labelHeight);
+                    pdf.PrintSettings.SetPaperMargins(1, 1, 1, 1);
+                    pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
+                    //pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, true);
+                    pdf.Print();
                 }
-
-                if (((strParameterArray[7]).ToString().Length > 12))
+                catch (Exception ex)
                 {
-                    oRpt.SetParameterValue("@Color", strParameterArray[7].ToString().Substring(0, 12));
-                }
-                else
-                {
-                    oRpt.SetParameterValue("@Color", strParameterArray[7]);
+                    printErrorMessage = "Printing Error: " + ex.ToString();
+                    printedOK = false;
                 }
 
-                if (((strParameterArray[8]).ToString().Length > 6))
-                {
-                    oRpt.SetParameterValue("@ControlType", strParameterArray[8].ToString().Substring(0, 6));
-                }
-                else
-                {
-                    oRpt.SetParameterValue("@ControlType", strParameterArray[8]);
-                }
-
-                oRpt.SetParameterValue("@Lathe", strParameterArray[9]);
-                oRpt.SetParameterValue("@Alpha", strParameterArray[10]);
-                oRpt.SetParameterValue("@Barcode", strParameterArray[11]);
-                oRpt.SetParameterValue("@LineNumber", strParameterArray[12]);
-                oRpt.SetParameterValue("@Total", strParameterArray[13]);
 
 
-                oRpt.PrintOptions.PrinterName = strPrinterName;
+
+                //if (System.IO.File.Exists(outputPath))
+                //{
+                //    System.IO.File.Delete(outputPath);
+                //}
 
 
-                for (int i = 1; i <= Convert.ToInt32(strNoCopy); i++)
-                {
-                    try
-                    {
-                        oRpt.PrintToPrinter(1, false, 0, 0);
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-                }
+                //ReportDocument rd = new ReportDocument();
+                //rd.Load(Path.Combine(_env.ContentRootPath, "Printer Driver", "PrintLabel.rpt"));
+                //rd.PrintOptions.PaperSize = (CrystalDecisions.Shared.PaperSize)0;
+
+                //rd.SetParameterValue("@CBNumber", strParameterArray[0]);
+                //rd.SetParameterValue("@Width", strParameterArray[1] + " mm");
+                //rd.SetParameterValue("@Drop", strParameterArray[2] + " mm");
+                //if (((strParameterArray[3]).ToString().Length > 23))
+                //{
+
+                //    rd.SetParameterValue("@Customer", strParameterArray[3].ToString().Substring(0, 20));
+                //}
+                //else
+                //{
+                //    rd.SetParameterValue("@Customer", strParameterArray[3]);
+                //}
+
+                //if (((strParameterArray[4]).ToString().Length > 10))
+                //{
+                //    rd.SetParameterValue("@Department", strParameterArray[4].ToString().Substring(0, 10));
+                //}
+                //else
+                //{
+                //    rd.SetParameterValue("@Department", strParameterArray[4]);
+                //}
+
+                //rd.SetParameterValue("@Type", strParameterArray[5]);
+
+                //if (((strParameterArray[6]).ToString().Length > 12))
+                //{
+                //    rd.SetParameterValue("@Fabric", strParameterArray[6].ToString().Substring(0, 12));
+                //}
+                //else
+                //{
+                //    rd.SetParameterValue("@Fabric", strParameterArray[6]);
+                //}
+
+                //if (((strParameterArray[7]).ToString().Length > 12))
+                //{
+                //    rd.SetParameterValue("@Color", strParameterArray[7].ToString().Substring(0, 12));
+                //}
+                //else
+                //{
+                //    rd.SetParameterValue("@Color", strParameterArray[7]);
+                //}
+
+                //if (((strParameterArray[8]).ToString().Length > 6))
+                //{
+                //    rd.SetParameterValue("@ControlType", strParameterArray[8].ToString().Substring(0, 6));
+                //}
+                //else
+                //{
+                //    rd.SetParameterValue("@ControlType", strParameterArray[8]);
+                //}
+
+                //rd.SetParameterValue("@Lathe", strParameterArray[9]);
+                //rd.SetParameterValue("@Alpha", strParameterArray[10]);
+                //rd.SetParameterValue("@Barcode", strParameterArray[11]);
+                //rd.SetParameterValue("@LineNumber", strParameterArray[12]);
+                //rd.SetParameterValue("@Total", strParameterArray[13]);
+
+
+                //rd.PrintOptions.PrinterName = strPrinterName;
+
+
+                //for (int i = 1; i <= Convert.ToInt32(strNoCopy); i++)
+                //{
+                //    try
+                //    {
+                //        rd.PrintToPrinter(1, false, 0, 0);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //    }
+                //}
+                return;
             }
             catch (Exception ex)
             {
@@ -570,7 +635,15 @@ namespace WindowBlind.Api.Controllers
                     labels.Append("@" + item.Row["Track Colour"].ToString().TrimEnd());
                 }
 
-                labels.Append("@" + item.Row["Fabric Type"].ToString().TrimEnd().Substring(0, item.Row["Fabric Type"].ToString().TrimEnd().Length - 6).TrimEnd());
+                item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
+                if (item.Row["Fabric Type"] != "")
+                {
+                    labels.Append("@" + item.Row["Fabric Type"].ToString().TrimEnd().Substring(0, item.Row["Fabric Type"].ToString().TrimEnd().Length - 6).TrimEnd());
+                }
+                else
+                {
+                    labels.Append("@");
+                }
                 labels.Append("@" + item.Row["Fabric Colour"].ToString().TrimEnd());
                 labels.Append("@" + item.Row["Trim Type"].ToString().TrimEnd());
                 labels.Append("@" + item.Row["Pull Colour"].ToString().TrimEnd());//Added on 8-10-2016
@@ -634,7 +707,14 @@ namespace WindowBlind.Api.Controllers
                         labels.Append("@" + item.Row["Track Colour"].ToString().TrimEnd());
                     }
                     item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
-                    labels.Append("@" + item.Row["Fabric Type"].ToString().TrimEnd().Substring(0, item.Row["Fabric Type"].ToString().TrimEnd().Length - 6).TrimEnd());
+                    if (item.Row["Fabric Type"] != "")
+                    {
+                        labels.Append("@" + item.Row["Fabric Type"].ToString().TrimEnd().Substring(0, item.Row["Fabric Type"].ToString().TrimEnd().Length - 6).TrimEnd());
+                    }
+                    else
+                    {
+                        labels.Append("@");
+                    }
                     labels.Append("@" + item.Row["Fabric Colour"].ToString().TrimEnd());
                     labels.Append("@" + item.Row["Trim Type"].ToString().TrimEnd());
                     labels.Append("@" + item.Row["Pull Colour"].ToString().TrimEnd());//Added on 8-10-2016
@@ -651,7 +731,7 @@ namespace WindowBlind.Api.Controllers
                 PrintLabels(PrinterName + "|" + labeldata);
                 return new JsonResult(true);
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
                 return new JsonResult(false);

@@ -1,37 +1,44 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CrystalDecisions.CrystalReports.Engine" Version="1.0.0" />
-    <PackageReference Include="CrystalDecisions.ReportAppServer" Version="1.0.0" />
-    <PackageReference Include="CrystalDecisions.ReportAppServer.Shared" Version="1.0.0" />
-    <PackageReference Include="CrystalDecisions.Shared" Version="1.0.0" />
-    <PackageReference Include="CrystalReports.ReportAppServer.ClientDoc" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.CommLayer" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.CommonObjectModel" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.Controllers" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.CubeDefModel" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.DataDefModel" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.DataSetConversion" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.ObjectFactory" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.Prompting" Version="13.0.4000" />
-    <PackageReference Include="CrystalReports.ReportAppServer.ReportDefModel" Version="13.0.4000" />
+    <None Remove="Printer Driver\EzStop.rdlc" />
+    <None Remove="Printer Driver\FabricCutter.rdlc" />
+    <None Remove="Printer Driver\LogCut.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Printer Driver\FabricCutter.rdlc" />
+    <EmbeddedResource Include="Printer Driver\LogCut.rdlc" />
+    <EmbeddedResource Include="Printer Driver\EzStop.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
     <PackageReference Include="EPPlus" Version="5.7.0" />
+    <PackageReference Include="FreeSpire.PDF" Version="5.4.0" />
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.2" />
+    <PackageReference Include="RDLCPrinter" Version="1.2.0" />
+    <PackageReference Include="RDLCReportRunner" Version="1.0.0" />
     <PackageReference Include="Swashbuckle" Version="5.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.4" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.4" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.4" />
+    <PackageReference Include="System.CodeDom" Version="6.0.0-preview.5.21301.5" />
     <PackageReference Include="System.Data.OleDb" Version="5.0.0" />
+    <PackageReference Include="System.Reactive.Windows.Forms" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-preview.5.21301.5" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DTOs\" />
+    <Folder Include="Printer Driver\EzStopPrintFiles\" />
   </ItemGroup>
 
 
