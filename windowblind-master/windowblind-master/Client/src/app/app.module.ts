@@ -66,6 +66,9 @@ import { DataTableDirective,DataTablesModule  } from 'angular-datatables';
 import { LogCutComponent } from './Log-Cut/log-cut.component';
 import { RollWidthDialogComponent } from './fabric-cutter/roll-width-dialog/roll-width-dialog.component';
 import { EzStopComponent } from './ez-stop/ez-stop.component';
+import { AssemblyStationComponent } from './assembly-station/assembly-station.component';
+import { HoistStationComponent } from './hoist-station/hoist-station.component';
+import { PackingStationComponent } from './packing-station/packing-station.component';
 
 const materialModules = [
   CdkTreeModule,
@@ -126,7 +129,10 @@ const materialModules = [
     HomeComponent,
     LogCutComponent,
     RollWidthDialogComponent,
-    EzStopComponent
+    EzStopComponent,
+    AssemblyStationComponent,
+    HoistStationComponent,
+    PackingStationComponent
   ],
   imports: [
     ...materialModules,

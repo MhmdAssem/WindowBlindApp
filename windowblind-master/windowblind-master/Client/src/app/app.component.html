@@ -5,6 +5,10 @@
     <a mat-button href="fabric-cutter" >Fabric Cutter</a>
     <a mat-button href="log-cut">Log Cut</a>
     <a mat-button href="Ez-Stop" >Ezystop</a>
+    
+    <a mat-button href="Assembly-Station" *ngIf="isAdministrator">Assembly-Station</a>
+    <a mat-button href="Hoist-Station" *ngIf="isAdministrator">Hoist-Station</a>
+    <a mat-button href="Packing-Station" *ngIf="isAdministrator">Packing-Station</a>
     <span class="spacer"></span>
     <span class="current-station">{{currentStation }}</span>
     <span class="current-table">{{currentTable }}</span>

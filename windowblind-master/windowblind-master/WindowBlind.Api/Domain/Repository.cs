@@ -17,6 +17,11 @@ namespace WindowBlind.Api
         IMongoCollection<User> Users { get; }
         IMongoCollection<Station> Stations { get; }
         IMongoCollection<FileSetting> Settings { get; }
+        IMongoCollection<LogModel> Logs { get; }
+        IMongoCollection<LogModel> PackingStation { get; }
+        IMongoCollection<LogModel> HoistStation { get; }
+        IMongoCollection<LogModel> AssemblyStation { get; }
+
         Task ImportOrders(Station station);
         void Seed();
     }
@@ -26,6 +31,12 @@ namespace WindowBlind.Api
         public IMongoCollection<User> Users => _mongoDb.GetCollection<User>("users");
         public IMongoCollection<Station> Stations => _mongoDb.GetCollection<Station>("stations");
         public IMongoCollection<FileSetting> Settings => _mongoDb.GetCollection<FileSetting>("settings");
+        public IMongoCollection<LogModel> Logs => _mongoDb.GetCollection<LogModel>("logs");
+        public IMongoCollection<LogModel> AssemblyStation => _mongoDb.GetCollection<LogModel>("AssemblyStation");
+        public IMongoCollection<LogModel> HoistStation => _mongoDb.GetCollection<LogModel>("HoistStation");
+        public IMongoCollection<LogModel> PackingStation => _mongoDb.GetCollection<LogModel>("PackingStation");
+
+
         private readonly IMongoDatabase _mongoDb;
 
         public Repository(IDatabaseSettings settings)
@@ -40,14 +51,33 @@ namespace WindowBlind.Api
         {
             var user = _mongoDb.GetCollection<User>("users").EstimatedDocumentCount();
             var FileSettings = _mongoDb.GetCollection<FileSetting>("settings").EstimatedDocumentCount();
+            var Logs = _mongoDb.GetCollection<FileSetting>("logs").EstimatedDocumentCount();
+            var PackingStation = _mongoDb.GetCollection<FileSetting>("PackingStation").EstimatedDocumentCount();
+            var HoistStation = _mongoDb.GetCollection<FileSetting>("HoistStation").EstimatedDocumentCount();
+            var AssemblyStation = _mongoDb.GetCollection<FileSetting>("AssemblyStation").EstimatedDocumentCount();
             if (user == 0)
             {
                 SeedUsers();
             }
-
             if (FileSettings == 0)
             {
                 SeedSettings();
+            }
+            if (Logs == 0)
+            {
+                seedLogs();
+            }
+            if (PackingStation == 0)
+            {
+                seedPackingStation();
+            }
+            if (HoistStation == 0)
+            {
+                seedHoistStation();
+            }
+            if (AssemblyStation == 0)
+            {
+                seedAssemblyStation();
             }
 
         }
@@ -77,11 +107,9 @@ namespace WindowBlind.Api
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "PVCLathe Fabric",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Fabric Cutter Output",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCut Output",settingPath = "" },
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Ez Stop Output",settingPath = "" },
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogFile",settingPath = "" },
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStop Output",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "XML File",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "" },
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedPrinter",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "FabricCutterTable",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCutterTable",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStopTable",settingPath = "" }
@@ -89,7 +117,16 @@ namespace WindowBlind.Api
             _mongoDb.GetCollection<FileSetting>("settings").InsertMany(setting);
         }
 
+        private void seedLogs()
+        {
+            LogModel log = new LogModel();
+            log.UserName = "Admin";
+            log.TableName = "";
+            log.Message = "The Admin Just LoggedIn to the system";
+            log.dateTime = DateTime.Now.ToString();
+            _mongoDb.GetCollection<LogModel>("logs").InsertOne(log);
 
+        }
 
         public async Task ImportOrders(Station station)
         {
@@ -184,7 +221,37 @@ namespace WindowBlind.Api
 
         }
 
+        private void seedPackingStation()
+        {
+            LogModel log = new LogModel();
+            log.UserName = "Admin";
+            log.TableName = "";
+            log.Message = "The Admin Just LoggedIn to the system";
+            log.dateTime = DateTime.Now.ToString();
+            _mongoDb.GetCollection<LogModel>("PackingStation").InsertOne(log);
 
+        }
+        private void seedHoistStation()
+        {
+            LogModel log = new LogModel();
+            log.UserName = "Admin";
+            log.TableName = "";
+            log.Message = "The Admin Just LoggedIn to the system";
+            log.dateTime = DateTime.Now.ToString();
+            _mongoDb.GetCollection<LogModel>("HoistStation").InsertOne(log);
+
+        }
+
+        private void seedAssemblyStation()
+        {
+            LogModel log = new LogModel();
+            log.UserName = "Admin";
+            log.TableName = "";
+            log.Message = "The Admin Just LoggedIn to the system";
+            log.dateTime = DateTime.Now.ToString();
+            _mongoDb.GetCollection<LogModel>("AssemblyStation").InsertOne(log);
+
+        }
 
 
     }

@@ -407,6 +407,7 @@ namespace WindowBlind.Api.Controllers
                     item.Row["Department"] = item.Row["Department"].Trim();
                     if (item.Row["Cntrl Side"].ToString().Trim() != String.Empty)
                         item.Row["ControlSide"] = item.Row["Cntrl Side"].ToString().Trim().Substring(0, 1);
+                    item.Row["Barcode"] = item.Row["Line No."];
 
                     var CurrentWidth = item.Row["Width"];
                     if (CurrentWidth.IndexOf("mm") != -1)
@@ -414,6 +415,9 @@ namespace WindowBlind.Api.Controllers
                     var CurrentDrop = item.Row["Drop"];
                     if (CurrentDrop.IndexOf("mm") != -1)
                         CurrentDrop = CurrentDrop.Substring(0, CurrentDrop.IndexOf("mm"));
+
+
+
                     if (int.TryParse(CurrentWidth, out int tempWidth) && int.TryParse(CurrentDrop, out int tempDrop) && tempWidth <= 3000 && tempDrop <= 2700)
                     {
                         item.Row["Fixing_Type_Bracket_Type"] = item.Row["Fixing Type / Bracket Type"];
@@ -482,7 +486,6 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
-
         [HttpPost("LogCutSend")]
         public async Task<IActionResult> LogCutSend(CreateFileAndLabelModel model)
         {
@@ -492,9 +495,9 @@ namespace WindowBlind.Api.Controllers
                 var LogCutOutputSettings = await _repository.Settings.FindAsync(e => e.settingName == "LogCut Output");
                 var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().settingPath;
                 if (LogCutOutputPath == "") return new JsonResult(false);
-                FileInfo f = new FileInfo(LogCutOutputPath);
+                DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
 
-                if (!f.Exists && !LogCutOutputPath.EndsWith(".xslx")) return new JsonResult(false);
+                if (!f.Exists) return new JsonResult(false);
 
                 if (model.printer == null || model.printer == "") return new JsonResult(false);
 
@@ -517,17 +520,19 @@ namespace WindowBlind.Api.Controllers
                     strconcat += "@" + item.Row["ControlSide"];
                     labels.Add(strconcat);
                     strRS232Width += item.Row["CutWidth"].ToString().Replace("mm", "");
+
+                    bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToShortDateString(), item.Row["Alpha"], "LogCut", item);
+
                 }
                 // doing the port thing 
 
                 // add to file 
+
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 /// get old style
-                ExcelPackage ExcelPkgOld = new ExcelPackage(f);
-                ExcelWorksheet wsSheet1Old = ExcelPkgOld.Workbook.Worksheets.Where(e => e.Name == "Logcut").FirstOrDefault();
 
 
-
+                LogCutOutputPath = Path.Combine(LogCutOutputPath, "LogCutOutput" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".xslx");
                 ExcelPackage ExcelPkg = new ExcelPackage();
                 ExcelWorksheet wsSheet1 = ExcelPkg.Workbook.Worksheets.Add("Logcut");
 
@@ -535,17 +540,14 @@ namespace WindowBlind.Api.Controllers
                 wsSheet1.Cells["A1:I1"].Merge = true;
 
                 wsSheet1.Cells[1, 1].Value = "Logcut";
-                wsSheet1.Cells[1, 1].Style.Font = wsSheet1Old.Cells[1, 1].Style.Font;
-                wsSheet1.Cells[1, 1].Style.Font.Size = wsSheet1Old.Cells[1, 1].Style.Font.Size;
-                wsSheet1.Cells[1, 1].Style.Font.Italic = wsSheet1Old.Cells[1, 1].Style.Font.Italic;
-                wsSheet1.Cells[1, 1].Style.Font.UnderLine = wsSheet1Old.Cells[1, 1].Style.Font.UnderLine;
-                wsSheet1.Cells[1, 1].Style.Font.UnderLineType = wsSheet1Old.Cells[1, 1].Style.Font.UnderLineType;
-                wsSheet1.Cells[1, 1].Style.Font.Name = wsSheet1Old.Cells[1, 1].Style.Font.Name;
-                wsSheet1.Cells[1, 1].Style.Font.Bold = wsSheet1Old.Cells[1, 1].Style.Font.Bold;
-                wsSheet1.Cells[1, 1].Style.HorizontalAlignment = wsSheet1Old.Cells[1, 1].Style.HorizontalAlignment;
-                wsSheet1.Cells[1, 1].Style.VerticalAlignment = wsSheet1Old.Cells[1, 1].Style.VerticalAlignment;
-                wsSheet1.Cells[1, 1].Style.Border = wsSheet1Old.Cells[1, 1].Style.Border;
-
+                wsSheet1.Cells[1, 1].Style.Font.Size = 20;
+                wsSheet1.Cells[1, 1].Style.Font.Italic = true;
+                wsSheet1.Cells[1, 1].Style.Font.UnderLine = true;
+                wsSheet1.Cells[1, 1].Style.Font.UnderLineType = ExcelUnderLineType.Double;
+                wsSheet1.Cells[1, 1].Style.Font.Name = "Calibri";
+                wsSheet1.Cells[1, 1].Style.Font.Bold = true;
+                wsSheet1.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                wsSheet1.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                 wsSheet1.Cells[1, 1].Style.Font.Color.SetColor(Color.Red);
 
                 int cntr = 1;
@@ -588,7 +590,6 @@ namespace WindowBlind.Api.Controllers
 
                 }
 
-                f.Delete();
                 ExcelPkg.SaveAs(new FileInfo(LogCutOutputPath));
 
                 // the printing
@@ -655,8 +656,6 @@ namespace WindowBlind.Api.Controllers
 
             return columnName;
         }
-
-
         public static List<string> AddColumnIfNotExists(List<string> colList, string colName)
         {
             if (!colList.Contains(colName)) colList.Add(colName);
@@ -664,8 +663,7 @@ namespace WindowBlind.Api.Controllers
             return colList;
         }
 
-
-        private bool PrintReport(string strNoCopy, string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
+        public bool PrintReport(string strNoCopy, string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
         {
             try
             {
@@ -752,5 +750,46 @@ namespace WindowBlind.Api.Controllers
                 return false;
             }
         }
+
+        public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime, string item, string ProcessType, FabricCutterCBDetailsModelTableRow row)
+        {
+            try
+            {
+                LogModel log = new LogModel();
+                log.UserName = uName;
+                log.CBNumber = cbNumber;
+                foreach (var key in row.Row.Keys.ToList())
+                {
+                    if (key == "")
+                    {
+                        row.Row.Remove(key); continue;
+                    }
+                    var ind = key.IndexOf(".");
+                    if (ind == -1) continue;
+
+                    var newKey = key.Replace(".", "");
+                    var value = row.Row[key];
+
+                    row.Row[newKey] = value;
+                    row.Row.Remove(key);
+                }
+                log.row = row;
+                log.LineNumber = barCode;
+                log.Item = item;
+                log.dateTime = datetime;
+                log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+                log.ProcessType = ProcessType;
+                await _repository.Logs.InsertOneAsync(log);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+
+        }
+
+
     }
 }

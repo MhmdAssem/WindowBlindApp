@@ -118,10 +118,12 @@
 
   <div class="row my-4 justify-content-between" *ngIf="ReviewData.length!=0">
 
-    <button class="btn btn-primary" (click)="PrintLabelsOnly();">
+    <button class="btn btn-primary" (click)="PrintLabelsOnly();"><span *ngIf="Printing"
+      class="spinner-border spinner-border-sm mr-1"></span>
       Print Labels Only </button>
 
-    <button class="btn btn-primary" (click)="CreateFileLabels();">
+    <button class="btn btn-primary" (click)="CreateFileLabels();"><span *ngIf="Creating"
+      class="spinner-border spinner-border-sm mr-1"></span>
       Create File/Labels </button>
 
     <button class="btn btn-primary" (click)="ClearReview();">
