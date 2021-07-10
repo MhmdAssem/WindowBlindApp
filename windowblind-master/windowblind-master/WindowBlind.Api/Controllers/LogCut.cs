@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AspNetCore.Reporting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -436,7 +438,7 @@ namespace WindowBlind.Api.Controllers
                                     FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                     blindNumber++;
                                     a += 1;
-                                    FinalRow.Row["SRLineNumber"] = a.ToString();
+                                    FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
                                     FinalizedData.Rows.Add(FinalRow);
 
                                 }
@@ -454,7 +456,7 @@ namespace WindowBlind.Api.Controllers
                                         FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                         blindNumber++;
                                         a += 1;
-                                        FinalRow.Row["SRLineNumber"] = a.ToString();
+                                        FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
                                         FinalizedData.Rows.Add(FinalRow);
                                     }
                                 }
@@ -532,7 +534,7 @@ namespace WindowBlind.Api.Controllers
                 /// get old style
 
 
-                LogCutOutputPath = Path.Combine(LogCutOutputPath, "LogCutOutput" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".xslx");
+                LogCutOutputPath = Path.Combine(LogCutOutputPath, "LogCutOutput" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".xlsx");
                 ExcelPackage ExcelPkg = new ExcelPackage();
                 ExcelWorksheet wsSheet1 = ExcelPkg.Workbook.Worksheets.Add("Logcut");
 
@@ -602,8 +604,8 @@ namespace WindowBlind.Api.Controllers
 
                     if (strpara.Length == 0) continue;
 
-                    var ret1 = PrintReport("1", printerName, strParameterArray.ToList(), "PrintLabel.rpt", "Width");
-                    var ret2 = PrintReport("1", printerName, strParameterArray.ToList(), "PrintLabelCutWidth.rpt", "CutWidth");
+                    var ret1 = PrintReport("1", printerName, strParameterArray.ToList(), "LogCut1.rpt", "Width");
+                    var ret2 = PrintReport("1", printerName, strParameterArray.ToList(), "LogCut2.rpt", "");
 
                 }
                 return new JsonResult(true);
@@ -667,82 +669,58 @@ namespace WindowBlind.Api.Controllers
         {
             try
             {
-                //CrystalDecisions.Shared.ConnectionInfo crDbConnection = new CrystalDecisions.Shared.ConnectionInfo();
+                string mimtype = "";
+                int extension = 1;
+                var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
 
-                //CrystalDecisions.CrystalReports.Engine.ReportDocument oRpt = new CrystalDecisions.CrystalReports.Engine.ReportDocument();
+                parameters.Add("ccNumber", strParameterArray[0]);
+                parameters.Add("width", strParameterArray[1] + " mm");
+                parameters.Add("drop", strParameterArray[2] + " mm");
 
-                //System.Drawing.Printing.PrintDocument printDoc = new System.Drawing.Printing.PrintDocument();
+                parameters.Add("customer", strParameterArray[3].ToString());
+                parameters.Add("department", strParameterArray[4].ToString());
+                parameters.Add("type", strParameterArray[5].ToString());
+                parameters.Add("fabric", strParameterArray[6].ToString());
+                parameters.Add("color", strParameterArray[7].ToString());
+                parameters.Add("controltype", strParameterArray[8].ToString());
+                parameters.Add("lathe", strParameterArray[9].ToString());
+                if (StrType != "")
+                {
+                    parameters.Add("char", strParameterArray[10]);
+                    parameters.Add("cutwidth", strParameterArray[14]);
+                    parameters.Add("lineNumber", strParameterArray[15].ToString());
+                    parameters.Add("controlside", strParameterArray[16]);
+                }
+                parameters.Add("someoftotal", strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString());
 
-                //System.Drawing.Printing.PaperSize pkSize = new System.Drawing.Printing.PaperSize();
+                LocalReport localReport = new LocalReport(path);
+                var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);
+                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".pdf");
+                using (FileStream stream = new FileStream(outputPath, FileMode.Create))
+                {
+                    stream.Write(result.MainStream, 0, result.MainStream.Length);
+                }
 
+                bool printedOK = true;
+                string printErrorMessage = "";
+                try
+                {
+                    PdfDocument pdf = new PdfDocument(outputPath);
+                    pdf.PrintSettings.PrinterName = strPrinterName;
+                    //pdf.PrintSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom", _labelWidth, _labelHeight);
+                    pdf.PrintSettings.SetPaperMargins(1, 1, 1, 1);
+                    pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
+                    //pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, true);
+                    pdf.Print();
 
+                }
+                catch (Exception ex)
+                {
+                    printErrorMessage = "Printing Error: " + ex.ToString();
+                    printedOK = false;
+                }
 
-                //oRpt.FileName = Path.Combine(_env.ContentRootPath, StrReportPath);
-                //oRpt.SetParameterValue("@CBNumber", strParameterArray[0]);
-                //oRpt.SetParameterValue("@Width", strParameterArray[1]);
-                //oRpt.SetParameterValue("@Drop", strParameterArray[2]);
-                //if (strParameterArray[3].Length > 20)
-                //    oRpt.SetParameterValue("@Customer", strParameterArray[3].Substring(0, 20));
-                //else
-                //    oRpt.SetParameterValue("@Customer", strParameterArray[3]);
-
-
-                //if (strParameterArray[4].Length > 10)
-                //    oRpt.SetParameterValue("@Department", strParameterArray[4].Substring(0, 10));
-                //else
-                //    oRpt.SetParameterValue("@Department", strParameterArray[4]);
-
-
-                //oRpt.SetParameterValue("@Type", strParameterArray[5]);
-
-                //if (strParameterArray[6].Length > 12)
-                //    oRpt.SetParameterValue("@Fabric", strParameterArray[6].Substring(0, 12));
-                //else
-                //    oRpt.SetParameterValue("@Fabric", strParameterArray[6]);
-
-
-                //if (strParameterArray[7].Length > 12)
-                //    oRpt.SetParameterValue("@Color", strParameterArray[7].Substring(0, 12));
-
-                //oRpt.SetParameterValue("@Color", strParameterArray[7]);
-
-
-                //if (strParameterArray[8].Length > 6)
-                //    oRpt.SetParameterValue("@ControlType", strParameterArray[8].Substring(0, 6));
-                //else
-                //    oRpt.SetParameterValue("@ControlType", strParameterArray[8]);
-
-
-                //oRpt.SetParameterValue("@Lathe", strParameterArray[9]);
-                //oRpt.SetParameterValue("@Alpha", strParameterArray[10]);
-                //oRpt.SetParameterValue("@Barcode", strParameterArray[11]);
-                //oRpt.SetParameterValue("@strLineNumber", strParameterArray[12]);
-
-                //oRpt.SetParameterValue("@Total", strParameterArray[13]);
-                //if (StrType.ToUpper() == "CUTWIDTH")
-                //{
-                //    oRpt.SetParameterValue("@CutWidth", strParameterArray[14]);
-                //    oRpt.SetParameterValue("@ControlSide", strParameterArray[16]);
-                //}
-
-                //oRpt.SetParameterValue("@LineNo", strParameterArray[15]);
-
-                //oRpt.PrintOptions.PrinterName = strPrinterName;
-
-
-                //for (int i = 1; i < (strNoCopy).Length; i++)
-                //{
-                //    try
-                //    {
-                //        oRpt.PrintToPrinter(1, false, 0, 0);
-
-                //    }
-                //    catch (Exception e)
-                //    {
-
-                //        return false;
-                //    }
-                //}
                 return true;
             }
             catch (Exception e)
@@ -758,6 +736,7 @@ namespace WindowBlind.Api.Controllers
                 LogModel log = new LogModel();
                 log.UserName = uName;
                 log.CBNumber = cbNumber;
+                log.status = "IDLE";
                 foreach (var key in row.Row.Keys.ToList())
                 {
                     if (key == "")

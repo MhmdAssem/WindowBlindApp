@@ -84,8 +84,8 @@ export class AssemblyStationComponent implements OnInit {
 
   SelectThisRow(ind) {
 
-    if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent == "Select") {
-      (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnSelect";
+    if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent == "Assemble") {
+      (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnAssemble";
 
       this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.ReviewData.length;
       this.ReviewData.push(this.Data[ind]);
@@ -97,7 +97,7 @@ export class AssemblyStationComponent implements OnInit {
 
   UnSelectThisRow(ind) {
 
-    (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
+    (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Assemble";
 
     this.ReviewData.splice(this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId], 1);
     this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = -1;
@@ -114,8 +114,34 @@ export class AssemblyStationComponent implements OnInit {
       rows: this.ReviewData
     };
     let tableName = "";
-    this.assemblyService.EzStopSend(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false; });
+    this.assemblyService.pushLinesNoToAssemblyStation(
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false;
+      
+        this.ReviewData = [];
+        let keys = Object.keys(this.ReviewDataWithBlindsNumbers);
+        
+        keys.forEach(key => {
+          let ind = this.Data.findIndex(d => d.uniqueId == key);
+          if (ind != -1 && this.ReviewDataWithBlindsNumbers[key] != -1)
+            this.Data.splice(ind, 1);
+        });
+        
+        this.ReviewDataWithBlindsNumbers = {};
+        this.updateTable();
+
+        setTimeout(() => {
+          $("#Custom_Table_Pagination").html("");
+          $("#Custom_Table_Info").html("");
+          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 500);
+
+      
+      });
   }
 
   Refresh() {

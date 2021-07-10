@@ -29,7 +29,7 @@ export class AssemblyStationService {
       );
   }
 
-  public EzStopSend(TableNumber: string, printer: string, UserName: string, Data: FabricCutterCBDetailsModel): Observable<any> {
+  public pushLinesNoToAssemblyStation(TableNumber: string, printer: string, UserName: string, Data: FabricCutterCBDetailsModel): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     let model: CreateFileAndLabelModel = {
       data: Data,

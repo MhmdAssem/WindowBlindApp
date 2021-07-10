@@ -22,6 +22,7 @@ namespace WindowBlind.Api.Models
         public string UniqueId { set; get; }
         public Dictionary<string, string> Row { get; set; }
         public List<int> BlindNumbers { get; set; }
+        public string PackingType { get; set; }
         public FabricCutterCBDetailsModelTableRow()
         {
             BlindNumbers = new List<int>();

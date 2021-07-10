@@ -36,20 +36,8 @@ namespace WindowBlind.Api.Controllers
             try
             {
                 FabricCutterCBDetailsModel data = new FabricCutterCBDetailsModel();
-
-                var FabricCutterOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "FabricCut");
-                var LogCutOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "LogCut");
-                var EzStopOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "EzStop");
-
-                var FabricCutterlistOflogModels = FabricCutterOflogModels.ToList();
-                var LogCutOflogListModels = LogCutOflogModels.ToList();
-                var EzStopOflogListModels = EzStopOflogModels.ToList();
-
-
-                if (FabricCutterlistOflogModels.Count == 0 || LogCutOflogListModels.Count == 0 || EzStopOflogListModels.Count == 0) return new JsonResult(false);
-
                 data.ColumnNames.Add("CB Number");
-                data.ColumnNames.Add("Line No.");
+                data.ColumnNames.Add("Line No");
                 data.ColumnNames.Add("item");
 
                 data.ColumnNames.Add("FabricCut-User");
@@ -60,9 +48,24 @@ namespace WindowBlind.Api.Controllers
                 data.ColumnNames.Add("LogCutDate-Time");
                 data.ColumnNames.Add("EzStopDate-Time");
 
+                var FabricCutterOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "FabricCut" && log.status == "IDLE");
+                var LogCutOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "LogCut" && log.status == "IDLE");
+                var EzStopOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "EzStop" && log.status == "IDLE");
+
+                var FabricCutterlistOflogModels = FabricCutterOflogModels.ToList();
+                var LogCutOflogListModels = LogCutOflogModels.ToList();
+                var EzStopOflogListModels = EzStopOflogModels.ToList();
+
+
+                if (FabricCutterlistOflogModels.Count == 0 || LogCutOflogListModels.Count == 0 || EzStopOflogListModels.Count == 0) return new JsonResult(data);
+
+               
+
                 Dictionary<string, int> ProcessCounter = new Dictionary<string, int>();
                 Dictionary<string, int> FabricCutterIndex = new Dictionary<string, int>();
                 Dictionary<string, int> LogCutIndex = new Dictionary<string, int>();
+                Dictionary<string, LogModel> FabricCutterDic = new Dictionary<string, LogModel>();
+                Dictionary<string, LogModel> LogCutterDic = new Dictionary<string, LogModel>();
 
 
                 int cntr = 0;
@@ -72,6 +75,8 @@ namespace WindowBlind.Api.Controllers
                         ProcessCounter[row.LineNumber] = 0;
                     ProcessCounter[row.LineNumber]++;
                     FabricCutterIndex[row.LineNumber] = cntr++;
+
+                    FabricCutterDic[row.LineNumber] = row;
                 }
 
                 cntr = 0;
@@ -81,6 +86,8 @@ namespace WindowBlind.Api.Controllers
                         ProcessCounter[row.LineNumber] = 0;
                     ProcessCounter[row.LineNumber]++;
                     LogCutIndex[row.LineNumber] = cntr++;
+                    LogCutterDic[row.LineNumber] = row;
+
                 }
 
                 cntr = 0;
@@ -92,6 +99,12 @@ namespace WindowBlind.Api.Controllers
 
                     if (ProcessCounter[row.LineNumber] == 3)
                     {
+                        row.row.Row["FabricCut-User"] = FabricCutterDic[row.LineNumber].UserName;
+                        row.row.Row["LogCut-User"] = LogCutterDic[row.LineNumber].UserName;
+                        row.row.Row["EzStop-User"] = row.UserName;
+                        row.row.Row["FabricCutDate-Time"] = FabricCutterDic[row.LineNumber].dateTime;
+                        row.row.Row["LogCutDate-Time"] = LogCutterDic[row.LineNumber].dateTime;
+                        row.row.Row["EzStopDate-Time"] = row.dateTime;
                         data.Rows.Add(row.row);
                     }
                 }
@@ -121,18 +134,23 @@ namespace WindowBlind.Api.Controllers
                     log.CBNumber = row.Row["CB Number"];
                     log.Item = row.Row["item"];
                     log.dateTime = DateTime.Now.ToString();
+                    log.status = "Assembly";
                     log.ProcessType = "Assembly";
                     log.Message = "This Line No.: " + log.LineNumber + ", has been assembled at " + log.dateTime;
                     await _repository.AssemblyStation.InsertOneAsync(log);
+                    await _repository.Logs.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],
+                        Builders<LogModel>.Update.Set(p => p.status, "Assembly"), new UpdateOptions { IsUpsert = false });
+
                 }
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
                 return false;
             }
         }
+
     }
 }

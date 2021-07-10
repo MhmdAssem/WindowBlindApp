@@ -1,1 +1,67 @@
-<p>packing-station works!</p>
+
+<div class="container">
+
+  <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0">
+    <button class="btn btn-primary mr-2" (click)="Send();"><span *ngIf="SendLoading" class="spinner-border spinner-border-sm mr-1"></span>
+      Update </button>
+  </div>
+
+</div>
+
+<div class="container-fluid mt-3">
+
+  <div class="table-responsive mt-3" id="TableViewSelect">
+    <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
+      [dtTrigger]="dtTrigger">
+      <thead class="bg-light">
+        <tr id="DataTableHeader">
+          <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
+            id="UniqueDataTableHeader_{{col}}">
+
+
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">{{col}}</span>
+
+            </div>
+
+
+          </th>
+          <th id="theSelectColumn" *ngIf="tableModelColNames.length !=0">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Packing Option</span>
+
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
+          <td *ngFor="let col of tableModelColNames" style="background-color: '{{row.row['DropColour']}}'">
+            {{row.row[col]}}</td>
+          <td>
+            <select class="form-control" name="PackingOptions" id="PackingOptions" (change)="SelectThisRow($event,i)" style="display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            text-align: center;">
+              <option value="Waiting" selected>Waiting</option>
+              <option value="Dispatch" >Dispatch</option>
+              <option value="holding pay" >holding pay </option>
+              <option value=" dispatch via holding pay" > dispatch via holding pay</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+  <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
+    <div id="Custom_Table_Info" class="custom-dtable-info"></div>
+    <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
+  </div>
+
+</div>
+

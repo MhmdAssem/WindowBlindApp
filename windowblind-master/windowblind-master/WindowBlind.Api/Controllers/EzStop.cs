@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -505,10 +506,7 @@ namespace WindowBlind.Api.Controllers
                     strconcat += "@" + item.Row["Type"] + "@" + item.Row["Fabric"] + "@" + item.Row["Colour"];
                     strconcat += "@" + item.Row["Lathe"];
                     strconcat += "@" + item.Row["Alpha"] + "@" + item.Row["CB Number"];
-                    if (int.TryParse(item.Row["Qty"], out int qty) && qty > 1)
-                        strconcat += "@" + item.Row["SRLineNumber"] + ",#";
-                    else
-                        strconcat += "@" + item.Row["SRLineNumber"];
+                    strconcat += "@" + item.Row["SRLineNumber"];
 
                     strconcat += "@" + item.Row["Total"];
                     labels.Add(strconcat);
@@ -581,7 +579,7 @@ namespace WindowBlind.Api.Controllers
                     cntrRow++;
 
                 }
-                EzStopFilePath = Path.Combine(EzStopFilePath, "EzStopOutput" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".xslx");
+                EzStopFilePath = Path.Combine(EzStopFilePath, "EzStopOutput" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".xlsx");
                 ExcelPkg.SaveAs(new FileInfo(EzStopFilePath));
 
                 // the printing
@@ -605,98 +603,59 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
-        public bool PrintReport(string strNoCopy, string strPrinterName, List<string> strParameterArray)
+        public bool PrintReport(string StrReportPath, string strPrinterName, List<string> strParameterArray)
         {
             try
             {
-                //CrystalDecisions.Shared.ConnectionInfo crDbConnection = new CrystalDecisions.Shared.ConnectionInfo();
-
-                //CrystalDecisions.CrystalReports.Engine.ReportDocument oRpt = new CrystalDecisions.CrystalReports.Engine.ReportDocument();
-
-                //System.Drawing.Printing.PrintDocument printDoc = new System.Drawing.Printing.PrintDocument();
-
-                //System.Drawing.Printing.PaperSize pkSize = new System.Drawing.Printing.PaperSize();
-
                 string mimtype = "";
                 int extension = 1;
-                var path = Path.Combine(_env.ContentRootPath, StrReportPath);
+                var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
-                parameters.Add("width", "22");
-                //get products from product table 
+
+                parameters.Add("ccNumber", strParameterArray[0]);
+                parameters.Add("width", strParameterArray[1] + " mm");
+                parameters.Add("drop", strParameterArray[2] + " mm");
+
+                parameters.Add("customer", strParameterArray[3].ToString());
+                parameters.Add("department", strParameterArray[4].ToString());
+                parameters.Add("type", strParameterArray[5].ToString());
+                parameters.Add("fabric", strParameterArray[6].ToString());
+                parameters.Add("color", strParameterArray[7].ToString());
+                parameters.Add("controltype", strParameterArray[8].ToString());
+                parameters.Add("lathe", strParameterArray[9].ToString());
+                parameters.Add("char", strParameterArray[10]);
+
+                parameters.Add("someoftotal", strParameterArray[11].ToString() + " of " + strParameterArray[12].ToString());
+
                 LocalReport localReport = new LocalReport(path);
-
                 var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);
-
-
-                //return File(, "application/pdf");
-                //oRpt.FileName = Path.Combine(_env.ContentRootPath, StrReportPath);
-                //oRpt.SetParameterValue("@CBNumber", strParameterArray[0]);
-                //oRpt.SetParameterValue("@Wiwidthdth", strParameterArray[1]);
-                //oRpt.SetParameterValue("@Drop", strParameterArray[2]);
-                //if (strParameterArray[3].Length > 20)
-                //    oRpt.SetParameterValue("@Customer", strParameterArray[3].Substring(0, 20));
-                //else
-                //    oRpt.SetParameterValue("@Customer", strParameterArray[3]);
-
-
-                //if (strParameterArray[4].Length > 10)
-                //    oRpt.SetParameterValue("@Department", strParameterArray[4].Substring(0, 10));
-                //else
-                //    oRpt.SetParameterValue("@Department", strParameterArray[4]);
-
-
-                //oRpt.SetParameterValue("@Type", strParameterArray[5]);
-
-                //if (strParameterArray[6].Length > 12)
-                //    oRpt.SetParameterValue("@Fabric", strParameterArray[6].Substring(0, 12));
-                //else
-                //    oRpt.SetParameterValue("@Fabric", strParameterArray[6]);
-
-
-                //if (strParameterArray[7].Length > 12)
-                //    oRpt.SetParameterValue("@Color", strParameterArray[7].Substring(0, 12));
-
-                //oRpt.SetParameterValue("@Color", strParameterArray[7]);
-
-
-                //if (strParameterArray[8].Length > 6)
-                //    oRpt.SetParameterValue("@ControlType", strParameterArray[8].Substring(0, 6));
-                //else
-                //    oRpt.SetParameterValue("@ControlType", strParameterArray[8]);
+                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".pdf");
+                using (FileStream stream = new FileStream(outputPath, FileMode.Create))
+                {
+                    stream.Write(result.MainStream, 0, result.MainStream.Length);
+                }
 
 
 
-                //oRpt.SetParameterValue("@Lathe", strParameterArray[9]);
-                //oRpt.SetParameterValue("@Alpha", strParameterArray[10]);
-                //oRpt.SetParameterValue("@Barcode", strParameterArray[11]);
-                //oRpt.SetParameterValue("@strLineNumber", strParameterArray[12]);
+                bool printedOK = true;
+                string printErrorMessage = "";
+                try
+                {
+                    PdfDocument pdf = new PdfDocument(outputPath);
+                    pdf.PrintSettings.PrinterName = strPrinterName;
+                    //pdf.PrintSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom", _labelWidth, _labelHeight);
+                    pdf.PrintSettings.SetPaperMargins(1, 1, 1, 1);
+                    pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
+                    //pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, true);
+                    pdf.Print();
 
-                //oRpt.SetParameterValue("@Total", strParameterArray[13]);
-                //if (StrType.ToUpper() == "CUTWIDTH")
-                //{
-                //    oRpt.SetParameterValue("@CutWidth", strParameterArray[14]);
-                //    oRpt.SetParameterValue("@ControlSide", strParameterArray[16]);
-                //}
+                }
+                catch (Exception ex)
+                {
+                    printErrorMessage = "Printing Error: " + ex.ToString();
+                    printedOK = false;
+                }
 
-
-                //oRpt.SetParameterValue("@LineNo", strParameterArray[15]);
-
-                //oRpt.PrintOptions.PrinterName = strPrinterName;
-
-
-                //for (int i = 1; i < (strNoCopy).Length; i++)
-                //{
-                //    try
-                //    {
-                //        oRpt.PrintToPrinter(1, false, 0, 0);
-
-                //    }
-                //    catch (Exception e)
-                //    {
-
-                //        return false;
-                //    }
-                //}
                 return true;
             }
             catch (Exception e)
@@ -712,6 +671,7 @@ namespace WindowBlind.Api.Controllers
                 LogModel log = new LogModel();
                 log.UserName = uName;
                 log.CBNumber = cbNumber;
+                log.status = "IDLE";
                 foreach (var key in row.Row.Keys.ToList())
                 {
                     if (key == "")

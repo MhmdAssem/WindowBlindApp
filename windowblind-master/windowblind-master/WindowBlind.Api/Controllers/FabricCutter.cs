@@ -255,14 +255,15 @@ namespace WindowBlind.Api.Controllers
                     if (item.Row["Fabric Type"] != "")
                     {
                         var fab = item.Row["Fabric Type"].TrimEnd();
-                        if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.Length - 6).TrimEnd()))
+                        if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.LastIndexOf(' ')).TrimEnd()))
                         {
-                            item.Row["Roll Width"] = ((FabricRollwidth[fab.Substring(0, fab.Length - 6).TrimEnd()]).Substring(0, 4));
+                            item.Row["Roll Width"] = FabricRollwidth[fab.Substring(0, fab.IndexOf(' ')).TrimEnd()].ToLower();
                         }
                         else
                         {
-                            item.Row["Roll Width"] = fab.Substring(fab.Length - Math.Min(6, fab.Length), 4);
+                            item.Row["Roll Width"] = fab.Substring(fab.LastIndexOf(' ') + 1).Trim().ToLower();
                         }
+                        item.Row["Roll Width"].Replace("mm", "");
                     }
 
 
@@ -323,40 +324,26 @@ namespace WindowBlind.Api.Controllers
                 int extension = 1;
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutter.rdlc");
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("cbNumber", strParameterArray[0]);
                 parameters.Add("width", strParameterArray[1] + " mm");
-                parameters.Add("ccNumber", strParameterArray[0]);
                 parameters.Add("drop", strParameterArray[2] + " mm");
+                parameters.Add("customer", strParameterArray[3].ToString());
+                parameters.Add("department", strParameterArray[4].ToString());
+                parameters.Add("type", strParameterArray[5].ToString());
+                parameters.Add("fabric", strParameterArray[6].ToString());
+                parameters.Add("color", strParameterArray[7].ToString());
+                parameters.Add("controltype", strParameterArray[8].ToString());
+                parameters.Add("lathe", strParameterArray[9].ToString());
+                parameters.Add("char", strParameterArray[10].Split(" ")[0].ToString());
+                parameters.Add("cutwidth", strParameterArray[10].Split(" ")[1].ToString());
+                parameters.Add("lineNumber", strParameterArray[11].ToString());
 
-                if (strParameterArray[6].ToString().Length > 12)
-                {
-                    parameters.Add("fabric", strParameterArray[6].ToString().Substring(0, 12));
-                }
-                else
-                {
-                    parameters.Add("fabric", strParameterArray[6] == "" ? "NA" : strParameterArray[6]);
-                }
-
-
-                if (strParameterArray[3].ToString().Length > 23)
-                {
-                    parameters.Add("broom", strParameterArray[3].ToString().Substring(0, 20));
-                }
-                else
-                {
-                    parameters.Add("broom", strParameterArray[3] == "" ? "NA" : strParameterArray[3]);
-                }
-
-
-                parameters.Add("fin", strParameterArray[1] == "" ? "NA" : strParameterArray[1]);
-                parameters.Add("number", strParameterArray[12] == "" ? "NA" : strParameterArray[12]);
-                parameters.Add("lineNumber", strParameterArray[12] == "" ? "NA" : strParameterArray[12]);
-                parameters.Add("char", strParameterArray[10] == "" ? "NA" : strParameterArray[10]);
-                parameters.Add("sash", strParameterArray[1] == "" ? "NA" : strParameterArray[1]);
-                parameters.Add("of", strParameterArray[1] == "" ? "NA" : strParameterArray[1]);
+                parameters.Add("controlside", strParameterArray[12].Split(" ")[0].ToString());
+                parameters.Add("someoftotal", strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString());
 
                 LocalReport localReport = new LocalReport(path);
                 var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);
-                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".pdf");
+                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".pdf");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result.MainStream, 0, result.MainStream.Length);
@@ -375,6 +362,7 @@ namespace WindowBlind.Api.Controllers
                     pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
                     //pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, true);
                     pdf.Print();
+
                 }
                 catch (Exception ex)
                 {
@@ -382,90 +370,6 @@ namespace WindowBlind.Api.Controllers
                     printedOK = false;
                 }
 
-
-
-
-                //if (System.IO.File.Exists(outputPath))
-                //{
-                //    System.IO.File.Delete(outputPath);
-                //}
-
-
-                //ReportDocument rd = new ReportDocument();
-                //rd.Load(Path.Combine(_env.ContentRootPath, "Printer Driver", "PrintLabel.rpt"));
-                //rd.PrintOptions.PaperSize = (CrystalDecisions.Shared.PaperSize)0;
-
-                //rd.SetParameterValue("@CBNumber", strParameterArray[0]);
-                //rd.SetParameterValue("@Width", strParameterArray[1] + " mm");
-                //rd.SetParameterValue("@Drop", strParameterArray[2] + " mm");
-                //if (((strParameterArray[3]).ToString().Length > 23))
-                //{
-
-                //    rd.SetParameterValue("@Customer", strParameterArray[3].ToString().Substring(0, 20));
-                //}
-                //else
-                //{
-                //    rd.SetParameterValue("@Customer", strParameterArray[3]);
-                //}
-
-                //if (((strParameterArray[4]).ToString().Length > 10))
-                //{
-                //    rd.SetParameterValue("@Department", strParameterArray[4].ToString().Substring(0, 10));
-                //}
-                //else
-                //{
-                //    rd.SetParameterValue("@Department", strParameterArray[4]);
-                //}
-
-                //rd.SetParameterValue("@Type", strParameterArray[5]);
-
-                //if (((strParameterArray[6]).ToString().Length > 12))
-                //{
-                //    rd.SetParameterValue("@Fabric", strParameterArray[6].ToString().Substring(0, 12));
-                //}
-                //else
-                //{
-                //    rd.SetParameterValue("@Fabric", strParameterArray[6]);
-                //}
-
-                //if (((strParameterArray[7]).ToString().Length > 12))
-                //{
-                //    rd.SetParameterValue("@Color", strParameterArray[7].ToString().Substring(0, 12));
-                //}
-                //else
-                //{
-                //    rd.SetParameterValue("@Color", strParameterArray[7]);
-                //}
-
-                //if (((strParameterArray[8]).ToString().Length > 6))
-                //{
-                //    rd.SetParameterValue("@ControlType", strParameterArray[8].ToString().Substring(0, 6));
-                //}
-                //else
-                //{
-                //    rd.SetParameterValue("@ControlType", strParameterArray[8]);
-                //}
-
-                //rd.SetParameterValue("@Lathe", strParameterArray[9]);
-                //rd.SetParameterValue("@Alpha", strParameterArray[10]);
-                //rd.SetParameterValue("@Barcode", strParameterArray[11]);
-                //rd.SetParameterValue("@LineNumber", strParameterArray[12]);
-                //rd.SetParameterValue("@Total", strParameterArray[13]);
-
-
-                //rd.PrintOptions.PrinterName = strPrinterName;
-
-
-                //for (int i = 1; i <= Convert.ToInt32(strNoCopy); i++)
-                //{
-                //    try
-                //    {
-                //        rd.PrintToPrinter(1, false, 0, 0);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //    }
-                //}
                 return;
             }
             catch (Exception ex)
@@ -515,6 +419,7 @@ namespace WindowBlind.Api.Controllers
                 LogModel log = new LogModel();
                 log.UserName = uName;
                 log.CBNumber = cbNumber;
+                log.status = "IDLE";
                 foreach (var key in row.Row.Keys.ToList())
                 {
                     if (key == "")
@@ -549,7 +454,7 @@ namespace WindowBlind.Api.Controllers
 
         public void writefile(string data, string filename, string file)
         {
-            filename =Path.Combine(filename, "FabricCutOutput_" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".txt");
+            filename = Path.Combine(filename, "FabricCutOutput_" + DateTime.Now.ToString("dd-mm-yyyy  hh-mm-ss") + ".txt");
             using (StreamWriter sw = new StreamWriter(filename))
             {
                 sw.WriteLine(data);
