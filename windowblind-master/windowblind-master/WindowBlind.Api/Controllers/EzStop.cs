@@ -515,13 +515,22 @@ namespace WindowBlind.Api.Controllers
                 }
                 // doing the port thing 
 
+                ComportModel comport = new ComportModel
+                {
+                    username = model.userName,
+                    tablename = model.tableName,
+                    date = DateTime.Now.ToString(),
+                    id = Guid.NewGuid().ToString(),
+                    status = "New",
+                    value = strRS232Width,
+                    applicationtype = "EzStop"
+                };
+
+                await _repository.comport.InsertOneAsync(comport);
+
                 // add to file 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                /// get old style
-
-
-
-
+                
                 ExcelPackage ExcelPkg = new ExcelPackage();
                 ExcelWorksheet wsSheet1 = ExcelPkg.Workbook.Worksheets.Add("Ezystop");
 

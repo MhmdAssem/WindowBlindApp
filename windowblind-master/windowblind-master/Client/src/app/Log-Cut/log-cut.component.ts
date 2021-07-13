@@ -32,7 +32,7 @@ export class LogCutComponent implements OnInit {
   ReviewData: FabricCutterCBDetailsModelTableRow[] = [];
   CBLoading: boolean = false;
   LineLoading: boolean = false;
-  SendLoading:boolean = false;
+  SendLoading: boolean = false;
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   PrinterTableDictionary = {};
   ngOnInit(): void {
@@ -44,7 +44,7 @@ export class LogCutComponent implements OnInit {
       ordering: true,
       //pageLength: 4,
       paging: false,
-      info : false
+      info: false
     };
 
     this.dtOptionsReview = {
@@ -114,6 +114,7 @@ export class LogCutComponent implements OnInit {
 
 
     this.logcutService.getCBNumberDetails(input, CBOrLine).subscribe(data => {
+      console.log(data);
       if (data && data.columnNames.length != 0) {
         setTimeout(() => {
           this.updateTable();
@@ -129,7 +130,12 @@ export class LogCutComponent implements OnInit {
 
         this.updateTable();
 
+
+
         setTimeout(() => {
+          for (let index = 0; index < data.rows.length; index++) {
+            (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'background-color:' + data.rows[index].row['DropColour'] + " !important")
+          }
           $("#Custom_Table_Pagination").html("");
           $("#Custom_Table_Info").html("");
           $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
@@ -138,7 +144,11 @@ export class LogCutComponent implements OnInit {
             behavior: 'smooth',
             block: 'start'
           });
-        }, 500);
+        }, 50);
+
+
+
+
       }
       this.LineLoading = false;
       this.CBLoading = false;
@@ -171,7 +181,7 @@ export class LogCutComponent implements OnInit {
 
 
   Send() {
-this.SendLoading = true;
+    this.SendLoading = true;
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
 
     let Data: FabricCutterCBDetailsModel = {
@@ -180,7 +190,7 @@ this.SendLoading = true;
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.logcutService.LogCutSend(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false;});
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false; });
   }
 
   Delete() {

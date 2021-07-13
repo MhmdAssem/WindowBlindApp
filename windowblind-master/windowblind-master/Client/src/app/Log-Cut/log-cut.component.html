@@ -92,8 +92,8 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
-          <td *ngFor="let col of tableModelColNames" style="background-color: '{{row.row['DropColour']}}'">
+        <tr *ngFor="let row of Data;let i = index" id="RowNumber_{{i}}">
+          <td *ngFor="let col of tableModelColNames" >
             {{row.row[col]}}</td>
           <td>
             <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>

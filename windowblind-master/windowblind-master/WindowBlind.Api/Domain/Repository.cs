@@ -21,6 +21,7 @@ namespace WindowBlind.Api
         IMongoCollection<LogModel> PackingStation { get; }
         IMongoCollection<LogModel> HoistStation { get; }
         IMongoCollection<LogModel> AssemblyStation { get; }
+        IMongoCollection<ComportModel> comport { get; }
 
         Task ImportOrders(Station station);
         void Seed();
@@ -35,6 +36,7 @@ namespace WindowBlind.Api
         public IMongoCollection<LogModel> AssemblyStation => _mongoDb.GetCollection<LogModel>("AssemblyStation");
         public IMongoCollection<LogModel> HoistStation => _mongoDb.GetCollection<LogModel>("HoistStation");
         public IMongoCollection<LogModel> PackingStation => _mongoDb.GetCollection<LogModel>("PackingStation");
+        public IMongoCollection<ComportModel> comport => _mongoDb.GetCollection<ComportModel>("comport");
 
 
         private readonly IMongoDatabase _mongoDb;
@@ -55,6 +57,7 @@ namespace WindowBlind.Api
             var PackingStation = _mongoDb.GetCollection<FileSetting>("PackingStation").EstimatedDocumentCount();
             var HoistStation = _mongoDb.GetCollection<FileSetting>("HoistStation").EstimatedDocumentCount();
             var AssemblyStation = _mongoDb.GetCollection<FileSetting>("AssemblyStation").EstimatedDocumentCount();
+            var comport = _mongoDb.GetCollection<ComportModel>("comport").EstimatedDocumentCount();
             if (user == 0)
             {
                 SeedUsers();
@@ -78,6 +81,11 @@ namespace WindowBlind.Api
             if (AssemblyStation == 0)
             {
                 seedAssemblyStation();
+            }
+            if(comport == 0)
+            {
+                seedComport();
+
             }
 
         }
@@ -253,6 +261,16 @@ namespace WindowBlind.Api
 
         }
 
-
+        private void seedComport()
+        {
+            ComportModel log = new ComportModel();
+            log.username = "Admin";
+            log.tablename = "";
+            log.status = "Read";
+            log.value = "The Admin Just LoggedIn to the system";
+            log.date = DateTime.Now.ToString();
+            log.id = Guid.NewGuid().ToString();
+            _mongoDb.GetCollection<ComportModel>("comport").InsertOne(log);
+        }
     }
 }

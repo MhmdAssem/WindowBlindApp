@@ -348,7 +348,7 @@ namespace WindowBlind.Api.Controllers
                         if (val != null)
                         {
                             item.Row["DropGroup"] = val.DropGroup;
-                            item.Row["DropColour"] = val.DropColour;
+                            item.Row["DropColour"] = val.DropColour.ToLower();
                         }
 
                     }
@@ -528,6 +528,18 @@ namespace WindowBlind.Api.Controllers
 
                 }
                 // doing the port thing 
+                ComportModel comport = new ComportModel
+                {
+                    username = model.userName,
+                    tablename = model.tableName,
+                    date = DateTime.Now.ToString(),
+                    id = Guid.NewGuid().ToString(),
+                    status = "New",
+                    value = strRS232Width,
+                    applicationtype = "LogCut"
+                };
+
+                await _repository.comport.InsertOneAsync(comport);
 
                 // add to file 
 
@@ -666,7 +678,7 @@ namespace WindowBlind.Api.Controllers
             return colList;
         }
 
-        public bool PrintReport( string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
+        public bool PrintReport(string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
         {
             try
             {
@@ -676,7 +688,7 @@ namespace WindowBlind.Api.Controllers
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
 
                 parameters.Add("cbNumber", strParameterArray[0]);
-                parameters.Add("width", strParameterArray[1] );
+                parameters.Add("width", strParameterArray[1]);
                 parameters.Add("drop", strParameterArray[2]);
 
                 parameters.Add("customer", strParameterArray[3].ToString());

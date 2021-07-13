@@ -53,7 +53,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       ordering: true,
       //pageLength: 4,
       paging: false,
-      info : false
+      info: false
     };
 
     this.dtOptionsReview = {
@@ -64,7 +64,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       ordering: true,
       //pageLength: 4,
       paging: false,
-      info : false
+      info: false
 
     };
 
@@ -241,6 +241,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     this.FBRservice.PrintLabels(
       tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
         this.Printing = false;
+        this.ReviewData = [];
       });
 
   }
@@ -254,7 +255,10 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.FBRservice.CreateFilesAndLabels(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.Creating = false; });
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+        this.Creating = false;
+        this.ReviewData = [];
+      });
 
   }
 

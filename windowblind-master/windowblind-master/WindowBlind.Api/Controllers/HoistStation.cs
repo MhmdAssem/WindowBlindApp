@@ -85,6 +85,8 @@ namespace WindowBlind.Api.Controllers
                     await _repository.HoistStation.InsertOneAsync(log);
                     await _repository.Logs.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],
                         Builders<LogModel>.Update.Set(p => p.status, "Qualified"), new UpdateOptions { IsUpsert = false });
+                    await _repository.AssemblyStation.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],
+                       Builders<LogModel>.Update.Set(p => p.status, "Qualified"), new UpdateOptions { IsUpsert = false });
                 }
 
                 return true;
