@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="POS_DBEntitiesCloudStoreContainer" CdmEntityContainer="POS_EntitiesCloud">
+    <EntitySetMapping Name="SitesClouds">
+      <EntityTypeMapping TypeName="POS_DBEntitiesCloud.SitesCloud">
+        <MappingFragment StoreEntitySet="SitesCloud">
+          <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+          <ScalarProperty Name="SiteId" ColumnName="SiteId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CategoriesClouds">
+      <EntityTypeMapping TypeName="POS_DBEntitiesCloud.CategoriesCloud">
+        <MappingFragment StoreEntitySet="CategoriesCloud">
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CatTitle" ColumnName="CatTitle" />
+          <ScalarProperty Name="CatIDLocal" ColumnName="CatIDLocal" />
+          <ScalarProperty Name="CatIDCloud" ColumnName="CatIDCloud" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MenuClouds">
+      <EntityTypeMapping TypeName="POS_DBEntitiesCloud.MenuCloud">
+        <MappingFragment StoreEntitySet="MenuCloud">
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="CatID" ColumnName="CatID" />
+          <ScalarProperty Name="MenuIDLocal" ColumnName="MenuIDLocal" />
+          <ScalarProperty Name="MenuIDCloud" ColumnName="MenuIDCloud" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

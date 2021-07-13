@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ExchangeDBServerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="InvCloud">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="proc_type" Type="Int32" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="inv_type" Type="Int32" />
+    <Property Name="safe" Type="Int32" />
+    <Property Name="stock" Type="Int32" />
+    <Property Name="cust_id" Type="Int32" />
+    <Property Name="sales_emp" Type="Int32" />
+    <Property Name="tot_purch" Type="Double" />
+    <Property Name="tot_sale" Type="Double" />
+    <Property Name="tot_net" Type="Double" />
+    <Property Name="IDRestrictions" Type="Int32" />
+    <Property Name="InvId_Return" Type="Int32" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="paid" Type="Double" />
+    <Property Name="date_Update" Type="DateTime" Precision="3" />
+    <Property Name="date_Deleted" Type="DateTime" Precision="3" />
+    <Property Name="emp_Update" Type="Int32" />
+    <Property Name="edit" Type="Int32" />
+    <Property Name="BillNo" Type="Int32" />
+    <Property Name="CheckInv" Type="Boolean" />
+    <Property Name="ValuDate" Type="DateTime" Precision="0" />
+    <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Weight" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PACKGES" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CFR" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="local_id" Type="Int64" />
+  </EntityType>
+  <EntityContainer Name="ExchangeDBServerEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="InvClouds" EntityType="ExchangeDBServerModel.InvCloud" />
+    <EntitySet Name="Inv_SubCloud" EntityType="ExchangeDBServerModel.Inv_SubCloud" />
+  </EntityContainer>
+  <EntityType Name="Inv_SubCloud">
+    <Key>
+      <PropertyRef Name="cloud_id" />
+    </Key>
+    <Property Name="Inv_id" Type="Int64" />
+    <Property Name="proc_type" Type="Int32" />
+    <Property Name="currency_from" Type="Int32" />
+    <Property Name="val" Type="Double" />
+    <Property Name="exchange_priceUsd" Type="Double" />
+    <Property Name="exchange_price" Type="Double" />
+    <Property Name="local_id" Type="Int64" />
+    <Property Name="cloud_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+  </EntityType>
+</Schema>

@@ -1,0 +1,609 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ExchangeDBServerModelStoreContainer" CdmEntityContainer="ExchangeDBServerEntities">
+    <EntitySetMapping Name="InvClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.InvCloud">
+        <MappingFragment StoreEntitySet="Inv">
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="proc_type" ColumnName="proc_type" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="inv_type" ColumnName="inv_type" />
+          <ScalarProperty Name="safe" ColumnName="safe" />
+          <ScalarProperty Name="stock" ColumnName="stock" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="tot_purch" ColumnName="tot_purch" />
+          <ScalarProperty Name="tot_sale" ColumnName="tot_sale" />
+          <ScalarProperty Name="tot_net" ColumnName="tot_net" />
+          <ScalarProperty Name="IDRestrictions" ColumnName="IDRestrictions" />
+          <ScalarProperty Name="InvId_Return" ColumnName="InvId_Return" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="paid" ColumnName="paid" />
+          <ScalarProperty Name="date_Update" ColumnName="date_Update" />
+          <ScalarProperty Name="date_Deleted" ColumnName="date_Deleted" />
+          <ScalarProperty Name="emp_Update" ColumnName="emp_Update" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="BillNo" ColumnName="BillNo" />
+          <ScalarProperty Name="CheckInv" ColumnName="CheckInv" />
+          <ScalarProperty Name="ValuDate" ColumnName="ValuDate" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="Weight" ColumnName="Weight" />
+          <ScalarProperty Name="PACKGES" ColumnName="PACKGES" />
+          <ScalarProperty Name="CFR" ColumnName="CFR" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Inv_SubCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Inv_SubCloud">
+        <MappingFragment StoreEntitySet="Inv_Sub">
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="exchange_price" ColumnName="exchange_price" />
+          <ScalarProperty Name="exchange_priceUsd" ColumnName="exchange_priceUsd" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="currency_from" ColumnName="currency_from" />
+          <ScalarProperty Name="proc_type" ColumnName="proc_type" />
+          <ScalarProperty Name="Inv_id" ColumnName="Inv_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Accounts_IndexCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Accounts_IndexCloud">
+        <MappingFragment StoreEntitySet="Accounts_Index">
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="Acc_branch" ColumnName="Acc_branch" />
+          <ScalarProperty Name="Account_Value" ColumnName="Account_Value" />
+          <ScalarProperty Name="Total_Credits" ColumnName="Total_Credits" />
+          <ScalarProperty Name="Total_Debts" ColumnName="Total_Debts" />
+          <ScalarProperty Name="FinalAcc" ColumnName="FinalAcc" />
+          <ScalarProperty Name="IValue" ColumnName="IValue" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="ParentCode" ColumnName="ParentCode" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Nature" ColumnName="Nature" />
+          <ScalarProperty Name="AName1" ColumnName="AName1" />
+          <ScalarProperty Name="AName" ColumnName="AName" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BlacklistClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.BlacklistCloud">
+        <MappingFragment StoreEntitySet="Blacklist">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="chkd" ColumnName="chkd" />
+          <ScalarProperty Name="CHKM" ColumnName="CHKM" />
+          <ScalarProperty Name="local" ColumnName="local" />
+          <ScalarProperty Name="dateend" ColumnName="dateend" />
+          <ScalarProperty Name="ALTERdDate" ColumnName="ALTERdDate" />
+          <ScalarProperty Name="ProfileURL" ColumnName="ProfileURL" />
+          <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+          <ScalarProperty Name="NAT" ColumnName="NAT" />
+          <ScalarProperty Name="NationalID" ColumnName="NationalID" />
+          <ScalarProperty Name="DATAID" ColumnName="DATAID" />
+          <ScalarProperty Name="FullNameE" ColumnName="FullNameE" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CustomerClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.CustomerCloud">
+        <MappingFragment StoreEntitySet="Customers">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="SuspectedNote" ColumnName="SuspectedNote" />
+          <ScalarProperty Name="Suspected1" ColumnName="Suspected1" />
+          <ScalarProperty Name="Suspected0" ColumnName="Suspected0" />
+          <ScalarProperty Name="BorderOutlet" ColumnName="BorderOutlet" />
+          <ScalarProperty Name="branchC" ColumnName="branchC" />
+          <ScalarProperty Name="Sector" ColumnName="Sector" />
+          <ScalarProperty Name="Agreement" ColumnName="Agreement" />
+          <ScalarProperty Name="System_price" ColumnName="System_price" />
+          <ScalarProperty Name="Postcode" ColumnName="Postcode" />
+          <ScalarProperty Name="AdditionalNO" ColumnName="AdditionalNO" />
+          <ScalarProperty Name="UnitNO" ColumnName="UnitNO" />
+          <ScalarProperty Name="Street" ColumnName="Street" />
+          <ScalarProperty Name="District" ColumnName="District" />
+          <ScalarProperty Name="BuildingNO" ColumnName="BuildingNO" />
+          <ScalarProperty Name="File_No" ColumnName="File_No" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="bank" ColumnName="bank" />
+          <ScalarProperty Name="AccountCode" ColumnName="AccountCode" />
+          <ScalarProperty Name="Sort" ColumnName="Sort" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="place_birth" ColumnName="place_birth" />
+          <ScalarProperty Name="Date_Birth" ColumnName="Date_Birth" />
+          <ScalarProperty Name="Political_exhibition" ColumnName="Political_exhibition" />
+          <ScalarProperty Name="HaveImage" ColumnName="HaveImage" />
+          <ScalarProperty Name="limit" ColumnName="limit" />
+          <ScalarProperty Name="purchase_purpose" ColumnName="purchase_purpose" />
+          <ScalarProperty Name="Source_income" ColumnName="Source_income" />
+          <ScalarProperty Name="salary_basic" ColumnName="salary_basic" />
+          <ScalarProperty Name="registry_date" ColumnName="registry_date" />
+          <ScalarProperty Name="chk" ColumnName="chk" />
+          <ScalarProperty Name="HijDay" ColumnName="HijDay" />
+          <ScalarProperty Name="daate" ColumnName="daate" />
+          <ScalarProperty Name="cmbJob" ColumnName="cmbJob" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="tel" ColumnName="tel" />
+          <ScalarProperty Name="act" ColumnName="act" />
+          <ScalarProperty Name="fax" ColumnName="fax" />
+          <ScalarProperty Name="mobile" ColumnName="mobile" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="national_id" ColumnName="national_id" />
+          <ScalarProperty Name="nat1" ColumnName="nat1" />
+          <ScalarProperty Name="NameE" ColumnName="NameE" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmpBranchClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.EmpBranchCloud">
+        <MappingFragment StoreEntitySet="EmpBranches">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="emp" ColumnName="emp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmployeeClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.EmployeeCloud">
+        <MappingFragment StoreEntitySet="Employees">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="salary_other" ColumnName="salary_other" />
+          <ScalarProperty Name="SalaryVictuals" ColumnName="SalaryVictuals" />
+          <ScalarProperty Name="SalaryTransport" ColumnName="SalaryTransport" />
+          <ScalarProperty Name="salary_add" ColumnName="salary_add" />
+          <ScalarProperty Name="salary_basic" ColumnName="salary_basic" />
+          <ScalarProperty Name="DatePassport" ColumnName="DatePassport" />
+          <ScalarProperty Name="Passport" ColumnName="Passport" />
+          <ScalarProperty Name="Tasks" ColumnName="Tasks" />
+          <ScalarProperty Name="Work_Experience" ColumnName="Work_Experience" />
+          <ScalarProperty Name="Education" ColumnName="Education" />
+          <ScalarProperty Name="Expiration_Date" ColumnName="Expiration_Date" />
+          <ScalarProperty Name="dentificationNo" ColumnName="dentificationNo" />
+          <ScalarProperty Name="Vac_Balance" ColumnName="Vac_Balance" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="mobile" ColumnName="mobile" />
+          <ScalarProperty Name="tel" ColumnName="tel" />
+          <ScalarProperty Name="sex" ColumnName="sex" />
+          <ScalarProperty Name="nationality" ColumnName="nationality" />
+          <ScalarProperty Name="marital_state" ColumnName="marital_state" />
+          <ScalarProperty Name="work_date" ColumnName="work_date" />
+          <ScalarProperty Name="insurance_no" ColumnName="insurance_no" />
+          <ScalarProperty Name="birth_date" ColumnName="birth_date" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="job" ColumnName="job" />
+          <ScalarProperty Name="state" ColumnName="state" />
+          <ScalarProperty Name="dep" ColumnName="dep" />
+          <ScalarProperty Name="manag" ColumnName="manag" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RestrictionClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.RestrictionCloud">
+        <MappingFragment StoreEntitySet="Restrictions">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="state" ColumnName="state" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="doc_no" ColumnName="doc_no" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="no" ColumnName="no" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Restrictions_SubCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Restrictions_SubCloud">
+        <MappingFragment StoreEntitySet="Restrictions_Sub">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="Branchs" ColumnName="Branchs" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="acc_no" ColumnName="acc_no" />
+          <ScalarProperty Name="credit" ColumnName="credit" />
+          <ScalarProperty Name="dept" ColumnName="dept" />
+          <ScalarProperty Name="creditUsd" ColumnName="creditUsd" />
+          <ScalarProperty Name="deptUsd" ColumnName="deptUsd" />
+          <ScalarProperty Name="res_id" ColumnName="res_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Risk_countriesCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Risk_countriesCloud">
+        <MappingFragment StoreEntitySet="Risk_countries">
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="Riskcountries" ColumnName="Riskcountries" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Risk_CurrCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Risk_CurrCloud">
+        <MappingFragment StoreEntitySet="Risk_Curr">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="RiskCurr" ColumnName="RiskCurr" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Risk_jobsCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Risk_jobsCloud">
+        <MappingFragment StoreEntitySet="Risk_jobs">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="Riskjobs" ColumnName="Riskjobs" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Risk_masadirCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Risk_masadirCloud">
+        <MappingFragment StoreEntitySet="Risk_masadir">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="Riskmasadir" ColumnName="Riskmasadir" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Risk_SectorCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Risk_SectorCloud">
+        <MappingFragment StoreEntitySet="Risk_Sector">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="RiskSector" ColumnName="RiskSector" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Safe_EmpsCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Safe_EmpsCloud">
+        <MappingFragment StoreEntitySet="Safe_Emps">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="safe_id" ColumnName="safe_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SafeClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SafeCloud">
+        <MappingFragment StoreEntitySet="Safes">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="IS_Default" ColumnName="IS_Default" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SafesTransferClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SafesTransferCloud">
+        <MappingFragment StoreEntitySet="SafesTransfer">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="ok" ColumnName="ok" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="safe_to" ColumnName="safe_to" />
+          <ScalarProperty Name="safe_from" ColumnName="safe_from" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SafesTransfer_SubCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SafesTransfer_SubCloud">
+        <MappingFragment StoreEntitySet="SafesTransfer_Sub">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="user_emp" ColumnName="user_emp" />
+          <ScalarProperty Name="value" ColumnName="value" />
+          <ScalarProperty Name="currency" ColumnName="currency" />
+          <ScalarProperty Name="transfer_id" ColumnName="transfer_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SafesTransferBranchClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SafesTransferBranchCloud">
+        <MappingFragment StoreEntitySet="SafesTransferBranch">
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="ok" ColumnName="ok" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="tobranch" ColumnName="tobranch" />
+          <ScalarProperty Name="frombranch" ColumnName="frombranch" />
+          <ScalarProperty Name="safe_to" ColumnName="safe_to" />
+          <ScalarProperty Name="safe_from" ColumnName="safe_from" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SafesTransferBranch_SubCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SafesTransferBranch_SubCloud">
+        <MappingFragment StoreEntitySet="SafesTransferBranch_Sub">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="user_emp" ColumnName="user_emp" />
+          <ScalarProperty Name="totl" ColumnName="totl" />
+          <ScalarProperty Name="avg" ColumnName="avg" />
+          <ScalarProperty Name="value" ColumnName="value" />
+          <ScalarProperty Name="currency" ColumnName="currency" />
+          <ScalarProperty Name="transfer_id" ColumnName="transfer_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SandDClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SandDCloud">
+        <MappingFragment StoreEntitySet="SandD">
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SandQClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SandQCloud">
+        <MappingFragment StoreEntitySet="SandQ">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SandQDClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SandQDCloud">
+        <MappingFragment StoreEntitySet="SandQD">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="acc_code" ColumnName="acc_code" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="emp_person" ColumnName="emp_person" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SandSDClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.SandSDCloud">
+        <MappingFragment StoreEntitySet="SandSD">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="acc_code" ColumnName="acc_code" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="emp_person" ColumnName="emp_person" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Stock_EmpsCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.Stock_EmpsCloud">
+        <MappingFragment StoreEntitySet="Stock_Emps">
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="stock_id" ColumnName="stock_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.StockCloud">
+        <MappingFragment StoreEntitySet="Stocks">
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="IS_Default" ColumnName="IS_Default" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockTransferClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.StockTransferCloud">
+        <MappingFragment StoreEntitySet="StockTransfer">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="OK" ColumnName="OK" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="TransferDate" ColumnName="TransferDate" />
+          <ScalarProperty Name="TransferValue" ColumnName="TransferValue" />
+          <ScalarProperty Name="ToStockID" ColumnName="ToStockID" />
+          <ScalarProperty Name="FromStockID" ColumnName="FromStockID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockTransferBranchClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.StockTransferBranchCloud">
+        <MappingFragment StoreEntitySet="StockTransferBranch">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="OK" ColumnName="OK" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="branchTo" ColumnName="branchTo" />
+          <ScalarProperty Name="branchFrom" ColumnName="branchFrom" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="TransferDate" ColumnName="TransferDate" />
+          <ScalarProperty Name="TransferValue" ColumnName="TransferValue" />
+          <ScalarProperty Name="ToStockID" ColumnName="ToStockID" />
+          <ScalarProperty Name="FromStockID" ColumnName="FromStockID" />
+          <ScalarProperty Name="RestrictionsID" ColumnName="RestrictionsID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TransferStockSafeClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.TransferStockSafeCloud">
+        <MappingFragment StoreEntitySet="TransferStockSafe">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="ChkTime" ColumnName="ChkTime" />
+          <ScalarProperty Name="ChkDate" ColumnName="ChkDate" />
+          <ScalarProperty Name="chk" ColumnName="chk" />
+          <ScalarProperty Name="Emp_To" ColumnName="Emp_To" />
+          <ScalarProperty Name="TDate" ColumnName="TDate" />
+          <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="StockTransferID" ColumnName="StockTransferID" />
+          <ScalarProperty Name="RestrictionsID" ColumnName="RestrictionsID" />
+          <ScalarProperty Name="SafesTransferID" ColumnName="SafesTransferID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="User_PermissionsCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.User_PermissionsCloud">
+        <MappingFragment StoreEntitySet="User_Permissions">
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="IS_Print" ColumnName="IS_Print" />
+          <ScalarProperty Name="IS_Search" ColumnName="IS_Search" />
+          <ScalarProperty Name="IS_Delete" ColumnName="IS_Delete" />
+          <ScalarProperty Name="IS_Update" ColumnName="IS_Update" />
+          <ScalarProperty Name="IS_Save" ColumnName="IS_Save" />
+          <ScalarProperty Name="IS_New" ColumnName="IS_New" />
+          <ScalarProperty Name="Form_id" ColumnName="Form_id" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserClouds">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.UserCloud">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="template_string" ColumnName="template_string" />
+          <ScalarProperty Name="finger_string" ColumnName="finger_string" />
+          <ScalarProperty Name="Connected" ColumnName="Connected" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="pwd" ColumnName="pwd" />
+          <ScalarProperty Name="username" ColumnName="username" />
+          <ScalarProperty Name="emp" ColumnName="emp" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="curr_avgCloud">
+      <EntityTypeMapping TypeName="ExchangeDBServerModel.curr_avgCloud">
+        <MappingFragment StoreEntitySet="curr_avg">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="avg" ColumnName="avg" />
+          <ScalarProperty Name="balance" ColumnName="balance" />
+          <ScalarProperty Name="curr" ColumnName="curr" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
