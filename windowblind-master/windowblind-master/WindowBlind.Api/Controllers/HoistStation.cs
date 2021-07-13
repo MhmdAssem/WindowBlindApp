@@ -40,72 +40,19 @@ namespace WindowBlind.Api.Controllers
                 data.ColumnNames.Add("Line No");
                 data.ColumnNames.Add("item");
 
-                data.ColumnNames.Add("FabricCut-User");
-                data.ColumnNames.Add("LogCut-User");
-                data.ColumnNames.Add("EzStop-User");
-
-                data.ColumnNames.Add("FabricCutDate-Time");
-                data.ColumnNames.Add("LogCutDate-Time");
-                data.ColumnNames.Add("EzStopDate-Time");
-                var FabricCutterOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "FabricCut" && log.status == "Assembly");
-                var LogCutOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "LogCut" && log.status == "Assembly");
-                var EzStopOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "EzStop" && log.status == "Assembly");
-
-                var FabricCutterlistOflogModels = FabricCutterOflogModels.ToList();
-                var LogCutOflogListModels = LogCutOflogModels.ToList();
-                var EzStopOflogListModels = EzStopOflogModels.ToList();
+                data.ColumnNames.Add("Assembly User");
 
 
-                if (FabricCutterlistOflogModels.Count == 0 || LogCutOflogListModels.Count == 0 || EzStopOflogListModels.Count == 0) return new JsonResult(data);
+                data.ColumnNames.Add("Assembly Date-Time");
 
+                var FabricCutterOflogModels = await _repository.AssemblyStation.FindAsync(log => log.ProcessType == "Assembly" && log.status == "Assembly");
 
-                Dictionary<string, int> ProcessCounter = new Dictionary<string, int>();
-                Dictionary<string, int> FabricCutterIndex = new Dictionary<string, int>();
-                Dictionary<string, int> LogCutIndex = new Dictionary<string, int>();
-
-                Dictionary<string, LogModel> FabricCutterDic = new Dictionary<string, LogModel>();
-                Dictionary<string, LogModel> LogCutterDic = new Dictionary<string, LogModel>();
-
-                int cntr = 0;
-                foreach (var row in FabricCutterlistOflogModels)
+                var lis = FabricCutterOflogModels.ToList();
+                foreach (var row in lis)
                 {
-                    if (!ProcessCounter.ContainsKey(row.LineNumber))
-                        ProcessCounter[row.LineNumber] = 0;
-                    ProcessCounter[row.LineNumber]++;
-                    FabricCutterIndex[row.LineNumber] = cntr++;
-
-                    FabricCutterDic[row.LineNumber] = row;
-
-                }
-
-                cntr = 0;
-                foreach (var row in LogCutOflogListModels)
-                {
-                    if (!ProcessCounter.ContainsKey(row.LineNumber))
-                        ProcessCounter[row.LineNumber] = 0;
-                    ProcessCounter[row.LineNumber]++;
-                    LogCutIndex[row.LineNumber] = cntr++;
-                    LogCutterDic[row.LineNumber] = row;
-
-                }
-
-                cntr = 0;
-                foreach (var row in EzStopOflogListModels)
-                {
-                    if (!ProcessCounter.ContainsKey(row.LineNumber))
-                        ProcessCounter[row.LineNumber] = 0;
-                    ProcessCounter[row.LineNumber]++;
-
-                    if (ProcessCounter[row.LineNumber] == 3)
-                    {
-                        row.row.Row["FabricCut-User"] = FabricCutterDic[row.LineNumber].UserName;
-                        row.row.Row["LogCut-User"] = LogCutterDic[row.LineNumber].UserName;
-                        row.row.Row["EzStop-User"] = row.UserName;
-                        row.row.Row["FabricCutDate-Time"] = FabricCutterDic[row.LineNumber].dateTime;
-                        row.row.Row["LogCutDate-Time"] = LogCutterDic[row.LineNumber].dateTime;
-                        row.row.Row["EzStopDate-Time"] = row.dateTime;
-                        data.Rows.Add(row.row);
-                    }
+                    row.row.Row["Assembly User"] = row.UserName;
+                    row.row.Row["Assembly Date-Time"] = row.dateTime;
+                    data.Rows.Add(row.row);
                 }
 
                 return new JsonResult(data);

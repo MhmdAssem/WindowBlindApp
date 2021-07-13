@@ -264,7 +264,7 @@ namespace WindowBlind.Api.Controllers
                         for (int j = start.Column; j < end.Column; j++)
                         {
                             var Headertext = worksheet.Cells[1, j].Text.Trim();
-
+                            Headertext = Headertext.Replace(".", "");
                             /// special check 
                             if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") takeRowCqty = false;
                             var cell = worksheet.Cells[i, j].Text.Trim();
@@ -308,7 +308,7 @@ namespace WindowBlind.Api.Controllers
                     f = 1;
                     for (int j = 0; j < Data.Rows.Count; j++)
                     {
-                        if (Data.Rows[j].Row["Line No."] == item.Row["Line No."])
+                        if (Data.Rows[j].Row["Line No"] == item.Row["Line No"])
                         {
                             item.Row["item"] = LogCut.CalculateAlphabeticFromNumber(f); break;
                         }
@@ -336,7 +336,7 @@ namespace WindowBlind.Api.Controllers
                     else
                         item.Row["Width"] = "0";
 
-                    item.Row["CutWidth"] = GetCutwidth(item.Row["Width"], item.Row["Bind. Type/# Panels/Rope/Operation"], item.Row["Fixing Type / Bracket Type"], FixingValues, ControlTypevalues);
+                    item.Row["CutWidth"] = GetCutwidth(item.Row["Width"], item.Row["Bind Type/# Panels/Rope/Operation"], item.Row["Fixing Type / Bracket Type"], FixingValues, ControlTypevalues);
                     item.Row["CutWidth_hidden"] = item.Row["CutWidth"];
                     if (item.Row["CutWidth"] != String.Empty)
                         item.Row["CutWidth"] = item.Row["CutWidth"] + "mm";
@@ -347,7 +347,7 @@ namespace WindowBlind.Api.Controllers
                     item.Row["Qty"] = item.Row["Qty"].Trim();
                     item.Row["Tube"] = item.Row["Tube Size"].Trim();
 
-                    if (item.Row["Bind. Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRING" || item.Row["Bind. Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRINGHD")
+                    if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRING" || item.Row["Bind Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRINGHD")
                         item.Row["Spring"] = "YES";
                     else
                         item.Row["Spring"] = "NO";
@@ -390,7 +390,7 @@ namespace WindowBlind.Api.Controllers
                     item.Row["Alpha"] = item.Row["item"];
                     item.Row["Department"] = item.Row["Department"].Trim();
 
-                    item.Row["Barcode"] = item.Row["Line No."];
+                    item.Row["Barcode"] = item.Row["Line No"];
 
                     if (item.Row["Fabric"].Length > 6)
                         item.Row["Fabric"] = item.Row["Fabric"].Substring(0, item.Row["Fabric"].Length - 6);
@@ -503,7 +503,7 @@ namespace WindowBlind.Api.Controllers
                 {
                     strconcat = item.Row["CB Number"] + "@" + item.Row["Width"];
                     strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["Department"];
-                    strconcat += "@" + item.Row["Type"] + "@" + item.Row["Fabric"] + "@" + item.Row["Colour"];
+                    strconcat += "@" + item.Row["Fabric"] + "@" + item.Row["Control Type"] + "@" + item.Row["Colour"];
                     strconcat += "@" + item.Row["Lathe"];
                     strconcat += "@" + item.Row["Alpha"] + "@" + item.Row["CB Number"];
                     strconcat += "@" + item.Row["SRLineNumber"];
@@ -592,7 +592,7 @@ namespace WindowBlind.Api.Controllers
 
                     if (strpara.Length == 0) continue;
 
-                    var ret1 = PrintReport("1", printerName, strParameterArray.ToList());
+                    var ret1 = PrintReport("EzStop.rdlc", printerName, strParameterArray.ToList());
 
                 }
                 return new JsonResult(true);
@@ -612,18 +612,17 @@ namespace WindowBlind.Api.Controllers
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
 
-                parameters.Add("ccNumber", strParameterArray[0]);
-                parameters.Add("width", strParameterArray[1] + " mm");
-                parameters.Add("drop", strParameterArray[2] + " mm");
+                parameters.Add("cbNumber", strParameterArray[0]);
+                parameters.Add("width", strParameterArray[1]);
+                parameters.Add("drop", strParameterArray[2]);
 
                 parameters.Add("customer", strParameterArray[3].ToString());
                 parameters.Add("department", strParameterArray[4].ToString());
-                parameters.Add("type", strParameterArray[5].ToString());
-                parameters.Add("fabric", strParameterArray[6].ToString());
+                parameters.Add("fabric", strParameterArray[5].ToString());
                 parameters.Add("color", strParameterArray[7].ToString());
-                parameters.Add("controltype", strParameterArray[8].ToString());
-                parameters.Add("lathe", strParameterArray[9].ToString());
-                parameters.Add("char", strParameterArray[10]);
+                parameters.Add("controltype", strParameterArray[6].ToString());
+                parameters.Add("lathe", strParameterArray[8].ToString());
+                parameters.Add("char", strParameterArray[9]);
 
                 parameters.Add("someoftotal", strParameterArray[11].ToString() + " of " + strParameterArray[12].ToString());
 

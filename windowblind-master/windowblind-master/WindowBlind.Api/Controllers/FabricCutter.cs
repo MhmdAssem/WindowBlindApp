@@ -143,6 +143,7 @@ namespace WindowBlind.Api.Controllers
                                 RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
                             }
 
+                            Headertext = Headertext.Replace(".", "");
 
 
 
@@ -232,11 +233,11 @@ namespace WindowBlind.Api.Controllers
                 {
                     Bindcntr++;
                     item.Row["Total Blinds"] = (generalBlindNumber - 1).ToString();
-                    if (item.Row["Bind. Type/# Panels/Rope/Operation"].ToString().TrimEnd() != "")
+                    if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd() != "")
                     {
-                        if (ControlTypevalues.ContainsKey(item.Row["Bind. Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()))
+                        if (ControlTypevalues.ContainsKey(item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()))
                         {
-                            item.Row["Cut Width"] = (int.Parse(item.Row["Measured Width"]) + ControlTypevalues[item.Row["Bind. Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()]).ToString();
+                            item.Row["Cut Width"] = (int.Parse(item.Row["Measured Width"]) + ControlTypevalues[item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()]).ToString();
                         }
                     }
                     else
@@ -246,7 +247,7 @@ namespace WindowBlind.Api.Controllers
                     }
 
 
-                    if (item.Row["Description"].TrimEnd().EndsWith("FIN 36") && item.Row["Bind. Type/# Panels/Rope/Operation"] == "Motorised")
+                    if (item.Row["Description"].TrimEnd().EndsWith("FIN 36") && item.Row["Bind Type/# Panels/Rope/Operation"] == "Motorised")
                     {
                         item.Row["Measured Width"] = (Convert.ToInt32(item.Row["Measured Width"]) - 5).ToString();
                     }
@@ -257,13 +258,13 @@ namespace WindowBlind.Api.Controllers
                         var fab = item.Row["Fabric Type"].TrimEnd();
                         if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.LastIndexOf(' ')).TrimEnd()))
                         {
-                            item.Row["Roll Width"] = FabricRollwidth[fab.Substring(0, fab.IndexOf(' ')).TrimEnd()].ToLower();
+                            item.Row["Roll Width"] = FabricRollwidth[fab.Substring(0, fab.IndexOf(' ')).TrimEnd()].ToLower().Replace("mm", "");
                         }
                         else
                         {
-                            item.Row["Roll Width"] = fab.Substring(fab.LastIndexOf(' ') + 1).Trim().ToLower();
+                            item.Row["Roll Width"] = fab.Substring(fab.LastIndexOf(' ') + 1).Trim().ToLower().Replace("mm", "");
                         }
-                        item.Row["Roll Width"].Replace("mm", "");
+
                     }
 
 
@@ -290,7 +291,7 @@ namespace WindowBlind.Api.Controllers
                             item.Row["Pull Colour"] = "Lathe";
                         }
                     }
-                    item.Row["Barcode"] = item.Row["Line No."].ToString().TrimEnd();
+                    item.Row["Barcode"] = item.Row["Line No"].ToString().TrimEnd();
 
 
                     if (item.Row["Cntrl Side"].ToString().TrimEnd() != "")
@@ -315,7 +316,7 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
-        public void PrintReport(string strNoCopy, string strPrinterName, string[] strParameterArray)
+        public void PrintReport(string strPrinterName, string[] strParameterArray)
         {
 
             try
@@ -404,7 +405,7 @@ namespace WindowBlind.Api.Controllers
                     }
                     else
                     {
-                        PrintReport("1", strPrinterName, strParameterArray);
+                        PrintReport(strPrinterName, strParameterArray);
                     }
                 }
 
@@ -552,7 +553,7 @@ namespace WindowBlind.Api.Controllers
                 labels.Append("@" + item.Row["Fabric Colour"].ToString().TrimEnd());
                 labels.Append("@" + item.Row["Trim Type"].ToString().TrimEnd());
                 labels.Append("@" + item.Row["Pull Colour"].ToString().TrimEnd());//Added on 8-10-2016
-                labels.Append("@" + item.Row["Alpha Number"].ToString().TrimEnd() + "   " + item.Row["Cut Width"].ToString().TrimEnd());
+                labels.Append("@" + item.Row["Alpha Number"].ToString().TrimEnd() + " " + item.Row["Cut Width"].ToString().TrimEnd());
                 labels.Append("@" + item.Row["Barcode"].ToString().TrimEnd()); /// it's the line number
                 labels.Append("@" + item.Row["Control Side"].ToString().TrimEnd() + " " + item.Row["Blind Number"].ToString().TrimEnd()); //TODO: Suppy cut width here
                 labels.Append("@" + item.Row["Total Blinds"].ToString().TrimEnd());

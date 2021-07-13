@@ -65,6 +65,7 @@ namespace WindowBlind.Api.Controllers
                     for (int i = start.Column; i < end.Column; i++)
                     {
                         var text = worksheet.Cells[1, i].Text.Trim();
+                        text = text.Replace(".", "");
                         if (text != "")
                             names.Add(text);
                     }

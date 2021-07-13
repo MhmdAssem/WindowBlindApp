@@ -42,8 +42,9 @@ export class LogCutComponent implements OnInit {
       searching: false,
       destroy: true,
       ordering: true,
-      pageLength: 4,
-
+      //pageLength: 4,
+      paging: false,
+      info : false
     };
 
     this.dtOptionsReview = {

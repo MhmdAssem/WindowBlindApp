@@ -78,6 +78,7 @@ export class SettingsComponent implements OnInit {
 
     /// load all settings From BackEnd
     this.settingService.getSettings().subscribe(data => {
+      console.log(data);
       this.ListOfFiles = data;
       console.log(data);
 
@@ -131,7 +132,7 @@ export class SettingsComponent implements OnInit {
           this.PrinterTableArray.push(model);
         });
       }
-      
+
       if (EzStopTables.indexOf("@@@@@") != -1) {
         let EzStopEntries = EzStopTables.split("#####");
         EzStopEntries.forEach(element => {
@@ -145,16 +146,17 @@ export class SettingsComponent implements OnInit {
           this.PrinterTableArray.push(model);
         });
       }
-      
+
       this.Columns.push('Application Name');
       this.Columns.push('Printer Name');
       this.Columns.push('Table Name');
-      
-         this.updateTable();
-     });
+
+      this.updateTable();
+    });
 
     this.settingService.getColumnsNames().subscribe(data => {
       this.ColumnNames = data;
+      console.log(data);
       setTimeout(() => {
         this.SelectedColumnNames.forEach(element => {
           (document.getElementById('CheckBox_' + element) as HTMLInputElement).checked = true;
@@ -211,29 +213,31 @@ export class SettingsComponent implements OnInit {
     let newEntry: FileSettings = {
       settingName: "SelectedColumnsNames",
       settingPath: this.SelectedColumnNames.join("@@@"),
-      id: this.SelectedColumnNamesId
-
+      id: this.SelectedColumnNamesId,
+      applicationSetting: ""
     }
     newList.push(newEntry);
 
     let FabricCutterEntry: FileSettings = {
       settingName: "FabricCutterTable",
       settingPath: "",
-      id: this.FabricCutterTableNumberId
-
+      id: this.FabricCutterTableNumberId,
+      applicationSetting: ""
     }
 
     let EzStopEntry: FileSettings = {
       settingName: "EzStopTable",
       settingPath: "",
-      id: this.EzStopTableNumberId
+      id: this.EzStopTableNumberId,
+      applicationSetting: ""
 
     }
 
     let LogCutEntry: FileSettings = {
       settingName: "LogCutterTable",
       settingPath: "",
-      id: this.LogCutterTableNumberId
+      id: this.LogCutterTableNumberId,
+       applicationSetting: ""
 
     }
     this.PrinterTableArray.forEach(element => {
@@ -308,6 +312,6 @@ export class SettingsComponent implements OnInit {
       tableName: TableName
     };
     this.PrinterTableArray.push(model);
-       this.updateTable();
-   }
+    this.updateTable();
+  }
 }

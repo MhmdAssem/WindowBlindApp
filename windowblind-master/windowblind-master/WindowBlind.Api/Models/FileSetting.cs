@@ -11,5 +11,6 @@ namespace WindowBlind.Api.Models
 
         public string settingName{ get; set; }
         public string settingPath{ get; set; }
+        public string applicationSetting { get; set; }
     }
 }

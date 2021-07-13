@@ -251,6 +251,7 @@ namespace WindowBlind.Api.Controllers
                         {
                             var Headertext = worksheet.Cells[1, j].Text.Trim();
 
+                            Headertext = Headertext.Replace(".", "");
                             /// special check 
                             if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") continue;
                             var cell = worksheet.Cells[i, j].Text.Trim();
@@ -326,7 +327,7 @@ namespace WindowBlind.Api.Controllers
                             f = 1;
                             for (int j = 0; j < Data.Rows.Count; j++)
                             {
-                                if (Data.Rows[j].Row["Line No."] == item.Row["Line No."])
+                                if (Data.Rows[j].Row["Line No"] == item.Row["Line No"])
                                 {
                                     item.Row["item"] = CalculateAlphabeticFromNumber(f); break;
                                 }
@@ -357,7 +358,7 @@ namespace WindowBlind.Api.Controllers
                     else
                         item.Row["Width"] = "0";
 
-                    item.Row["CutWidth"] = GetCutwidth2(item.Row["Width"], item.Row["Bind. Type/# Panels/Rope/Operation"], ControlTypevalues);
+                    item.Row["CutWidth"] = GetCutwidth2(item.Row["Width"], item.Row["Bind Type/# Panels/Rope/Operation"], ControlTypevalues);
                     item.Row["CutWidth_hidden"] = item.Row["CutWidth"];
                     if (item.Row["CutWidth"] != String.Empty)
                         item.Row["CutWidth"] = item.Row["CutWidth"] + "mm";
@@ -373,7 +374,7 @@ namespace WindowBlind.Api.Controllers
                     item.Row["Date-Time"] = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
                     item.Row["Tube"] = item.Row["Tube Size"].Trim();
 
-                    if (item.Row["Bind. Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRING" || item.Row["Bind. Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRINGHD")
+                    if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRING" || item.Row["Bind Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRINGHD")
                         item.Row["Spring"] = "YES";
                     else
                         item.Row["Spring"] = "NO";
@@ -409,7 +410,7 @@ namespace WindowBlind.Api.Controllers
                     item.Row["Department"] = item.Row["Department"].Trim();
                     if (item.Row["Cntrl Side"].ToString().Trim() != String.Empty)
                         item.Row["ControlSide"] = item.Row["Cntrl Side"].ToString().Trim().Substring(0, 1);
-                    item.Row["Barcode"] = item.Row["Line No."];
+                    item.Row["Barcode"] = item.Row["Line No"];
 
                     var CurrentWidth = item.Row["Width"];
                     if (CurrentWidth.IndexOf("mm") != -1)
@@ -445,7 +446,7 @@ namespace WindowBlind.Api.Controllers
                             }
                             else
                             {
-                                if (item.Row["Line No."] == LineNumber)
+                                if (item.Row["Line No"] == LineNumber)
                                 {
                                     var Quantity = int.Parse(item.Row["Qty"]);
                                     item.Row["Qty"] = "1";
@@ -475,7 +476,7 @@ namespace WindowBlind.Api.Controllers
                 FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Width");
                 FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "CutWidth");
                 FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "B_RColour");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Line No.");
+                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Line No");
 
                 #endregion
                 return new JsonResult(FinalizedData);
@@ -518,7 +519,7 @@ namespace WindowBlind.Api.Controllers
                     strconcat += "@" + item.Row["Alpha"] + "@" + item.Row["CB Number"] + "@" + item.Row["SRLineNumber"];
                     strconcat += "@" + item.Row["Total"];
                     strconcat += "@" + item.Row["CutWidth"].Replace("mm", "");
-                    strconcat += "@" + item.Row["Line No."];
+                    strconcat += "@" + item.Row["Line No"];
                     strconcat += "@" + item.Row["ControlSide"];
                     labels.Add(strconcat);
                     strRS232Width += item.Row["CutWidth"].ToString().Replace("mm", "");
@@ -604,8 +605,8 @@ namespace WindowBlind.Api.Controllers
 
                     if (strpara.Length == 0) continue;
 
-                    var ret1 = PrintReport("1", printerName, strParameterArray.ToList(), "LogCut1.rpt", "Width");
-                    var ret2 = PrintReport("1", printerName, strParameterArray.ToList(), "LogCut2.rpt", "");
+                    var ret1 = PrintReport(printerName, strParameterArray.ToList(), "LogCut1.rdlc", "Width");
+                    var ret2 = PrintReport(printerName, strParameterArray.ToList(), "LogCut2.rdlc", "");
 
                 }
                 return new JsonResult(true);
@@ -665,7 +666,7 @@ namespace WindowBlind.Api.Controllers
             return colList;
         }
 
-        public bool PrintReport(string strNoCopy, string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
+        public bool PrintReport( string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
         {
             try
             {
@@ -674,9 +675,9 @@ namespace WindowBlind.Api.Controllers
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
 
-                parameters.Add("ccNumber", strParameterArray[0]);
-                parameters.Add("width", strParameterArray[1] + " mm");
-                parameters.Add("drop", strParameterArray[2] + " mm");
+                parameters.Add("cbNumber", strParameterArray[0]);
+                parameters.Add("width", strParameterArray[1] );
+                parameters.Add("drop", strParameterArray[2]);
 
                 parameters.Add("customer", strParameterArray[3].ToString());
                 parameters.Add("department", strParameterArray[4].ToString());
@@ -690,9 +691,9 @@ namespace WindowBlind.Api.Controllers
                     parameters.Add("char", strParameterArray[10]);
                     parameters.Add("cutwidth", strParameterArray[14]);
                     parameters.Add("lineNumber", strParameterArray[15].ToString());
-                    parameters.Add("controlside", strParameterArray[16]);
+                    parameters.Add("cntrside", strParameterArray[16]);
                 }
-                parameters.Add("someoftotal", strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString());
+                parameters.Add("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString());
 
                 LocalReport localReport = new LocalReport(path);
                 var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);

@@ -87,7 +87,7 @@ export class UsersComponent {
     $("#editUser").hide();
     $("#addUser").show();
     this.resetData();
-    jQuery('#UserModal').modal('toggle')
+    $('#UserModal').modal('toggle')
   }
 
   resetData() {

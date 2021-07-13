@@ -42,8 +42,9 @@ export class EzStopComponent implements OnInit {
       searching: false,
       destroy: true,
       ordering: true,
-      pageLength: 10,
-
+      //pageLength: 10,
+      paging: false,
+      info : false
     };
 
     this.dtOptionsReview = {

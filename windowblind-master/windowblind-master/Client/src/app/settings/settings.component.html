@@ -63,7 +63,8 @@
 
   </div>
 
-  <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="PrinterTableArray.length!=0" style="cursor: pointer;">
+  <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="PrinterTableArray.length!=0"
+    style="cursor: pointer;">
     <div id="Custom_Table_Info2" class="custom-dtable-info"></div>
     <div id="Custom_Table_Pagination2" class="custom-dtable-pagination"></div>
   </div>
@@ -71,12 +72,39 @@
 
   <div class="row" style="margin-top: 50px;">
     <div class="col-md-6">
-      <div class="row" *ngFor="let FileSetting of ListOfFiles">
-        <div class="col-3">
+      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 5px;">
+        <div class="col-3" *ngIf="FileSetting.applicationSetting=='FabricCutter'">
           <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
             FileSetting.settingName}}:</Label>
         </div>
-        <div class="col-9">
+        <div class="col-9" *ngIf="FileSetting.applicationSetting=='FabricCutter'" style="margin-top: -10px;">
+          <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+            value="{{FileSetting.settingPath}}">
+        </div>
+
+      </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 5px;">
+        <div class="col-3" *ngIf="FileSetting.applicationSetting=='LogCut'">
+          <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+            FileSetting.settingName}}:</Label>
+        </div>
+        <div class="col-9" *ngIf="FileSetting.applicationSetting=='LogCut'" style="margin-top: -10px;">
+          <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+            value="{{FileSetting.settingPath}}">
+        </div>
+
+      </div>
+      
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      
+      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 5px;">
+        <div class="col-3" *ngIf="FileSetting.applicationSetting=='EzStop'">
+          <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+            FileSetting.settingName}}:</Label>
+        </div>
+        <div class="col-9" *ngIf="FileSetting.applicationSetting=='EzStop'" style="margin-top: -10px;">
           <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
             value="{{FileSetting.settingPath}}">
         </div>

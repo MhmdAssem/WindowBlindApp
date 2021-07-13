@@ -51,8 +51,9 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       searching: false,
       destroy: true,
       ordering: true,
-      pageLength: 4,
-
+      //pageLength: 4,
+      paging: false,
+      info : false
     };
 
     this.dtOptionsReview = {
@@ -61,7 +62,9 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       searching: false,
       destroy: true,
       ordering: true,
-      pageLength: 4,
+      //pageLength: 4,
+      paging: false,
+      info : false
 
     };
 
@@ -229,7 +232,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
   PrintLabelsOnly() {
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
-this.Printing = true;
+    this.Printing = true;
     let Data: FabricCutterCBDetailsModel = {
       columnNames: this.tableModelColNames,
       rows: this.ReviewData
@@ -244,14 +247,14 @@ this.Printing = true;
 
   CreateFileLabels() {
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
-this.Creating = true;
+    this.Creating = true;
     let Data: FabricCutterCBDetailsModel = {
       columnNames: this.tableModelColNames,
       rows: this.ReviewData
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.FBRservice.CreateFilesAndLabels(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {this.Creating = false; });
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.Creating = false; });
 
   }
 
@@ -288,20 +291,22 @@ this.Creating = true;
     let diag = this.dialog.open(RollWidthDialogComponent);
 
     diag.afterClosed().subscribe(res => {
-      this.ReviewData.forEach(element => {
-        element.row['Roll Width'] = res;
-      });
-      this.updateTable();
-      setTimeout(() => {
-        $("#Custom_Table_Pagination2").html("");
-        $("#Custom_Table_Info2").html("");
-        $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-        $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-        (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
+      if (res != null && res != "") {
+        this.ReviewData.forEach(element => {
+          element.row['Roll Width'] = res;
         });
-      }, 100);
+        this.updateTable();
+        setTimeout(() => {
+          $("#Custom_Table_Pagination2").html("");
+          $("#Custom_Table_Info2").html("");
+          $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
+          $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
+          (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 100);
+      }
     });
   }
 }

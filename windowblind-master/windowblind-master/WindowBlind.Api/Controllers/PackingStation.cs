@@ -40,72 +40,28 @@ namespace WindowBlind.Api.Controllers
                 data.ColumnNames.Add("Line No");
                 data.ColumnNames.Add("item");
 
-                data.ColumnNames.Add("FabricCut-User");
-                data.ColumnNames.Add("LogCut-User");
-                data.ColumnNames.Add("EzStop-User");
+                data.ColumnNames.Add("Hoisting User");
 
-                data.ColumnNames.Add("FabricCutDate-Time");
-                data.ColumnNames.Add("LogCutDate-Time");
-                data.ColumnNames.Add("EzStopDate-Time"); 
 
-                var FabricCutterOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "FabricCut" && log.status == "Qualified");
-                var LogCutOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "LogCut" && log.status == "Qualified");
-                var EzStopOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "EzStop" && log.status == "Qualified");
+                data.ColumnNames.Add("Hoist Date Time");
+
+
+                var FabricCutterOflogModels = await _repository.HoistStation.FindAsync(log => log.ProcessType == "Qualified" && log.status == "Qualified");
 
                 var FabricCutterlistOflogModels = FabricCutterOflogModels.ToList();
-                var LogCutOflogListModels = LogCutOflogModels.ToList();
-                var EzStopOflogListModels = EzStopOflogModels.ToList();
 
 
-                if (FabricCutterlistOflogModels.Count == 0 || LogCutOflogListModels.Count == 0 || EzStopOflogListModels.Count == 0) return new JsonResult(data);
+
+                if (FabricCutterlistOflogModels.Count == 0) return new JsonResult(data);
 
 
-                Dictionary<string, int> ProcessCounter = new Dictionary<string, int>();
-                Dictionary<string, int> FabricCutterIndex = new Dictionary<string, int>();
-                Dictionary<string, int> LogCutIndex = new Dictionary<string, int>();
-
-                Dictionary<string, LogModel> FabricCutterDic = new Dictionary<string, LogModel>();
-                Dictionary<string, LogModel> LogCutterDic = new Dictionary<string, LogModel>();
-
-                int cntr = 0;
                 foreach (var row in FabricCutterlistOflogModels)
                 {
-                    if (!ProcessCounter.ContainsKey(row.LineNumber))
-                        ProcessCounter[row.LineNumber] = 0;
-                    ProcessCounter[row.LineNumber]++;
-                    FabricCutterIndex[row.LineNumber] = cntr++;
-                    FabricCutterDic[row.LineNumber] = row;
 
-                }
+                    row.row.Row["Hoisting User"] = row.UserName;
+                    row.row.Row["Hoist Date Time"] = row.dateTime;
+                    data.Rows.Add(row.row);
 
-                cntr = 0;
-                foreach (var row in LogCutOflogListModels)
-                {
-                    if (!ProcessCounter.ContainsKey(row.LineNumber))
-                        ProcessCounter[row.LineNumber] = 0;
-                    ProcessCounter[row.LineNumber]++;
-                    LogCutIndex[row.LineNumber] = cntr++;
-                    LogCutterDic[row.LineNumber] = row;
-
-                }
-
-                cntr = 0;
-                foreach (var row in EzStopOflogListModels)
-                {
-                    if (!ProcessCounter.ContainsKey(row.LineNumber))
-                        ProcessCounter[row.LineNumber] = 0;
-                    ProcessCounter[row.LineNumber]++;
-
-                    if (ProcessCounter[row.LineNumber] == 3)
-                    {
-                        row.row.Row["FabricCut-User"] = FabricCutterDic[row.LineNumber].UserName;
-                        row.row.Row["LogCut-User"] = LogCutterDic[row.LineNumber].UserName;
-                        row.row.Row["EzStop-User"] = row.UserName;
-                        row.row.Row["FabricCutDate-Time"] = FabricCutterDic[row.LineNumber].dateTime;
-                        row.row.Row["LogCutDate-Time"] = LogCutterDic[row.LineNumber].dateTime;
-                        row.row.Row["EzStopDate-Time"] = row.dateTime;
-                        data.Rows.Add(row.row);
-                    }
                 }
 
                 return new JsonResult(data);
@@ -119,7 +75,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpPost("pushLinesNoToPackingStation")]
-        public async Task<bool> pushLinesNoToPackingStation(CreateFileAndLabelModel model )
+        public async Task<bool> pushLinesNoToPackingStation(CreateFileAndLabelModel model)
         {
 
             try

@@ -91,14 +91,16 @@ namespace WindowBlind.Api.Controllers
                 }
 
                 cntr = 0;
+
                 foreach (var row in EzStopOflogListModels)
                 {
                     if (!ProcessCounter.ContainsKey(row.LineNumber))
                         ProcessCounter[row.LineNumber] = 0;
                     ProcessCounter[row.LineNumber]++;
 
-                    if (ProcessCounter[row.LineNumber] == 3)
+                    if (ProcessCounter[row.LineNumber] >= 3)
                     {
+                        ProcessCounter[row.LineNumber] = -100000000;
                         row.row.Row["FabricCut-User"] = FabricCutterDic[row.LineNumber].UserName;
                         row.row.Row["LogCut-User"] = LogCutterDic[row.LineNumber].UserName;
                         row.row.Row["EzStop-User"] = row.UserName;
