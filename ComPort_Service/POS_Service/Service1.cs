@@ -38,7 +38,10 @@ namespace POS_Service
                 table = Reader.TableReader()[0];
                 mongoDbCon = Reader.TableReader()[1];
             }
-            catch { }
+            catch (Exception e)
+            {
+            
+            }
 
             _timer = new Timer();
             _timer.Start();

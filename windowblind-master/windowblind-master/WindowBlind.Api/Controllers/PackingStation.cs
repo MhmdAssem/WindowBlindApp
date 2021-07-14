@@ -34,40 +34,8 @@ namespace WindowBlind.Api.Controllers
         {
             try
             {
-                Dictionary<string, int> CBNumberCounter = new Dictionary<string, int>();
+                Dictionary<string, int> CBNumberCounter = await GetCbNumberCountFromFile();
                 Dictionary<string, int> PackedFileCBNumberCounter = new Dictionary<string, int>();
-                /// get the dumb file Path
-                var ctbsodumpSetting = await _repository.Settings.FindAsync(e => e.settingName == "ctbsodump");
-                var ctbsodumpPath = ctbsodumpSetting.FirstOrDefault().settingPath;
-
-                /// get the sheet name
-                var SheetNameSetting = await _repository.Settings.FindAsync(e => e.settingName == "SheetName");
-                var SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
-
-
-                FileInfo file = new FileInfo(ctbsodumpPath);
-                using (var package = new ExcelPackage(file))
-                {
-                    var workbook = package.Workbook;
-                    var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
-                    if (worksheet == null) new JsonResult(false);
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Column; i < end.Column; i++)
-                    {
-                        var Headertext = worksheet.Cells[1, i].Text.Trim();
-                        if (Headertext == "W/Order NO")
-                            for (int j = start.Row + 1; j < end.Row; j++)
-                            {
-                                var text = worksheet.Cells[j, i].Text.Trim();
-                                if (!CBNumberCounter.ContainsKey(text)) CBNumberCounter[text] = 0;
-
-                                CBNumberCounter[text]++;
-
-                            }
-                    }
-                }
-
 
 
                 FabricCutterCBDetailsModel data = new FabricCutterCBDetailsModel();
@@ -98,22 +66,22 @@ namespace WindowBlind.Api.Controllers
 
                 foreach (var row in FabricCutterlistOflogModels)
                 {
-                   
+
                     row.row.Row["Hoisting User"] = row.UserName;
                     row.row.Row["Hoist Date Time"] = row.dateTime;
-                    if(PackedFileCBNumberCounter[row.CBNumber] == CBNumberCounter[row.CBNumber])
+                    if (PackedFileCBNumberCounter[row.CBNumber] == CBNumberCounter[row.CBNumber])
                     {
                         row.row.Row["Status"] = "Dispatch";
                     }
                     else
                     {
-                        var RowsWithTheSameCBNumber = _repository.PackingStation.Find(pack=>pack.CBNumber == row.CBNumber).ToList();
+                        var RowsWithTheSameCBNumber = _repository.PackingStation.Find(pack => pack.CBNumber == row.CBNumber && pack.status == "Packed").ToList();
 
-                        if(RowsWithTheSameCBNumber == null)
+                        if (RowsWithTheSameCBNumber == null)
                         {
                             row.row.Row["Status"] = "Holding bay";
                         }
-                        else if(RowsWithTheSameCBNumber.Count + PackedFileCBNumberCounter[row.CBNumber] == CBNumberCounter[row.CBNumber])
+                        else if (RowsWithTheSameCBNumber.Count + PackedFileCBNumberCounter[row.CBNumber] == CBNumberCounter[row.CBNumber])
                         {
                             row.row.Row["Status"] = "Dispatch via holding bay";
                         }
@@ -142,6 +110,7 @@ namespace WindowBlind.Api.Controllers
 
             try
             {
+                Dictionary<string, int> CBNumberCounter = await GetCbNumberCountFromFile();
                 foreach (var row in model.data.Rows)
                 {
                     var log = new LogModel();
@@ -160,6 +129,18 @@ namespace WindowBlind.Api.Controllers
                     await _repository.HoistStation.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],
                         Builders<LogModel>.Update.Set(p => p.status, "Packed"), new UpdateOptions { IsUpsert = false });
                 }
+                var cbNumbersRowsInPackingDB = await _repository.PackingStation.FindAsync(log => log.CBNumber == model.data.Rows[0].Row["CB Number"] && log.status == "Packed").Result.ToListAsync();
+
+                if (cbNumbersRowsInPackingDB != null)
+                {
+                    var count = cbNumbersRowsInPackingDB.Count;
+                    if (count == CBNumberCounter[cbNumbersRowsInPackingDB[0].CBNumber])
+                    {
+                        await _repository.PackingStation.UpdateManyAsync(log => log.CBNumber == cbNumbersRowsInPackingDB[0].CBNumber,
+                      Builders<LogModel>.Update.Set(p => p.status, model.data.Rows[0].Row["Status"]), new UpdateOptions { IsUpsert = false });
+                    }
+                }
+
 
                 return true;
             }
@@ -168,6 +149,46 @@ namespace WindowBlind.Api.Controllers
 
                 return false;
             }
+        }
+
+
+        private async Task<Dictionary<string, int>> GetCbNumberCountFromFile()
+        {
+            Dictionary<string, int> CBNumberCounter = new Dictionary<string, int>();
+
+            /// get the dumb file Path
+            var ctbsodumpSetting = await _repository.Settings.FindAsync(e => e.settingName == "ctbsodump");
+            var ctbsodumpPath = ctbsodumpSetting.FirstOrDefault().settingPath;
+
+            /// get the sheet name
+            var SheetNameSetting = await _repository.Settings.FindAsync(e => e.settingName == "SheetName");
+            var SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
+
+
+            FileInfo file = new FileInfo(ctbsodumpPath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+                var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
+                if (worksheet == null) new JsonResult(false);
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Column; i < end.Column; i++)
+                {
+                    var Headertext = worksheet.Cells[1, i].Text.Trim();
+                    if (Headertext == "W/Order NO")
+                        for (int j = start.Row + 1; j < end.Row; j++)
+                        {
+                            var text = worksheet.Cells[j, i].Text.Trim();
+                            if (!CBNumberCounter.ContainsKey(text)) CBNumberCounter[text] = 0;
+
+                            CBNumberCounter[text]++;
+
+                        }
+                }
+            }
+            return CBNumberCounter;
+
         }
     }
 }

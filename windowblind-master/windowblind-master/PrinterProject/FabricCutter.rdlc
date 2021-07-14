@@ -318,7 +318,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!char.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>9.5pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -331,9 +333,7 @@
             <Width>1in</Width>
             <ZIndex>10</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -348,7 +348,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!cutwidth.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>9.5pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -380,7 +382,7 @@
                     <Value>="*" +Parameters!lineNumber.Value +  "*"</Value>
                     <Style>
                       <FontFamily>Free 3 of 9</FontFamily>
-                      <FontSize>24pt</FontSize>
+                      <FontSize>25pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -394,9 +396,7 @@
             <Width>2.03472in</Width>
             <ZIndex>12</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -411,7 +411,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!someoftotal.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>9.5pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -424,9 +426,7 @@
             <Width>1.02083in</Width>
             <ZIndex>13</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -441,7 +441,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!controlside.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>9.5pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />

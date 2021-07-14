@@ -242,6 +242,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
         this.Printing = false;
         this.ReviewData = [];
+        this.updateTable();
+
       });
 
   }
@@ -258,6 +260,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
         this.Creating = false;
         this.ReviewData = [];
+        this.updateTable();
+
       });
 
   }

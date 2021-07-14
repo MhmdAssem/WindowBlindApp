@@ -26,7 +26,7 @@ namespace POS_Service
         //start point
         public void SendToComPort()
         {
-            var data = _collection.FindSync(e => e.status == "Read" && e.tablename == Table).ToList();
+            var data = _collection.FindSync(e => e.status == "New" && e.tablename == Table).ToList();
 
             foreach (var msg in data)
             {
@@ -54,7 +54,7 @@ namespace POS_Service
                     }
 
 
-                    msg.status = "Sent";
+                    msg.status = "Read";
                     var filter = Builders<ComportModel>.Filter.Eq(s => s.id, msg.id);
 
                     _collection.ReplaceOneAsync(filter, msg);

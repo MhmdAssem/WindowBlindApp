@@ -13,19 +13,19 @@ namespace POS_Service
             // if you using debug active the below code
 
 
-            //Service1 myService = new Service1();
-            //myService.onDebug();
+            Service1 myService = new Service1();
+            myService.onDebug();
 
 
             // if you using release active the below code
 
 
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new Service1()
-            };
-            ServiceBase.Run(ServicesToRun);
+            //ServiceBase[] ServicesToRun;
+            //ServicesToRun = new ServiceBase[]
+            //{
+            //    new Service1()
+            //};
+            //ServiceBase.Run(ServicesToRun);
         }
     }
 }
