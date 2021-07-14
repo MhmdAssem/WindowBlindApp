@@ -9,12 +9,16 @@
     <None Remove="Printer Driver\EzStop.rdlc" />
     <None Remove="Printer Driver\FabricCutter.rdlc" />
     <None Remove="Printer Driver\LogCut.rdlc" />
+    <None Remove="Printer Driver\LogCut1.rdlc" />
+    <None Remove="Printer Driver\LogCut2.rdlc" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Printer Driver\FabricCutter.rdlc" />
     <EmbeddedResource Include="Printer Driver\LogCut.rdlc" />
     <EmbeddedResource Include="Printer Driver\EzStop.rdlc" />
+    <EmbeddedResource Include="Printer Driver\LogCut1.rdlc" />
+    <EmbeddedResource Include="Printer Driver\LogCut2.rdlc" />
   </ItemGroup>
 
   <ItemGroup>

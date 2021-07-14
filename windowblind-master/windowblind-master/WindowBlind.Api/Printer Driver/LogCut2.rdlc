@@ -23,9 +23,9 @@
             </Paragraphs>
             <rd:DefaultName>drop</rd:DefaultName>
             <Top>0.14458in</Top>
-            <Left>2.72792in</Left>
+            <Left>1.23487in</Left>
             <Height>0.25in</Height>
-            <Width>2.21875in</Width>
+            <Width>0.86458in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -56,7 +56,7 @@
             <Top>0.14458in</Top>
             <Left>0.32167in</Left>
             <Height>0.25in</Height>
-            <Width>1.85417in</Width>
+            <Width>0.88542in</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -86,7 +86,7 @@
             <Top>0.98833in</Top>
             <Left>0.32167in</Left>
             <Height>0.25in</Height>
-            <Width>2.375in</Width>
+            <Width>1.01042in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -115,7 +115,7 @@
             <Top>0.5543in</Top>
             <Left>0.32167in</Left>
             <Height>0.25in</Height>
-            <Width>2.20833in</Width>
+            <Width>1.23264in</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -143,9 +143,9 @@
             </Paragraphs>
             <rd:DefaultName>department</rd:DefaultName>
             <Top>0.5543in</Top>
-            <Left>2.72792in</Left>
+            <Left>1.62375in</Left>
             <Height>0.25in</Height>
-            <Width>2.21875in</Width>
+            <Width>1.19792in</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
@@ -173,9 +173,9 @@
             </Paragraphs>
             <rd:DefaultName>type</rd:DefaultName>
             <Top>0.5543in</Top>
-            <Left>5.16542in</Left>
+            <Left>2.87723in</Left>
             <Height>0.25in</Height>
-            <Width>1in</Width>
+            <Width>0.59375in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
@@ -202,10 +202,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>color</rd:DefaultName>
-            <Top>0.98833in</Top>
-            <Left>2.9675in</Left>
+            <Top>0.9675in</Top>
+            <Left>1.42583in</Left>
             <Height>0.25in</Height>
-            <Width>1in</Width>
+            <Width>0.85417in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>
@@ -232,10 +232,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>controltype</rd:DefaultName>
-            <Top>0.98833in</Top>
-            <Left>4.17583in</Left>
+            <Top>0.9675in</Top>
+            <Left>2.42583in</Left>
             <Height>0.25in</Height>
-            <Width>1in</Width>
+            <Width>0.75in</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border>
@@ -262,41 +262,11 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
-            <Top>0.98833in</Top>
-            <Left>5.32167in</Left>
+            <Top>0.94667in</Top>
+            <Left>3.20361in</Left>
             <Height>0.25in</Height>
-            <Width>1in</Width>
+            <Width>0.6875in</Width>
             <ZIndex>8</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="someoftotal">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Parameters!someoftotal.Value</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>someoftotal</rd:DefaultName>
-            <Top>1.42583in</Top>
-            <Left>5.16542in</Left>
-            <Height>0.40625in</Height>
-            <Width>1in</Width>
-            <ZIndex>9</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -327,16 +297,46 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>cbNumber</rd:DefaultName>
-            <Top>1.42583in</Top>
-            <Left>1.87375in</Left>
-            <Height>0.40625in</Height>
-            <Width>2.09375in</Width>
-            <ZIndex>10</ZIndex>
+            <Top>1.41542in</Top>
+            <Left>0.58208in</Left>
+            <Height>0.4375in</Height>
+            <Width>2.15625in</Width>
+            <ZIndex>9</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
               <VerticalAlign>Middle</VerticalAlign>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="someoftotal">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Parameters!someoftotal.Value</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>someoftotal</rd:DefaultName>
+            <Top>1.41542in</Top>
+            <Left>2.87723in</Left>
+            <Height>0.4375in</Height>
+            <Width>0.69792in</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -349,10 +349,8 @@
       </Body>
       <Width>6.5in</Width>
       <Page>
-        <LeftMargin>1in</LeftMargin>
-        <RightMargin>1in</RightMargin>
-        <TopMargin>1in</TopMargin>
-        <BottomMargin>1in</BottomMargin>
+        <PageHeight>3in</PageHeight>
+        <PageWidth>4in</PageWidth>
         <Style />
       </Page>
     </ReportSection>
