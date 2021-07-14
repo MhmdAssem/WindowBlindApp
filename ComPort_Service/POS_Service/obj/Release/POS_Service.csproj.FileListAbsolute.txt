@@ -1,0 +1,14 @@
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\bin\Release\POS_Service.exe.config
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\bin\Release\POS_Service.exe
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\bin\Release\POS_Service.pdb
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\bin\Release\EntityFramework.dll
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\bin\Release\EntityFramework.SqlServer.dll
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\bin\Release\EntityFramework.xml
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\bin\Release\EntityFramework.SqlServer.xml
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\obj\Release\POS_Service.csprojAssemblyReference.cache
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\obj\Release\POS_Service.ProjectInstaller.resources
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\obj\Release\POS_Service.csproj.GenerateResource.cache
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\obj\Release\POS_Service.csproj.CoreCompileInputs.cache
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\obj\Release\POS_Service.csproj.CopyComplete
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\obj\Release\POS_Service.exe
+C:\Users\Fast_\source\repos\POS_Service\POS_Service\obj\Release\POS_Service.pdb

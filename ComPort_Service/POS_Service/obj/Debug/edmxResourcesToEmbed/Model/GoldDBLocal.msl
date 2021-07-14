@@ -1,0 +1,1231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="GoldDB2020ModelStoreContainer" CdmEntityContainer="GoldDB2020Entities2">
+    <EntitySetMapping Name="Accounts_Index">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Accounts_Index">
+        <MappingFragment StoreEntitySet="Accounts_Index">
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="AName" ColumnName="AName" />
+          <ScalarProperty Name="AName1" ColumnName="AName1" />
+          <ScalarProperty Name="Nature" ColumnName="Nature" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="ParentCode" ColumnName="ParentCode" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="IValue" ColumnName="IValue" />
+          <ScalarProperty Name="FinalAcc" ColumnName="FinalAcc" />
+          <ScalarProperty Name="Total_Debts" ColumnName="Total_Debts" />
+          <ScalarProperty Name="Total_Credits" ColumnName="Total_Credits" />
+          <ScalarProperty Name="Account_Value" ColumnName="Account_Value" />
+          <ScalarProperty Name="Acc_branch" ColumnName="Acc_branch" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Alerts">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Alert">
+        <MappingFragment StoreEntitySet="Alert">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="Alert1" ColumnName="Alert" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="Emp" ColumnName="Emp" />
+          <ScalarProperty Name="time" ColumnName="time" />
+          <ScalarProperty Name="chk" ColumnName="chk" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Areas">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Area">
+        <MappingFragment StoreEntitySet="Areas">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="city" ColumnName="city" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Banks">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Bank">
+        <MappingFragment StoreEntitySet="Banks">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="AccName" ColumnName="AccName" />
+          <ScalarProperty Name="country" ColumnName="country" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="area" ColumnName="area" />
+          <ScalarProperty Name="AccNo" ColumnName="AccNo" />
+          <ScalarProperty Name="IbanNO" ColumnName="IbanNO" />
+          <ScalarProperty Name="SwiftCode" ColumnName="SwiftCode" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Branches">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Branch">
+        <MappingFragment StoreEntitySet="Branches">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="branchNO" ColumnName="branchNO" />
+          <ScalarProperty Name="Tel" ColumnName="Tel" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Fax" ColumnName="Fax" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Cash_Payment">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Cash_Payment">
+        <MappingFragment StoreEntitySet="Cash_Payment">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="PriceMG" ColumnName="PriceMG" />
+          <ScalarProperty Name="WeightD" ColumnName="WeightD" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Cities">
+      <EntityTypeMapping TypeName="GoldDB2020Model.City">
+        <MappingFragment StoreEntitySet="Cities">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="country" ColumnName="country" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Closing_Gold">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Closing_Gold">
+        <MappingFragment StoreEntitySet="Closing_Gold">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="WeightD" ColumnName="WeightD" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="WeightdMain" ColumnName="WeightdMain" />
+          <ScalarProperty Name="PriceMG" ColumnName="PriceMG" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CombBanks">
+      <EntityTypeMapping TypeName="GoldDB2020Model.CombBank">
+        <MappingFragment StoreEntitySet="CombBank">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="bank" ColumnName="bank" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Countries">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Country">
+        <MappingFragment StoreEntitySet="Countries">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="nationality" ColumnName="nationality" />
+          <ScalarProperty Name="flag_img" ColumnName="flag_img" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CURRs">
+      <EntityTypeMapping TypeName="GoldDB2020Model.CURR">
+        <MappingFragment StoreEntitySet="CURR">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="currency" ColumnName="currency" />
+          <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Customers">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Customer">
+        <MappingFragment StoreEntitySet="Customers">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="national_id" ColumnName="national_id" />
+          <ScalarProperty Name="Delegate" ColumnName="Delegate" />
+          <ScalarProperty Name="cmbJob" ColumnName="cmbJob" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="mobile" ColumnName="mobile" />
+          <ScalarProperty Name="Address2" ColumnName="Address2" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="daate" ColumnName="daate" />
+          <ScalarProperty Name="HijDay" ColumnName="HijDay" />
+          <ScalarProperty Name="act" ColumnName="act" />
+          <ScalarProperty Name="limit" ColumnName="limit" />
+          <ScalarProperty Name="Balance" ColumnName="Balance" />
+          <ScalarProperty Name="AccountCode" ColumnName="AccountCode" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="TAXNO" ColumnName="TAXNO" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Departments">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Department">
+        <MappingFragment StoreEntitySet="Departments">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="manag_id" ColumnName="manag_id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Details">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Detail">
+        <MappingFragment StoreEntitySet="Details">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="NaemDetails" ColumnName="NaemDetails" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmailCompanies">
+      <EntityTypeMapping TypeName="GoldDB2020Model.EmailCompany">
+        <MappingFragment StoreEntitySet="EmailCompany">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+          <ScalarProperty Name="STMPServer" ColumnName="STMPServer" />
+          <ScalarProperty Name="STMPPort" ColumnName="STMPPort" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmailLists">
+      <EntityTypeMapping TypeName="GoldDB2020Model.EmailList">
+        <MappingFragment StoreEntitySet="EmailList">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="EmailName" ColumnName="EmailName" />
+          <ScalarProperty Name="EmailCompanyID" ColumnName="EmailCompanyID" />
+          <ScalarProperty Name="EmailPassword" ColumnName="EmailPassword" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Emp_DOCUMENTS_TB">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Emp_DOCUMENTS_TB">
+        <MappingFragment StoreEntitySet="Emp_DOCUMENTS_TB">
+          <ScalarProperty Name="DOC_CODE" ColumnName="DOC_CODE" />
+          <ScalarProperty Name="DOC_DATA" ColumnName="DOC_DATA" />
+          <ScalarProperty Name="DOC_CASE_CD" ColumnName="DOC_CASE_CD" />
+          <ScalarProperty Name="DOC_DATE" ColumnName="DOC_DATE" />
+          <ScalarProperty Name="DOC_Name" ColumnName="DOC_Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmpBranches">
+      <EntityTypeMapping TypeName="GoldDB2020Model.EmpBranch">
+        <MappingFragment StoreEntitySet="EmpBranches">
+          <ScalarProperty Name="emp" ColumnName="emp" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="employeeDeficits">
+      <EntityTypeMapping TypeName="GoldDB2020Model.employeeDeficit">
+        <MappingFragment StoreEntitySet="employeeDeficit">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="IsBounce" ColumnName="IsBounce" />
+          <ScalarProperty Name="Balance" ColumnName="Balance" />
+          <ScalarProperty Name="ActionDate" ColumnName="ActionDate" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="employeeLoans">
+      <EntityTypeMapping TypeName="GoldDB2020Model.employeeLoan">
+        <MappingFragment StoreEntitySet="employeeLoan">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+          <ScalarProperty Name="ActionDate" ColumnName="ActionDate" />
+          <ScalarProperty Name="LoanTypeID" ColumnName="LoanTypeID" />
+          <ScalarProperty Name="LoanRepaymnetStartDate" ColumnName="LoanRepaymnetStartDate" />
+          <ScalarProperty Name="LoanValue" ColumnName="LoanValue" />
+          <ScalarProperty Name="InstallmentCount" ColumnName="InstallmentCount" />
+          <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+          <ScalarProperty Name="CheckNumber" ColumnName="CheckNumber" />
+          <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+          <ScalarProperty Name="CheckBank" ColumnName="CheckBank" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="IsCash" ColumnName="IsCash" />
+          <ScalarProperty Name="RestrectionID" ColumnName="RestrectionID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="employeeLoanDates">
+      <EntityTypeMapping TypeName="GoldDB2020Model.employeeLoanDate">
+        <MappingFragment StoreEntitySet="employeeLoanDates">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="EmployeeLoanID" ColumnName="EmployeeLoanID" />
+          <ScalarProperty Name="ActionDate" ColumnName="ActionDate" />
+          <ScalarProperty Name="ActionValue" ColumnName="ActionValue" />
+          <ScalarProperty Name="PaidValue" ColumnName="PaidValue" />
+          <ScalarProperty Name="PaidDate" ColumnName="PaidDate" />
+          <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Employees">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Employee">
+        <MappingFragment StoreEntitySet="Employees">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="manag" ColumnName="manag" />
+          <ScalarProperty Name="dep" ColumnName="dep" />
+          <ScalarProperty Name="state" ColumnName="state" />
+          <ScalarProperty Name="job" ColumnName="job" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="birth_date" ColumnName="birth_date" />
+          <ScalarProperty Name="insurance_no" ColumnName="insurance_no" />
+          <ScalarProperty Name="work_date" ColumnName="work_date" />
+          <ScalarProperty Name="marital_state" ColumnName="marital_state" />
+          <ScalarProperty Name="nationality" ColumnName="nationality" />
+          <ScalarProperty Name="sex" ColumnName="sex" />
+          <ScalarProperty Name="tel" ColumnName="tel" />
+          <ScalarProperty Name="mobile" ColumnName="mobile" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="FINGERPRINT" ColumnName="FINGERPRINT" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="Vac_Balance" ColumnName="Vac_Balance" />
+          <ScalarProperty Name="dentificationNo" ColumnName="dentificationNo" />
+          <ScalarProperty Name="Expiration_Date" ColumnName="Expiration_Date" />
+          <ScalarProperty Name="Education" ColumnName="Education" />
+          <ScalarProperty Name="Work_Experience" ColumnName="Work_Experience" />
+          <ScalarProperty Name="Tasks" ColumnName="Tasks" />
+          <ScalarProperty Name="Passport" ColumnName="Passport" />
+          <ScalarProperty Name="DatePassport" ColumnName="DatePassport" />
+          <ScalarProperty Name="salary_basic" ColumnName="salary_basic" />
+          <ScalarProperty Name="salary_add" ColumnName="salary_add" />
+          <ScalarProperty Name="SalaryTransport" ColumnName="SalaryTransport" />
+          <ScalarProperty Name="SalaryVictuals" ColumnName="SalaryVictuals" />
+          <ScalarProperty Name="salary_other" ColumnName="salary_other" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmpSalaryAddSubs">
+      <EntityTypeMapping TypeName="GoldDB2020Model.EmpSalaryAddSub">
+        <MappingFragment StoreEntitySet="EmpSalaryAddSub">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="emp" ColumnName="emp" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="First_balance">
+      <EntityTypeMapping TypeName="GoldDB2020Model.First_balance">
+        <MappingFragment StoreEntitySet="First_balance">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="depot" ColumnName="depot" />
+          <ScalarProperty Name="Product_id" ColumnName="Product_id" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="Branch" ColumnName="Branch" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Forms">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Form">
+        <MappingFragment StoreEntitySet="Forms">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="name1" ColumnName="name1" />
+          <ScalarProperty Name="FormName" ColumnName="FormName" />
+          <ScalarProperty Name="IS_New_Visible" ColumnName="IS_New_Visible" />
+          <ScalarProperty Name="IS_Save_Visible" ColumnName="IS_Save_Visible" />
+          <ScalarProperty Name="IS_Update_Visible" ColumnName="IS_Update_Visible" />
+          <ScalarProperty Name="IS_Delete_Visible" ColumnName="IS_Delete_Visible" />
+          <ScalarProperty Name="IS_Search_Visible" ColumnName="IS_Search_Visible" />
+          <ScalarProperty Name="IS_Print_Visible" ColumnName="IS_Print_Visible" />
+          <ScalarProperty Name="IS_Parent" ColumnName="IS_Parent" />
+          <ScalarProperty Name="Parent_id" ColumnName="Parent_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Foundations">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Foundation">
+        <MappingFragment StoreEntitySet="Foundation">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nameA" ColumnName="nameA" />
+          <ScalarProperty Name="nameE" ColumnName="nameE" />
+          <ScalarProperty Name="FieldA" ColumnName="FieldA" />
+          <ScalarProperty Name="FieldE" ColumnName="FieldE" />
+          <ScalarProperty Name="currency" ColumnName="currency" />
+          <ScalarProperty Name="bsn_no" ColumnName="bsn_no" />
+          <ScalarProperty Name="licence_noE" ColumnName="licence_noE" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Address2" ColumnName="Address2" />
+          <ScalarProperty Name="Tel" ColumnName="Tel" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Fax" ColumnName="Fax" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="website" ColumnName="website" />
+          <ScalarProperty Name="Logo" ColumnName="Logo" />
+          <ScalarProperty Name="Logo2" ColumnName="Logo2" />
+          <ScalarProperty Name="welcome" ColumnName="welcome" />
+          <ScalarProperty Name="TaxNumber" ColumnName="TaxNumber" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Gold_Payment">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Gold_Payment">
+        <MappingFragment StoreEntitySet="Gold_Payment">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="ProCode" ColumnName="ProCode" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="valWeight" ColumnName="valWeight" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="valWeightD" ColumnName="valWeightD" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Gold_Prices">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Gold_Prices">
+        <MappingFragment StoreEntitySet="Gold_Prices">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="Prices24" ColumnName="Prices24" />
+          <ScalarProperty Name="Prices22" ColumnName="Prices22" />
+          <ScalarProperty Name="Prices21" ColumnName="Prices21" />
+          <ScalarProperty Name="Prices18" ColumnName="Prices18" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Gold_Repair">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Gold_Repair">
+        <MappingFragment StoreEntitySet="Gold_Repair">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="No" ColumnName="No" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="idCost" ColumnName="idCost" />
+          <ScalarProperty Name="Fone" ColumnName="Fone" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="DateDelivery" ColumnName="DateDelivery" />
+          <ScalarProperty Name="GoldType" ColumnName="GoldType" />
+          <ScalarProperty Name="MaintenanceType" ColumnName="MaintenanceType" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="Val" ColumnName="Val" />
+          <ScalarProperty Name="FeeRepairs" ColumnName="FeeRepairs" />
+          <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+          <ScalarProperty Name="RemainingAmount" ColumnName="RemainingAmount" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="Chk1" ColumnName="Chk1" />
+          <ScalarProperty Name="Chk2" ColumnName="Chk2" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="CmbCost" ColumnName="CmbCost" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GoldCalibers">
+      <EntityTypeMapping TypeName="GoldDB2020Model.GoldCaliber">
+        <MappingFragment StoreEntitySet="GoldCaliber">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Group_cust">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Group_cust">
+        <MappingFragment StoreEntitySet="Group_cust">
+          <ScalarProperty Name="Groupid" ColumnName="Groupid" />
+          <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+          <ScalarProperty Name="GroupCaliber" ColumnName="GroupCaliber" />
+          <ScalarProperty Name="GroupUnits" ColumnName="GroupUnits" />
+          <ScalarProperty Name="GroupCode" ColumnName="GroupCode" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Group_Unit">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Group_Unit">
+        <MappingFragment StoreEntitySet="Group_Unit">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Invs">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Inv">
+        <MappingFragment StoreEntitySet="Inv">
+          <ScalarProperty Name="Inv_Code" ColumnName="Inv_Code" />
+          <ScalarProperty Name="Inv_Date" ColumnName="Inv_Date" />
+          <ScalarProperty Name="Inv_InvProcTypeID" ColumnName="Inv_InvProcTypeID" />
+          <ScalarProperty Name="Inv_InvType_ID" ColumnName="Inv_InvType_ID" />
+          <ScalarProperty Name="DetailsNo" ColumnName="DetailsNo" />
+          <ScalarProperty Name="Inv_IDRestrictions" ColumnName="Inv_IDRestrictions" />
+          <ScalarProperty Name="Inv_StocksID" ColumnName="Inv_StocksID" />
+          <ScalarProperty Name="Inv_SafesId" ColumnName="Inv_SafesId" />
+          <ScalarProperty Name="Inv_CustID" ColumnName="Inv_CustID" />
+          <ScalarProperty Name="Inv_EMPID" ColumnName="Inv_EMPID" />
+          <ScalarProperty Name="Inv_TotalWeightBased" ColumnName="Inv_TotalWeightBased" />
+          <ScalarProperty Name="Inv_TotalMainWeight" ColumnName="Inv_TotalMainWeight" />
+          <ScalarProperty Name="Inv_TotalTax" ColumnName="Inv_TotalTax" />
+          <ScalarProperty Name="Inv_Cash" ColumnName="Inv_Cash" />
+          <ScalarProperty Name="Inv_Mada" ColumnName="Inv_Mada" />
+          <ScalarProperty Name="Inv_Vish" ColumnName="Inv_Vish" />
+          <ScalarProperty Name="Inv_Discount" ColumnName="Inv_Discount" />
+          <ScalarProperty Name="Inv_TotalNet" ColumnName="Inv_TotalNet" />
+          <ScalarProperty Name="Inv_IS_Deleted" ColumnName="Inv_IS_Deleted" />
+          <ScalarProperty Name="inv_date_Deleted" ColumnName="inv_date_Deleted" />
+          <ScalarProperty Name="inv_date_Update" ColumnName="inv_date_Update" />
+          <ScalarProperty Name="Inv_emp_Update" ColumnName="Inv_emp_Update" />
+          <ScalarProperty Name="InvId_Return" ColumnName="InvId_Return" />
+          <ScalarProperty Name="Inv_BillNo" ColumnName="Inv_BillNo" />
+          <ScalarProperty Name="Inv_Notes" ColumnName="Inv_Notes" />
+          <ScalarProperty Name="Inv_branch" ColumnName="Inv_branch" />
+          <ScalarProperty Name="cloud_Id" ColumnName="cloud_Id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Inv_Sub">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Inv_Sub">
+        <MappingFragment StoreEntitySet="Inv_Sub">
+          <ScalarProperty Name="Inv_ID" ColumnName="Inv_ID" />
+          <ScalarProperty Name="Inv_ProCode" ColumnName="Inv_ProCode" />
+          <ScalarProperty Name="InvSub_Unit" ColumnName="InvSub_Unit" />
+          <ScalarProperty Name="InvSub_Number" ColumnName="InvSub_Number" />
+          <ScalarProperty Name="InvSub_Weight" ColumnName="InvSub_Weight" />
+          <ScalarProperty Name="InvSub_Caliber" ColumnName="InvSub_Caliber" />
+          <ScalarProperty Name="InvSub_WeightD" ColumnName="InvSub_WeightD" />
+          <ScalarProperty Name="InvSub_PriceG" ColumnName="InvSub_PriceG" />
+          <ScalarProperty Name="InvSub_Tax" ColumnName="InvSub_Tax" />
+          <ScalarProperty Name="InvSub_TotTax" ColumnName="InvSub_TotTax" />
+          <ScalarProperty Name="InvSub_Diff" ColumnName="InvSub_Diff" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InvTypes">
+      <EntityTypeMapping TypeName="GoldDB2020Model.InvType">
+        <MappingFragment StoreEntitySet="InvType">
+          <ScalarProperty Name="InvType_ID" ColumnName="InvType_ID" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="jobs">
+      <EntityTypeMapping TypeName="GoldDB2020Model.job">
+        <MappingFragment StoreEntitySet="jobs">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LoanTypeLists">
+      <EntityTypeMapping TypeName="GoldDB2020Model.LoanTypeList">
+        <MappingFragment StoreEntitySet="LoanTypeList">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="LoanType" ColumnName="LoanType" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Managements">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Management">
+        <MappingFragment StoreEntitySet="Managements">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Marital_status">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Marital_status">
+        <MappingFragment StoreEntitySet="Marital_status">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PassCheks">
+      <EntityTypeMapping TypeName="GoldDB2020Model.PassChek">
+        <MappingFragment StoreEntitySet="PassChek">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="passchek1" ColumnName="passchek" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Products">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Product">
+        <MappingFragment StoreEntitySet="Products">
+          <ScalarProperty Name="Pro_id" ColumnName="Pro_id" />
+          <ScalarProperty Name="Groups" ColumnName="Groups" />
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="Units" ColumnName="Units" />
+          <ScalarProperty Name="Pro_name" ColumnName="Pro_name" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="DefaultWeight" ColumnName="DefaultWeight" />
+          <ScalarProperty Name="PricePRGM" ColumnName="PricePRGM" />
+          <ScalarProperty Name="BuyPrice" ColumnName="BuyPrice" />
+          <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+          <ScalarProperty Name="WorkManship" ColumnName="WorkManship" />
+          <ScalarProperty Name="Profit" ColumnName="Profit" />
+          <ScalarProperty Name="Discount" ColumnName="Discount" />
+          <ScalarProperty Name="LowestPrice" ColumnName="LowestPrice" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Tax" ColumnName="Tax" />
+          <ScalarProperty Name="ChKPurch" ColumnName="ChKPurch" />
+          <ScalarProperty Name="ChkSales" ColumnName="ChkSales" />
+          <ScalarProperty Name="ChkNoShow" ColumnName="ChkNoShow" />
+          <ScalarProperty Name="CheckTax" ColumnName="CheckTax" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Religions">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Religion">
+        <MappingFragment StoreEntitySet="Religions">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Restrictions">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Restriction">
+        <MappingFragment StoreEntitySet="Restrictions">
+          <ScalarProperty Name="IDRestrictions" ColumnName="IDRestrictions" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="doc_no" ColumnName="doc_no" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="state" ColumnName="state" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Restrictions_Sub">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Restrictions_Sub">
+        <MappingFragment StoreEntitySet="Restrictions_Sub">
+          <ScalarProperty Name="res_id" ColumnName="res_id" />
+          <ScalarProperty Name="deptgold" ColumnName="deptgold" />
+          <ScalarProperty Name="credItgold" ColumnName="credItgold" />
+          <ScalarProperty Name="dept" ColumnName="dept" />
+          <ScalarProperty Name="credit" ColumnName="credit" />
+          <ScalarProperty Name="acc_no" ColumnName="acc_no" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Safe_Emps">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Safe_Emps">
+        <MappingFragment StoreEntitySet="Safe_Emps">
+          <ScalarProperty Name="safe_id" ColumnName="safe_id" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Safes">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Safe">
+        <MappingFragment StoreEntitySet="Safes">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="IS_Default" ColumnName="IS_Default" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SafesTransferBranches">
+      <EntityTypeMapping TypeName="GoldDB2020Model.SafesTransferBranch">
+        <MappingFragment StoreEntitySet="SafesTransferBranch">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="safe_from" ColumnName="safe_from" />
+          <ScalarProperty Name="safe_to" ColumnName="safe_to" />
+          <ScalarProperty Name="frombranch" ColumnName="frombranch" />
+          <ScalarProperty Name="tobranch" ColumnName="tobranch" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="ok" ColumnName="ok" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SafesTransferBranch_Sub">
+      <EntityTypeMapping TypeName="GoldDB2020Model.SafesTransferBranch_Sub">
+        <MappingFragment StoreEntitySet="SafesTransferBranch_Sub">
+          <ScalarProperty Name="transfer_id" ColumnName="transfer_id" />
+          <ScalarProperty Name="currency" ColumnName="currency" />
+          <ScalarProperty Name="value" ColumnName="value" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="avg" ColumnName="avg" />
+          <ScalarProperty Name="totl" ColumnName="totl" />
+          <ScalarProperty Name="user_emp" ColumnName="user_emp" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SalaryPays">
+      <EntityTypeMapping TypeName="GoldDB2020Model.SalaryPay">
+        <MappingFragment StoreEntitySet="SalaryPay">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="month" ColumnName="month" />
+          <ScalarProperty Name="year" ColumnName="year" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="emp" ColumnName="emp" />
+          <ScalarProperty Name="tot_salary" ColumnName="tot_salary" />
+          <ScalarProperty Name="salary_add" ColumnName="salary_add" />
+          <ScalarProperty Name="salary_sub" ColumnName="salary_sub" />
+          <ScalarProperty Name="salary_net" ColumnName="salary_net" />
+          <ScalarProperty Name="salary_other" ColumnName="salary_other" />
+          <ScalarProperty Name="salary_advance" ColumnName="salary_advance" />
+          <ScalarProperty Name="emp_resp" ColumnName="emp_resp" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
+          <ScalarProperty Name="res_id" ColumnName="res_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SandDs">
+      <EntityTypeMapping TypeName="GoldDB2020Model.SandD">
+        <MappingFragment StoreEntitySet="SandD">
+          <ScalarProperty Name="Sand_Code" ColumnName="Sand_Code" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SandQs">
+      <EntityTypeMapping TypeName="GoldDB2020Model.SandQ">
+        <MappingFragment StoreEntitySet="SandQ">
+          <ScalarProperty Name="Sand_Code" ColumnName="Sand_Code" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SandQDs">
+      <EntityTypeMapping TypeName="GoldDB2020Model.SandQD">
+        <MappingFragment StoreEntitySet="SandQD">
+          <ScalarProperty Name="Sand_Code" ColumnName="Sand_Code" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="emp_person" ColumnName="emp_person" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="acc_code" ColumnName="acc_code" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SandSDs">
+      <EntityTypeMapping TypeName="GoldDB2020Model.SandSD">
+        <MappingFragment StoreEntitySet="SandSD">
+          <ScalarProperty Name="Sand_Code" ColumnName="Sand_Code" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="emp_person" ColumnName="emp_person" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="acc_code" ColumnName="acc_code" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="safe_bank_id" ColumnName="safe_bank_id" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="check_no" ColumnName="check_no" />
+          <ScalarProperty Name="check_date" ColumnName="check_date" />
+          <ScalarProperty Name="checkbank" ColumnName="checkbank" />
+          <ScalarProperty Name="check_state" ColumnName="check_state" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="rest_id" ColumnName="rest_id" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sendsms">
+      <EntityTypeMapping TypeName="GoldDB2020Model.sendsm">
+        <MappingFragment StoreEntitySet="sendsms">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="userid" ColumnName="userid" />
+          <ScalarProperty Name="pass" ColumnName="pass" />
+          <ScalarProperty Name="nkname" ColumnName="nkname" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="servers">
+      <EntityTypeMapping TypeName="GoldDB2020Model.server">
+        <MappingFragment StoreEntitySet="server">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="server1" ColumnName="server" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="States">
+      <EntityTypeMapping TypeName="GoldDB2020Model.State">
+        <MappingFragment StoreEntitySet="States">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Stock_Emps">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Stock_Emps">
+        <MappingFragment StoreEntitySet="Stock_Emps">
+          <ScalarProperty Name="stock_id" ColumnName="stock_id" />
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Stocks">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Stock">
+        <MappingFragment StoreEntitySet="Stocks">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="IS_Default" ColumnName="IS_Default" />
+          <ScalarProperty Name="notes" ColumnName="notes" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockTransferBranches">
+      <EntityTypeMapping TypeName="GoldDB2020Model.StockTransferBranch">
+        <MappingFragment StoreEntitySet="StockTransferBranch">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="RestrictionsID" ColumnName="RestrictionsID" />
+          <ScalarProperty Name="FromStockID" ColumnName="FromStockID" />
+          <ScalarProperty Name="ToStockID" ColumnName="ToStockID" />
+          <ScalarProperty Name="TransferValue" ColumnName="TransferValue" />
+          <ScalarProperty Name="TransferDate" ColumnName="TransferDate" />
+          <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+          <ScalarProperty Name="branchFrom" ColumnName="branchFrom" />
+          <ScalarProperty Name="branchTo" ColumnName="branchTo" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="OK" ColumnName="OK" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Taxes">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Tax">
+        <MappingFragment StoreEntitySet="Tax">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="tax1" ColumnName="tax" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TransferProducts">
+      <EntityTypeMapping TypeName="GoldDB2020Model.TransferProduct">
+        <MappingFragment StoreEntitySet="TransferProducts">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="safe" ColumnName="safe" />
+          <ScalarProperty Name="FromProductsCode" ColumnName="FromProductsCode" />
+          <ScalarProperty Name="ToProductsCode" ColumnName="ToProductsCode" />
+          <ScalarProperty Name="Val" ColumnName="Val" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="ok" ColumnName="ok" />
+          <ScalarProperty Name="emp" ColumnName="emp" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="User_Permissions">
+      <EntityTypeMapping TypeName="GoldDB2020Model.User_Permissions">
+        <MappingFragment StoreEntitySet="User_Permissions">
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="Form_id" ColumnName="Form_id" />
+          <ScalarProperty Name="IS_New" ColumnName="IS_New" />
+          <ScalarProperty Name="IS_Save" ColumnName="IS_Save" />
+          <ScalarProperty Name="IS_Update" ColumnName="IS_Update" />
+          <ScalarProperty Name="IS_Delete" ColumnName="IS_Delete" />
+          <ScalarProperty Name="IS_Search" ColumnName="IS_Search" />
+          <ScalarProperty Name="IS_Print" ColumnName="IS_Print" />
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="GoldDB2020Model.User">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="emp" ColumnName="emp" />
+          <ScalarProperty Name="username" ColumnName="username" />
+          <ScalarProperty Name="pwd" ColumnName="pwd" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="Connected" ColumnName="Connected" />
+          <ScalarProperty Name="IsEdited" ColumnName="IsEdited" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserSettings">
+      <EntityTypeMapping TypeName="GoldDB2020Model.UserSetting">
+        <MappingFragment StoreEntitySet="UserSetting">
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="FontName" ColumnName="FontName" />
+          <ScalarProperty Name="FontSize" ColumnName="FontSize" />
+          <ScalarProperty Name="FontStyle" ColumnName="FontStyle" />
+          <ScalarProperty Name="FontColor" ColumnName="FontColor" />
+          <ScalarProperty Name="BackColor" ColumnName="BackColor" />
+          <ScalarProperty Name="ActiveSett" ColumnName="ActiveSett" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Controls_panel">
+      <EntityTypeMapping TypeName="GoldDB2020Model.Controls_panel">
+        <MappingFragment StoreEntitySet="Controls_panel">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="cname" ColumnName="cname" />
+          <ScalarProperty Name="permission" ColumnName="permission" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="InvProcTypes">
+      <EntityTypeMapping TypeName="GoldDB2020Model.InvProcType">
+        <MappingFragment StoreEntitySet="InvProcType">
+          <ScalarProperty Name="InvProcTypeID" ColumnName="InvProcTypeID" />
+          <ScalarProperty Name="InvProcType1" ColumnName="InvProcType" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="visas">
+      <EntityTypeMapping TypeName="GoldDB2020Model.visa">
+        <MappingFragment StoreEntitySet="visa">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="visaName" ColumnName="visaName" />
+          <ScalarProperty Name="ratio" ColumnName="ratio" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="GetLastCash_Payment_code" FunctionName="GoldDB2020Model.Store.GetLastCash_Payment_code" />
+    <FunctionImportMapping FunctionImportName="GetLastClosing_Gold_code" FunctionName="GoldDB2020Model.Store.GetLastClosing_Gold_code" />
+    <FunctionImportMapping FunctionImportName="GetLastCustomers" FunctionName="GoldDB2020Model.Store.GetLastCustomers" />
+    <FunctionImportMapping FunctionImportName="GetLastGold_Payment_code" FunctionName="GoldDB2020Model.Store.GetLastGold_Payment_code" />
+    <FunctionImportMapping FunctionImportName="GetLastGold_Repair" FunctionName="GoldDB2020Model.Store.GetLastGold_Repair" />
+    <FunctionImportMapping FunctionImportName="GetLastSafesTransferBranch" FunctionName="GoldDB2020Model.Store.GetLastSafesTransferBranch" />
+    <FunctionImportMapping FunctionImportName="GetLastSandD_code" FunctionName="GoldDB2020Model.Store.GetLastSandD_code" />
+    <FunctionImportMapping FunctionImportName="GetLastSandQ_code" FunctionName="GoldDB2020Model.Store.GetLastSandQ_code" />
+    <FunctionImportMapping FunctionImportName="GetLastSandQD_code" FunctionName="GoldDB2020Model.Store.GetLastSandQD_code" />
+    <FunctionImportMapping FunctionImportName="GetLastSandSD_code" FunctionName="GoldDB2020Model.Store.GetLastSandSD_code" />
+    <FunctionImportMapping FunctionImportName="GetLastTransferProducts" FunctionName="GoldDB2020Model.Store.GetLastTransferProducts" />
+    <FunctionImportMapping FunctionImportName="GetOrderDeleted_inv" FunctionName="GoldDB2020Model.Store.GetOrderDeleted_inv">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetOrderDeleted_inv_Result">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+          <ScalarProperty Name="Safename" ColumnName="Safename" />
+          <ScalarProperty Name="cust" ColumnName="cust" />
+          <ScalarProperty Name="Empname" ColumnName="Empname" />
+          <ScalarProperty Name="inv_date_Deleted" ColumnName="inv_date_Deleted" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetOrderUpdate_inv" FunctionName="GoldDB2020Model.Store.GetOrderUpdate_inv">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetOrderUpdate_inv_Result">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="cust" ColumnName="cust" />
+          <ScalarProperty Name="name1" ColumnName="name1" />
+          <ScalarProperty Name="inv_date_Update" ColumnName="inv_date_Update" />
+          <ScalarProperty Name="name2" ColumnName="name2" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSearch_items" FunctionName="GoldDB2020Model.Store.GetSearch_items">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetSearch_items_Result">
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="Pro_name" ColumnName="Pro_name" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="Units" ColumnName="Units" />
+          <ScalarProperty Name="DefaultWeight" ColumnName="DefaultWeight" />
+          <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSearchAccounts" FunctionName="GoldDB2020Model.Store.GetSearchAccounts">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetSearchAccounts_Result">
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="AName" ColumnName="AName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSearchAccountsByID" FunctionName="GoldDB2020Model.Store.GetSearchAccountsByID">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetSearchAccountsByID_Result">
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="AName" ColumnName="AName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSearchCustByIDSANDQ" FunctionName="GoldDB2020Model.Store.GetSearchCustByIDSANDQ">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetSearchCustByIDSANDQ_Result">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="AccountCode" ColumnName="AccountCode" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSearchCustSANDQ" FunctionName="GoldDB2020Model.Store.GetSearchCustSANDQ">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetSearchCustSANDQ_Result">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="AccountCode" ColumnName="AccountCode" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSearchproduct_barcod" FunctionName="GoldDB2020Model.Store.GetSearchproduct_barcod">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetSearchproduct_barcod_Result">
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="Pro_name" ColumnName="Pro_name" />
+          <ScalarProperty Name="Tax" ColumnName="Tax" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+          <ScalarProperty Name="DefaultWeight" ColumnName="DefaultWeight" />
+          <ScalarProperty Name="BuyPrice" ColumnName="BuyPrice" />
+          <ScalarProperty Name="WorkManship" ColumnName="WorkManship" />
+          <ScalarProperty Name="Units" ColumnName="Units" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSearchproduct_barcod24" FunctionName="GoldDB2020Model.Store.GetSearchproduct_barcod24">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetSearchproduct_barcod24_Result">
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="Pro_name" ColumnName="Pro_name" />
+          <ScalarProperty Name="Tax" ColumnName="Tax" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+          <ScalarProperty Name="DefaultWeight" ColumnName="DefaultWeight" />
+          <ScalarProperty Name="BuyPrice" ColumnName="BuyPrice" />
+          <ScalarProperty Name="WorkManship" ColumnName="WorkManship" />
+          <ScalarProperty Name="Units" ColumnName="Units" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetSearchproductsByid_barcod" FunctionName="GoldDB2020Model.Store.GetSearchproductsByid_barcod">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.GetSearchproductsByid_barcod_Result">
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="Pro_name" ColumnName="Pro_name" />
+          <ScalarProperty Name="Tax" ColumnName="Tax" />
+          <ScalarProperty Name="Caliber" ColumnName="Caliber" />
+          <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+          <ScalarProperty Name="DefaultWeight" ColumnName="DefaultWeight" />
+          <ScalarProperty Name="BuyPrice" ColumnName="BuyPrice" />
+          <ScalarProperty Name="WorkManship" ColumnName="WorkManship" />
+          <ScalarProperty Name="Units" ColumnName="Units" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SearchAccounts" FunctionName="GoldDB2020Model.Store.SearchAccounts">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.SearchAccounts_Result">
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="AName" ColumnName="AName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SearchAccountsByID" FunctionName="GoldDB2020Model.Store.SearchAccountsByID">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.SearchAccountsByID_Result">
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="AName" ColumnName="AName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SearchAccountsCOST" FunctionName="GoldDB2020Model.Store.SearchAccountsCOST">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.SearchAccountsCOST_Result">
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="AName" ColumnName="AName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="serchidinv" FunctionName="GoldDB2020Model.Store.serchidinv" />
+    <FunctionImportMapping FunctionImportName="serchidRestrictions" FunctionName="GoldDB2020Model.Store.serchidRestrictions" />
+    <FunctionImportMapping FunctionImportName="SP_GetEmployeeSalaryDetailes" FunctionName="GoldDB2020Model.Store.SP_GetEmployeeSalaryDetailes">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.SP_GetEmployeeSalaryDetailes_Result">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="JobName" ColumnName="JobName" />
+          <ScalarProperty Name="salary" ColumnName="salary" />
+          <ScalarProperty Name="different" ColumnName="different" />
+          <ScalarProperty Name="BounsValue" ColumnName="BounsValue" />
+          <ScalarProperty Name="DeductionValue" ColumnName="DeductionValue" />
+          <ScalarProperty Name="LoanValue" ColumnName="LoanValue" />
+          <ScalarProperty Name="ClearValue" ColumnName="ClearValue" />
+          <ScalarProperty Name="status" ColumnName="status" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SP_SelectAccounts" FunctionName="GoldDB2020Model.Store.SP_SelectAccounts">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.SP_SelectAccounts_Result">
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="AName" ColumnName="AName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="SP_SelectCustomersandQ" FunctionName="GoldDB2020Model.Store.SP_SelectCustomersandQ">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="GoldDB2020Model.SP_SelectCustomersandQ_Result">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="POS_DBEntitiesCloud.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="CategoriesCloud">
+    <Key>
+      <PropertyRef Name="CatIDCloud" />
+    </Key>
+    <Property Name="CatIDCloud" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CatIDLocal" Type="int" />
+    <Property Name="CatTitle" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Status" Type="nchar" MaxLength="10" />
+    <Property Name="SiteID" Type="int" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="MenuCloud">
+    <Key>
+      <PropertyRef Name="MenuIDCloud" />
+    </Key>
+    <Property Name="MenuIDCloud" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MenuIDLocal" Type="int" />
+    <Property Name="CatID" Type="int" Nullable="false" />
+    <Property Name="Title" Type="nvarchar" MaxLength="50" />
+    <Property Name="Price" Type="float" />
+    <Property Name="Status" Type="nchar" MaxLength="10" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="SitesCloud">
+    <Key>
+      <PropertyRef Name="SiteId" />
+    </Key>
+    <Property Name="SiteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SiteName" Type="nvarchar" MaxLength="150" />
+  </EntityType>
+  <EntityContainer Name="POS_DBEntitiesCloudStoreContainer">
+    <EntitySet Name="CategoriesCloud" EntityType="Self.CategoriesCloud" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MenuCloud" EntityType="Self.MenuCloud" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SitesCloud" EntityType="Self.SitesCloud" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

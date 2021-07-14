@@ -1,0 +1,628 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="GoldDB2020Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Accounts_Index">
+    <Key>
+      <PropertyRef Name="Code" />
+    </Key>
+    <Property Name="Code" Type="Int32" Nullable="false" />
+    <Property Name="AName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="AName1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Nature" Type="Int32" />
+    <Property Name="Type" Type="Int32" />
+    <Property Name="ParentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Date" Type="DateTime" Precision="0" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IValue" Type="Double" />
+    <Property Name="FinalAcc" Type="Int32" />
+    <Property Name="Total_Debts" Type="Double" />
+    <Property Name="Total_Credits" Type="Double" />
+    <Property Name="Account_Value" Type="Double" />
+    <Property Name="Acc_branch" Type="Int32" />
+    <Property Name="cloud_id" Type="Int64" />
+    <Property Name="IsEdited" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Cash_Payment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="TypeID" Type="Int32" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="cust_id" Type="Int32" />
+    <Property Name="val" Type="Double" />
+    <Property Name="PriceMG" Type="Double" />
+    <Property Name="WeightD" Type="Double" />
+    <Property Name="type" Type="Int32" />
+    <Property Name="safe_bank_id" Type="Int32" />
+    <Property Name="sales_emp" Type="Int32" />
+    <Property Name="check_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="check_date" Type="DateTime" Precision="3" />
+    <Property Name="checkbank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="check_state" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="rest_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Closing_Gold">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="0" />
+    <Property Name="type" Type="Int32" />
+    <Property Name="sales_emp" Type="Int32" />
+    <Property Name="cust_id" Type="Int32" />
+    <Property Name="WeightD" Type="Double" />
+    <Property Name="Caliber" Type="Int32" />
+    <Property Name="WeightdMain" Type="Double" />
+    <Property Name="PriceMG" Type="Double" />
+    <Property Name="val" Type="Double" />
+    <Property Name="rest_id" Type="Int32" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="national_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Delegate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="cmbJob" Type="Int32" />
+    <Property Name="city" Type="Int32" />
+    <Property Name="mobile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Address2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="daate" Type="DateTime" Precision="0" />
+    <Property Name="HijDay" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="act" Type="Int32" />
+    <Property Name="limit" Type="Double" />
+    <Property Name="Balance" Type="Double" />
+    <Property Name="AccountCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="status" Type="Boolean" />
+    <Property Name="TAXNO" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="EmpBranch">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="emp" Type="Int32" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="local_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="manag" Type="Int32" />
+    <Property Name="dep" Type="Int32" />
+    <Property Name="state" Type="Int32" />
+    <Property Name="job" Type="Int32" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="birth_date" Type="DateTime" Precision="3" />
+    <Property Name="insurance_no" Type="Int32" />
+    <Property Name="work_date" Type="DateTime" Precision="3" />
+    <Property Name="marital_state" Type="Int32" />
+    <Property Name="nationality" Type="Int32" />
+    <Property Name="sex" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="tel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="address" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="FINGERPRINT" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="Vac_Balance" Type="Int32" />
+    <Property Name="dentificationNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+    <Property Name="Expiration_Date" Type="DateTime" Precision="3" />
+    <Property Name="Education" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="Work_Experience" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="Tasks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Passport" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DatePassport" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="salary_basic" Type="Double" />
+    <Property Name="salary_add" Type="Double" />
+    <Property Name="SalaryTransport" Type="Double" />
+    <Property Name="SalaryVictuals" Type="Double" />
+    <Property Name="salary_other" Type="Double" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="First_balance">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="depot" Type="Int32" />
+    <Property Name="Product_id" Type="Int32" />
+    <Property Name="val" Type="Double" />
+    <Property Name="Number" Type="Int32" />
+    <Property Name="Caliber" Type="Int32" />
+    <Property Name="Branch" Type="Int32" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Gold_Payment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="TypeID" Type="Int32" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="cust_id" Type="Int32" />
+    <Property Name="ProCode" Type="Int32" />
+    <Property Name="Number" Type="Int32" />
+    <Property Name="valWeight" Type="Double" />
+    <Property Name="Caliber" Type="Int32" />
+    <Property Name="valWeightD" Type="Double" />
+    <Property Name="sales_emp" Type="Int32" />
+    <Property Name="rest_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Gold_Prices">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="date" Type="DateTime" Precision="0" />
+    <Property Name="Prices24" Type="Double" />
+    <Property Name="Prices22" Type="Double" />
+    <Property Name="Prices21" Type="Double" />
+    <Property Name="Prices18" Type="Double" />
+    <Property Name="cloud_id" Type="Int64" />
+    <Property Name="IsEdited" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Gold_Repair">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="emp_id" Type="Int32" />
+    <Property Name="idCost" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Fone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Date" Type="DateTime" Precision="3" />
+    <Property Name="DateDelivery" Type="DateTime" Precision="3" />
+    <Property Name="GoldType" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="MaintenanceType" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Caliber" Type="Int32" />
+    <Property Name="Val" Type="Double" />
+    <Property Name="FeeRepairs" Type="Double" />
+    <Property Name="AmountPaid" Type="Double" />
+    <Property Name="RemainingAmount" Type="Double" />
+    <Property Name="rest_id" Type="Int64" />
+    <Property Name="Chk1" Type="Boolean" />
+    <Property Name="Chk2" Type="Boolean" />
+    <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="CmbCost" Type="Int32" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Group_cust">
+    <Key>
+      <PropertyRef Name="Groupid" />
+    </Key>
+    <Property Name="Groupid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="GroupCaliber" Type="Int32" />
+    <Property Name="GroupUnits" Type="Int32" />
+    <Property Name="GroupCode" Type="Int32" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Inv">
+    <Key>
+      <PropertyRef Name="Inv_Code" />
+    </Key>
+    <Property Name="Inv_Code" Type="Int64" Nullable="false" />
+    <Property Name="Inv_Date" Type="DateTime" Precision="3" />
+    <Property Name="Inv_InvProcTypeID" Type="Int32" />
+    <Property Name="Inv_InvType_ID" Type="Int32" />
+    <Property Name="DetailsNo" Type="Int32" />
+    <Property Name="Inv_IDRestrictions" Type="Int32" />
+    <Property Name="Inv_StocksID" Type="Int32" />
+    <Property Name="Inv_SafesId" Type="Int32" />
+    <Property Name="Inv_CustID" Type="Int32" />
+    <Property Name="Inv_EMPID" Type="Int32" />
+    <Property Name="Inv_TotalWeightBased" Type="Double" />
+    <Property Name="Inv_TotalMainWeight" Type="Double" />
+    <Property Name="Inv_TotalTax" Type="Double" />
+    <Property Name="Inv_Cash" Type="Double" />
+    <Property Name="Inv_Mada" Type="Double" />
+    <Property Name="Inv_Vish" Type="Double" />
+    <Property Name="Inv_Discount" Type="Double" />
+    <Property Name="Inv_TotalNet" Type="Double" />
+    <Property Name="Inv_IS_Deleted" Type="Boolean" />
+    <Property Name="inv_date_Deleted" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="inv_date_Update" Type="DateTime" Precision="3" />
+    <Property Name="Inv_emp_Update" Type="Int32" />
+    <Property Name="InvId_Return" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Inv_BillNo" Type="Int32" />
+    <Property Name="Inv_Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Inv_branch" Type="Int32" />
+    <Property Name="cloud_Id" Type="Int64" />
+    <Property Name="IsEdited" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Inv_Sub">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="Inv_ID" Type="Int64" />
+    <Property Name="Inv_ProCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="InvSub_Unit" Type="Int32" />
+    <Property Name="InvSub_Number" Type="Int32" />
+    <Property Name="InvSub_Weight" Type="Double" />
+    <Property Name="InvSub_Caliber" Type="Double" />
+    <Property Name="InvSub_WeightD" Type="Double" />
+    <Property Name="InvSub_PriceG" Type="Double" />
+    <Property Name="InvSub_Tax" Type="Double" />
+    <Property Name="InvSub_TotTax" Type="Double" />
+    <Property Name="InvSub_Diff" Type="Double" />
+    <Property Name="local_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="Pro_id" />
+    </Key>
+    <Property Name="Pro_id" Type="Int32" Nullable="false" />
+    <Property Name="Groups" Type="Int32" />
+    <Property Name="code" Type="Int64" />
+    <Property Name="Units" Type="Int32" />
+    <Property Name="Pro_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Caliber" Type="Int32" />
+    <Property Name="DefaultWeight" Type="Double" />
+    <Property Name="PricePRGM" Type="Double" />
+    <Property Name="BuyPrice" Type="Double" />
+    <Property Name="SalePrice" Type="Double" />
+    <Property Name="WorkManship" Type="Double" />
+    <Property Name="Profit" Type="Double" />
+    <Property Name="Discount" Type="Double" />
+    <Property Name="LowestPrice" Type="Double" />
+    <Property Name="Status" Type="Boolean" />
+    <Property Name="Tax" Type="Double" />
+    <Property Name="ChKPurch" Type="Boolean" />
+    <Property Name="ChkSales" Type="Boolean" />
+    <Property Name="ChkNoShow" Type="Boolean" />
+    <Property Name="CheckTax" Type="Boolean" />
+    <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Restriction">
+    <Key>
+      <PropertyRef Name="IDRestrictions" />
+    </Key>
+    <Property Name="IDRestrictions" Type="Int32" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="doc_no" Type="Int32" />
+    <Property Name="type" Type="Int32" />
+    <Property Name="state" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="edit" Type="Int32" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Restrictions_Sub">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="res_id" Type="Int32" />
+    <Property Name="deptgold" Type="Double" />
+    <Property Name="credItgold" Type="Double" />
+    <Property Name="dept" Type="Double" />
+    <Property Name="credit" Type="Double" />
+    <Property Name="acc_no" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="local_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Safe_Emps">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="safe_id" Type="Int32" />
+    <Property Name="emp_id" Type="Int32" />
+    <Property Name="local_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Safe">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="IS_Default" Type="Boolean" />
+    <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="SafesTransferBranch">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="safe_from" Type="Int32" />
+    <Property Name="safe_to" Type="Int32" />
+    <Property Name="frombranch" Type="Int32" />
+    <Property Name="tobranch" Type="Int32" />
+    <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ok" Type="Boolean" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="SafesTransferBranch_Sub">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="transfer_id" Type="Int64" />
+    <Property Name="currency" Type="Int32" />
+    <Property Name="value" Type="Double" />
+    <Property Name="Number" Type="Double" />
+    <Property Name="Caliber" Type="Int32" />
+    <Property Name="avg" Type="Double" />
+    <Property Name="totl" Type="Double" />
+    <Property Name="user_emp" Type="Int32" />
+    <Property Name="local_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="SandD">
+    <Key>
+      <PropertyRef Name="Sand_Code" />
+    </Key>
+    <Property Name="Sand_Code" Type="Int64" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="emp_id" Type="Int32" />
+    <Property Name="cust_id" Type="Int32" />
+    <Property Name="val" Type="Double" />
+    <Property Name="type" Type="Int32" />
+    <Property Name="safe_bank_id" Type="Int32" />
+    <Property Name="sales_emp" Type="Int32" />
+    <Property Name="check_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="check_date" Type="DateTime" Precision="3" />
+    <Property Name="checkbank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="check_state" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="rest_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="edit" Type="Int32" />
+    <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="cloud_id" Type="Int64" />
+    <Property Name="IsEdited" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="SandQ">
+    <Key>
+      <PropertyRef Name="Sand_Code" />
+    </Key>
+    <Property Name="Sand_Code" Type="Int64" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="cust_id" Type="Int32" />
+    <Property Name="val" Type="Double" />
+    <Property Name="type" Type="Int32" />
+    <Property Name="safe_bank_id" Type="Int32" />
+    <Property Name="sales_emp" Type="Int32" />
+    <Property Name="check_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="check_date" Type="DateTime" Precision="3" />
+    <Property Name="checkbank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="check_state" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="rest_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="edit" Type="Int32" />
+    <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="SandQD">
+    <Key>
+      <PropertyRef Name="Sand_Code" />
+    </Key>
+    <Property Name="Sand_Code" Type="Int64" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="emp_person" Type="Int32" />
+    <Property Name="cust_id" Type="Int32" />
+    <Property Name="acc_code" Type="Int32" />
+    <Property Name="val" Type="Double" />
+    <Property Name="type" Type="Int32" />
+    <Property Name="safe_bank_id" Type="Int32" />
+    <Property Name="sales_emp" Type="Int32" />
+    <Property Name="check_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="check_date" Type="DateTime" Precision="3" />
+    <Property Name="checkbank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="check_state" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="rest_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="edit" Type="Int32" />
+    <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="SandSD">
+    <Key>
+      <PropertyRef Name="Sand_Code" />
+    </Key>
+    <Property Name="Sand_Code" Type="Int64" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="emp_person" Type="Int32" />
+    <Property Name="emp_id" Type="Int32" />
+    <Property Name="acc_code" Type="Int32" />
+    <Property Name="val" Type="Double" />
+    <Property Name="type" Type="Int32" />
+    <Property Name="safe_bank_id" Type="Int32" />
+    <Property Name="sales_emp" Type="Int32" />
+    <Property Name="check_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="check_date" Type="DateTime" Precision="3" />
+    <Property Name="checkbank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="check_state" Type="Int32" />
+    <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="rest_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="edit" Type="Int32" />
+    <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Stock_Emps">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="stock_id" Type="Int32" />
+    <Property Name="emp_id" Type="Int32" />
+    <Property Name="local_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="Stock">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="IS_Default" Type="Boolean" />
+    <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+    <Property Name="IsEdited" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="StockTransferBranch">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" />
+    <Property Name="RestrictionsID" Type="Int64" />
+    <Property Name="FromStockID" Type="Int32" Nullable="false" />
+    <Property Name="ToStockID" Type="Int32" Nullable="false" />
+    <Property Name="TransferValue" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="TransferDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="EmpID" Type="Int32" Nullable="false" />
+    <Property Name="branchFrom" Type="Int32" />
+    <Property Name="branchTo" Type="Int32" />
+    <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="OK" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="User_Permissions">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="user_id" Type="Int32" />
+    <Property Name="Form_id" Type="Int32" />
+    <Property Name="IS_New" Type="Boolean" />
+    <Property Name="IS_Save" Type="Boolean" />
+    <Property Name="IS_Update" Type="Boolean" />
+    <Property Name="IS_Delete" Type="Boolean" />
+    <Property Name="IS_Search" Type="Boolean" />
+    <Property Name="IS_Print" Type="Boolean" />
+    <Property Name="local_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="emp" Type="Int32" Nullable="false" />
+    <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="pwd" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="date" Type="DateTime" Precision="0" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="Connected" Type="Boolean" />
+    <Property Name="IsEdited" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+  </EntityType>
+  <EntityContainer Name="GoldDB2020Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Accounts_Index" EntityType="Self.Accounts_Index" />
+    <EntitySet Name="Cash_Payment" EntityType="Self.Cash_Payment" />
+    <EntitySet Name="Closing_Gold" EntityType="Self.Closing_Gold" />
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="EmpBranches" EntityType="Self.EmpBranch" />
+    <EntitySet Name="Employees" EntityType="Self.Employee" />
+    <EntitySet Name="First_balance" EntityType="Self.First_balance" />
+    <EntitySet Name="Gold_Payment" EntityType="Self.Gold_Payment" />
+    <EntitySet Name="Gold_Prices" EntityType="Self.Gold_Prices" />
+    <EntitySet Name="Gold_Repair" EntityType="Self.Gold_Repair" />
+    <EntitySet Name="Group_cust" EntityType="Self.Group_cust" />
+    <EntitySet Name="Invs" EntityType="Self.Inv" />
+    <EntitySet Name="Inv_Sub" EntityType="Self.Inv_Sub" />
+    <EntitySet Name="Products" EntityType="Self.Product" />
+    <EntitySet Name="Restrictions" EntityType="Self.Restriction" />
+    <EntitySet Name="Restrictions_Sub" EntityType="Self.Restrictions_Sub" />
+    <EntitySet Name="Safe_Emps" EntityType="Self.Safe_Emps" />
+    <EntitySet Name="Safes" EntityType="Self.Safe" />
+    <EntitySet Name="SafesTransferBranches" EntityType="Self.SafesTransferBranch" />
+    <EntitySet Name="SafesTransferBranch_Sub" EntityType="Self.SafesTransferBranch_Sub" />
+    <EntitySet Name="SandDs" EntityType="Self.SandD" />
+    <EntitySet Name="SandQs" EntityType="Self.SandQ" />
+    <EntitySet Name="SandQDs" EntityType="Self.SandQD" />
+    <EntitySet Name="SandSDs" EntityType="Self.SandSD" />
+    <EntitySet Name="Stock_Emps" EntityType="Self.Stock_Emps" />
+    <EntitySet Name="Stocks" EntityType="Self.Stock" />
+    <EntitySet Name="StockTransferBranches" EntityType="Self.StockTransferBranch" />
+    <EntitySet Name="User_Permissions" EntityType="Self.User_Permissions" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="TransferProducts" EntityType="GoldDB2020Model.TransferProduct" />
+  </EntityContainer>
+  <EntityType Name="TransferProduct">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="safe" Type="Int32" />
+    <Property Name="FromProductsCode" Type="Int64" />
+    <Property Name="ToProductsCode" Type="Int64" />
+    <Property Name="Val" Type="Double" />
+    <Property Name="Number" Type="Int32" />
+    <Property Name="Caliber" Type="Int32" />
+    <Property Name="branch" Type="Int32" />
+    <Property Name="ok" Type="Boolean" />
+    <Property Name="emp" Type="Int32" />
+    <Property Name="IS_Deleted" Type="Boolean" />
+    <Property Name="cloud_id" Type="Int64" />
+    <Property Name="IsEdited" Type="Boolean" />
+  </EntityType>
+</Schema>
