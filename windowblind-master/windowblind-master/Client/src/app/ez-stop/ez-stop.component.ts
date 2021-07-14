@@ -141,6 +141,14 @@ export class EzStopComponent implements OnInit {
     this.ezStopService.RefreshEzStopTable().subscribe(data => {
 
       if (data && data.columnNames.length != 0) {
+        this.tableModelColNames = [];
+        this.ReviewtableModelColNames = [];
+        this.BlindNumbers = [];
+        this.Data = [];
+        this.ReviewData = [];
+        this.ReviewDataWithBlindsNumbers = {}
+//        this.PrinterTableDictionary = {};
+        
         setTimeout(() => {
           this.updateTable();
         }, 50);

@@ -40,7 +40,6 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   Loading: boolean = false;
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   ReviewDataWithBlindsObjects: { [Key: string]: FabricCutterCBDetailsModelTableRow } = {}
-  newValue = "-1";
   PrinterTableDictionary = {};
   Printing = false;
   Creating = false;
@@ -113,8 +112,19 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     let cb = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
     if (cb == "") { alert("Please enter a valid CB"); return; }
     this.Loading = true;
+
     this.FBRservice.getCBNumberDetails(cb.toString()).subscribe(data => {
       if (data && data.columnNames.length != 0) {
+        this.tableModelColNames = [];
+        this.ReviewtableModelColNames = [];
+        this.BlindNumbers = [];
+        this.Data = [];
+        this.ReviewData = [];
+        this.ReviewDataWithBlindsNumbers = {}
+        this.ReviewDataWithBlindsObjects = {}
+       // this.PrinterTableDictionary = {};
+
+
         setTimeout(() => {
           this.updateTable();
         }, 50);

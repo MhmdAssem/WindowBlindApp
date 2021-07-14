@@ -116,6 +116,15 @@ export class LogCutComponent implements OnInit {
     this.logcutService.getCBNumberDetails(input, CBOrLine).subscribe(data => {
       console.log(data);
       if (data && data.columnNames.length != 0) {
+        this.tableModelColNames = [];
+        this.ReviewtableModelColNames = [];
+        this.BlindNumbers = [];
+        this.Data = [];
+        this.ReviewData = [];
+        this.ReviewDataWithBlindsNumbers = {}
+
+        //this.PrinterTableDictionary = {};
+        
         setTimeout(() => {
           this.updateTable();
         }, 50);
@@ -183,6 +192,7 @@ export class LogCutComponent implements OnInit {
   Send() {
     this.SendLoading = true;
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    console.log(this.PrinterTableDictionary);
 
     let Data: FabricCutterCBDetailsModel = {
       columnNames: this.tableModelColNames,
