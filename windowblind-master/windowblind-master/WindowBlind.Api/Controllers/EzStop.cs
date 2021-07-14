@@ -330,13 +330,13 @@ namespace WindowBlind.Api.Controllers
                         }
 
                     }
+                    item.Row["CutWidth"] = GetCutwidth(item.Row["Width"], item.Row["Bind Type/# Panels/Rope/Operation"], item.Row["Fixing Type / Bracket Type"], FixingValues, ControlTypevalues);
 
                     if (item.Row["Width"] != "")
                         item.Row["Width"] = item.Row["Width"] + "mm";
                     else
                         item.Row["Width"] = "0";
 
-                    item.Row["CutWidth"] = GetCutwidth(item.Row["Width"], item.Row["Bind Type/# Panels/Rope/Operation"], item.Row["Fixing Type / Bracket Type"], FixingValues, ControlTypevalues);
                     item.Row["CutWidth_hidden"] = item.Row["CutWidth"];
                     if (item.Row["CutWidth"] != String.Empty)
                         item.Row["CutWidth"] = item.Row["CutWidth"] + "mm";

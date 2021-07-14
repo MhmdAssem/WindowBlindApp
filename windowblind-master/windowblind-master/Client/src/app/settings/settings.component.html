@@ -72,7 +72,23 @@
 
   <div class="row" style="margin-top: 50px;">
     <div class="col-md-6">
-      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 5px;">
+      <h2 style="margin-left: 180px;"> General Settings</h2>
+
+      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+        <div class="col-3" *ngIf="FileSetting.applicationSetting=='General Setting'">
+          <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+            FileSetting.settingName}}:</Label>
+        </div>
+        <div class="col-9" *ngIf="FileSetting.applicationSetting=='General Setting'" style="margin-top: -10px;">
+          <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+            value="{{FileSetting.settingPath}}">
+        </div>
+
+      </div>
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <h2 style="margin-left: 180px;"> FabricCutter Settings</h2>
+
+      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
         <div class="col-3" *ngIf="FileSetting.applicationSetting=='FabricCutter'">
           <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
             FileSetting.settingName}}:</Label>
@@ -85,7 +101,9 @@
       </div>
 
       <hr style="border-bottom:5px solid black;min-width:100%">
-      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 5px;">
+      <h2 style="margin-left: 180px;"> LogCut Settings</h2>
+
+      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
         <div class="col-3" *ngIf="FileSetting.applicationSetting=='LogCut'">
           <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
             FileSetting.settingName}}:</Label>
@@ -98,8 +116,9 @@
       </div>
       
       <hr style="border-bottom:5px solid black;min-width:100%">
-      
-      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 5px;">
+      <h2 style="margin-left: 180px;"> EzyStop Settings</h2>
+
+      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
         <div class="col-3" *ngIf="FileSetting.applicationSetting=='EzStop'">
           <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
             FileSetting.settingName}}:</Label>

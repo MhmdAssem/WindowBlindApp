@@ -104,8 +104,8 @@ namespace WindowBlind.Api
         {
             var setting = new List<FileSetting>
             {
-                new FileSetting{Id = Guid.NewGuid().ToString(), settingName = "ctbsodump",settingPath = "",applicationSetting = "FabricCutter"},
-                new FileSetting{Id = Guid.NewGuid().ToString(), settingName = "SheetName",settingPath = "",applicationSetting = "FabricCutter"},
+                new FileSetting{Id = Guid.NewGuid().ToString(), settingName = "ctbsodump",settingPath = "",applicationSetting = "General Setting"},
+                new FileSetting{Id = Guid.NewGuid().ToString(), settingName = "SheetName",settingPath = "",applicationSetting = "General Setting"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Deduction",settingPath = "" ,applicationSetting = "FabricCutter"},
                 new FileSetting{ Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "DeductionTable",applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "DropTable" , settingPath = "" ,applicationSetting = "LogCut"},

@@ -28,7 +28,7 @@
           </th>
           <th id="theSelectColumn" *ngIf="tableModelColNames.length !=0">
             <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">Packing Option</span>
+              <span class="text-black-50">Select Column</span>
 
             </div>
           </th>
@@ -39,18 +39,9 @@
         <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
           <td *ngFor="let col of tableModelColNames" style="background-color: '{{row.row['DropColour']}}'">
             {{row.row[col]}}</td>
-          <td>
-            <select class="form-control" name="PackingOptions" id="PackingOptions" (change)="SelectThisRow($event,i)" style="display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            text-align: center;">
-              <option value="Waiting" selected>Waiting</option>
-              <option value="Dispatch" >Dispatch</option>
-              <option value="holding pay" >holding pay </option>
-              <option value=" dispatch via holding pay" > dispatch via holding pay</option>
-            </select>
-          </td>
+            <td>
+              <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Pack</button>
+            </td>
         </tr>
       </tbody>
     </table>

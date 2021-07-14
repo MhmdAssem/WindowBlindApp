@@ -34,16 +34,50 @@ namespace WindowBlind.Api.Controllers
         {
             try
             {
+                Dictionary<string, int> CBNumberCounter = new Dictionary<string, int>();
+                Dictionary<string, int> PackedFileCBNumberCounter = new Dictionary<string, int>();
+                /// get the dumb file Path
+                var ctbsodumpSetting = await _repository.Settings.FindAsync(e => e.settingName == "ctbsodump");
+                var ctbsodumpPath = ctbsodumpSetting.FirstOrDefault().settingPath;
+
+                /// get the sheet name
+                var SheetNameSetting = await _repository.Settings.FindAsync(e => e.settingName == "SheetName");
+                var SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
+
+
+                FileInfo file = new FileInfo(ctbsodumpPath);
+                using (var package = new ExcelPackage(file))
+                {
+                    var workbook = package.Workbook;
+                    var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
+                    if (worksheet == null) new JsonResult(false);
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Column; i < end.Column; i++)
+                    {
+                        var Headertext = worksheet.Cells[1, i].Text.Trim();
+                        if (Headertext == "W/Order NO")
+                            for (int j = start.Row + 1; j < end.Row; j++)
+                            {
+                                var text = worksheet.Cells[j, i].Text.Trim();
+                                if (!CBNumberCounter.ContainsKey(text)) CBNumberCounter[text] = 0;
+
+                                CBNumberCounter[text]++;
+
+                            }
+                    }
+                }
+
+
+
                 FabricCutterCBDetailsModel data = new FabricCutterCBDetailsModel();
 
                 data.ColumnNames.Add("CB Number");
                 data.ColumnNames.Add("Line No");
                 data.ColumnNames.Add("item");
-
                 data.ColumnNames.Add("Hoisting User");
-
-
                 data.ColumnNames.Add("Hoist Date Time");
+                data.ColumnNames.Add("Status");
 
 
                 var FabricCutterOflogModels = await _repository.HoistStation.FindAsync(log => log.ProcessType == "Qualified" && log.status == "Qualified");
@@ -54,12 +88,40 @@ namespace WindowBlind.Api.Controllers
 
                 if (FabricCutterlistOflogModels.Count == 0) return new JsonResult(data);
 
+                foreach (var row in FabricCutterlistOflogModels)
+                {
+                    if (!PackedFileCBNumberCounter.ContainsKey(row.CBNumber))
+                        PackedFileCBNumberCounter[row.CBNumber] = 0;
+                    PackedFileCBNumberCounter[row.CBNumber]++;
+                }
+
 
                 foreach (var row in FabricCutterlistOflogModels)
                 {
-
+                   
                     row.row.Row["Hoisting User"] = row.UserName;
                     row.row.Row["Hoist Date Time"] = row.dateTime;
+                    if(PackedFileCBNumberCounter[row.CBNumber] == CBNumberCounter[row.CBNumber])
+                    {
+                        row.row.Row["Status"] = "Dispatch";
+                    }
+                    else
+                    {
+                        var RowsWithTheSameCBNumber = _repository.PackingStation.Find(pack=>pack.CBNumber == row.CBNumber).ToList();
+
+                        if(RowsWithTheSameCBNumber == null)
+                        {
+                            row.row.Row["Status"] = "Holding bay";
+                        }
+                        else if(RowsWithTheSameCBNumber.Count + PackedFileCBNumberCounter[row.CBNumber] == CBNumberCounter[row.CBNumber])
+                        {
+                            row.row.Row["Status"] = "Dispatch via holding bay";
+                        }
+                        else
+                        {
+                            row.row.Row["Status"] = "Holding bay";
+                        }
+                    }
                     data.Rows.Add(row.row);
 
                 }
@@ -95,6 +157,8 @@ namespace WindowBlind.Api.Controllers
                     await _repository.PackingStation.InsertOneAsync(log);
                     await _repository.Logs.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],
                          Builders<LogModel>.Update.Set(p => p.status, "Packed"), new UpdateOptions { IsUpsert = false });
+                    await _repository.HoistStation.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],
+                        Builders<LogModel>.Update.Set(p => p.status, "Packed"), new UpdateOptions { IsUpsert = false });
                 }
 
                 return true;

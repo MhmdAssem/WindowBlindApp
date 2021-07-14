@@ -42,8 +42,9 @@ export class PackingStationComponent implements OnInit {
       searching: false,
       destroy: true,
       ordering: true,
-      pageLength: 10,
-
+      //pageLength: 10,
+      paging: false,
+      info: false
     };
 
     this.dtOptionsReview = {
@@ -82,11 +83,12 @@ export class PackingStationComponent implements OnInit {
   }
 
 
-  SelectThisRow(event, ind) {
+  SelectThisRow(ind) {
 
-    if (event.target.value != "Waiting") {
+    if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent == "Pack") {
+      (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnPack";
+
       this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.ReviewData.length;
-      this.Data[ind].PackingType = event.target.value ;
       this.ReviewData.push(this.Data[ind]);
     }
     else {
@@ -96,10 +98,12 @@ export class PackingStationComponent implements OnInit {
 
   UnSelectThisRow(ind) {
 
+    (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Pack";
+
     this.ReviewData.splice(this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId], 1);
     this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = -1;
-  }
 
+  }
 
   Send() {
     this.SendLoading = true;
