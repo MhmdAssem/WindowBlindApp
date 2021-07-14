@@ -1,10 +1,9 @@
-﻿using AspNetCore.Reporting;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.NETCore;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,6 +28,7 @@ namespace WindowBlind.Api.Controllers
         }
         private IRepository _repository;
         private IWebHostEnvironment _env;
+        //private IList<Stream> m_streams;
 
         [HttpGet("getCBNumberDetails")]
         public async Task<IActionResult> getCBNumberDetails([FromHeader] string CBNumberOrLineNumber, [FromHeader] string CBorLine)
@@ -616,10 +616,22 @@ namespace WindowBlind.Api.Controllers
                     var strpara = strParameterArray;
 
 
-                    if (strpara.Length == 0) continue;
 
                     var ret1 = PrintReport(printerName, strParameterArray.ToList(), "LogCut1.rdlc", "Width");
                     var ret2 = PrintReport(printerName, strParameterArray.ToList(), "LogCut2.rdlc", "");
+                    //if (strpara.Length == 0) continue;
+                    //Thread thread1 = new Thread(e =>
+                    //    {
+                    //        
+                    //    });
+                    //thread1.Start();
+
+                    //Thread thread2 = new Thread(e =>
+                    //{
+                    //    
+                    //});
+
+                    //thread2.Start();
 
                 }
                 return new JsonResult(true);
@@ -678,42 +690,57 @@ namespace WindowBlind.Api.Controllers
 
             return colList;
         }
-
+        //private Stream CreateStream(string name,
+        //    string fileNameExtension, Encoding encoding,
+        //    string mimeType, bool willSeek)
+        //{
+        //    Stream stream = new MemoryStream();
+        //    m_streams.Add(stream);
+        //    return stream;
+        //}
         public bool PrintReport(string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
         {
             try
             {
-                string mimtype = "";
-                int extension = 1;
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                Encoding.GetEncoding("windows-1252");
+                var parametersList = new List<ReportParameter>();
 
-                parameters.Add("cbNumber", strParameterArray[0]);
-                parameters.Add("width", strParameterArray[1]);
-                parameters.Add("drop", strParameterArray[2]);
+                parametersList.Add(new ReportParameter("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString()));
+                parametersList.Add(new ReportParameter("lathe", strParameterArray[9].ToString()));
+                parametersList.Add(new ReportParameter("controltype", strParameterArray[8].ToString()));
+                parametersList.Add(new ReportParameter("color", strParameterArray[7].ToString()));
+                parametersList.Add(new ReportParameter("fabric", strParameterArray[6].ToString()));
+                parametersList.Add(new ReportParameter("type", strParameterArray[5].ToString()));
+                parametersList.Add(new ReportParameter("department", strParameterArray[4].ToString()));
+                parametersList.Add(new ReportParameter("customer", strParameterArray[3].ToString()));
+                parametersList.Add(new ReportParameter("drop", strParameterArray[2].ToString()));
+                parametersList.Add(new ReportParameter("width", strParameterArray[1].ToString()));
+                parametersList.Add(new ReportParameter("cbNumber", strParameterArray[0].ToString()));
 
-                parameters.Add("customer", strParameterArray[3].ToString());
-                parameters.Add("department", strParameterArray[4].ToString());
-                parameters.Add("type", strParameterArray[5].ToString());
-                parameters.Add("fabric", strParameterArray[6].ToString());
-                parameters.Add("color", strParameterArray[7].ToString());
-                parameters.Add("controltype", strParameterArray[8].ToString());
-                parameters.Add("lathe", strParameterArray[9].ToString());
                 if (StrType != "")
                 {
-                    parameters.Add("char", strParameterArray[10]);
-                    parameters.Add("cutwidth", strParameterArray[14]);
-                    parameters.Add("lineNumber", strParameterArray[15].ToString());
-                    parameters.Add("cntrside", strParameterArray[16]);
+                    parametersList.Add(new ReportParameter("char", strParameterArray[10]));
+                    parametersList.Add(new ReportParameter("cutwidth", strParameterArray[14]));
+                    parametersList.Add(new ReportParameter("lineNumber", strParameterArray[15]));
+                    parametersList.Add(new ReportParameter("cntrside", strParameterArray[16]));
                 }
-                parameters.Add("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString());
 
-                LocalReport localReport = new LocalReport(path);
-                var result = localReport.Execute(RenderType.Image, extension, parameters, mimtype);
+
+
+                LocalReport report = new LocalReport();
+                report.ReportPath = path;
+                report.SetParameters(parametersList);
+                report.Refresh();
+                byte[] result = report.Render("IMAGE");
+                report.Dispose();
+
                 var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
-                    stream.Write(result.MainStream, 0, result.MainStream.Length);
+                    stream.Write(result, 0, result.Length);
                 }
 
                 bool printedOK = true;
