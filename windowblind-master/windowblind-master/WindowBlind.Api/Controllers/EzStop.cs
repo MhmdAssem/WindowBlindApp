@@ -530,7 +530,7 @@ namespace WindowBlind.Api.Controllers
 
                 // add to file 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                
+
                 ExcelPackage ExcelPkg = new ExcelPackage();
                 ExcelWorksheet wsSheet1 = ExcelPkg.Workbook.Worksheets.Add("Ezystop");
 
@@ -656,6 +656,15 @@ namespace WindowBlind.Api.Controllers
                     pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
                     //pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, true);
                     pdf.Print();
+
+
+                    //PdfDocument pdf = new PdfDocument(outputPath);
+                    //pdf.PrintSettings.PrinterName = strPrinterName;
+                    //pdf.PrintSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom", 300, 150);
+                    ////pdf.PrintSettings.SetPaperMargins(1, 1, 1, 1);
+                    //pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ShrinkOversized, true);
+                    ////pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, true);
+                    //pdf.Print();
 
                 }
                 catch (Exception ex)
