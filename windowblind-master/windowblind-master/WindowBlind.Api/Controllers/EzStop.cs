@@ -8,6 +8,7 @@ using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -636,8 +637,8 @@ namespace WindowBlind.Api.Controllers
                 parameters.Add("someoftotal", strParameterArray[11].ToString() + " of " + strParameterArray[12].ToString());
 
                 LocalReport localReport = new LocalReport(path);
-                var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);
-                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".pdf");
+                var result = localReport.Execute(RenderType.Image, extension, parameters, mimtype);
+                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result.MainStream, 0, result.MainStream.Length);
@@ -649,22 +650,36 @@ namespace WindowBlind.Api.Controllers
                 string printErrorMessage = "";
                 try
                 {
-                    PdfDocument pdf = new PdfDocument(outputPath);
-                    pdf.PrintSettings.PrinterName = strPrinterName;
-                    //pdf.PrintSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom", _labelWidth, _labelHeight);
-                    pdf.PrintSettings.SetPaperMargins(1, 1, 1, 1);
-                    pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
-                    //pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, true);
-                    pdf.Print();
+                    PrintDocument pd = new PrintDocument();
+                    PrintController printController = new StandardPrintController();
+                    pd.PrintController = printController;
+                    pd.PrinterSettings.PrinterName = strPrinterName;
+                    pd.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
+                    pd.PrinterSettings.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
+                    pd.PrintPage += (sndr, args) =>
+                    {
+                        System.Drawing.Image i = System.Drawing.Image.FromFile(outputPath);
+                        System.Drawing.Rectangle m = args.MarginBounds;
 
+                        //Logic below maintains Aspect Ratio 
+                        if ((double)i.Width / (double)i.Height > (double)m.Width / (double)m.Height) // image is wider
+                        {
+                            m.Height = (int)((double)i.Height / (double)i.Width * (double)m.Width);
+                        }
+                        else
+                        {
+                            m.Width = (int)((double)i.Width / (double)i.Height * (double)m.Height);
+                        }
 
-                    //PdfDocument pdf = new PdfDocument(outputPath);
-                    //pdf.PrintSettings.PrinterName = strPrinterName;
-                    //pdf.PrintSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom", 300, 150);
-                    ////pdf.PrintSettings.SetPaperMargins(1, 1, 1, 1);
-                    //pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ShrinkOversized, true);
-                    ////pdf.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, true);
-                    //pdf.Print();
+                        //Calculating optimal orientation.
+                        pd.DefaultPageSettings.Landscape = m.Height > m.Width;
+
+                        // Putting image in center of page.
+                        m.Y = (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Height - m.Height) / 2);
+                        m.X = (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Width - m.Width) / 2);
+                        args.Graphics.DrawImage(i, m);
+                    };
+                    pd.Print();
 
                 }
                 catch (Exception ex)

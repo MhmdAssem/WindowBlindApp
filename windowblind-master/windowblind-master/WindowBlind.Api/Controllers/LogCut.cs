@@ -438,9 +438,10 @@ namespace WindowBlind.Api.Controllers
                                     var FinalRow = new FabricCutterCBDetailsModelTableRow();
                                     FinalRow = item;
                                     FinalRow.Row["Blind Number"] = (blindNumber).ToString();
+                                    FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
+
                                     blindNumber++;
                                     a += 1;
-                                    FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
                                     FinalizedData.Rows.Add(FinalRow);
 
                                 }
@@ -456,9 +457,10 @@ namespace WindowBlind.Api.Controllers
                                         var FinalRow = new FabricCutterCBDetailsModelTableRow();
                                         FinalRow = item;
                                         FinalRow.Row["Blind Number"] = (blindNumber).ToString();
+                                        FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
                                         blindNumber++;
                                         a += 1;
-                                        FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
+                                        
                                         FinalizedData.Rows.Add(FinalRow);
                                     }
                                 }
@@ -631,6 +633,7 @@ namespace WindowBlind.Api.Controllers
 
 
         }
+ 
         public string GetCutwidth2(string width, string value, Dictionary<string, int> ControlTypevalues)
         {
             if (width == String.Empty || int.TryParse(width, out int res) == false)
@@ -685,6 +688,7 @@ namespace WindowBlind.Api.Controllers
             {
                 string mimtype = "";
                 int extension = 1;
+                
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
 
@@ -699,17 +703,17 @@ namespace WindowBlind.Api.Controllers
                 parameters.Add("color", strParameterArray[7].ToString());
                 parameters.Add("controltype", strParameterArray[8].ToString());
                 parameters.Add("lathe", strParameterArray[9].ToString());
-                if (StrType != "")
-                {
+                
                     parameters.Add("char", strParameterArray[10]);
                     parameters.Add("cutwidth", strParameterArray[14]);
                     parameters.Add("lineNumber", strParameterArray[15].ToString());
                     parameters.Add("cntrside", strParameterArray[16]);
-                }
+                
+                
                 parameters.Add("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString());
-
                 LocalReport localReport = new LocalReport(path);
                 var result = localReport.Execute(RenderType.Image, extension, parameters, mimtype);
+
                 var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
@@ -750,7 +754,7 @@ namespace WindowBlind.Api.Controllers
                         args.Graphics.DrawImage(i, m);
                     };
                     pd.Print();
-
+                    pd.Dispose();
                 }
                 catch (Exception ex)
                 {

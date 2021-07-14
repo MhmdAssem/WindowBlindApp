@@ -83,7 +83,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>fabric</rd:DefaultName>
-            <Top>0.98833in</Top>
+            <Top>0.73833in</Top>
             <Left>0.125in</Left>
             <Height>0.25in</Height>
             <Width>1.21874in</Width>
@@ -112,10 +112,10 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>0.5543in</Top>
+            <Top>0.4293in</Top>
             <Left>0.125in</Left>
             <Height>0.25in</Height>
-            <Width>1.33333in</Width>
+            <Width>1.43626in</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -142,7 +142,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>char</rd:DefaultName>
-            <Top>1.42583in</Top>
+            <Top>1.05083in</Top>
             <Left>0.125in</Left>
             <Height>0.25in</Height>
             <Width>0.20833in</Width>
@@ -175,7 +175,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lineNumber</rd:DefaultName>
-            <Top>1.42583in</Top>
+            <Top>1.05083in</Top>
             <Left>0.88542in</Left>
             <Height>0.40625in</Height>
             <Width>1.26041in</Width>
@@ -205,8 +205,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>department</rd:DefaultName>
-            <Top>0.5543in</Top>
-            <Left>1.47792in</Left>
+            <Top>0.4293in</Top>
+            <Left>1.6307in</Left>
             <Height>0.25in</Height>
             <Width>1.18402in</Width>
             <ZIndex>6</ZIndex>
@@ -235,10 +235,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>type</rd:DefaultName>
-            <Top>0.5543in</Top>
-            <Left>2.7175in</Left>
+            <Top>0.4293in</Top>
+            <Left>2.85639in</Left>
             <Height>0.25in</Height>
-            <Width>0.67708in</Width>
+            <Width>0.88541in</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border>
@@ -265,7 +265,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>color</rd:DefaultName>
-            <Top>0.98833in</Top>
+            <Top>0.73833in</Top>
             <Left>1.38541in</Left>
             <Height>0.25in</Height>
             <Width>1.18402in</Width>
@@ -295,7 +295,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>controltype</rd:DefaultName>
-            <Top>0.98833in</Top>
+            <Top>0.73833in</Top>
             <Left>2.6111in</Left>
             <Height>0.25in</Height>
             <Width>0.67708in</Width>
@@ -325,8 +325,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
-            <Top>0.98833in</Top>
-            <Left>3.43626in</Left>
+            <Top>0.73833in</Top>
+            <Left>3.31126in</Left>
             <Height>0.25in</Height>
             <Width>0.64931in</Width>
             <ZIndex>10</ZIndex>
@@ -355,7 +355,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>cutwidth</rd:DefaultName>
-            <Top>1.42583in</Top>
+            <Top>1.05083in</Top>
             <Left>0.40278in</Left>
             <Height>0.25in</Height>
             <Width>0.42709in</Width>
@@ -385,7 +385,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>cntrside</rd:DefaultName>
-            <Top>1.42583in</Top>
+            <Top>1.05083in</Top>
             <Left>2.20139in</Left>
             <Height>0.40625in</Height>
             <Width>0.18055in</Width>
@@ -415,7 +415,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>someoftotal</rd:DefaultName>
-            <Top>1.42583in</Top>
+            <Top>1.05083in</Top>
             <Left>2.43972in</Left>
             <Height>0.40625in</Height>
             <Width>0.78125in</Width>
@@ -463,13 +463,13 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>1.96875in</Height>
+        <Height>1.60417in</Height>
         <Style />
       </Body>
       <Width>4.90625in</Width>
       <Page>
-        <PageHeight>2in</PageHeight>
-        <PageWidth>3.5in</PageWidth>
+        <PageHeight>1.8in</PageHeight>
+        <PageWidth>3.8in</PageWidth>
         <Style />
       </Page>
     </ReportSection>

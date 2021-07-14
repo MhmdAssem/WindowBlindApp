@@ -83,7 +83,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>fabric</rd:DefaultName>
-            <Top>0.98833in</Top>
+            <Top>0.73833in</Top>
             <Left>0.32167in</Left>
             <Height>0.25in</Height>
             <Width>1.01042in</Width>
@@ -112,10 +112,10 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>0.5543in</Top>
+            <Top>0.4293in</Top>
             <Left>0.32167in</Left>
             <Height>0.25in</Height>
-            <Width>1.23264in</Width>
+            <Width>1.38541in</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -142,8 +142,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>department</rd:DefaultName>
-            <Top>0.5543in</Top>
-            <Left>1.62375in</Left>
+            <Top>0.4293in</Top>
+            <Left>1.74875in</Left>
             <Height>0.25in</Height>
             <Width>1.19792in</Width>
             <ZIndex>4</ZIndex>
@@ -168,23 +168,22 @@
                     <Style />
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>type</rd:DefaultName>
-            <Top>0.5543in</Top>
-            <Left>2.87723in</Left>
+            <Top>0.4293in</Top>
+            <Left>3.00223in</Left>
             <Height>0.25in</Height>
-            <Width>0.59375in</Width>
+            <Width>0.91319in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
+              <VerticalAlign>Middle</VerticalAlign>
             </Style>
           </Textbox>
           <Textbox Name="color">
@@ -202,8 +201,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>color</rd:DefaultName>
-            <Top>0.9675in</Top>
-            <Left>1.42583in</Left>
+            <Top>0.73833in</Top>
+            <Left>1.38765in</Left>
             <Height>0.25in</Height>
             <Width>0.85417in</Width>
             <ZIndex>6</ZIndex>
@@ -232,8 +231,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>controltype</rd:DefaultName>
-            <Top>0.9675in</Top>
-            <Left>2.42583in</Left>
+            <Top>0.73833in</Top>
+            <Left>2.31472in</Left>
             <Height>0.25in</Height>
             <Width>0.75in</Width>
             <ZIndex>7</ZIndex>
@@ -262,8 +261,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
-            <Top>0.94667in</Top>
-            <Left>3.20361in</Left>
+            <Top>0.73833in</Top>
+            <Left>3.0925in</Left>
             <Height>0.25in</Height>
             <Width>0.6875in</Width>
             <ZIndex>8</ZIndex>
@@ -297,7 +296,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>cbNumber</rd:DefaultName>
-            <Top>1.41542in</Top>
+            <Top>1.04042in</Top>
             <Left>0.58208in</Left>
             <Height>0.4375in</Height>
             <Width>2.15625in</Width>
@@ -328,7 +327,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>someoftotal</rd:DefaultName>
-            <Top>1.41542in</Top>
+            <Top>1.04042in</Top>
             <Left>2.87723in</Left>
             <Height>0.4375in</Height>
             <Width>0.69792in</Width>
@@ -349,7 +348,7 @@
       </Body>
       <Width>6.5in</Width>
       <Page>
-        <PageHeight>3in</PageHeight>
+        <PageHeight>1.8in</PageHeight>
         <PageWidth>4in</PageWidth>
         <Style />
       </Page>
