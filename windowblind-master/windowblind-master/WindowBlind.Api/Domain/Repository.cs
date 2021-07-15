@@ -46,6 +46,7 @@ namespace WindowBlind.Api
             var client = new MongoClient(settings.ConnectionString);
             _mongoDb = client.GetDatabase(settings.DatabaseName);
             Console.WriteLine("Connect to MongoDB");
+ 
             Seed();
         }
 
@@ -82,7 +83,7 @@ namespace WindowBlind.Api
             {
                 seedAssemblyStation();
             }
-            if(comport == 0)
+            if (comport == 0)
             {
                 seedComport();
 
@@ -117,7 +118,9 @@ namespace WindowBlind.Api
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCut Output",settingPath = "" ,applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStop Output",settingPath = "" ,applicationSetting = "EzStop"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "XML File",settingPath = "" ,applicationSetting = "EzStop"},
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "" },
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "",applicationSetting = "FabricCutter" },
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "",applicationSetting = "LogCut" },
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath= "",applicationSetting = "EzStop" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "FabricCutterTable",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCutterTable",settingPath = "" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStopTable",settingPath = "" }
@@ -271,6 +274,15 @@ namespace WindowBlind.Api
             log.date = DateTime.Now.ToString();
             log.id = Guid.NewGuid().ToString();
             _mongoDb.GetCollection<ComportModel>("comport").InsertOne(log);
+        }
+
+        private void DropTables()
+        {
+            _mongoDb.DropCollection("logs");
+            _mongoDb.DropCollection("PackingStation");
+            _mongoDb.DropCollection("HoistStation");
+            _mongoDb.DropCollection("AssemblyStation");
+            _mongoDb.DropCollection("comport");
         }
     }
 }

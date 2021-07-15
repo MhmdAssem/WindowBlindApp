@@ -109,7 +109,7 @@ namespace WindowBlind.Api.Controllers
             {
                 foreach (var setting in settings)
                 {
-                    await this.Repository.Settings.ReplaceOneAsync(set => set.settingName == setting.settingName, setting);
+                    await this.Repository.Settings.ReplaceOneAsync(set => set.settingName == setting.settingName && set.applicationSetting == setting.applicationSetting, setting);
                 }
                 return true;
             }

@@ -1,10 +1,12 @@
-﻿using AspNetCore.Reporting;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.NETCore;
 using MongoDB.Driver;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
@@ -61,7 +63,7 @@ namespace WindowBlind.Api.Controllers
                 var SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
 
                 /// get the SelectedColumns
-                var SelectedColumnsSetting = await _repository.Settings.FindAsync(e => e.settingName == "SelectedColumnsNames");
+                var SelectedColumnsSetting = await _repository.Settings.FindAsync(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "FabricCutter");
                 var SelectedColumnsPath = SelectedColumnsSetting.FirstOrDefault().settingPath.Split("@@@").ToList();
 
                 if (SelectedColumnsPath.Count == 1 && SelectedColumnsPath[0].Trim() == "") SelectedColumnsPath = new List<string>();
@@ -100,6 +102,7 @@ namespace WindowBlind.Api.Controllers
 
                 #region Reading Data
                 FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
+                ctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
                 file = new FileInfo(ctbsodumpPath);
                 if (!file.Exists) return null;
                 List<string> names = new List<string>();
@@ -171,11 +174,13 @@ namespace WindowBlind.Api.Controllers
                     package.Dispose();
                 }
 
+                System.IO.File.Delete(ctbsodumpPath);
 
                 Dictionary<string, string> FabricRollwidth = new Dictionary<string, string>();
                 Dictionary<string, int> ControlTypevalues = new Dictionary<string, int>();
                 Dictionary<string, List<string>> LatheType = new Dictionary<string, List<string>>();
 
+                FBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
                 file = new FileInfo(FBRPath);
                 using (var package = new ExcelPackage(file))
                 {
@@ -191,6 +196,11 @@ namespace WindowBlind.Api.Controllers
                     }
                 }
 
+                System.IO.File.Delete(FBRPath);
+
+
+                DeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
+
                 file = new FileInfo(DeductionPath);
                 using (var package = new ExcelPackage(file))
                 {
@@ -205,6 +215,10 @@ namespace WindowBlind.Api.Controllers
                         ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
                     }
                 }
+
+                System.IO.File.Delete(DeductionPath);
+
+                LathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
 
                 file = new FileInfo(LathePath);
                 using (var package = new ExcelPackage(file))
@@ -224,6 +238,8 @@ namespace WindowBlind.Api.Controllers
 
                     }
                 }
+
+                System.IO.File.Delete(LathePath);
 
                 #endregion
 
@@ -326,30 +342,40 @@ namespace WindowBlind.Api.Controllers
                 string mimtype = "";
                 int extension = 1;
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutter.rdlc");
-                Dictionary<string, string> parameters = new Dictionary<string, string>();
-                parameters.Add("cbNumber", strParameterArray[0]);
-                parameters.Add("width", strParameterArray[1] + " mm");
-                parameters.Add("drop", strParameterArray[2] + " mm");
-                parameters.Add("customer", strParameterArray[3].ToString());
-                parameters.Add("department", strParameterArray[4].ToString());
-                parameters.Add("type", strParameterArray[5].ToString());
-                parameters.Add("fabric", strParameterArray[6].ToString());
-                parameters.Add("color", strParameterArray[7].ToString());
-                parameters.Add("controltype", strParameterArray[8].ToString());
-                parameters.Add("lathe", strParameterArray[9].ToString());
-                parameters.Add("char", strParameterArray[10].Split(" ")[0].ToString());
-                parameters.Add("cutwidth", strParameterArray[10].Split(" ")[1].ToString());
-                parameters.Add("lineNumber", strParameterArray[11].ToString());
 
-                parameters.Add("controlside", strParameterArray[12].Split(" ")[0].ToString());
-                parameters.Add("someoftotal", strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString());
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                Encoding.GetEncoding("windows-1252");
+                var parametersList = new List<ReportParameter>();
 
-                LocalReport localReport = new LocalReport(path);
-                var result = localReport.Execute(RenderType.Image, extension, parameters, mimtype);
+                parametersList.Add(new ReportParameter("someoftotal", strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString()));
+                parametersList.Add(new ReportParameter("cutwidth", strParameterArray[10].Split(" ")[1].ToString()));
+                parametersList.Add(new ReportParameter("controlside", strParameterArray[12].Split(" ")[0].ToString()));
+                parametersList.Add(new ReportParameter("lineNumber", strParameterArray[11].ToString()));
+                parametersList.Add(new ReportParameter("char", strParameterArray[10].Split(" ")[0].ToString()));
+                parametersList.Add(new ReportParameter("lathe", strParameterArray[9].ToString()));
+                parametersList.Add(new ReportParameter("controltype", strParameterArray[8].ToString()));
+                parametersList.Add(new ReportParameter("color", strParameterArray[7].ToString()));
+                parametersList.Add(new ReportParameter("fabric", strParameterArray[6].ToString()));
+                parametersList.Add(new ReportParameter("type", strParameterArray[5].ToString()));
+                parametersList.Add(new ReportParameter("department", strParameterArray[4].ToString()));
+                parametersList.Add(new ReportParameter("customer", strParameterArray[3].ToString()));
+                parametersList.Add(new ReportParameter("drop", strParameterArray[2].ToString() + " mm"));
+                parametersList.Add(new ReportParameter("width", strParameterArray[1].ToString() + " mm"));
+                parametersList.Add(new ReportParameter("cbNumber", strParameterArray[0].ToString()));
+
+
+
+                LocalReport report = new LocalReport();
+                report.ReportPath = path;
+                report.SetParameters(parametersList);
+                report.Refresh();
+                byte[] result = report.Render("IMAGE");
+                report.Dispose();
+
                 var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
-                    stream.Write(result.MainStream, 0, result.MainStream.Length);
+                    stream.Write(result, 0, result.Length);
                 }
 
 
@@ -672,6 +698,13 @@ namespace WindowBlind.Api.Controllers
 
                 return new JsonResult(false);
             }
+        }
+
+        public string CreateNewFile(string source, string destination)
+        {
+            System.IO.File.Copy(source, destination);
+            return destination;
+
         }
     }
 }

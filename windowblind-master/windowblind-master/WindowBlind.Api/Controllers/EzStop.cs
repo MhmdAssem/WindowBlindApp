@@ -1,10 +1,9 @@
-﻿using AspNetCore.Reporting;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.NETCore;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -73,6 +72,11 @@ namespace WindowBlind.Api.Controllers
                 var DropSetting = await _repository.Settings.FindAsync(e => e.settingName == "DropTable");
                 var DropPath = DropSetting.FirstOrDefault().settingPath;
 
+                var SelectedColumnsSetting = await _repository.Settings.FindAsync(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "EzStop");
+                var SelectedColumnsPath = SelectedColumnsSetting.FirstOrDefault().settingPath.Split("@@@").ToList();
+
+                if (SelectedColumnsPath.Count == 1 && SelectedColumnsPath[0].Trim() == "") SelectedColumnsPath = new List<string>();
+
                 #endregion
 
                 #region Checking The Paths
@@ -116,6 +120,8 @@ namespace WindowBlind.Api.Controllers
                 List<DropTableModel> Droptable = new List<DropTableModel>();
                 List<string> FabricDatable = new List<string>();
 
+                FBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
+
                 file = new FileInfo(FBRPath);
                 using (var package = new ExcelPackage(file))
                 {
@@ -131,14 +137,16 @@ namespace WindowBlind.Api.Controllers
                     }
                 }
 
+                System.IO.File.Delete(FBRPath);
+
+                DeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
+
                 file = new FileInfo(DeductionPath);
                 using (var package = new ExcelPackage(file))
                 {
                     var workbook = package.Workbook;
 
                     var worksheet = workbook.Worksheets.FirstOrDefault();
-                    var FixingSheet = workbook.Worksheets.Where(sheet => sheet.Index == 1).FirstOrDefault();
-
 
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
@@ -146,16 +154,11 @@ namespace WindowBlind.Api.Controllers
                     {
                         ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
                     }
-
-
-                    start = FixingSheet.Dimension.Start;
-                    end = FixingSheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
-                    {
-                        if (FixingSheet.Cells[i, 2].Text.Trim() != "")
-                            FixingValues[FixingSheet.Cells[i, 1].Text.Trim()] = int.Parse(FixingSheet.Cells[i, 2].Text.Trim());
-                    }
                 }
+
+                System.IO.File.Delete(DeductionPath);
+
+                LathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
 
                 file = new FileInfo(LathePath);
                 using (var package = new ExcelPackage(file))
@@ -176,6 +179,10 @@ namespace WindowBlind.Api.Controllers
                     }
                 }
 
+                System.IO.File.Delete(LathePath);
+
+                FabricPath = CreateNewFile(FabricPath, FabricPath.Substring(0, FabricPath.IndexOf(".")) + Guid.NewGuid().ToString() + FabricPath.Substring(FabricPath.IndexOf(".")));
+
                 file = new FileInfo(FabricPath);
                 using (var package = new ExcelPackage(file))
                 {
@@ -192,6 +199,10 @@ namespace WindowBlind.Api.Controllers
                             FabricDatable.Add(text);
                     }
                 }
+
+                System.IO.File.Delete(FabricPath);
+
+                DropPath = CreateNewFile(DropPath, DropPath.Substring(0, DropPath.IndexOf(".")) + Guid.NewGuid().ToString() + DropPath.Substring(DropPath.IndexOf(".")));
 
                 file = new FileInfo(DropPath);
                 using (var package = new ExcelPackage(file))
@@ -215,7 +226,11 @@ namespace WindowBlind.Api.Controllers
                     }
                 }
 
+                System.IO.File.Delete(DropPath);
+
                 var TotalQty = 0;
+                ctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
+
                 file = new FileInfo(ctbsodumpPath);
                 using (var package = new ExcelPackage(file))
                 {
@@ -274,7 +289,8 @@ namespace WindowBlind.Api.Controllers
                             {
                                 TotalQty += int.Parse(cell);
                             }
-
+                            if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
+                                Data.ColumnNames.Add(Headertext);
                             row[Headertext] = cell;
 
                         }
@@ -286,6 +302,7 @@ namespace WindowBlind.Api.Controllers
                     }
                     package.Dispose();
                 }
+                System.IO.File.Delete(ctbsodumpPath);
 
 
                 #endregion
@@ -620,28 +637,35 @@ namespace WindowBlind.Api.Controllers
                 string mimtype = "";
                 int extension = 1;
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);
-                Dictionary<string, string> parameters = new Dictionary<string, string>();
 
-                parameters.Add("cbNumber", strParameterArray[0]);
-                parameters.Add("width", strParameterArray[1]);
-                parameters.Add("drop", strParameterArray[2]);
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                Encoding.GetEncoding("windows-1252");
+                var parametersList = new List<ReportParameter>();
 
-                parameters.Add("customer", strParameterArray[3].ToString());
-                parameters.Add("department", strParameterArray[4].ToString());
-                parameters.Add("fabric", strParameterArray[5].ToString());
-                parameters.Add("color", strParameterArray[7].ToString());
-                parameters.Add("controltype", strParameterArray[6].ToString());
-                parameters.Add("lathe", strParameterArray[8].ToString());
-                parameters.Add("char", strParameterArray[9]);
+                parametersList.Add(new ReportParameter("someoftotal", strParameterArray[11] + " of " + strParameterArray[12].ToString()));
+                parametersList.Add(new ReportParameter("char", strParameterArray[9].ToString()));
+                parametersList.Add(new ReportParameter("lathe", strParameterArray[8].ToString()));
+                parametersList.Add(new ReportParameter("controltype", strParameterArray[6].ToString()));
+                parametersList.Add(new ReportParameter("color", strParameterArray[7].ToString()));
+                parametersList.Add(new ReportParameter("fabric", strParameterArray[5].ToString()));
+                //parametersList.Add(new ReportParameter("type", strParameterArray[5].ToString()));
+                parametersList.Add(new ReportParameter("department", strParameterArray[4].ToString()));
+                parametersList.Add(new ReportParameter("customer", strParameterArray[3].ToString()));
+                parametersList.Add(new ReportParameter("drop", strParameterArray[2].ToString()));
+                parametersList.Add(new ReportParameter("width", strParameterArray[1].ToString()));
+                parametersList.Add(new ReportParameter("cbNumber", strParameterArray[0].ToString()));
 
-                parameters.Add("someoftotal", strParameterArray[11].ToString() + " of " + strParameterArray[12].ToString());
+                LocalReport report = new LocalReport();
+                report.ReportPath = path;
+                report.SetParameters(parametersList);
+                report.Refresh();
+                byte[] result = report.Render("IMAGE");
+                report.Dispose();
 
-                LocalReport localReport = new LocalReport(path);
-                var result = localReport.Execute(RenderType.Image, extension, parameters, mimtype);
                 var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
-                    stream.Write(result.MainStream, 0, result.MainStream.Length);
+                    stream.Write(result, 0, result.Length);
                 }
 
 
@@ -735,5 +759,14 @@ namespace WindowBlind.Api.Controllers
             }
 
         }
+
+        public string CreateNewFile(string source, string destination)
+        {
+            System.IO.File.Copy(source, destination);
+            return destination;
+
+        }
+
+
     }
 }

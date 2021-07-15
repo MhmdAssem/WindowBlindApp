@@ -29,9 +29,14 @@ export class SettingsComponent implements OnInit {
   Saving: boolean = false;
 
   ColumnNames = [];
+  ColumnNamesApplications = [];
   PrinterNames = [];
-  SelectedColumnNames: string[];
-  SelectedColumnNamesId: string;
+  FabricSelectedColumnNames: string[];
+  LogCutSelectedColumnNames: string[];
+  EzStopSelectedColumnNames: string[];
+  FabricSelectedColumnNamesId: string;
+  LogCutSelectedColumnNamesId: string;
+  EzStopSelectedColumnNamesId: string;
   FabricCutterTableNumberId: string;
   LogCutterTableNumberId: string;
   EzStopTableNumberId: string;
@@ -48,24 +53,10 @@ export class SettingsComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
 
 
-  get stationSelected(): boolean {
-    return !this.selection.table;
-  }
-  get selectedStation(): Station | undefined {
-    const station = this.selection.station;
-    if (station && !station.settings) {
-      station.settings = new FabricCutterSettings();
-    }
-    return station;
-  }
-  get selectedTable(): Table | undefined {
-    if (this.stationSelected) { return undefined; }
-    const table = this.selection.table;
-    return table;
-  }
-
   ngOnInit(): void {
-    this.SelectedColumnNames = [];
+    this.FabricSelectedColumnNames = [];
+    this.LogCutSelectedColumnNames = [];
+    this.EzStopSelectedColumnNames = [];
     this.dtOptions = {
       pagingType: 'full_numbers',
       lengthChange: false,
@@ -82,15 +73,32 @@ export class SettingsComponent implements OnInit {
       this.ListOfFiles = data;
       console.log(data);
 
-      let ind = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames");
+      let indFabric = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "FabricCutter");
+     
 
-      if (this.ListOfFiles[ind].settingPath != "")
-        this.SelectedColumnNames = (this.ListOfFiles[ind].settingPath.split("@@@") as []);
+      if (this.ListOfFiles[indFabric].settingPath != "")
+        this.FabricSelectedColumnNames = (this.ListOfFiles[indFabric].settingPath.split("@@@") as []);
 
-      this.SelectedColumnNamesId = this.ListOfFiles[ind].id;
-      this.ListOfFiles.splice(ind, 1);
+      this.FabricSelectedColumnNamesId = this.ListOfFiles[indFabric].id;
+      this.ListOfFiles.splice(indFabric, 1);
+      let indLogCut = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "LogCut");
 
-      ind = this.ListOfFiles.findIndex(e => e.settingName == "FabricCutterTable");
+      if (this.ListOfFiles[indLogCut].settingPath != "")
+        this.LogCutSelectedColumnNames = (this.ListOfFiles[indLogCut].settingPath.split("@@@") as []);
+
+      this.LogCutSelectedColumnNamesId = this.ListOfFiles[indLogCut].id;
+      this.ListOfFiles.splice(indLogCut, 1);
+
+      let indEzStop = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "EzStop");
+
+      if (this.ListOfFiles[indEzStop].settingPath != "")
+        this.EzStopSelectedColumnNames = (this.ListOfFiles[indEzStop].settingPath.split("@@@") as []);
+
+      this.EzStopSelectedColumnNamesId = this.ListOfFiles[indEzStop].id;
+      this.ListOfFiles.splice(indEzStop, 1);
+
+
+      let ind = this.ListOfFiles.findIndex(e => e.settingName == "FabricCutterTable");
       this.FabricCutterTableNumberId = this.ListOfFiles[ind].id;
       let FabricCutterTables = this.ListOfFiles[ind].settingPath;
       this.ListOfFiles.splice(ind, 1);
@@ -158,8 +166,16 @@ export class SettingsComponent implements OnInit {
       this.ColumnNames = data;
       console.log(data);
       setTimeout(() => {
-        this.SelectedColumnNames.forEach(element => {
-          (document.getElementById('CheckBox_' + element) as HTMLInputElement).checked = true;
+        this.FabricSelectedColumnNames.forEach(element => {
+          (document.getElementById('FabricCheckBox_' + element) as HTMLInputElement).checked = true;
+        });
+        
+        this.LogCutSelectedColumnNames.forEach(element => {
+          (document.getElementById('LogCutCheckBox_' + element) as HTMLInputElement).checked = true;
+        });
+        
+        this.EzStopSelectedColumnNames.forEach(element => {
+          (document.getElementById('EzStopCheckBox_' + element) as HTMLInputElement).checked = true;
         });
       }, 10);
     });
@@ -200,21 +216,55 @@ export class SettingsComponent implements OnInit {
       this.ListOfFiles[i].settingPath = (document.getElementById("ID_" + this.ListOfFiles[i].settingName) as HTMLInputElement).value;
     }
 
-    let obs = document.getElementsByClassName('custom-control-input');
-    this.SelectedColumnNames = [];
-    for (let index = 0; index < obs.length; index++) {
-      if ((obs[index] as HTMLInputElement).checked) {
-        this.SelectedColumnNames.push((obs[index] as HTMLInputElement).title);
+    let fabricObjects = document.getElementsByClassName('Fabric-custom-control-input');
+    let logcutObjects = document.getElementsByClassName('LogCut-custom-control-input');
+    let ezStopObjects = document.getElementsByClassName('EzStop-custom-control-input');
+    this.FabricSelectedColumnNames = [];
+    this.LogCutSelectedColumnNames = [];
+    this.EzStopSelectedColumnNames = [];
+    for (let index = 0; index < fabricObjects.length; index++) {
+      if ((fabricObjects[index] as HTMLInputElement).checked) {
+        this.FabricSelectedColumnNames.push((fabricObjects[index] as HTMLInputElement).title);
       }
     }
+    
+    for (let index = 0; index < logcutObjects.length; index++) {
+      if ((logcutObjects[index] as HTMLInputElement).checked) {
+        this.LogCutSelectedColumnNames.push((logcutObjects[index] as HTMLInputElement).title);
+      }
+    }
+    
+    
+    for (let index = 0; index < ezStopObjects.length; index++) {
+      if ((ezStopObjects[index] as HTMLInputElement).checked) {
+        this.EzStopSelectedColumnNames.push((ezStopObjects[index] as HTMLInputElement).title);
+      }
+    }
+    
 
     let newList = [...this.ListOfFiles];
 
     let newEntry: FileSettings = {
       settingName: "SelectedColumnsNames",
-      settingPath: this.SelectedColumnNames.join("@@@"),
-      id: this.SelectedColumnNamesId,
-      applicationSetting: ""
+      settingPath: this.FabricSelectedColumnNames.join("@@@"),
+      id: this.FabricSelectedColumnNamesId,
+      applicationSetting: "FabricCutter"
+    }
+    newList.push(newEntry);
+    
+    newEntry = {
+      settingName: "SelectedColumnsNames",
+      settingPath: this.LogCutSelectedColumnNames.join("@@@"),
+      id: this.LogCutSelectedColumnNamesId,
+      applicationSetting: "LogCut"
+    }
+    newList.push(newEntry);
+    
+    newEntry= {
+      settingName: "SelectedColumnsNames",
+      settingPath: this.EzStopSelectedColumnNames.join("@@@"),
+      id: this.EzStopSelectedColumnNamesId,
+      applicationSetting: "EzStop"
     }
     newList.push(newEntry);
 
@@ -237,7 +287,7 @@ export class SettingsComponent implements OnInit {
       settingName: "LogCutterTable",
       settingPath: "",
       id: this.LogCutterTableNumberId,
-       applicationSetting: ""
+      applicationSetting: ""
 
     }
     this.PrinterTableArray.forEach(element => {
@@ -281,20 +331,6 @@ export class SettingsComponent implements OnInit {
 
   }
 
-  GetColumnName(event) {
-
-    if (event.target.checked == true) {
-      let id: string = event.target.id;
-      this.SelectedColumnNames.push(id);
-    }
-    else {
-      let id: string = event.target.id;
-      let ind = this.SelectedColumnNames.findIndex(e => e == id);
-      this.SelectedColumnNames.splice(ind, 1);
-    }
-
-
-  }
   Delete(i) {
     this.PrinterTableArray.splice(i, 1);
     this.updateTable();

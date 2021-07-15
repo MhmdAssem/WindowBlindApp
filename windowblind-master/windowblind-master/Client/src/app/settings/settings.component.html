@@ -71,78 +71,120 @@
 
 
   <div class="row" style="margin-top: 50px;">
-    <div class="col-md-6">
-      <h2 style="margin-left: 180px;"> General Settings</h2>
+    <div class="col-md-12">
+      <div class="General Settings">
+        <h2 style="margin-left: 400px;"> General Settings</h2>
 
-      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
-        <div class="col-3" *ngIf="FileSetting.applicationSetting=='General Setting'">
-          <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
-            FileSetting.settingName}}:</Label>
-        </div>
-        <div class="col-9" *ngIf="FileSetting.applicationSetting=='General Setting'" style="margin-top: -10px;">
-          <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
-            value="{{FileSetting.settingPath}}">
-        </div>
+        <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+          <div class="col-3" *ngIf="FileSetting.applicationSetting=='General Setting'">
+            <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+              FileSetting.settingName}}:</Label>
+          </div>
+          <div class="col-9" *ngIf="FileSetting.applicationSetting=='General Setting'" style="margin-top: -10px;">
+            <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+              value="{{FileSetting.settingPath}}">
+          </div>
 
-      </div>
-      <hr style="border-bottom:5px solid black;min-width:100%">
-      <h2 style="margin-left: 180px;"> FabricCutter Settings</h2>
-
-      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
-        <div class="col-3" *ngIf="FileSetting.applicationSetting=='FabricCutter'">
-          <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
-            FileSetting.settingName}}:</Label>
         </div>
-        <div class="col-9" *ngIf="FileSetting.applicationSetting=='FabricCutter'" style="margin-top: -10px;">
-          <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
-            value="{{FileSetting.settingPath}}">
-        </div>
-
       </div>
 
       <hr style="border-bottom:5px solid black;min-width:100%">
-      <h2 style="margin-left: 180px;"> LogCut Settings</h2>
+      <div class="FabricCutter settings">
+        <h2 style="margin-left: 400px;"> FabricCutter Settings</h2>
 
-      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
-        <div class="col-3" *ngIf="FileSetting.applicationSetting=='LogCut'">
-          <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
-            FileSetting.settingName}}:</Label>
-        </div>
-        <div class="col-9" *ngIf="FileSetting.applicationSetting=='LogCut'" style="margin-top: -10px;">
-          <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
-            value="{{FileSetting.settingPath}}">
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;">
+            <div class="row " *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='FabricCutter'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='FabricCutter'" style="margin-top: -10px;">
+                <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 ml-auto">
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input Fabric-custom-control-input" id="FabricCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="FabricCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="LogCut settings">
+        <h2 style="margin-left: 400px;"> LogCut Settings</h2>
+
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;">
+            <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='LogCut'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='LogCut'" style="margin-top: -10px;">
+                <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-4 ml-auto">
+
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input LogCut-custom-control-input" id="LogCutCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="LogCutCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+
+      </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="EzStop Settings">
+        <h2 style="margin-left: 400px;"> EzyStop Settings</h2>
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;"> 
+            <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='EzStop'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='EzStop'" style="margin-top: -10px;">
+                <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+  
+            </div>
+          </div>
+          <div class="col-md-4 ml-auto">  
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input EzStop-custom-control-input" id="EzStopCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="EzStopCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
       
-      <hr style="border-bottom:5px solid black;min-width:100%">
-      <h2 style="margin-left: 180px;"> EzyStop Settings</h2>
-
-      <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
-        <div class="col-3" *ngIf="FileSetting.applicationSetting=='EzStop'">
-          <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
-            FileSetting.settingName}}:</Label>
-        </div>
-        <div class="col-9" *ngIf="FileSetting.applicationSetting=='EzStop'" style="margin-top: -10px;">
-          <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
-            value="{{FileSetting.settingPath}}">
-        </div>
-
       </div>
 
     </div>
-
-    <div class="col-md-4 ml-auto">
-
-      <div class="data-scroll">
-        <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
-          <input type="checkbox" class="custom-control-input" id="CheckBox_{{col}}" title="{{col}}">
-          <label class="custom-control-label" for="CheckBox_{{col}}">{{col}}</label>
-        </div>
-      </div>
-
-    </div>
-
   </div>
 
   <button type="button" class="btn btn-primary mr-3" style="position: fixed;right:0;bottom:0;float: right;"

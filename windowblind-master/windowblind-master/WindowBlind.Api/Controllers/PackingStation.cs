@@ -151,7 +151,12 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
+        public string CreateNewFile(string source, string destination)
+        {
+            System.IO.File.Copy(source, destination);
+            return destination;
 
+        }
         private async Task<Dictionary<string, int>> GetCbNumberCountFromFile()
         {
             Dictionary<string, int> CBNumberCounter = new Dictionary<string, int>();
@@ -164,6 +169,7 @@ namespace WindowBlind.Api.Controllers
             var SheetNameSetting = await _repository.Settings.FindAsync(e => e.settingName == "SheetName");
             var SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
 
+            ctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
 
             FileInfo file = new FileInfo(ctbsodumpPath);
             using (var package = new ExcelPackage(file))
@@ -187,6 +193,7 @@ namespace WindowBlind.Api.Controllers
                         }
                 }
             }
+            System.IO.File.Delete(ctbsodumpPath);
             return CBNumberCounter;
 
         }
