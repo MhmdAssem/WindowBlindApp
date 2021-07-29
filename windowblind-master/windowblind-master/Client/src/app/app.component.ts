@@ -7,11 +7,18 @@ import { AuthService } from './auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(private authService: AuthService)
-  {}
+  constructor(private authService: AuthService) { }
 
   get isAdministrator(): boolean {
-    return this.authService.currentUser?.role == "Admin"; }
+    return this.authService.currentUser?.role == "Admin";
+  }
+
+  get isCustomerService(): boolean {
+    return this.authService.currentUser?.role == "Customer service";
+  }
+  get isFactoryStaff(): boolean {
+    return this.authService.currentUser?.role == "Factory staff";
+  }
   get currentTable(): string | undefined { return this.authService.currentTable?.name; }
   get currentStation(): string | undefined { return this.authService.currentStation?.name; }
 }

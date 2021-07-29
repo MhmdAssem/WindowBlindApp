@@ -498,6 +498,7 @@ namespace WindowBlind.Api.Controllers
                 log.dateTime = datetime;
                 log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
                 log.ProcessType = ProcessType;
+                log.TableName = tableNo;
                 await _repository.Logs.InsertOneAsync(log);
                 return true;
             }

@@ -138,6 +138,7 @@ namespace WindowBlind.Api.Controllers
                     log.dateTime = DateTime.Now.ToString();
                     log.status = "Assembly";
                     log.ProcessType = "Assembly";
+                    log.TableName = model.tableName;
                     log.Message = "This Line No.: " + log.LineNumber + ", has been assembled at " + log.dateTime;
                     await _repository.AssemblyStation.InsertOneAsync(log);
                     await _repository.Logs.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],

@@ -75,6 +75,7 @@ namespace WindowBlind.Api.Controllers
                     var log = new LogModel();
                     log.row = row;
                     log.UserName = model.userName;
+                    log.TableName = model.tableName;
                     log.LineNumber = row.Row["Line No"];
                     log.CBNumber = row.Row["CB Number"];
                     log.Item = row.Row["item"];

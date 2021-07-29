@@ -57,6 +57,22 @@ export class AssemblyStationComponent implements OnInit {
 
     };
 
+    this.settingService.getTableNumber('AssemblyStationTable').subscribe(data => {
+      if ((data as string).indexOf("@@@@@") != -1) {
+        let entries = (data as string).split("#####");
+
+        entries.forEach(element => {
+
+          let data = element.split("@@@@@");
+          this.TableNames.push(data[1]);
+          this.PrinterTableDictionary[data[1]] = data[0];
+
+        });
+      }
+
+
+    });
+    
     this.Refresh();
   }
 
@@ -114,7 +130,7 @@ export class AssemblyStationComponent implements OnInit {
       columnNames: this.tableModelColNames,
       rows: this.ReviewData
     };
-    let tableName = "";
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.assemblyService.pushLinesNoToAssemblyStation(
       tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false;
       

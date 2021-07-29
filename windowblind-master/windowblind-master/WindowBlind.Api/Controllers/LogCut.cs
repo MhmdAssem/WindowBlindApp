@@ -383,12 +383,17 @@ namespace WindowBlind.Api.Controllers
 
                     }
 
+                    item.Row["CutWidth"] = GetCutwidth2(item.Row["Width"], item.Row["Bind Type/# Panels/Rope/Operation"], ControlTypevalues);
+
+                    item.Row["Width"] = item.Row["Width"].Replace("mm", "");
+                    item.Row["CutWidth"] = item.Row["CutWidth"].Replace("mm", "");
+
                     if (item.Row["Width"] != "")
                         item.Row["Width"] = item.Row["Width"] + "mm";
                     else
                         item.Row["Width"] = "0";
 
-                    item.Row["CutWidth"] = GetCutwidth2(item.Row["Width"], item.Row["Bind Type/# Panels/Rope/Operation"], ControlTypevalues);
+                   
                     item.Row["CutWidth_hidden"] = item.Row["CutWidth"];
                     if (item.Row["CutWidth"] != String.Empty)
                         item.Row["CutWidth"] = item.Row["CutWidth"] + "mm";
@@ -584,6 +589,22 @@ namespace WindowBlind.Api.Controllers
                 ExcelWorksheet wsSheet1 = ExcelPkg.Workbook.Worksheets.Add("Logcut");
 
 
+                List<string> ExcelFileColumnNames = new List<string>
+                {
+                    "CB Number",
+                    "item",
+                    "Qty",
+                    "Width",
+                    "CutWidth",
+                    "Tube",
+                    "Date-Time",
+                    "Spring",
+                    "Finish",
+                    "Colour",
+                    "Line No"
+
+                };
+
                 wsSheet1.Cells["A1:I1"].Merge = true;
 
                 wsSheet1.Cells[1, 1].Value = "Logcut";
@@ -598,7 +619,7 @@ namespace WindowBlind.Api.Controllers
                 wsSheet1.Cells[1, 1].Style.Font.Color.SetColor(Color.Red);
 
                 int cntr = 1;
-                foreach (var col in data.ColumnNames)
+                foreach (var col in ExcelFileColumnNames)
                 {
                     wsSheet1.Cells[2, cntr].Value = col;
                     wsSheet1.Cells[2, cntr].Style.Font.Bold = true;
@@ -619,7 +640,7 @@ namespace WindowBlind.Api.Controllers
                 foreach (var item in data.Rows)
                 {
                     cntrCol = 1;
-                    foreach (var col in data.ColumnNames)
+                    foreach (var col in ExcelFileColumnNames)
                     {
                         wsSheet1.Column(cntrCol).Width = 15;
                         wsSheet1.Cells[cntrRow, cntrCol].Value = item.Row[col];
@@ -650,19 +671,7 @@ namespace WindowBlind.Api.Controllers
 
                     var ret1 = PrintReport(printerName, strParameterArray.ToList(), "LogCut1.rdlc", "Width");
                     var ret2 = PrintReport(printerName, strParameterArray.ToList(), "LogCut2.rdlc", "");
-                    //if (strpara.Length == 0) continue;
-                    //Thread thread1 = new Thread(e =>
-                    //    {
-                    //        
-                    //    });
-                    //thread1.Start();
-
-                    //Thread thread2 = new Thread(e =>
-                    //{
-                    //    
-                    //});
-
-                    //thread2.Start();
+                 
 
                 }
                 return new JsonResult(true);
@@ -857,6 +866,7 @@ namespace WindowBlind.Api.Controllers
                 log.dateTime = datetime;
                 log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
                 log.ProcessType = ProcessType;
+                log.TableName = tableNo;
                 await _repository.Logs.InsertOneAsync(log);
                 return true;
             }

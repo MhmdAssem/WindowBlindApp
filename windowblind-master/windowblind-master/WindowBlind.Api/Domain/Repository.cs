@@ -46,8 +46,9 @@ namespace WindowBlind.Api
             var client = new MongoClient(settings.ConnectionString);
             _mongoDb = client.GetDatabase(settings.DatabaseName);
             Console.WriteLine("Connect to MongoDB");
- 
-            Seed();
+
+            //DropTables();
+           Seed();
         }
 
         public void Seed()
@@ -108,11 +109,10 @@ namespace WindowBlind.Api
                 new FileSetting{Id = Guid.NewGuid().ToString(), settingName = "ctbsodump",settingPath = "",applicationSetting = "General Setting"},
                 new FileSetting{Id = Guid.NewGuid().ToString(), settingName = "SheetName",settingPath = "",applicationSetting = "General Setting"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Deduction",settingPath = "" ,applicationSetting = "FabricCutter"},
-                new FileSetting{ Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "DeductionTable",applicationSetting = "LogCut"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "DeductionTable",applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "DropTable" , settingPath = "" ,applicationSetting = "LogCut"},
-                new FileSetting{ Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "Fabric Rollwidth",applicationSetting = "FabricCutter"},
-                new FileSetting{ Id = Guid.NewGuid().ToString(),settingName = "FabricTable" , settingPath = "",applicationSetting = "LogCut"},
-                //new FileSetting{ Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "InputTable"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "Fabric Rollwidth",applicationSetting = "FabricCutter"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "FabricTable" , settingPath = "",applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "PVCLathe Fabric",settingPath = "" ,applicationSetting = "EzStop"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Fabric Cutter Output",settingPath = "" ,applicationSetting = "FabricCutter"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCut Output",settingPath = "" ,applicationSetting = "LogCut"},
@@ -121,9 +121,15 @@ namespace WindowBlind.Api
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "",applicationSetting = "FabricCutter" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "",applicationSetting = "LogCut" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath= "",applicationSetting = "EzStop" },
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "FabricCutterTable",settingPath = "" },
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCutterTable",settingPath = "" },
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStopTable",settingPath = "" }
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath= "",applicationSetting = "AssemblyStation" },
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath= "",applicationSetting = "HoistStation" },
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath= "",applicationSetting = "PackingStation" },
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "FabricCutterTable",settingPath = "" ,applicationSetting = ""},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCutterTable",settingPath = "" ,applicationSetting = ""},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStopTable",settingPath = "" ,applicationSetting = ""},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "AssemblyStationTable",settingPath = "" ,applicationSetting = ""},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "HoistStationTable",settingPath = "" ,applicationSetting = ""},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "PackingStationTable",settingPath = "" ,applicationSetting = ""},
             };
             _mongoDb.GetCollection<FileSetting>("settings").InsertMany(setting);
         }
@@ -283,6 +289,7 @@ namespace WindowBlind.Api
             _mongoDb.DropCollection("HoistStation");
             _mongoDb.DropCollection("AssemblyStation");
             _mongoDb.DropCollection("comport");
+            _mongoDb.DropCollection("settings");
         }
     }
 }

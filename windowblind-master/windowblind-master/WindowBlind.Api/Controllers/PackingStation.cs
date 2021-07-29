@@ -122,6 +122,7 @@ namespace WindowBlind.Api.Controllers
                     log.dateTime = DateTime.Now.ToString();
                     log.status = "Packed";
                     log.ProcessType = row.PackingType;
+                    log.TableName = model.tableName;
                     log.Message = "This Line No.: " + log.LineNumber + ", has been Qualified at " + log.dateTime;
                     await _repository.PackingStation.InsertOneAsync(log);
                     await _repository.Logs.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],

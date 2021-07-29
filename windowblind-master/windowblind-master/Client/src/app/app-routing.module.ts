@@ -10,6 +10,7 @@ import { HomeComponent } from './Home/home.component';
 import { LogCutComponent } from './Log-Cut/log-cut.component';
 import { LoginComponent } from './login/login.component';
 import { PackingStationComponent } from './packing-station/packing-station.component';
+import { ReportStationComponent } from './report-station/report-station.component';
 import { SettingsComponent } from './settings/settings.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UsersComponent } from './users/users.component';
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'Assembly-Station', component: AssemblyStationComponent, canActivate: [AuthGuard] },
   { path: 'Hoist-Station', component: HoistStationComponent, canActivate: [AuthGuard] },
   { path: 'Packing-Station', component: PackingStationComponent, canActivate: [AuthGuard] },
+  { path: 'Report-Station', component: ReportStationComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/Home', pathMatch: 'full' },
   { path: 'Home', component: HomeComponent, canActivate:[AuthGuard] }
 ];

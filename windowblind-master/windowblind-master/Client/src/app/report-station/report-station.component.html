@@ -1,0 +1,54 @@
+
+<div class="container mt-4">
+  <div class="row">
+<div class="col-md-6 row">
+  <form  class="form-inline">
+    <label  > Enter CB Number:</label>
+    <input class="form-control ml-4 mr-5" type="text" name="CBNumber" id="CBNumber" required>
+  </form>
+  <button style="margin-left: 7px;margin-top: -5px;" class="btn btn-primary btn-sm"> <span *ngIf="Loading"
+    class="spinner-border spinner-border-sm mr-1"></span>
+  Get CB Details</button>
+</div>
+</div>
+</div>
+
+<div class="container-fluid mt-3">
+
+  <div class="table-responsive mt-3" id="TableViewSelect">
+    <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
+      [dtTrigger]="dtTrigger">
+      <thead class="bg-light">
+        <tr id="DataTableHeader">
+          <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
+            id="UniqueDataTableHeader_{{col}}">
+
+
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">{{col}}</span>
+
+            </div>
+
+
+          </th>
+    
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
+          <td *ngFor="let col of tableModelColNames" style="white-space: pre-line">
+            {{row.row[col]}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+  <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
+    <div id="Custom_Table_Info" class="custom-dtable-info"></div>
+    <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
+  </div>
+
+</div>

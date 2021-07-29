@@ -144,6 +144,9 @@ export class LogCutComponent implements OnInit {
         setTimeout(() => {
           for (let index = 0; index < data.rows.length; index++) {
             (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'background-color:' + data.rows[index].row['DropColour'] + " !important")
+            if(data.rows[index].row['DropColour'].toLowerCase() != "white" && data.rows[index].row['DropColour'] != "")(document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color:' + data.rows[index].row['DropColour'] + " !important"
+            
+            )
           }
           $("#Custom_Table_Pagination").html("");
           $("#Custom_Table_Info").html("");

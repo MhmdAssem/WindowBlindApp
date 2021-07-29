@@ -1,6 +1,23 @@
 
 <div class="container">
+  
+  <div class="col-lg-6" style="margin-top: 5px;">
 
+    <form class="form-inline">
+      <label> Select a Table</label>
+      <select class="form-control" name="TableNames" id="TableNames" style="display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      text-align: center;
+      min-width:300px;
+      margin-left: 4px;">
+        <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
+      </select>
+    </form>
+  </div>
+  
+  
   <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0">
     <button class="btn btn-primary mr-2" (click)="Send();"><span *ngIf="SendLoading" class="spinner-border spinner-border-sm mr-1"></span>
       Update </button>

@@ -15,7 +15,7 @@ import { PackingStationService } from './packing-station.service';
   styleUrls: ['./packing-station.component.scss']
 })
 export class PackingStationComponent implements OnInit {
-  constructor(private PackingService: PackingStationService, private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
+  constructor(private PackingService: PackingStationService, private settingService: SettingService, private authService: AuthService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
@@ -57,6 +57,23 @@ export class PackingStationComponent implements OnInit {
 
     };
 
+    
+    this.settingService.getTableNumber('PackingStationTable').subscribe(data => {
+      if ((data as string).indexOf("@@@@@") != -1) {
+        let entries = (data as string).split("#####");
+
+        entries.forEach(element => {
+
+          let data = element.split("@@@@@");
+          this.TableNames.push(data[1]);
+          this.PrinterTableDictionary[data[1]] = data[0];
+
+        });
+      }
+
+
+    });
+    
     this.Refresh();
   }
 
@@ -113,8 +130,10 @@ export class PackingStationComponent implements OnInit {
       columnNames: this.tableModelColNames,
       rows: this.ReviewData
     };
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+
     this.PackingService.pushLinesNoToHoistStation(
-       "", this.PrinterTableDictionary[""], UserName, Data).subscribe(() => {
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
         this.SendLoading = false;
 
         this.ReviewData = [];
