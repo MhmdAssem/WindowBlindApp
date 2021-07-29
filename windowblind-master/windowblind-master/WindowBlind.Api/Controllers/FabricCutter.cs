@@ -570,7 +570,7 @@ namespace WindowBlind.Api.Controllers
                 sb.Append("FABRIC COLOUR\t" + item.Row["Fabric Colour"].ToString().TrimEnd() + Environment.NewLine);
                 sb.Append("TRIM TYPE\t" + item.Row["Trim Type"].ToString().TrimEnd() + Environment.NewLine);
                 item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
-                bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), TableNumber, UserName, System.DateTime.Now.ToShortDateString(), item.Row["Alpha Number"], "FabricCut", item);
+                bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), TableNumber, UserName, System.DateTime.Now.ToString(), item.Row["Alpha Number"], "FabricCut", item);
 
 
                 labels.Append("@" + item.Row["CB Number"].ToString().TrimEnd());

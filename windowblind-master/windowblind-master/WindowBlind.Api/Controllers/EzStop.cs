@@ -535,7 +535,7 @@ namespace WindowBlind.Api.Controllers
                     strconcat += "@" + item.Row["Total"];
                     labels.Add(strconcat);
                     strRS232Width += item.Row["CutWidth"].ToString().Replace("mm", "");
-                    await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToShortDateString(), item.Row["Alpha"], "EzStop", item);
+                    await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToString(), item.Row["Alpha"], "EzStop", item);
                 }
                 // doing the port thing 
 

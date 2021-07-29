@@ -11,8 +11,8 @@ import { FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetai
 export class ReportStationService {
   constructor(private httpClient: HttpClient) { }
 
-  public GenerateReports(): Observable<FabricCutterCBDetailsModel> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  public GenerateReports(cb): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json',"CBNumber":cb });
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'ReportStation/GenerateReports', { headers }).pipe(

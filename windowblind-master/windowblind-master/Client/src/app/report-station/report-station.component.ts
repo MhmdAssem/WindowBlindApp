@@ -57,7 +57,7 @@ export class ReportStationComponent implements OnInit {
       pageLength: 4,
 
     };
-    this.Refresh();
+
   }
       
   updateTable() {
@@ -78,9 +78,15 @@ export class ReportStationComponent implements OnInit {
     }
   }
 
-  Refresh() {
-     this.RefreshLoading = true;
-    this.reportservice.GenerateReports().subscribe(data => {
+
+
+
+  GetCBNumberReports() {
+    let cb = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
+    if (cb == "") { alert("Please enter a valid CB"); return; }
+    this.Loading = true;
+
+    this.reportservice.GenerateReports(cb).subscribe(data => {
 
       if (data && data.columnNames.length != 0) {
         setTimeout(() => {
@@ -104,7 +110,7 @@ export class ReportStationComponent implements OnInit {
           });
         }, 500);
       }
-      this.RefreshLoading = false;
+      this.Loading = false;
     });
 
   }

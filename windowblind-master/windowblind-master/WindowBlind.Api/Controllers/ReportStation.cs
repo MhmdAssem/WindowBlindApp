@@ -29,7 +29,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("GenerateReports")]
-        public async Task<IActionResult> GenerateReports()
+        public async Task<IActionResult> GenerateReports([FromHeader] string CBNumber)
         {
 
             try
@@ -44,35 +44,35 @@ namespace WindowBlind.Api.Controllers
                 Dictionary<string, int> LineNumberIndex = new Dictionary<string, int>();
 
 
-                var FabricCutObjs = await _repository.Logs.FindAsync(log => log.ProcessType == "FabricCut");
+                var FabricCutObjs = await _repository.Logs.FindAsync(log => log.ProcessType == "FabricCut" && log.CBNumber == CBNumber);
                 var FabricCutObjsList = FabricCutObjs.ToList();
 
                 GenerateStatusForLineNumber(ref data, FabricCutObjsList, "FabricCut", ref LineNumberIndex);
 
 
-                var LogCutObjs = await _repository.Logs.FindAsync(log => log.ProcessType == "LogCut");
+                var LogCutObjs = await _repository.Logs.FindAsync(log => log.ProcessType == "LogCut" && log.CBNumber == CBNumber);
                 var LogCutObjsList = LogCutObjs.ToList();
 
                 GenerateStatusForLineNumber(ref data, LogCutObjsList, "LogCut", ref LineNumberIndex);
 
 
-                var EzStopObjs = await _repository.Logs.FindAsync(log => log.ProcessType == "EzStop");
+                var EzStopObjs = await _repository.Logs.FindAsync(log => log.ProcessType == "EzStop" && log.CBNumber == CBNumber);
                 var EzStopObjsList = EzStopObjs.ToList();
 
                 GenerateStatusForLineNumber(ref data, EzStopObjsList, "EzStop", ref LineNumberIndex);
 
 
-                var AssemblyObjs = await _repository.AssemblyStation.FindAsync(log => log.ProcessType == "Assembly" );
+                var AssemblyObjs = await _repository.AssemblyStation.FindAsync(log => log.ProcessType == "Assembly" && log.CBNumber == CBNumber);
                 var AssemblyObjsList = AssemblyObjs.ToList();
 
                 GenerateStatusForLineNumber(ref data, AssemblyObjsList, "AssemblyStation",ref LineNumberIndex);
 
-                var HoistObjs = await _repository.HoistStation.FindAsync(log => log.ProcessType == "Qualified");
+                var HoistObjs = await _repository.HoistStation.FindAsync(log => log.ProcessType == "Qualified" && log.CBNumber == CBNumber);
                 var HoistObjsList = HoistObjs.ToList();
 
                 GenerateStatusForLineNumber(ref data, HoistObjsList, "HoistStation", ref LineNumberIndex);
 
-                var PackingObjs = await _repository.PackingStation.FindAsync(log => log.status == "Packed" );
+                var PackingObjs = await _repository.PackingStation.FindAsync(log => log.status == "Packed" && log.CBNumber == CBNumber);
                 var PackingObjsList = PackingObjs.ToList();
 
                 GenerateStatusForLineNumber(ref data, PackingObjsList, "PackingStation", ref LineNumberIndex);
