@@ -114,7 +114,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     this.Loading = true;
 
     this.FBRservice.getCBNumberDetails(cb.toString()).subscribe(data => {
-      if (data && data.columnNames.length != 0) {
+      if (data && data.rows.length != 0) {
         this.tableModelColNames = [];
         this.ReviewtableModelColNames = [];
         this.BlindNumbers = [];
