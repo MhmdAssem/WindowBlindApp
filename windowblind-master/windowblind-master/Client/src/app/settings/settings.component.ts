@@ -547,6 +547,7 @@ export class SettingsComponent implements OnInit {
 
     this.settingService.UpdateSettings(newList).subscribe(data => {
       this.Saving = false;
+      alert("Saved Successfuly !!")
     });
 
   }
