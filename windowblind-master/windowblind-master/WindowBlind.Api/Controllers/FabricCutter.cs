@@ -156,8 +156,8 @@ namespace WindowBlind.Api.Controllers
 
                             if (ColumnMapper.ContainsKey(Headertext)) Headertext = ColumnMapper[Headertext];
                             row[Headertext] = cell;
-                            if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
-                                Data.ColumnNames.Add(Headertext);
+
+
                         }
                         FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                         for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
@@ -323,6 +323,17 @@ namespace WindowBlind.Api.Controllers
                     }
 
                 }
+
+                foreach (var header in SelectedColumnsPath)
+                {
+                    var Headertext = header.Replace(".", "");
+
+                    if (ColumnMapper.ContainsKey(Headertext)) Headertext = ColumnMapper[Headertext];
+
+                    if (!Data.ColumnNames.Contains(Headertext))
+                        Data.ColumnNames.Add(Headertext);
+                }
+
                 Data.ColumnNames.Add("Roll Width");
                 #endregion
                 return new JsonResult(Data);
