@@ -5,6 +5,8 @@ import { AuthService } from '../auth.service';
 import { EzStopService } from '../ez-stop/ez-stop.service';
 import { FabricCutterService } from '../fabric-cutter/fabric-cutter.service';
 import { FabricCutterCBDetailsModelTableRow, FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetailsModel';
+import { HoldingStationService } from '../holding-station/holding-station.service';
+import { RejectionModel } from '../holding-station/RejectionModel';
 import { LogCutService } from '../Log-Cut/log-cut.service';
 import { SettingService } from '../settings/setting.service';
 import { AssemblyStationService } from './assembly-station.service';
@@ -15,7 +17,11 @@ import { AssemblyStationService } from './assembly-station.service';
   styleUrls: ['./assembly-station.component.scss']
 })
 export class AssemblyStationComponent implements OnInit {
-  constructor(private assemblyService: AssemblyStationService, private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
+  LineLoading: boolean;
+  HoldLoading: boolean = false;
+  CBLoading: boolean;
+  FirstTimeOnly: boolean;
+  constructor(private HoldingService: HoldingStationService, private assemblyService: AssemblyStationService, private settingService: SettingService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
@@ -35,6 +41,9 @@ export class AssemblyStationComponent implements OnInit {
   SendLoading: boolean = false;
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   PrinterTableDictionary = {};
+
+
+  DataInTheTable = {};
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -72,8 +81,12 @@ export class AssemblyStationComponent implements OnInit {
 
 
     });
+
     
-    this.Refresh();
+    
+    this.FirstTimeOnly = true;
+   
+    
   }
 
   ngAfterViewInit(): void {
@@ -101,8 +114,8 @@ export class AssemblyStationComponent implements OnInit {
 
   SelectThisRow(ind) {
 
-    if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent == "Assemble") {
-      (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnAssemble";
+    if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent == "Select") {
+      (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnSelect";
 
       this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.ReviewData.length;
       this.ReviewData.push(this.Data[ind]);
@@ -114,7 +127,7 @@ export class AssemblyStationComponent implements OnInit {
 
   UnSelectThisRow(ind) {
 
-    (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Assemble";
+    (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
 
     this.ReviewData.splice(this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId], 1);
     this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = -1;
@@ -131,18 +144,26 @@ export class AssemblyStationComponent implements OnInit {
       rows: this.ReviewData
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if(tableName == '-')
+    {
+      alert("Please select a table");
+      return;
+    }
     this.assemblyService.pushLinesNoToAssemblyStation(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false;
-      
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+        this.SendLoading = false;
+
         this.ReviewData = [];
         let keys = Object.keys(this.ReviewDataWithBlindsNumbers);
-        
+
         keys.forEach(key => {
           let ind = this.Data.findIndex(d => d.uniqueId == key);
-          if (ind != -1 && this.ReviewDataWithBlindsNumbers[key] != -1)
+          if (ind != -1 && this.ReviewDataWithBlindsNumbers[key] != -1) {
+            this.DataInTheTable[this.Data[ind]['Line No']] = null;
             this.Data.splice(ind, 1);
+          }
         });
-        
+
         this.ReviewDataWithBlindsNumbers = {};
         this.updateTable();
 
@@ -157,13 +178,16 @@ export class AssemblyStationComponent implements OnInit {
           });
         }, 500);
 
-      
+
       });
   }
 
-  Refresh() {
-    this.RefreshLoading = true;
-    this.assemblyService.GetReadyToAssemble().subscribe(data => {
+
+  GetCBDetails() {
+    let input = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
+    this.CBLoading = true;
+
+    this.assemblyService.GetReadyToAssemble(input).subscribe(data => {
 
       if (data && data.columnNames.length != 0) {
         setTimeout(() => {
@@ -172,8 +196,86 @@ export class AssemblyStationComponent implements OnInit {
 
         this.tableModelColNames = data.columnNames
 
-        this.Data = data.rows;
 
+        data.rows.forEach(element => {
+
+          if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {
+            this.DataInTheTable[element.uniqueId] = true;
+            this.Data.push(element);
+          }
+        });
+
+
+        this.updateTable();
+
+        let cntr = 0;
+
+        setTimeout(() => {
+          this.Data.forEach(element => {
+            if (element.row['FromHoldingStation'] == 'YES') {
+              (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+            }
+            cntr++;
+          });
+        }, 40);
+        
+        
+        setTimeout(() => {
+          $("#Custom_Table_Pagination").html("");
+          $("#Custom_Table_Info").html("");
+          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 500);
+      }
+      this.CBLoading = false;
+    });
+
+  }
+
+
+  Hold() {
+
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    var time = new Date();
+   
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+
+    let RejectionModels:RejectionModel[] = [];
+    this.ReviewData.forEach(element => {
+      let RejectionModel:RejectionModel =
+      {
+        dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12:true }),
+        forwardedToStation : "Admin",
+        id : "",
+        row :element,
+        stationName :"Assembly",
+        tableName :tableName,
+        userName :UserName
+      };
+      RejectionModels.push(RejectionModel);
+    });
+    
+   
+    
+    this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
+        this.SendLoading = false;
+
+        this.ReviewData = [];
+        let keys = Object.keys(this.ReviewDataWithBlindsNumbers);
+
+        keys.forEach(key => {
+          let ind = this.Data.findIndex(d => d.uniqueId == key);
+          if (ind != -1 && this.ReviewDataWithBlindsNumbers[key] != -1) {
+            this.DataInTheTable[this.Data[ind]['Line No']] = null;
+            this.Data.splice(ind, 1);
+          }
+        });
+
+        this.ReviewDataWithBlindsNumbers = {};
         this.updateTable();
 
         setTimeout(() => {
@@ -186,11 +288,39 @@ export class AssemblyStationComponent implements OnInit {
             block: 'start'
           });
         }, 500);
-      }
-      this.RefreshLoading = false;
-    });
 
+
+      });
   }
 
+  GetHeldBasedOnTable()
+  {
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+   
+    this.assemblyService.GetHeldObjects(tableName).subscribe(
+      data => {
+        if (data && data.columnNames.length != 0) {
 
+          this.tableModelColNames = data.columnNames
+
+          if (!this.FirstTimeOnly)
+            this.Data.concat(data.rows);
+          else
+            this.Data = data.rows;
+
+          this.FirstTimeOnly = false;
+          let cntr = 0;
+          setTimeout(() => {
+            this.Data.forEach(element => {
+              if (element.row['FromHoldingStation'] == 'YES') {
+                (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+              }
+              cntr++;
+            });
+          }, 40);
+
+        }
+      }
+    );
+  }
 }

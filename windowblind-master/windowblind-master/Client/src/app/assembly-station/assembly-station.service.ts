@@ -13,8 +13,8 @@ export class AssemblyStationService {
 
   constructor(private httpClient: HttpClient) { }
   
-  public GetReadyToAssemble(): Observable<FabricCutterCBDetailsModel> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  public GetReadyToAssemble(input:string): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json',"CbOrLineNumber":input });
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'AssemblyStation/GetReadyToAssemble', { headers }).pipe(
@@ -49,4 +49,23 @@ export class AssemblyStationService {
 
       );
   }
+  
+  
+  
+  public GetHeldObjects(tableName): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json',"tableName":tableName  });
+
+    return this.httpClient
+      .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'AssemblyStation/GetHeldObjects', { headers }).pipe(
+        tap(
+          data => {
+            if (!data) {
+              alert("Sorry Configuration is not done , please contact your admin !");
+            }
+          }
+        )
+
+      );
+  }
+
 }

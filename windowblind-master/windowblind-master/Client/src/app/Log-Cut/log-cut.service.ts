@@ -52,4 +52,20 @@ export class LogCutService {
   }
 
   
+  public GetHeldObjects(tableName): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json',"tableName":tableName  });
+
+    return this.httpClient
+      .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'LogCut/GetHeldObjects', { headers }).pipe(
+        tap(
+          data => {
+            if (!data) {
+              alert("Sorry Configuration is not done , please contact your admin !");
+            }
+          }
+        )
+
+      );
+  }
+
 }

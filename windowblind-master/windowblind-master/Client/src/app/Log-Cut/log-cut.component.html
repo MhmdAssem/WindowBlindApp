@@ -5,20 +5,21 @@
 
       <form class="form-inline">
         <label> Select a Table</label>
-        <select class="form-control" name="TableNames" id="TableNames" style="display: inline-block;
+        <select class="form-control" name="TableNames" id="TableNames" (change)="GetHeldBasedOnTable()" style="display: inline-block;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
         text-align: center;
         min-width:200px ">
+          <option value="-" id="table_Default">-</option>
           <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
         </select>
       </form>
     </div>
 
 
-    <div class="col-lg-5" >
-      <form class="form-inline flex-nowrap" style="margin-left: 75px;"> 
+    <div class="col-lg-5">
+      <form class="form-inline flex-nowrap" style="margin-left: 75px;">
 
         <label> Enter CB Number:</label>
         <input class="form-control" type="text" name="CBNumber" id="CBNumber" required style="display: inline-block;
@@ -26,7 +27,7 @@
           border-radius: 4px;
           box-sizing: border-box;
           text-align: center; ">
-        <button style="margin-left: 7px;font-size: 11px;" class="btn btn-primary btn-sm p-2"
+        <button style="margin-left: 7px;font-size: 11px;" id = 'SearchButton2' class="btn btn-primary btn-sm p-2"
           (click)="GetCBDetails('CB');"> <span *ngIf="CBLoading" class="spinner-border spinner-border-sm mr-1"></span>
           Get CB Details</button>
       </form>
@@ -40,7 +41,7 @@
           border-radius: 4px;
           box-sizing: border-box;
           text-align: center;">
-        <button style="margin-left: 7px;font-size: 11px;" class="btn btn-primary btn-sm p-2"
+        <button style="margin-left: 7px;font-size: 11px;" id = 'SearchButton1' class="btn btn-primary btn-sm p-2"
           (click)="GetCBDetails('Line');"> <span *ngIf="LineLoading"
             class="spinner-border spinner-border-sm mr-1"></span>
           Get Line No. Details</button>
@@ -54,7 +55,12 @@
 <div class="container">
 
   <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0">
-    <button class="btn btn-primary mr-2" (click)="Send();"><span *ngIf="SendLoading" class="spinner-border spinner-border-sm mr-1"></span>
+    <button class="btn btn-primary mr-2" (click)="Hold();"><span *ngIf="HoldLoading"
+        class="spinner-border spinner-border-sm mr-1"></span>
+      Hold </button>
+
+    <button class="btn btn-primary mr-2" (click)="Send();"><span *ngIf="SendLoading"
+        class="spinner-border spinner-border-sm mr-1"></span>
       Send </button>
 
     <button class="btn btn-primary" (click)="Delete();">
@@ -93,7 +99,7 @@
 
       <tbody>
         <tr *ngFor="let row of Data;let i = index" id="RowNumber_{{i}}">
-          <td *ngFor="let col of tableModelColNames" >
+          <td *ngFor="let col of tableModelColNames">
             {{row.row[col]}}</td>
           <td>
             <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>

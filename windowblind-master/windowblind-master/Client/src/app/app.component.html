@@ -1,15 +1,17 @@
 <mat-toolbar color="primary" class="app-header">
-    <a mat-icon-button href="Home" class="home" ><mat-icon [inline]="true">precision_manufacturing</mat-icon></a>
+    <a mat-icon-button href="Home" class="home" ><mat-icon [inline]="true"></mat-icon></a>
     <a mat-button href="users" *ngIf="isAdministrator">Users</a>
     <a mat-button href="settings" *ngIf="isAdministrator">Settings</a>
     <a mat-button href="fabric-cutter" *ngIf="isAdministrator || isFactoryStaff">Fabric Cutter</a>
     <a mat-button href="log-cut" *ngIf="isAdministrator || isFactoryStaff">Log Cut</a>
+    <a mat-button href="Pre-EzStop" >Pre EzStop</a>
     <a mat-button href="Ez-Stop" *ngIf="isAdministrator || isFactoryStaff">Ezystop</a>
     
-    <a mat-button href="Assembly-Station" *ngIf="isAdministrator || isFactoryStaff">Assembly-Station</a>
-    <a mat-button href="Hoist-Station" *ngIf="isAdministrator || isFactoryStaff">Hoist-Station</a>
-    <a mat-button href="Packing-Station" *ngIf="isAdministrator || isFactoryStaff">Packing-Station</a>
-    
+    <a mat-button href="Assembly-Station" *ngIf="isAdministrator || isFactoryStaff">Assembly</a>
+    <a mat-button href="Hoist-Station" *ngIf="isAdministrator || isFactoryStaff">Hoist</a>
+    <a mat-button href="Packing-Station" *ngIf="isAdministrator || isFactoryStaff">Packing</a>
+    <a mat-button href="Holding-Station" *ngIf="isAdministrator">On Hold</a>
+
     <a mat-button href="Report-Station" *ngIf="isCustomerService || isAdministrator">Customer Service</a>
     
     <span class="spacer"></span>

@@ -1,9 +1,12 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
+import { Console, debug } from 'console';
 import { Subject } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { FabricCutterService } from '../fabric-cutter/fabric-cutter.service';
 import { FabricCutterCBDetailsModelTableRow, FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetailsModel';
+import { HoldingStationService } from '../holding-station/holding-station.service';
+import { RejectionModel } from '../holding-station/RejectionModel';
 import { LogCutService } from '../Log-Cut/log-cut.service';
 import { SettingService } from '../settings/setting.service';
 import { EzStopService } from './ez-stop.service';
@@ -14,8 +17,10 @@ import { EzStopService } from './ez-stop.service';
   styleUrls: ['./ez-stop.component.scss']
 })
 export class EzStopComponent implements OnInit {
+  HoldLoading: boolean;
+  DataInTheTable: any = {};
 
-  constructor(private ezStopService: EzStopService, private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
+  constructor(private HoldingService: HoldingStationService, private ezStopService: EzStopService, private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
@@ -36,6 +41,14 @@ export class EzStopComponent implements OnInit {
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   PrinterTableDictionary = {};
   ngOnInit(): void {
+    this.tableModelColNames = [];
+    this.ReviewtableModelColNames = [];
+    this.BlindNumbers = [];
+    this.Data = [];
+    this.ReviewData = [];
+    this.ReviewDataWithBlindsNumbers = {}
+    this.PrinterTableDictionary = {};
+
     this.dtOptions = {
       pagingType: 'full_numbers',
       lengthChange: false,
@@ -44,7 +57,7 @@ export class EzStopComponent implements OnInit {
       ordering: true,
       //pageLength: 10,
       paging: false,
-      info : false
+      info: false
     };
 
     this.dtOptionsReview = {
@@ -73,8 +86,13 @@ export class EzStopComponent implements OnInit {
 
     });
     this.Refresh();
-    setInterval(this.Refresh,300000);
-    
+    setInterval(() => {
+      this.Refresh();
+    }
+      ,
+      30000);
+
+
   }
 
   ngAfterViewInit(): void {
@@ -133,31 +151,116 @@ export class EzStopComponent implements OnInit {
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.ezStopService.EzStopSend(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false; });
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+        this.SendLoading = false;
+
+        this.ReviewData.forEach(element => {
+          let ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
+          this.Data.splice(ind, 1);
+        });
+
+        this.ReviewData = [];
+        this.ReviewDataWithBlindsNumbers = {};
+
+      });
   }
 
   Refresh() {
     this.RefreshLoading = true;
+
+    setTimeout(() => {
+      let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+
+      this.ezStopService.GetHeldObjects(tableName).subscribe(data=>{
+        
+        if (data && data.columnNames.length != 0) {
+        
+          setTimeout(() => {
+            this.updateTable();
+          }, 50);
+  
+          if (data.columnNames.length != 0)
+            this.tableModelColNames = data.columnNames
+  
+          data.rows.forEach(element => {
+             if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {
+              this.DataInTheTable[element.uniqueId] = true;
+              this.Data.push(element);
+            }
+            else {
+              //let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
+              //this.Data[ind] = element;
+            }
+          });
+  
+          this.updateTable();
+  
+          let cntr = 0;
+  
+          setTimeout(() => {
+            this.Data.forEach(element => {
+              if (element.row['FromHoldingStation'] == 'YES') {
+                (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+              }
+              cntr++;
+            });
+          }, 40);
+  
+          setTimeout(() => {
+            $("#Custom_Table_Pagination").html("");
+            $("#Custom_Table_Info").html("");
+            $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+            $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+            (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }, 500);
+        }
+        
+        
+      });
+      
+      
+    }, 1000);
     this.ezStopService.RefreshEzStopTable().subscribe(data => {
 
       if (data && data.columnNames.length != 0) {
-        this.tableModelColNames = [];
-        this.ReviewtableModelColNames = [];
-        this.BlindNumbers = [];
-        this.Data = [];
-        this.ReviewData = [];
-        this.ReviewDataWithBlindsNumbers = {}
-//        this.PrinterTableDictionary = {};
         
         setTimeout(() => {
           this.updateTable();
         }, 50);
 
-        this.tableModelColNames = data.columnNames
+        if (data.columnNames.length != 0)
+          this.tableModelColNames = data.columnNames
 
-        this.Data = data.rows;
+        data.rows.forEach(element => {
+          if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {
+            this.DataInTheTable[element.uniqueId] = true;
+            this.Data.push(element);
+          }
+          else {
+            //let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
+            //this.Data[ind] = element;
+          }
+        });
 
+        
+        
+        
+        
         this.updateTable();
+
+        let cntr = 0;
+
+        setTimeout(() => {
+          this.Data.forEach(element => {
+            if (element.row['FromHoldingStation'] == 'YES') {
+              (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+            }
+            cntr++;
+          });
+        }, 40);
 
         setTimeout(() => {
           $("#Custom_Table_Pagination").html("");
@@ -173,6 +276,54 @@ export class EzStopComponent implements OnInit {
       this.RefreshLoading = false;
     });
 
+    
+    
   }
+
+
+  Hold() {
+
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    var time = new Date();
+
+    this.HoldLoading = true;
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+
+    let RejectionModels: RejectionModel[] = [];
+    this.ReviewData.forEach(element => {
+      let RejectionModel: RejectionModel =
+      {
+        dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
+        forwardedToStation: "Admin",
+        id: "",
+        row: element,
+        stationName: "EzStop",
+        tableName: tableName,
+        userName: UserName
+      };
+      RejectionModels.push(RejectionModel);
+    });
+
+
+
+    this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
+
+      this.ReviewData.forEach(element => {
+
+        var ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
+        this.Data.splice(ind, 1);
+
+      });
+
+
+      this.ReviewData = [];
+      this.ReviewDataWithBlindsNumbers = {};
+      this.updateTable();
+
+      this.HoldLoading = false;
+    });
+  }
+  
+  
 
 }

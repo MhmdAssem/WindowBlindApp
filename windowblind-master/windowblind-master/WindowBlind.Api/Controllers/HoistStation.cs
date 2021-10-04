@@ -30,31 +30,36 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("GetReadyToQualify")]
-        public async Task<IActionResult> GetReadyToQualify()
+        public async Task<IActionResult> GetReadyToQualify([FromHeader] string CbOrLineNumber)
         {
             try
             {
+
+                var HoistColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "HoistStation").Result.FirstOrDefaultAsync();
+                var HoistColumns = HoistColumnsSetting.settingPath.Split("@@@").ToList();
+                if (HoistColumns[HoistColumns.Count - 1] == "") HoistColumns.RemoveAt(HoistColumns.Count - 1);
+
+
+                //HoistColumns = LogCut.AddColumnIfNotExists(HoistColumns, "CB Number");
+                //HoistColumns = LogCut.AddColumnIfNotExists(HoistColumns, "Line No");
+
+
                 FabricCutterCBDetailsModel data = new FabricCutterCBDetailsModel();
 
-                data.ColumnNames.Add("CB Number");
-                data.ColumnNames.Add("Line No");
-                data.ColumnNames.Add("item");
+              
 
-                data.ColumnNames.Add("Assembly User");
-
-
-                data.ColumnNames.Add("Assembly Date-Time");
-
-                var FabricCutterOflogModels = await _repository.AssemblyStation.FindAsync(log => log.ProcessType == "Assembly" && log.status == "Assembly");
+                var FabricCutterOflogModels = await _repository.AssemblyStation.FindAsync(log => log.ProcessType == "Assembly" && log.status == "Assembly" && (log.CBNumber == CbOrLineNumber || log.LineNumber == CbOrLineNumber));
 
                 var lis = FabricCutterOflogModels.ToList();
                 foreach (var row in lis)
                 {
-                    row.row.Row["Assembly User"] = row.UserName;
-                    row.row.Row["Assembly Date-Time"] = row.dateTime;
+                     
+                    row.row.Row["FromHoldingStation"] = "NO";
+                    row.row.UniqueId = row.Id;
                     data.Rows.Add(row.row);
                 }
 
+                data.ColumnNames = HoistColumns;
                 return new JsonResult(data);
             }
             catch (Exception e)
@@ -72,6 +77,11 @@ namespace WindowBlind.Api.Controllers
             {
                 foreach (var row in model.data.Rows)
                 {
+                    if (row.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == row.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
+
+
                     var log = new LogModel();
                     log.row = row;
                     log.UserName = model.userName;
@@ -84,9 +94,9 @@ namespace WindowBlind.Api.Controllers
                     log.ProcessType = "Qualified";
                     log.Message = "This Line No.: " + log.LineNumber + ", has been Qualified at " + log.dateTime;
                     await _repository.HoistStation.InsertOneAsync(log);
-                    await _repository.Logs.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],
+                    await _repository.Logs.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"] && log.Id == row.UniqueId, 
                         Builders<LogModel>.Update.Set(p => p.status, "Qualified"), new UpdateOptions { IsUpsert = false });
-                    await _repository.AssemblyStation.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"],
+                    await _repository.AssemblyStation.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"] && log.Id == row.UniqueId,
                        Builders<LogModel>.Update.Set(p => p.status, "Qualified"), new UpdateOptions { IsUpsert = false });
                 }
 
@@ -98,5 +108,43 @@ namespace WindowBlind.Api.Controllers
                 return false;
             }
         }
+
+
+        [HttpGet("GetHeldObjects")]
+        public async Task<IActionResult> GetHeldObjects([FromHeader] string tableName)
+        {
+            try
+            {
+
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
+
+
+                var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "Hoist" && rej.TableName == tableName).Result.ToListAsync();
+
+                foreach (var item in HeldObjects)
+                {
+                    Data.Rows.Add(item.Row);
+                }
+
+                var HoistColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "HoistStation").Result.FirstOrDefaultAsync();
+                var HoistColumns = HoistColumnsSetting.settingPath.Split("@@@").ToList();
+                if (HoistColumns[HoistColumns.Count - 1] == "") HoistColumns.RemoveAt(HoistColumns.Count - 1);
+                //HoistColumns = LogCut.AddColumnIfNotExists(HoistColumns, "CB Number");
+                //HoistColumns = LogCut.AddColumnIfNotExists(HoistColumns, "Line No");
+                if (Data.Rows.Count != 0)
+                    Data.ColumnNames = HoistColumns;
+
+                return new JsonResult(Data);
+
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(false);
+            }
+        }
+
     }
 }

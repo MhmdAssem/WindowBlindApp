@@ -1,9 +1,12 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
+import { table } from 'console';
 import { Subject } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { FabricCutterService } from '../fabric-cutter/fabric-cutter.service';
 import { FabricCutterCBDetailsModel, FabricCutterCBDetailsModelTableRow } from '../fabric-cutter/FabricCutterCBDetailsModel';
+import { HoldingStationService } from '../holding-station/holding-station.service';
+import { RejectionModel } from '../holding-station/RejectionModel';
 import { SettingService } from '../settings/setting.service';
 import { LogCutService } from './log-cut.service';
 
@@ -13,8 +16,10 @@ import { LogCutService } from './log-cut.service';
   styleUrls: ['./log-cut.component.scss']
 })
 export class LogCutComponent implements OnInit {
+  HoldLoading: boolean;
+  FirstTimeOnly: boolean;
 
-  constructor(private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
+  constructor(private HoldingService: HoldingStationService, private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
@@ -73,6 +78,10 @@ export class LogCutComponent implements OnInit {
 
     });
 
+
+
+    this.FirstTimeOnly = true;
+
   }
 
   ngAfterViewInit(): void {
@@ -114,52 +123,55 @@ export class LogCutComponent implements OnInit {
 
 
     this.logcutService.getCBNumberDetails(input, CBOrLine).subscribe(data => {
-      console.log(data);
-      if (data && data.columnNames.length != 0) {
-        this.tableModelColNames = [];
-        this.ReviewtableModelColNames = [];
-        this.BlindNumbers = [];
-        this.Data = [];
-        this.ReviewData = [];
-        this.ReviewDataWithBlindsNumbers = {}
 
-        //this.PrinterTableDictionary = {};
-        
+      if (data && data.columnNames.length != 0) {
+        if (this.FirstTimeOnly) {
+
+          this.tableModelColNames = [];
+          this.ReviewtableModelColNames = [];
+          this.BlindNumbers = [];
+          this.Data = [];
+          this.ReviewData = [];
+          this.ReviewDataWithBlindsNumbers = {}
+        }
+
+
         setTimeout(() => {
           this.updateTable();
-        }, 50);
+        }, 10);
 
         this.tableModelColNames = data.columnNames
         this.ReviewtableModelColNames.push("Blind Number");
-        data.columnNames.forEach((order: any) => {
-          this.ReviewtableModelColNames.push(order);
-        });
 
-        this.Data = data.rows;
+        if (!this.FirstTimeOnly)
+          this.Data = this.Data.concat(data.rows);
+        else
+          this.Data = data.rows;
+
+        console.log(this.Data);
 
         this.updateTable();
 
 
-
         setTimeout(() => {
-          for (let index = 0; index < data.rows.length; index++) {
-            (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'background-color:' + data.rows[index].row['DropColour'] + " !important")
-            if(data.rows[index].row['DropColour'].toLowerCase() != "white" && data.rows[index].row['DropColour'] != "")(document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color:' + data.rows[index].row['DropColour'] + " !important"
-            
-            )
+          for (let index = 0; index < this.Data.length; index++) {
+            if (this.Data[index].row['FromHoldingStation'] == 'YES') {
+              (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important'); continue;
+            }
+
+            (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'background-color:' + this.Data[index].row['DropColour'] + " !important")
+            if (this.Data[index].row['DropColour'].toLowerCase() != "white" && this.Data[index].row['DropColour'].trim() != "")
+              (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color:' + this.Data[index].row['DropColour'] + " !important")
+
+            if (this.Data[index].row['DropColour'].toLowerCase() == "yellow" && this.Data[index].row['DropColour'].trim() != "")
+              (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: LightYellow !important');
           }
-          $("#Custom_Table_Pagination").html("");
-          $("#Custom_Table_Info").html("");
-          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+
           (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           });
         }, 50);
-
-
-
 
       }
       this.LineLoading = false;
@@ -195,7 +207,7 @@ export class LogCutComponent implements OnInit {
   Send() {
     this.SendLoading = true;
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
-    console.log(this.PrinterTableDictionary);
+
 
     let Data: FabricCutterCBDetailsModel = {
       columnNames: this.tableModelColNames,
@@ -203,7 +215,17 @@ export class LogCutComponent implements OnInit {
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.logcutService.LogCutSend(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => { this.SendLoading = false; });
+      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+        this.SendLoading = false;
+
+        this.ReviewData.forEach(element => {
+          let ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
+          this.Data.splice(ind, 1);
+        });
+
+        this.ReviewData = [];
+        this.ReviewDataWithBlindsNumbers = {};
+      });
   }
 
   Delete() {
@@ -230,4 +252,92 @@ export class LogCutComponent implements OnInit {
     }, 100);
 
   }
+
+
+  Hold() {
+
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    var time = new Date();
+
+    this.HoldLoading = true;
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+
+    let RejectionModels: RejectionModel[] = [];
+    this.ReviewData.forEach(element => {
+      let RejectionModel: RejectionModel =
+      {
+        dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
+        forwardedToStation: "Admin",
+        id: "",
+        row: element,
+        stationName: "LogCut",
+        tableName: tableName,
+        userName: UserName
+      };
+      RejectionModels.push(RejectionModel);
+    });
+
+
+
+    this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
+
+      this.ReviewData.forEach(element => {
+
+        var ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
+        this.Data.splice(ind, 1);
+
+      });
+      this.ReviewData = [];
+      this.ReviewDataWithBlindsNumbers = {};
+      this.updateTable();
+
+      this.HoldLoading = false;
+    });
+  }
+
+  GetHeldBasedOnTable() {
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if (tableName == '-') return;
+
+    (document.getElementById("SearchButton1") as HTMLButtonElement).disabled = true;
+    (document.getElementById("SearchButton2") as HTMLButtonElement).disabled = true;
+
+
+    setTimeout(() => {
+      (document.getElementById("SearchButton1") as HTMLButtonElement).disabled = false;
+      (document.getElementById("SearchButton2") as HTMLButtonElement).disabled = false;
+    }, 1200);
+
+    if (this.FirstTimeOnly) {
+      this.FirstTimeOnly = false;
+
+      this.logcutService.GetHeldObjects(tableName).subscribe(
+        data => {
+          if (data && data.columnNames.length != 0) {
+
+            this.tableModelColNames = data.columnNames
+
+            if (!this.FirstTimeOnly)
+              this.Data = this.Data.concat(data.rows);
+            else
+              this.Data = data.rows;
+
+
+
+            let cntr = 0;
+            setTimeout(() => {
+              this.Data.forEach(element => {
+                if (element.row['FromHoldingStation'] == 'YES') {
+                  (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+                }
+                cntr++;
+              });
+            }, 40);
+
+          }
+        }
+      );
+    }
+  }
+
 }

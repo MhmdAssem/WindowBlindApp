@@ -18,6 +18,7 @@ import { TablePrinterModel } from './TablePrinterModel';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
+  AutoUpload: boolean;
 
   constructor(private settingService: SettingService, private apiService: ApiService, private snackBar: MatSnackBar) { }
   private selection = new StationListSelection();
@@ -61,11 +62,25 @@ export class SettingsComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject();
   dtOptions: DataTables.Settings = {};
 
+  AutoUploadPath: string;
+  ViewedUploadsPath: string;
+
+  ApplicationMap = {
+    "Fabric Cutter": "FabricCutterTable",
+    "Log Cut": "LogCutterTable",
+    "EzStop": "EzStopTable",
+    "AssemblyStation": "AssemblyStationTable",
+    "HoistStation": "HoistStationTable",
+    "PackingStation": "PackingStationTable"
+  }
 
   ngOnInit(): void {
     this.FabricSelectedColumnNames = [];
     this.LogCutSelectedColumnNames = [];
     this.EzStopSelectedColumnNames = [];
+    this.AssemblyStationSelectedColumnNames = [];
+    this.HoistStationSelectedColumnNames = [];
+    this.PackingStationSelectedColumnNames = [];
     this.dtOptions = {
       pagingType: 'full_numbers',
       lengthChange: false,
@@ -78,15 +93,11 @@ export class SettingsComponent implements OnInit {
 
     /// load all settings From BackEnd
     this.settingService.getSettings().subscribe(data => {
-
-        data.forEach(element => {
-          console.log(element);
-        });
       this.ListOfFiles = data;
 
-      
+
       let indFabric = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "FabricCutter");
-     
+
 
       if (this.ListOfFiles[indFabric].settingPath != "")
         this.FabricSelectedColumnNames = (this.ListOfFiles[indFabric].settingPath.split("@@@") as []);
@@ -108,8 +119,8 @@ export class SettingsComponent implements OnInit {
 
       this.EzStopSelectedColumnNamesId = this.ListOfFiles[indEzStop].id;
       this.ListOfFiles.splice(indEzStop, 1);
-      
-      
+
+
       let indAssemblyStation = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "AssemblyStation");
 
       if (this.ListOfFiles[indAssemblyStation].settingPath != "")
@@ -117,7 +128,7 @@ export class SettingsComponent implements OnInit {
 
       this.AssemblyStationSelectedColumnNamesId = this.ListOfFiles[indAssemblyStation].id;
       this.ListOfFiles.splice(indAssemblyStation, 1);
-      
+
       let indHoistStation = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "HoistStation");
 
       if (this.ListOfFiles[indHoistStation].settingPath != "")
@@ -125,8 +136,8 @@ export class SettingsComponent implements OnInit {
 
       this.HoistStationSelectedColumnNamesId = this.ListOfFiles[indHoistStation].id;
       this.ListOfFiles.splice(indHoistStation, 1);
-      
-      
+
+
       let indPackingStation = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "PackingStation");
 
       if (this.ListOfFiles[indPackingStation].settingPath != "")
@@ -150,17 +161,17 @@ export class SettingsComponent implements OnInit {
       this.EzStopTableNumberId = this.ListOfFiles[ind].id;
       let EzStopTables = this.ListOfFiles[ind].settingPath;
       this.ListOfFiles.splice(ind, 1);
-      
+
       ind = this.ListOfFiles.findIndex(e => e.settingName == "AssemblyStationTable");
       this.AssemblyStationTableNumberId = this.ListOfFiles[ind].id;
       let AssemblyTables = this.ListOfFiles[ind].settingPath;
       this.ListOfFiles.splice(ind, 1);
-      
+
       ind = this.ListOfFiles.findIndex(e => e.settingName == "HoistStationTable");
       this.HoistStationTableNumberId = this.ListOfFiles[ind].id;
       let HoistTables = this.ListOfFiles[ind].settingPath;
       this.ListOfFiles.splice(ind, 1);
-      
+
       ind = this.ListOfFiles.findIndex(e => e.settingName == "PackingStationTable");
       this.PackingStationTableNumberId = this.ListOfFiles[ind].id;
       let PackingTables = this.ListOfFiles[ind].settingPath;
@@ -174,7 +185,8 @@ export class SettingsComponent implements OnInit {
           {
             applicationName: "Fabric Cutter",
             printerName: entry[0],
-            tableName: entry[1]
+            tableName: entry[1],
+            OutputPath: entry[2]
           };
           this.PrinterTableArray.push(model);
         });
@@ -188,7 +200,8 @@ export class SettingsComponent implements OnInit {
           {
             applicationName: "Log Cut",
             printerName: entry[0],
-            tableName: entry[1]
+            tableName: entry[1],
+            OutputPath: entry[2]
           };
           this.PrinterTableArray.push(model);
         });
@@ -202,12 +215,13 @@ export class SettingsComponent implements OnInit {
           {
             applicationName: "EzStop",
             printerName: entry[0],
-            tableName: entry[1]
+            tableName: entry[1],
+            OutputPath: entry[2]
           };
           this.PrinterTableArray.push(model);
         });
       }
-      
+
       if (AssemblyTables.indexOf("@@@@@") != -1) {
         let AssemblyTablesEntries = AssemblyTables.split("#####");
         AssemblyTablesEntries.forEach(element => {
@@ -216,12 +230,13 @@ export class SettingsComponent implements OnInit {
           {
             applicationName: "AssemblyStation",
             printerName: entry[0],
-            tableName: entry[1]
+            tableName: entry[1],
+            OutputPath: entry[2]
           };
           this.PrinterTableArray.push(model);
         });
       }
-      
+
       if (HoistTables.indexOf("@@@@@") != -1) {
         let HoistTablesEntries = HoistTables.split("#####");
         HoistTablesEntries.forEach(element => {
@@ -230,12 +245,13 @@ export class SettingsComponent implements OnInit {
           {
             applicationName: "HoistStation",
             printerName: entry[0],
-            tableName: entry[1]
+            tableName: entry[1],
+            OutputPath: entry[2]
           };
           this.PrinterTableArray.push(model);
         });
       }
-      
+
       if (PackingTables.indexOf("@@@@@") != -1) {
         let PackingTablesEntries = EzStopTables.split("#####");
         PackingTablesEntries.forEach(element => {
@@ -244,7 +260,8 @@ export class SettingsComponent implements OnInit {
           {
             applicationName: "PackingStation",
             printerName: entry[0],
-            tableName: entry[1]
+            tableName: entry[1],
+            OutputPath: entry[2]
           };
           this.PrinterTableArray.push(model);
         });
@@ -253,38 +270,59 @@ export class SettingsComponent implements OnInit {
       this.Columns.push('Application Name');
       this.Columns.push('Printer Name');
       this.Columns.push('Table Name');
+      this.Columns.push('Output Path');
+
+
+      /// get the Search Type For Fabric Cutter
+
+      let SearchTypeIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'SearchType');
+      let SearchTypeValue = this.ListOfFiles[SearchTypeIndex].settingPath;
+
+      let AutoUploadDir = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'AutoUploadDir');
+      let AutoUploadDirValue = this.ListOfFiles[AutoUploadDir].settingPath;
+
+      let ViewedUploadsDir = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'ViewedUploadsDir');
+      let ViewedUploadsDirValue = this.ListOfFiles[ViewedUploadsDir].settingPath;
+
+      this.RadioOn(SearchTypeValue);
+
+      (document.getElementById(SearchTypeValue) as HTMLInputElement).click();
+      this.AutoUploadPath = AutoUploadDirValue;
+      this.ViewedUploadsPath = ViewedUploadsDirValue;
+
+
 
       this.updateTable();
     });
 
     this.settingService.getColumnsNames().subscribe(data => {
       this.ColumnNames = data;
-       setTimeout(() => {
+      setTimeout(() => {
         this.FabricSelectedColumnNames.forEach(element => {
           (document.getElementById('FabricCheckBox_' + element) as HTMLInputElement).checked = true;
         });
-        
+
         this.LogCutSelectedColumnNames.forEach(element => {
           (document.getElementById('LogCutCheckBox_' + element) as HTMLInputElement).checked = true;
         });
-        
+
         this.EzStopSelectedColumnNames.forEach(element => {
           (document.getElementById('EzStopCheckBox_' + element) as HTMLInputElement).checked = true;
         });
-        
+
         this.AssemblyStationSelectedColumnNames.forEach(element => {
           (document.getElementById('AssemblyStationCheckBox_' + element) as HTMLInputElement).checked = true;
         });
-        
+
         this.HoistStationSelectedColumnNames.forEach(element => {
           (document.getElementById('HoistStationCheckBox_' + element) as HTMLInputElement).checked = true;
         });
-        
+
         this.PackingStationSelectedColumnNames.forEach(element => {
           (document.getElementById('PackingStationCheckBox_' + element) as HTMLInputElement).checked = true;
         });
-        
-        
+
+
       }, 10);
     });
 
@@ -299,7 +337,6 @@ export class SettingsComponent implements OnInit {
     });
 
   }
-
 
   updateTable() {
     try {
@@ -321,7 +358,8 @@ export class SettingsComponent implements OnInit {
     this.Saving = true;
 
     for (let i = 0; i < this.ListOfFiles.length; i++) {
-      this.ListOfFiles[i].settingPath = (document.getElementById("ID_" + this.ListOfFiles[i].settingName) as HTMLInputElement).value;
+      if ((document.getElementById("ID_" + this.ListOfFiles[i].settingName) as HTMLInputElement) != null && (document.getElementById("ID_" + this.ListOfFiles[i].settingName) as HTMLInputElement) != undefined)
+        this.ListOfFiles[i].settingPath = (document.getElementById("ID_" + this.ListOfFiles[i].settingName) as HTMLInputElement).value;
     }
 
     let fabricObjects = document.getElementsByClassName('Fabric-custom-control-input');
@@ -336,44 +374,44 @@ export class SettingsComponent implements OnInit {
     this.AssemblyStationSelectedColumnNames = [];
     this.HoistStationSelectedColumnNames = [];
     this.PackingStationSelectedColumnNames = [];
-    
+
     for (let index = 0; index < fabricObjects.length; index++) {
       if ((fabricObjects[index] as HTMLInputElement).checked) {
         this.FabricSelectedColumnNames.push((fabricObjects[index] as HTMLInputElement).title);
       }
     }
-    
+
     for (let index = 0; index < logcutObjects.length; index++) {
       if ((logcutObjects[index] as HTMLInputElement).checked) {
         this.LogCutSelectedColumnNames.push((logcutObjects[index] as HTMLInputElement).title);
       }
     }
-    
-    
+
+
     for (let index = 0; index < ezStopObjects.length; index++) {
       if ((ezStopObjects[index] as HTMLInputElement).checked) {
         this.EzStopSelectedColumnNames.push((ezStopObjects[index] as HTMLInputElement).title);
       }
     }
-    
+
     for (let index = 0; index < AssemblyStationObjects.length; index++) {
       if ((AssemblyStationObjects[index] as HTMLInputElement).checked) {
         this.AssemblyStationSelectedColumnNames.push((AssemblyStationObjects[index] as HTMLInputElement).title);
       }
     }
-    
+
     for (let index = 0; index < HoistStationObjects.length; index++) {
       if ((HoistStationObjects[index] as HTMLInputElement).checked) {
         this.HoistStationSelectedColumnNames.push((HoistStationObjects[index] as HTMLInputElement).title);
       }
     }
-    
+
     for (let index = 0; index < PackingStationObjects.length; index++) {
       if ((PackingStationObjects[index] as HTMLInputElement).checked) {
         this.PackingStationSelectedColumnNames.push((PackingStationObjects[index] as HTMLInputElement).title);
       }
     }
-    
+
 
     let newList = [...this.ListOfFiles];
 
@@ -384,7 +422,7 @@ export class SettingsComponent implements OnInit {
       applicationSetting: "FabricCutter"
     }
     newList.push(newEntry);
-    
+
     newEntry = {
       settingName: "SelectedColumnsNames",
       settingPath: this.LogCutSelectedColumnNames.join("@@@"),
@@ -392,8 +430,8 @@ export class SettingsComponent implements OnInit {
       applicationSetting: "LogCut"
     }
     newList.push(newEntry);
-    
-    newEntry= {
+
+    newEntry = {
       settingName: "SelectedColumnsNames",
       settingPath: this.EzStopSelectedColumnNames.join("@@@"),
       id: this.EzStopSelectedColumnNamesId,
@@ -401,31 +439,31 @@ export class SettingsComponent implements OnInit {
     }
     newList.push(newEntry);
 
-    newEntry= {
+    newEntry = {
       settingName: "SelectedColumnsNames",
       settingPath: this.AssemblyStationSelectedColumnNames.join("@@@"),
       id: this.AssemblyStationSelectedColumnNamesId,
       applicationSetting: "AssemblyStation"
     }
     newList.push(newEntry);
-    
-    newEntry= {
+
+    newEntry = {
       settingName: "SelectedColumnsNames",
       settingPath: this.HoistStationSelectedColumnNames.join("@@@"),
       id: this.HoistStationSelectedColumnNamesId,
       applicationSetting: "HoistStation"
     }
     newList.push(newEntry);
-    
-    newEntry= {
+
+    newEntry = {
       settingName: "SelectedColumnsNames",
       settingPath: this.PackingStationSelectedColumnNames.join("@@@"),
       id: this.PackingStationSelectedColumnNamesId,
       applicationSetting: "PackingStation"
     }
     newList.push(newEntry);
-    
-    
+
+
     let FabricCutterEntry: FileSettings = {
       settingName: "FabricCutterTable",
       settingPath: "",
@@ -448,7 +486,7 @@ export class SettingsComponent implements OnInit {
       applicationSetting: ""
 
     }
-    
+
     let AssemblyEntry: FileSettings = {
       settingName: "AssemblyStationTable",
       settingPath: "",
@@ -456,7 +494,7 @@ export class SettingsComponent implements OnInit {
       applicationSetting: ""
 
     }
-    
+
     let HoistEntry: FileSettings = {
       settingName: "HoistStationTable",
       settingPath: "",
@@ -464,68 +502,69 @@ export class SettingsComponent implements OnInit {
       applicationSetting: ""
 
     }
-    
+
     let PackingEntry: FileSettings = {
       settingName: "PackingStationTable",
       settingPath: "",
       id: this.PackingStationTableNumberId,
       applicationSetting: ""
     }
-    
-    
+
+
+
     this.PrinterTableArray.forEach(element => {
       if (element.applicationName == 'Fabric Cutter') {
         if (FabricCutterEntry.settingPath != "") {
-          FabricCutterEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName;
+          FabricCutterEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
         else {
-          FabricCutterEntry.settingPath = element.printerName + "@@@@@" + element.tableName;
+          FabricCutterEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
 
         }
       }
       else if (element.applicationName == 'Log Cut') {
         if (LogCutEntry.settingPath != "") {
-          LogCutEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName;
+          LogCutEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
         else {
-          LogCutEntry.settingPath = element.printerName + "@@@@@" + element.tableName;
+          LogCutEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
 
         }
       }
-      else if (element.applicationName == 'EzStop'){
+      else if (element.applicationName == 'EzStop') {
         if (EzStopEntry.settingPath != "") {
-          EzStopEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName;
+          EzStopEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
         else {
-          EzStopEntry.settingPath = element.printerName + "@@@@@" + element.tableName;
+          EzStopEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
       }
-      else if (element.applicationName == 'AssemblyStation'){
+      else if (element.applicationName == 'AssemblyStation') {
         if (AssemblyEntry.settingPath != "") {
-          AssemblyEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName;
+          AssemblyEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
         else {
-          AssemblyEntry.settingPath = element.printerName + "@@@@@" + element.tableName;
+          AssemblyEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
       }
-      else if (element.applicationName == 'HoistStation'){
+      else if (element.applicationName == 'HoistStation') {
         if (HoistEntry.settingPath != "") {
-          HoistEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName;
+          HoistEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
         else {
-          HoistEntry.settingPath = element.printerName + "@@@@@" + element.tableName;
+          HoistEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
       }
-      else if (element.applicationName == 'PackingStation'){
+      else if (element.applicationName == 'PackingStation') {
         if (PackingEntry.settingPath != "") {
-          PackingEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName;
+          PackingEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
         else {
-          PackingEntry.settingPath = element.printerName + "@@@@@" + element.tableName;
+          PackingEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
         }
       }
-      
-      
+
+      this.settingService.InsertTableNameWithThePath(element.tableName, element.OutputPath).subscribe();
     });
 
     newList.push(FabricCutterEntry);
@@ -533,42 +572,143 @@ export class SettingsComponent implements OnInit {
     newList.push(EzStopEntry);
 
     newList.push(LogCutEntry);
-    
+
     newList.push(AssemblyEntry);
-    
+
     newList.push(HoistEntry);
-    
+
     newList.push(LogCutEntry);
-    
+
     newList.push(PackingEntry);
-    
-    
-    console.log(newList);
+
+
+    let SearchTypeIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'SearchType');
+    let SearchTypeValue = (this.AutoUpload) ? 'AutoUpload' : 'CB_Line_Number_Search';
+    this.ListOfFiles[SearchTypeIndex].settingPath = SearchTypeValue;
+    let SearchTypeEntry = this.ListOfFiles[SearchTypeIndex];
+
+    if ((document.getElementById('ID_AutoUploadDir') as HTMLInputElement) != null && (document.getElementById('ID_AutoUploadDir') as HTMLInputElement) != undefined) {
+      let AutoUploadDirIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'AutoUploadDir');
+      let AutoUploadDirValue = (document.getElementById('ID_AutoUploadDir') as HTMLInputElement).value
+      this.ListOfFiles[AutoUploadDirIndex].settingPath = AutoUploadDirValue;
+      let AutoUploadDirEntry = this.ListOfFiles[AutoUploadDirIndex];
+      newList.push(AutoUploadDirEntry);
+
+    }
+    if ((document.getElementById('ID_ViewedUploadDir') as HTMLInputElement) != null && (document.getElementById('ID_ViewedUploadDir') as HTMLInputElement) != undefined) {
+
+      let ViewedUploadsDir = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'ViewedUploadsDir');
+      let ViewedUploadsDirValue = (document.getElementById('ID_ViewedUploadDir') as HTMLInputElement).value
+      this.ListOfFiles[ViewedUploadsDir].settingPath = ViewedUploadsDirValue;
+      let ViewedUploadsDirEntry = this.ListOfFiles[ViewedUploadsDir];
+      newList.push(ViewedUploadsDirEntry);
+
+    }
+    newList.push(SearchTypeEntry);
+
+    if (!this.localCalling && this.FabricSelectedColumnNames.length == 0) {
+      this.Saving = false;
+      alert("You Have To Select atleast one column from Fabric Cutter columns");
+      return;
+    }
+
+    if (!this.localCalling && this.LogCutSelectedColumnNames.length == 0) {
+      this.Saving = false;
+      alert("You Have To Select atleast one column from Log Cut columns");
+      return;
+    }
+    if (!this.localCalling && this.EzStopSelectedColumnNames.length == 0) {
+      this.Saving = false;
+      alert("You Have To Select atleast one column from EzStop columns");
+      return;
+    }
+    if (!this.localCalling && this.AssemblyStationSelectedColumnNames.length == 0) {
+      this.Saving = false;
+      alert("You Have To Select atleast one column from Assembly columns");
+      return;
+    }
+    if (!this.localCalling && this.HoistStationSelectedColumnNames.length == 0) {
+      this.Saving = false;
+      alert("You Have To Select atleast one column from Hoist columns");
+      return;
+    }
+    if (!this.localCalling && this.PackingStationSelectedColumnNames.length == 0) {
+      this.Saving = false;
+      alert("You Have To Select atleast one column from Packing columns");
+      return;
+    }
+
+
 
     this.settingService.UpdateSettings(newList).subscribe(data => {
       this.Saving = false;
-      alert("Saved Successfuly !!")
+      if (!this.localCalling)
+        alert("Saved Successfuly !!")
+      this.localCalling = false;
     });
 
   }
-
+  localCalling = false;
   Delete(i) {
-    this.PrinterTableArray.splice(i, 1);
-    this.updateTable();
+    this.settingService.DeleteTable(this.PrinterTableArray[i].tableName).subscribe(
+      bool => {
+        if (bool) {
+          this.localCalling = true;
+          this.PrinterTableArray.splice(i, 1);
+          this.updateTable();
+          this.SaveSettings();
+
+        }
+        else {
+          alert("Error Happened");
+        }
+      }
+    );
+
   }
 
   AddToTheTable() {
     let selectedPrinter = (document.getElementById("Printers") as HTMLSelectElement).value;
     let selectedApp = (document.getElementById("Application") as HTMLSelectElement).value;
     let TableName = (document.getElementById("TableName") as HTMLInputElement).value;
+    let OutputPath = (document.getElementById("OutputPath") as HTMLInputElement).value;
+    if (TableName == '') {
+      alert("Enter A Table Name"); return;
+    }
+    if (OutputPath == '') {
+      alert("Enter An Output Path"); return;
+    }
+    if (selectedApp == 'EzStop' && this.PrinterTableArray.findIndex(table => table.applicationName == 'EzStop') != -1) {
+      alert("You can only create 1 EzStop table !"); return;
 
-    let model: TablePrinterModel =
-    {
-      applicationName: selectedApp,
-      printerName: selectedPrinter,
-      tableName: TableName
-    };
-    this.PrinterTableArray.push(model);
-    this.updateTable();
+    }
+    this.settingService.CheckTableExists(TableName).subscribe(res => {
+
+      if (res && this.PrinterTableArray.findIndex(t => t.tableName == TableName) == -1) {
+        let model: TablePrinterModel =
+        {
+          applicationName: selectedApp,
+          printerName: selectedPrinter,
+          tableName: TableName,
+          OutputPath: OutputPath
+
+        };
+        this.PrinterTableArray.push(model);
+        this.updateTable();
+      }
+      else {
+        alert("Table Name already exists, please enter another one!!"); return;
+      }
+    })
+
+
+
+
   }
+
+
+  RadioOn(radioType) {
+    this.AutoUpload = (radioType == 'AutoUpload');
+  }
+
 }

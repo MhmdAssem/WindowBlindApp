@@ -13,8 +13,8 @@ export class HiostStationService {
 
   constructor(private httpClient: HttpClient) { }
   
-  public GetReadyToQualify(): Observable<FabricCutterCBDetailsModel> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  public GetReadyToQualify(input:string): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json',"CbOrLineNumber":input });
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'HoistStation/GetReadyToQualify', { headers }).pipe(
@@ -49,4 +49,22 @@ export class HiostStationService {
 
       );
   }
+  
+  
+  public GetHeldObjects(tableName): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', "tableName":tableName });
+
+    return this.httpClient
+      .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'HoistStation/GetHeldObjects', { headers }).pipe(
+        tap(
+          data => {
+            if (!data) {
+              alert("Sorry Configuration is not done , please contact your admin !");
+            }
+          }
+        )
+
+      );
+  }
+
 }

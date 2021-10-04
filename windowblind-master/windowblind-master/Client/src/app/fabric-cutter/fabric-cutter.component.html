@@ -1,139 +1,419 @@
 <div class="container mt-4">
   <div class="row">
 
-    <div class="col-md-6">
+    <div class="col-md-6" *ngIf="SearchType == false">
       <form class="form-inline">
-        <label > Select a Table</label>
-        <select class="form-control ml-4" name="TableNames" id="TableNames"  style="width: 50%;">
-          <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}" >{{table}}</option>
+        <label> Select a Shift</label>
+        <select class="form-control ml-4" name="ShiftTable" id="ShiftTable" style="width: 50%;"
+          style="text-align-last:center;;width: 50%;">
+          <option selected value="Morning">Morning Shift</option>
+          <option value="Afternoon">Afternoon Shift</option>
         </select>
       </form>
-     
+
     </div>
-    <div class="col-md-6 row">
-      <form  class="form-inline">
-        <label  > Enter CB Number:</label>
+    
+    
+    
+    <div class="col-md-6">
+      <form class="form-inline">
+        <label> Select a Table</label>
+        <select class="form-control ml-4" name="TableNames" id="TableNames" style="text-align-last:center;width: 50%;"
+          (change)="AutoUploadFeatureOnly()">
+          <option selected value="DefaultTableName">-</option>
+          <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
+        </select>
+      </form>
+
+    </div>
+
+
+
+   
+    <div class="col-md-6 row" *ngIf="SearchType == true">
+      <form class="form-inline">
+        <label> Enter CB Number:</label>
         <input class="form-control ml-4 mr-5" type="text" name="CBNumber" id="CBNumber" required>
       </form>
-      <button style="margin-left: 7px;margin-top: -5px;" class="btn btn-primary btn-sm" (click)="GetCBDetails();"> <span *ngIf="Loading"
-        class="spinner-border spinner-border-sm mr-1"></span>
-      Get CB Details</button>
+      <button style="margin-left: 7px;margin-top: -5px;" id = 'SearchButton' class="btn btn-primary btn-sm" (click)="GetCBDetails();"> <span
+          *ngIf="Loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Get CB Details</button>
     </div>
 
   </div>
 </div>
 
-<div class="container-fluid mt-3">
 
-  <div class="table-responsive mt-3" id="TableViewSelect"  >
-    <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
-      [dtTrigger]="dtTrigger">
-      <thead class="bg-light">
-        <tr id="DataTableHeader">
-          <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
-            id="UniqueDataTableHeader_{{col}}">
+<mat-tab-group style="margin-top: 50px;" *ngIf="SearchType == false" mat-align-tabs="center" animationDuration="1000ms" (selectedTabChange)="tabChanged($event)">
 
+  <mat-tab label="Normal">
 
-            <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">{{col}}</span>
+    <div class="container-fluid mt-3">
 
-            </div>
-
-
-          </th>
-          <th id="theSelectColumn" *ngIf="tableModelColNames.length !=0">
-            <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">SelectColumn</span>
-
-            </div>
-          </th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
-          <td *ngFor="let col of tableModelColNames">{{row.row[col]}}</td>
-          <td>
-            <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="table-responsive mt-3" id="TableViewSelect">
+        <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
+          [dtTrigger]="dtTrigger">
+          <thead class="bg-light">
+            <tr id="DataTableHeader">
+              <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
+                id="UniqueDataTableHeader_{{col}}">
 
 
-  </div>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-black-50">{{col}}</span>
 
-  <div id="Custom_Table_Holder" class="custom-dtable-holder"  style="cursor: pointer;">
-    <div id="Custom_Table_Info" class="custom-dtable-info"></div>
-    <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
-  </div>
+                </div>
 
 
-  <div class="table-responsive mt-3" id="TableViewReview" style="display: none;">
-    <table datatable [dtOptions]="dtOptionsReview" class="table table-bordered" id="DScenario-table"
-      [dtTrigger]="dtTriggerReview">
-      <thead class="bg-light">
-        <tr id="DataTableHeader2">
-          <th class="align-baseline  mw-200" *ngFor="let col of ReviewtableModelColNames; let i=index"
-            id="UniqueDataTableHeader2_{{col}}">
+              </th>
+              <th id="theSelectColumn" *ngIf="tableModelColNames.length !=0">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-black-50">SelectColumn</span>
+
+                </div>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let row of Data;let i = index" id="RowNumber_{{i}}">
+              <td *ngFor="let col of tableModelColNames">{{row.row[col]}}</td>
+              <td>
+                <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
 
-            <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">{{col}}</span>
+      </div>
 
-            </div>
+      <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
+        <div id="Custom_Table_Info" class="custom-dtable-info"></div>
+        <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
+      </div>
 
-          </th>
-          <th id="theSelectColumn2" *ngIf="tableModelColNames.length !=0">
-            <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">UnSelectColumn</span>
-            </div>
-          </th>
-        </tr>
-      </thead>
 
-      <tbody>
-        <tr *ngFor="let row of ReviewData;let i = index" id="RowNumber_i">
+      <div class="table-responsive mt-3" id="TableViewReview" style="display: none;">
+        <table datatable [dtOptions]="dtOptionsReview" class="table table-bordered" id="DScenario-table"
+          [dtTrigger]="dtTriggerReview">
+          <thead class="bg-light">
+            <tr id="DataTableHeader2">
+              <th class="align-baseline  mw-200" *ngFor="let col of ReviewtableModelColNames; let i=index"
+                id="UniqueDataTableHeader2_{{col}}">
+
+
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-black-50">{{col}}</span>
+
+                </div>
+
+              </th>
+              <th id="theSelectColumn2" *ngIf="tableModelColNames.length !=0">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-black-50">UnSelectColumn</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let row of ReviewData;let i = index" id="RowNumber_i">
+              <td *ngFor="let col of ReviewtableModelColNames">{{row.row[col]}}</td>
+              <td>
+                <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="UnSelectThisRow(i);">UnSelect</button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+
+      <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="ReviewData.length!=0" style="cursor: pointer;">
+        <div id="Custom_Table_Info2" class="custom-dtable-info"></div>
+        <div id="Custom_Table_Pagination2" class="custom-dtable-pagination"></div>
+      </div>
+
+
+    </div>
+
+    <div class="container">
+
+      <div class="row my-4 justify-content-between" *ngIf="ReviewData.length!=0">
+
+        <button class="btn btn-primary mr-2" (click)="Hold();"><span *ngIf="HoldLoading"
+            class="spinner-border spinner-border-sm mr-1"></span>
+          Hold </button>
+
+
+        <button class="btn btn-primary" (click)="PrintLabelsOnly();"><span *ngIf="Printing"
+            class="spinner-border spinner-border-sm mr-1"></span>
+          Print Labels Only </button>
+
+        <button class="btn btn-primary" (click)="CreateFileLabels();"><span *ngIf="Creating"
+            class="spinner-border spinner-border-sm mr-1"></span>
+          Create File/Labels </button>
+
+        <button class="btn btn-primary" (click)="ClearReview();">
+          Clear </button>
+
+        <button class="btn btn-primary" (click)="OpenDialog();">
+          Update Roll Width</button>
+
+      </div>
+
+    </div>
+
+  </mat-tab>
+  
+  <mat-tab  > 
+    <ng-template mat-tab-label>
+      Urgent
+      <mat-icon class="example-tab-icon" style="margin-left: 5px; color: red;"*ngIf="UrgentData.length!=0">notification_important</mat-icon>
+    </ng-template>
+    <div class="container-fluid mt-3">
+
+      <div class="table-responsive mt-3" id="UrgentTableViewSelect">
+        <table datatable [dtOptions]="UrgentdtOptions" class="table table-bordered w-100" id="dScenario-table"
+          [dtTrigger]="UrgentdtTrigger">
+          <thead class="bg-light">
+            <tr id="DataTableHeader">
+              <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
+                id="UrgentUniqueDataTableHeader_{{col}}">
+
+
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-black-50">{{col}}</span>
+
+                </div>
+
+
+              </th>
+              <th id="UrgenttheSelectColumn" *ngIf="tableModelColNames.length !=0">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-black-50">SelectColumn</span>
+
+                </div>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let row of UrgentData;let i = index" id="UrgentRowNumber_{{i}}">
+              <td *ngFor="let col of tableModelColNames">{{row.row[col]}}</td>
+              <td>
+                <button class="btn btn-sm" id="UrgentSelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+
+      <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
+        <div id="Custom_Table_Info" class="custom-dtable-info"></div>
+        <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
+      </div>
+
+
+      <div class="table-responsive mt-3" id="UrgentTableViewReview" style="display: none;">
+        <table datatable [dtOptions]="UrgentdtOptionsReview" class="table table-bordered" id="UrgentDScenario-table"
+          [dtTrigger]="UrgentdtTriggerReview">
+          <thead class="bg-light">
+            <tr id="DataTableHeader2">
+              <th class="align-baseline  mw-200" *ngFor="let col of ReviewtableModelColNames; let i=index"
+                id="UrgentUniqueDataTableHeader2_{{col}}">
+
+
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-black-50">{{col}}</span>
+
+                </div>
+
+              </th>
+              <th id="UrgenttheSelectColumn2" *ngIf="tableModelColNames.length !=0">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-black-50">UnSelectColumn</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let row of UrgentReviewData;let i = index" id="RowNumber_i">
+              <td *ngFor="let col of ReviewtableModelColNames">{{row.row[col]}}</td>
+              <td>
+                <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="UnSelectThisRow(i);">UnSelect</button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+
+      <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="UrgentReviewData.length!=0" style="cursor: pointer;">
+        <div id="Custom_Table_Info2" class="custom-dtable-info"></div>
+        <div id="Custom_Table_Pagination2" class="custom-dtable-pagination"></div>
+      </div>
+
+
+    </div>
+
+    <div class="container">
+
+      <div class="row my-4 justify-content-between" *ngIf="UrgentReviewData.length!=0">
+
+        <button class="btn btn-primary mr-2" (click)="Hold();"><span *ngIf="HoldLoading"
+            class="spinner-border spinner-border-sm mr-1"></span>
+          Hold </button>
+
+
+        <button class="btn btn-primary" (click)="PrintLabelsOnly();"><span *ngIf="Printing"
+            class="spinner-border spinner-border-sm mr-1"></span>
+          Print Labels Only </button>
+
+        <button class="btn btn-primary" (click)="CreateFileLabels();"><span *ngIf="Creating"
+            class="spinner-border spinner-border-sm mr-1"></span>
+          Create File/Labels </button>
+
+        <button class="btn btn-primary" (click)="ClearReview();">
+          Clear </button>
+
+        <button class="btn btn-primary" (click)="OpenDialog();">
+          Update Roll Width</button>
+
+      </div>
+
+    </div>
+
+  </mat-tab>
+
+</mat-tab-group>
+
+<div *ngIf="SearchType == true">
+
+  <div class="container-fluid mt-3">
+
+    <div class="table-responsive mt-3" id="TableViewSelect">
+      <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
+        [dtTrigger]="dtTrigger">
+        <thead class="bg-light">
+          <tr id="DataTableHeader">
+            <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
+              id="UniqueDataTableHeader_{{col}}">
+
+
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-black-50">{{col}}</span>
+
+              </div>
+
+
+            </th>
+            <th id="theSelectColumn" *ngIf="tableModelColNames.length !=0">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-black-50">SelectColumn</span>
+
+              </div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of Data;let i = index" id="RowNumber_{{i}}">
+            <td *ngFor="let col of tableModelColNames">{{row.row[col]}}</td>
+            <td>
+              <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+    </div>
+
+    <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
+      <div id="Custom_Table_Info" class="custom-dtable-info"></div>
+      <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
+    </div>
+
+
+    <div class="table-responsive mt-3" id="TableViewReview" [style.display]="ReviewData.length !=0">
+      <table datatable [dtOptions]="dtOptionsReview" class="table table-bordered" id="DScenario-table"
+        [dtTrigger]="dtTriggerReview">
+        <thead class="bg-light">
+          <tr id="DataTableHeader2">
+            <th class="align-baseline  mw-200" *ngFor="let col of ReviewtableModelColNames; let i=index"
+              id="UniqueDataTableHeader2_{{col}}">
+
+
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-black-50">{{col}}</span>
+
+              </div>
+
+            </th>
+            <th id="theSelectColumn2" *ngIf="tableModelColNames.length !=0">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-black-50">UnSelectColumn</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of ReviewData;let i = index" id="RowNumber_i">
             <td *ngFor="let col of ReviewtableModelColNames">{{row.row[col]}}</td>
             <td>
               <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="UnSelectThisRow(i);">UnSelect</button>
             </td>
-         
-        </tr>
-      </tbody>
-    </table>
+
+          </tr>
+        </tbody>
+      </table>
+
+
+    </div>
+
+    <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="ReviewData.length!=0" style="cursor: pointer;">
+      <div id="Custom_Table_Info2" class="custom-dtable-info"></div>
+      <div id="Custom_Table_Pagination2" class="custom-dtable-pagination"></div>
+    </div>
 
 
   </div>
 
-  <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="ReviewData.length!=0"  style="cursor: pointer;">
-    <div id="Custom_Table_Info2" class="custom-dtable-info"></div>
-    <div id="Custom_Table_Pagination2" class="custom-dtable-pagination"></div>
+  <div class="container">
+
+    <div class="row my-4 justify-content-between" *ngIf="ReviewData.length!=0">
+
+      <button class="btn btn-primary mr-2" (click)="Hold();"><span *ngIf="HoldLoading"
+          class="spinner-border spinner-border-sm mr-1"></span>
+        Hold </button>
+
+
+      <button class="btn btn-primary" (click)="PrintLabelsOnly();"><span *ngIf="Printing"
+          class="spinner-border spinner-border-sm mr-1"></span>
+        Print Labels Only </button>
+
+      <button class="btn btn-primary" (click)="CreateFileLabels();"><span *ngIf="Creating"
+          class="spinner-border spinner-border-sm mr-1"></span>
+        Create File/Labels </button>
+
+      <button class="btn btn-primary" (click)="ClearReview();">
+        Clear </button>
+
+      <button class="btn btn-primary" (click)="OpenDialog();">
+        Update Roll Width</button>
+
+    </div>
+
   </div>
 
 
 </div>
-
-<div class="container">
-
-  <div class="row my-4 justify-content-between" *ngIf="ReviewData.length!=0">
-
-    <button class="btn btn-primary" (click)="PrintLabelsOnly();"><span *ngIf="Printing"
-      class="spinner-border spinner-border-sm mr-1"></span>
-      Print Labels Only </button>
-
-    <button class="btn btn-primary" (click)="CreateFileLabels();"><span *ngIf="Creating"
-      class="spinner-border spinner-border-sm mr-1"></span>
-      Create File/Labels </button>
-
-    <button class="btn btn-primary" (click)="ClearReview();">
-      Clear </button>
-
-    <button class="btn btn-primary" (click)="OpenDialog();">
-      Update Roll Width</button>
-
-  </div>
-
-</div>
-
-

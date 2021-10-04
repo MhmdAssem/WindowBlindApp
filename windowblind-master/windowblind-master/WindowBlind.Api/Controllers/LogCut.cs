@@ -28,443 +28,468 @@ namespace WindowBlind.Api.Controllers
         }
         private IRepository _repository;
         private IWebHostEnvironment _env;
-        //private IList<Stream> m_streams;
 
-        [HttpGet("getCBNumberDetails")]
-        public async Task<IActionResult> getCBNumberDetails([FromHeader] string CBNumberOrLineNumber, [FromHeader] string CBorLine)
+        Dictionary<string, int> ColumnsIndex;
+        string ctbsodumpPath, SheetNamePath, FBRPath, DeductionPath, LathePath, FabricPath, DropPath;
+        int TotalQty;
+        List<string> SelectedColumnsPath;
+        int generalBlindNumber;
+        Dictionary<string, string> FabricRollwidth;
+        Dictionary<string, int> ControlTypevalues;
+        Dictionary<string, List<string>> LatheType;
+        List<DropTableModel> Droptable;
+        List<string> FabricDatable;
+        bool CBSearch;
+        string CB;
+        string LineNumber;
+        private async Task ReadConfig()
         {
-            try
+
+            /// get the dumb file Path
+            var ctbsodumpSetting = await _repository.Settings.FindAsync(e => e.settingName == "ctbsodump");
+            ctbsodumpPath = ctbsodumpSetting.FirstOrDefault().settingPath;
+
+            /// get the sheet name
+            var SheetNameSetting = await _repository.Settings.FindAsync(e => e.settingName == "SheetName");
+            SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
+
+            /// get Fabric Roll WIdth File
+
+            var FBRSetting = await _repository.Settings.FindAsync(e => e.settingName == "Fabric Rollwidth");
+            FBRPath = FBRSetting.FirstOrDefault().settingPath;
+
+            /// get deduct width file
+            var DeductionSetting = await _repository.Settings.FindAsync(e => e.settingName == "DeductionTable");
+            DeductionPath = DeductionSetting.FirstOrDefault().settingPath;
+
+            ///get Lathe file path
+            var LatheSetting = await _repository.Settings.FindAsync(e => e.settingName == "PVCLathe Fabric");
+            LathePath = LatheSetting.FirstOrDefault().settingPath;
+
+            /// get the Fabric data 
+            var FabricSetting = await _repository.Settings.FindAsync(e => e.settingName == "FabricTable");
+            FabricPath = FabricSetting.FirstOrDefault().settingPath;
+
+            /// get the Fabric data 
+            var DropSetting = await _repository.Settings.FindAsync(e => e.settingName == "DropTable");
+            DropPath = DropSetting.FirstOrDefault().settingPath;
+
+            var SelectedColumnsSetting = await _repository.Settings.FindAsync(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "LogCut");
+            SelectedColumnsPath = SelectedColumnsSetting.FirstOrDefault().settingPath.Split("@@@").ToList();
+
+            if (SelectedColumnsPath.Count == 1 && SelectedColumnsPath[0].Trim() == "") SelectedColumnsPath = new List<string>();
+
+
+        }
+
+        private bool CheckPaths()
+        {
+            FileInfo file = new FileInfo(ctbsodumpPath);
+            if (!file.Exists) return false;
+
+
+            file = new FileInfo(FBRPath);
+            if (!file.Exists) return false;
+
+
+            file = new FileInfo(DeductionPath);
+            if (!file.Exists) return false;
+
+
+            file = new FileInfo(LathePath);
+            if (!file.Exists) return false;
+
+            file = new FileInfo(FabricPath);
+            if (!file.Exists) return false;
+
+            file = new FileInfo(DropPath);
+            if (!file.Exists) return false;
+
+            return true;
+        }
+
+        private FabricCutterCBDetailsModel ReadingData()
+        {
+            FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
+            FileInfo file = new FileInfo(ctbsodumpPath);
+            if (!file.Exists) return null;
+            List<string> names = new List<string>();
+            //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
+            generalBlindNumber = 1;
+
+
+            FabricRollwidth = new Dictionary<string, string>();
+            ControlTypevalues = new Dictionary<string, int>();
+            LatheType = new Dictionary<string, List<string>>();
+            Droptable = new List<DropTableModel>();
+            FabricDatable = new List<string>();
+
+            var TempFBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
+
+            file = new FileInfo(TempFBRPath);
+            using (var package = new ExcelPackage(file))
             {
-                bool CBSearch = CBorLine == "CB" ? true : false;
-                var CB = CBNumberOrLineNumber;
-                var LineNumber = CBNumberOrLineNumber;
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Dictionary<string, int> ColumnsIndex = new Dictionary<string, int>();
+                var workbook = package.Workbook;
 
+                var worksheet = workbook.Worksheets.FirstOrDefault();
 
-                #region Reading the config
-                /// get the dumb file Path
-                var ctbsodumpSetting = await _repository.Settings.FindAsync(e => e.settingName == "ctbsodump");
-                var ctbsodumpPath = ctbsodumpSetting.FirstOrDefault().settingPath;
-
-                /// get the sheet name
-                var SheetNameSetting = await _repository.Settings.FindAsync(e => e.settingName == "SheetName");
-                var SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
-
-                /// get Fabric Roll WIdth File
-
-                var FBRSetting = await _repository.Settings.FindAsync(e => e.settingName == "Fabric Rollwidth");
-                var FBRPath = FBRSetting.FirstOrDefault().settingPath;
-
-                /// get deduct width file
-                var DeductionSetting = await _repository.Settings.FindAsync(e => e.settingName == "DeductionTable");
-                var DeductionPath = DeductionSetting.FirstOrDefault().settingPath;
-
-                ///get Lathe file path
-                var LatheSetting = await _repository.Settings.FindAsync(e => e.settingName == "PVCLathe Fabric");
-                var LathePath = LatheSetting.FirstOrDefault().settingPath;
-
-                /// get the Fabric data 
-                var FabricSetting = await _repository.Settings.FindAsync(e => e.settingName == "FabricTable");
-                var FabricPath = FabricSetting.FirstOrDefault().settingPath;
-
-                /// get the Fabric data 
-                var DropSetting = await _repository.Settings.FindAsync(e => e.settingName == "DropTable");
-                var DropPath = DropSetting.FirstOrDefault().settingPath;
-
-                var SelectedColumnsSetting = await _repository.Settings.FindAsync(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "LogCut");
-                var SelectedColumnsPath = SelectedColumnsSetting.FirstOrDefault().settingPath.Split("@@@").ToList();
-
-                if (SelectedColumnsPath.Count == 1 && SelectedColumnsPath[0].Trim() == "") SelectedColumnsPath = new List<string>();
-
-                #endregion
-
-                #region Checking The Paths
-
-                FileInfo file = new FileInfo(ctbsodumpPath);
-                if (!file.Exists) return new JsonResult(false);
-
-
-                file = new FileInfo(FBRPath);
-                if (!file.Exists) return new JsonResult(false);
-
-
-                file = new FileInfo(DeductionPath);
-                if (!file.Exists) return new JsonResult(false);
-
-
-                file = new FileInfo(LathePath);
-                if (!file.Exists) return new JsonResult(false);
-
-                file = new FileInfo(FabricPath);
-                if (!file.Exists) return new JsonResult(false);
-
-                file = new FileInfo(DropPath);
-                if (!file.Exists) return new JsonResult(false);
-
-                #endregion
-
-                #region Reading Data
-                FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
-                file = new FileInfo(ctbsodumpPath);
-                if (!file.Exists) return null;
-                List<string> names = new List<string>();
-                //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
-                int generalBlindNumber = 1;
-
-
-                Dictionary<string, string> FabricRollwidth = new Dictionary<string, string>();
-                Dictionary<string, int> ControlTypevalues = new Dictionary<string, int>();
-                Dictionary<string, List<string>> LatheType = new Dictionary<string, List<string>>();
-                List<DropTableModel> Droptable = new List<DropTableModel>();
-                List<string> FabricDatable = new List<string>();
-
-                FBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
-
-                file = new FileInfo(FBRPath);
-                using (var package = new ExcelPackage(file))
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Row + 1; i < end.Row; i++)
                 {
-                    var workbook = package.Workbook;
-
-                    var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
-                    {
-                        FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
-                    }
+                    FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
                 }
+            }
 
-                System.IO.File.Delete(FBRPath);
+            System.IO.File.Delete(TempFBRPath);
 
-                DeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
+            var TempDeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
 
-                file = new FileInfo(DeductionPath);
-                using (var package = new ExcelPackage(file))
+            file = new FileInfo(TempDeductionPath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Row + 1; i < end.Row; i++)
                 {
-                    var workbook = package.Workbook;
-
-                    var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
-                    {
-                        ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
-                    }
+                    ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
                 }
+            }
 
-                System.IO.File.Delete(DeductionPath);
+            System.IO.File.Delete(TempDeductionPath);
 
-                LathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
+            var TempLathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
 
-                file = new FileInfo(LathePath);
-                using (var package = new ExcelPackage(file))
+            file = new FileInfo(TempLathePath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Row + 1; i < end.Row; i++)
                 {
-                    var workbook = package.Workbook;
+                    if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
+                        LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
 
-                    var worksheet = workbook.Worksheets.FirstOrDefault();
+                    LatheType[worksheet.Cells[i, 1].Text.Trim()].Add(worksheet.Cells[i, 2].Text.Trim());
 
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
-                    {
-                        if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
-                            LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
-
-                        LatheType[worksheet.Cells[i, 1].Text.Trim()].Add(worksheet.Cells[i, 2].Text.Trim());
-
-                    }
                 }
+            }
 
-                System.IO.File.Delete(LathePath);
+            System.IO.File.Delete(TempLathePath);
 
-                FabricPath = CreateNewFile(FabricPath, FabricPath.Substring(0, FabricPath.IndexOf(".")) + Guid.NewGuid().ToString() + FabricPath.Substring(FabricPath.IndexOf(".")));
+            var TempFabricPath = CreateNewFile(FabricPath, FabricPath.Substring(0, FabricPath.IndexOf(".")) + Guid.NewGuid().ToString() + FabricPath.Substring(FabricPath.IndexOf(".")));
 
-                file = new FileInfo(FabricPath);
-                using (var package = new ExcelPackage(file))
+            file = new FileInfo(TempFabricPath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Row + 1; i < end.Row; i++)
                 {
-                    var workbook = package.Workbook;
-
-                    var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
-                    {
-                        var text = worksheet.Cells[i, 1].Text.Trim();
-                        if (!FabricDatable.Contains(text))
-                            FabricDatable.Add(text);
-                    }
+                    var text = worksheet.Cells[i, 1].Text.Trim();
+                    if (!FabricDatable.Contains(text))
+                        FabricDatable.Add(text);
                 }
+            }
 
-                System.IO.File.Delete(FabricPath);
+            System.IO.File.Delete(TempFabricPath);
 
-                DropPath = CreateNewFile(DropPath, DropPath.Substring(0, DropPath.IndexOf(".")) + Guid.NewGuid().ToString() + DropPath.Substring(DropPath.IndexOf(".")));
+            var TempDropPath = CreateNewFile(DropPath, DropPath.Substring(0, DropPath.IndexOf(".")) + Guid.NewGuid().ToString() + DropPath.Substring(DropPath.IndexOf(".")));
 
-                file = new FileInfo(DropPath);
-                using (var package = new ExcelPackage(file))
+            file = new FileInfo(TempDropPath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Row + 1; i < end.Row; i++)
                 {
-                    var workbook = package.Workbook;
-
-                    var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
+                    DropTableModel model = new DropTableModel
                     {
-                        DropTableModel model = new DropTableModel
-                        {
-                            From = int.Parse(worksheet.Cells[i, 1].Text.Trim()),
-                            To = int.Parse(worksheet.Cells[i, 2].Text.Trim()),
-                            DropGroup = worksheet.Cells[i, 3].Text.Trim(),
-                            DropColour = worksheet.Cells[i, 4].Text.Trim()
-                        };
-                        Droptable.Add(model);
-                    }
+                        From = int.Parse(worksheet.Cells[i, 1].Text.Trim()),
+                        To = int.Parse(worksheet.Cells[i, 2].Text.Trim()),
+                        DropGroup = worksheet.Cells[i, 3].Text.Trim(),
+                        DropColour = worksheet.Cells[i, 4].Text.Trim()
+                    };
+                    Droptable.Add(model);
                 }
+            }
 
-                System.IO.File.Delete(DropPath);
+            System.IO.File.Delete(TempDropPath);
 
-                var TotalQty = 0;
-                ctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
+            TotalQty = 0;
+            var TempctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
 
-                file = new FileInfo(ctbsodumpPath);
-                using (var package = new ExcelPackage(file))
+            file = new FileInfo(TempctbsodumpPath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+                var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
+                if (worksheet == null) return null;
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+
+                Dictionary<int, int> indexToRemove = new Dictionary<int, int>();
+
+                if (!CBSearch)
                 {
-                    var workbook = package.Workbook;
-                    var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
-                    if (worksheet == null) return null;
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-
-                    Dictionary<int, int> indexToRemove = new Dictionary<int, int>();
-
-                    if (!CBSearch)
-                    {
-                        LineNumber = CBNumberOrLineNumber;
-                        var CBINdex = 0;
-                        for (int i = start.Column; i < end.Column; i++)
-                        {
-                            var text = worksheet.Cells[1, i].Text.Trim();
-                            if (text.Equals("W/Order NO")) CBINdex = i;
-                            if (text.Equals("Line No."))
-                            {
-                                for (int j = start.Row + 1; j < end.Row; j++)
-                                    if (worksheet.Cells[j, i].Text.Trim() == LineNumber) CB = worksheet.Cells[j, CBINdex].Text.Trim();
-                                break;
-                            }
-                        }
-                    }
-
+                    var CBINdex = 0;
                     for (int i = start.Column; i < end.Column; i++)
                     {
-                        var text = worksheet.Cells[2, i].Text.Trim();
-                        ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
-                        if (text.StartsWith("CB"))
+                        var text = worksheet.Cells[1, i].Text.Trim();
+                        if (text.Equals("W/Order NO")) CBINdex = i;
+                        if (text.Equals("Line No."))
                         {
                             for (int j = start.Row + 1; j < end.Row; j++)
-                                if (worksheet.Cells[j, i].Text.Trim() != CB) indexToRemove[j] = 1;
-
+                                if (worksheet.Cells[j, i].Text.Trim() == LineNumber) CB = worksheet.Cells[j, CBINdex].Text.Trim();
+                            break;
                         }
                     }
-
-                    for (int i = start.Row + 1; i < end.Row; i++)
-                    {
-                        if (indexToRemove.ContainsKey(i)) continue;
-                        Dictionary<string, string> row = new Dictionary<string, string>();
-                        int RowQty = 0;
-                        for (int j = start.Column; j < end.Column; j++)
-                        {
-                            var Headertext = worksheet.Cells[1, j].Text.Trim();
-
-                            Headertext = Headertext.Replace(".", "");
-                            /// special check 
-                            if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") continue;
-                            var cell = worksheet.Cells[i, j].Text.Trim();
-
-                            if (Headertext.Contains("Qty") && cell != "")
-                            {
-                                TotalQty += int.Parse(cell);
-                            }
-                            if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
-                                Data.ColumnNames.Add(Headertext);
-                                Data.ColumnNames.Add(Headertext);
-                            row[Headertext] = cell;
-
-                        }
-
-                        FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
-                        TblRow.Row = row;
-                        TblRow.UniqueId = Guid.NewGuid().ToString();
-                        Data.Rows.Add(TblRow);
-                    }
-                    package.Dispose();
                 }
 
-                System.IO.File.Delete(ctbsodumpPath);
-                #endregion
-
-                FabricCutterCBDetailsModel FinalizedData = new FabricCutterCBDetailsModel();
-
-                #region Customization of columns
-
-                var f = 0;
-                var a = 0;
-                var Fbindex = 0;
-                var blindNumber = 1;
-                var rowCntr = -1;
-                foreach (var item in Data.Rows)
+                for (int i = start.Column; i < end.Column; i++)
                 {
-                    rowCntr++;
-                    Fbindex = 0;
-                    item.Row["CB Number"] = item.Row["W/Order NO"].Trim();
-                    item.Row["Fabric"] = item.Row["Fabric"];
-
-                    if (item.Row["Fabric"] != "")
+                    var text = worksheet.Cells[2, i].Text.Trim();
+                    ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
+                    if (text.StartsWith("CB"))
                     {
-                        for (int n = 0; n < FabricDatable.Count; n++)
+                        for (int j = start.Row + 1; j < end.Row; j++)
+                            if (worksheet.Cells[j, i].Text.Trim() != CB) indexToRemove[j] = 1;
+
+                    }
+                }
+
+                for (int i = start.Row + 1; i < end.Row; i++)
+                {
+                    if (indexToRemove.ContainsKey(i)) continue;
+                    Dictionary<string, string> row = new Dictionary<string, string>();
+                    int RowQty = 0;
+                    for (int j = start.Column; j < end.Column; j++)
+                    {
+                        var Headertext = worksheet.Cells[1, j].Text.Trim();
+                        if (String.IsNullOrEmpty(Headertext)) continue;
+
+                        Headertext = Headertext.Replace(".", "");
+                        /// special check 
+                        if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") continue;
+                        var cell = worksheet.Cells[i, j].Text.Trim();
+
+                        if (Headertext.Contains("Qty") && cell != "")
                         {
-                            if (item.Row["Fabric"].ToUpper().Trim().Contains(FabricDatable[n].ToUpper()))
-                            {
-                                Fbindex = 1;
-
-                                break;
-                            }
-
+                            TotalQty += int.Parse(cell);
                         }
-                        f += 1;
-                        a += 1;
+                        if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
+                            Data.ColumnNames.Add(Headertext);
+
+                        row[Headertext] = cell;
+
+                    }
+
+                    FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
+                    TblRow.Row = row;
+                    TblRow.UniqueId = Guid.NewGuid().ToString();
+                    Data.Rows.Add(TblRow);
+                }
+                package.Dispose();
+            }
+
+            System.IO.File.Delete(TempctbsodumpPath);
+            return Data;
+        }
+
+        private void LogCutProcess(ref FabricCutterCBDetailsModel FinalizedData,ref FabricCutterCBDetailsModel Data)
+        {
+
+            var f = 0;
+            var a = 0;
+            var Fbindex = 0;
+            var blindNumber = 1;
+            var rowCntr = -1;
+            foreach (var item in Data.Rows)
+            {
+                rowCntr++;
+                Fbindex = 0;
+                item.Row["CB Number"] = item.Row["W/Order NO"].Trim();
+                item.Row["Fabric"] = item.Row["Fabric"];
+
+                if (item.Row["Fabric"] != "")
+                {
+                    for (int n = 0; n < FabricDatable.Count; n++)
+                    {
+                        if (item.Row["Fabric"].ToUpper().Trim().Contains(FabricDatable[n].ToUpper()))
+                        {
+                            Fbindex = 1;
+
+                            break;
+                        }
+
+                    }
+                    f += 1;
+                    a += 1;
+                }
+                else
+                {
+                    Fbindex = 0;
+
+                }
+
+                // WILL ADD CHAR ABCD FOR ITEM NUMBER
+
+                if (Fbindex > 0)
+                {
+                    if (CBSearch)
+                    {
+                        item.Row["item"] = CalculateAlphabeticFromNumber(f);
                     }
                     else
                     {
-                        Fbindex = 0;
+                        a = 1;
+                        f = 1;
+                        for (int j = 0; j < Data.Rows.Count; j++)
+                        {
+                            if (Data.Rows[j].Row["Line No"] == item.Row["Line No"])
+                            {
+                                item.Row["item"] = CalculateAlphabeticFromNumber(f); break;
+                            }
+                            f = f + 1;
+                            a = a + 1;
+                        }
 
                     }
+                    item.Row["Total"] = TotalQty.ToString();
 
-                    // WILL ADD CHAR ABCD FOR ITEM NUMBER
+                }
+                else
+                    continue;
+
+                if (item.Row["Drop"] != String.Empty && int.TryParse(item.Row["Drop"].Trim(), out int res))
+                {
+                    var val = Droptable.Where(d => int.Parse(item.Row["Drop"].Trim()) >= d.From && int.Parse(item.Row["Drop"].Trim()) <= d.To).FirstOrDefault();
+                    if (val != null)
+                    {
+                        item.Row["DropGroup"] = val.DropGroup;
+                        item.Row["DropColour"] = val.DropColour.ToLower();
+                    }
+
+                }
+
+                item.Row["CutWidth"] = GetCutwidth2(item.Row["Width"], item.Row["Bind Type/# Panels/Rope/Operation"], ControlTypevalues);
+
+                item.Row["Width"] = item.Row["Width"].Replace("mm", "");
+                item.Row["CutWidth"] = item.Row["CutWidth"].Replace("mm", "");
+
+                if (item.Row["Width"] != "")
+                    item.Row["Width"] = item.Row["Width"] + "mm";
+                else
+                    item.Row["Width"] = "0";
+
+
+                item.Row["CutWidth_hidden"] = item.Row["CutWidth"];
+                if (item.Row["CutWidth"] != String.Empty)
+                    item.Row["CutWidth"] = item.Row["CutWidth"] + "mm";
+                else
+                    item.Row["CutWidth"] = "0";
+
+                item.Row["B_RColour"] = item.Row["Pull Colour/Bottom Weight/Wand Len"].ToString().Trim();
+                item.Row["ImgChecked"] = "0";
+
+                item.Row["Qty"] = item.Row["Qty"].Trim();
+
+
+                item.Row["Date-Time"] = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+                item.Row["Tube"] = item.Row["Tube Size"].Trim();
+
+                if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRING" || item.Row["Bind Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRINGHD")
+                    item.Row["Spring"] = "YES";
+                else
+                    item.Row["Spring"] = "NO";
+
+
+                if (item.Row["Description"].ToString().Trim().Length > 6)
+                    item.Row["Finish"] = item.Row["Description"].ToString().Trim().Substring(item.Row["Description"].ToString().Trim().Length - 6);
+                else
+                {
+                    if (item.Row.ContainsKey("Finish"))
+                    {
+                        item.Row["Finish"] = item.Row["Finish"]; // there is no FInish in the file !
+                    }
+                }
+                item.Row["Colour"] = item.Row["Colour"].Trim();
+
+
+                //Data for Label
+                item.Row["SRLineNumber"] = a.ToString();
+                if (item.Row["Drop"] != string.Empty)
+                {
+                    if (item.Row["Width"].ToString() != string.Empty)
+                        item.Row["Drop"] = item.Row["Drop"] + "mm";
+                }
+                else
+                    item.Row["Drop"] = "0";
+
+                item.Row["Customer"] = item.Row["Customer Name 1"].Trim();
+                item.Row["Type"] = item.Row["Track Col/Roll Type/Batten Col"].Trim();
+                item.Row["Control Type"] = item.Row["Pull Colour/Bottom Weight/Wand Len"].Trim();
+                item.Row["Lathe"] = item.Row["Finish"].Trim();
+                item.Row["Alpha"] = item.Row["item"];
+                item.Row["Department"] = item.Row["Department"].Trim();
+                if (item.Row["Cntrl Side"].ToString().Trim() != String.Empty)
+                    item.Row["ControlSide"] = item.Row["Cntrl Side"].ToString().Trim().Substring(0, 1);
+                item.Row["Barcode"] = item.Row["Line No"];
+
+                var CurrentWidth = item.Row["Width"];
+                if (CurrentWidth.IndexOf("mm") != -1)
+                    CurrentWidth = CurrentWidth.Substring(0, CurrentWidth.IndexOf("mm"));
+                var CurrentDrop = item.Row["Drop"];
+                if (CurrentDrop.IndexOf("mm") != -1)
+                    CurrentDrop = CurrentDrop.Substring(0, CurrentDrop.IndexOf("mm"));
+
+
+
+                if (int.TryParse(CurrentWidth, out int tempWidth) && int.TryParse(CurrentDrop, out int tempDrop) && tempWidth <= 3000 && tempDrop <= 2700)
+                {
+                    item.Row["Fixing_Type_Bracket_Type"] = item.Row["Fixing Type / Bracket Type"];
 
                     if (Fbindex > 0)
                     {
                         if (CBSearch)
                         {
-                            item.Row["item"] = CalculateAlphabeticFromNumber(f);
+
+                            var Quantity = int.Parse(item.Row["Qty"]);
+                            item.Row["Qty"] = "1";
+                            for (int j = 0; j < Quantity; j++)
+                            {
+                                var FinalRow = new FabricCutterCBDetailsModelTableRow();
+                                FinalRow = item;
+                                FinalRow.Row["Blind Number"] = (blindNumber).ToString();
+                                FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
+                                FinalRow.Row["FromHoldingStation"] = "NO";
+
+                                blindNumber++;
+                                a += 1;
+                                FinalizedData.Rows.Add(FinalRow);
+
+                            }
                         }
                         else
                         {
-                            a = 1;
-                            f = 1;
-                            for (int j = 0; j < Data.Rows.Count; j++)
+                            if (item.Row["Line No"] == LineNumber)
                             {
-                                if (Data.Rows[j].Row["Line No"] == item.Row["Line No"])
-                                {
-                                    item.Row["item"] = CalculateAlphabeticFromNumber(f); break;
-                                }
-                                f = f + 1;
-                                a = a + 1;
-                            }
-
-                        }
-                        item.Row["Total"] = TotalQty.ToString();
-
-                    }
-                    else
-                        continue;
-
-                    if (item.Row["Drop"] != String.Empty && int.TryParse(item.Row["Drop"].Trim(), out int res))
-                    {
-                        var val = Droptable.Where(d => int.Parse(item.Row["Drop"].Trim()) >= d.From && int.Parse(item.Row["Drop"].Trim()) <= d.To).FirstOrDefault();
-                        if (val != null)
-                        {
-                            item.Row["DropGroup"] = val.DropGroup;
-                            item.Row["DropColour"] = val.DropColour.ToLower();
-                        }
-
-                    }
-
-                    item.Row["CutWidth"] = GetCutwidth2(item.Row["Width"], item.Row["Bind Type/# Panels/Rope/Operation"], ControlTypevalues);
-
-                    item.Row["Width"] = item.Row["Width"].Replace("mm", "");
-                    item.Row["CutWidth"] = item.Row["CutWidth"].Replace("mm", "");
-
-                    if (item.Row["Width"] != "")
-                        item.Row["Width"] = item.Row["Width"] + "mm";
-                    else
-                        item.Row["Width"] = "0";
-
-                   
-                    item.Row["CutWidth_hidden"] = item.Row["CutWidth"];
-                    if (item.Row["CutWidth"] != String.Empty)
-                        item.Row["CutWidth"] = item.Row["CutWidth"] + "mm";
-                    else
-                        item.Row["CutWidth"] = "0";
-
-                    item.Row["B_RColour"] = item.Row["Pull Colour/Bottom Weight/Wand Len"].ToString().Trim();
-                    item.Row["ImgChecked"] = "0";
-
-                    item.Row["Qty"] = item.Row["Qty"].Trim();
-
-
-                    item.Row["Date-Time"] = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
-                    item.Row["Tube"] = item.Row["Tube Size"].Trim();
-
-                    if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRING" || item.Row["Bind Type/# Panels/Rope/Operation"].ToString().Trim() == "SPRINGHD")
-                        item.Row["Spring"] = "YES";
-                    else
-                        item.Row["Spring"] = "NO";
-
-
-                    if (item.Row["Description"].ToString().Trim().Length > 6)
-                        item.Row["Finish"] = item.Row["Description"].ToString().Trim().Substring(item.Row["Description"].ToString().Trim().Length - 6);
-                    else
-                    {
-                        if (item.Row.ContainsKey("Finish"))
-                        {
-                            item.Row["Finish"] = item.Row["Finish"]; // there is no FInish in the file !
-                        }
-                    }
-                    item.Row["Colour"] = item.Row["Colour"].Trim();
-
-
-                    //Data for Label
-                    item.Row["SRLineNumber"] = a.ToString();
-                    if (item.Row["Drop"] != string.Empty)
-                    {
-                        if (item.Row["Width"].ToString() != string.Empty)
-                            item.Row["Drop"] = item.Row["Drop"] + "mm";
-                    }
-                    else
-                        item.Row["Drop"] = "0";
-
-                    item.Row["Customer"] = item.Row["Customer Name 1"].Trim();
-                    item.Row["Type"] = item.Row["Track Col/Roll Type/Batten Col"].Trim();
-                    item.Row["Control Type"] = item.Row["Pull Colour/Bottom Weight/Wand Len"].Trim();
-                    item.Row["Lathe"] = item.Row["Finish"].Trim();
-                    item.Row["Alpha"] = item.Row["item"];
-                    item.Row["Department"] = item.Row["Department"].Trim();
-                    if (item.Row["Cntrl Side"].ToString().Trim() != String.Empty)
-                        item.Row["ControlSide"] = item.Row["Cntrl Side"].ToString().Trim().Substring(0, 1);
-                    item.Row["Barcode"] = item.Row["Line No"];
-
-                    var CurrentWidth = item.Row["Width"];
-                    if (CurrentWidth.IndexOf("mm") != -1)
-                        CurrentWidth = CurrentWidth.Substring(0, CurrentWidth.IndexOf("mm"));
-                    var CurrentDrop = item.Row["Drop"];
-                    if (CurrentDrop.IndexOf("mm") != -1)
-                        CurrentDrop = CurrentDrop.Substring(0, CurrentDrop.IndexOf("mm"));
-
-
-
-                    if (int.TryParse(CurrentWidth, out int tempWidth) && int.TryParse(CurrentDrop, out int tempDrop) && tempWidth <= 3000 && tempDrop <= 2700)
-                    {
-                        item.Row["Fixing_Type_Bracket_Type"] = item.Row["Fixing Type / Bracket Type"];
-
-                        if (Fbindex > 0)
-                        {
-                            if (CBSearch)
-                            {
-
                                 var Quantity = int.Parse(item.Row["Qty"]);
                                 item.Row["Qty"] = "1";
                                 for (int j = 0; j < Quantity; j++)
@@ -473,49 +498,57 @@ namespace WindowBlind.Api.Controllers
                                     FinalRow = item;
                                     FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                     FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
+                                    FinalRow.Row["FromHoldingStation"] = "NO";
 
                                     blindNumber++;
                                     a += 1;
+
                                     FinalizedData.Rows.Add(FinalRow);
-
-                                }
-                            }
-                            else
-                            {
-                                if (item.Row["Line No"] == LineNumber)
-                                {
-                                    var Quantity = int.Parse(item.Row["Qty"]);
-                                    item.Row["Qty"] = "1";
-                                    for (int j = 0; j < Quantity; j++)
-                                    {
-                                        var FinalRow = new FabricCutterCBDetailsModelTableRow();
-                                        FinalRow = item;
-                                        FinalRow.Row["Blind Number"] = (blindNumber).ToString();
-                                        FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
-                                        blindNumber++;
-                                        a += 1;
-
-                                        FinalizedData.Rows.Add(FinalRow);
-                                    }
                                 }
                             }
                         }
                     }
                 }
+            }
 
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "CB Number");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "item");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Fabric");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Colour");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Drop");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Tube");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Date-Time");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Width");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "CutWidth");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "B_RColour");
-                FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Line No");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "CB Number");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "item");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Fabric");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Colour");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Drop");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Tube");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Date-Time");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Width");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "CutWidth");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "B_RColour");
+            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Line No");
 
-                #endregion
+        }
+
+        [HttpGet("getCBNumberDetails")]
+        public async Task<IActionResult> getCBNumberDetails([FromHeader] string CBNumberOrLineNumber, [FromHeader] string CBorLine)
+        {
+            try
+            {
+               
+                CBSearch = CBorLine == "CB" ? true : false;
+                CB = CBNumberOrLineNumber;
+                LineNumber = CBNumberOrLineNumber;
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                ColumnsIndex = new Dictionary<string, int>();
+
+
+                await ReadConfig();
+                var Checks = CheckPaths();
+
+                if (!Checks) return new JsonResult(false);
+
+                var Data = ReadingData();
+
+                FabricCutterCBDetailsModel FinalizedData = new FabricCutterCBDetailsModel();
+
+                LogCutProcess(ref FinalizedData,ref Data);
+
                 return new JsonResult(FinalizedData);
 
             }
@@ -532,8 +565,8 @@ namespace WindowBlind.Api.Controllers
             try
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                var LogCutOutputSettings = await _repository.Settings.FindAsync(e => e.settingName == "LogCut Output");
-                var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().settingPath;
+                var LogCutOutputSettings = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
+                var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().OutputPath;
                 if (LogCutOutputPath == "") return new JsonResult(false);
                 DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
 
@@ -549,6 +582,10 @@ namespace WindowBlind.Api.Controllers
                 var strRS232Width = "";
                 foreach (var item in data.Rows)
                 {
+                    if (item.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
+
                     strconcat = item.Row["CB Number"] + "@" + item.Row["Width"];
                     strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["Department"];
                     strconcat += "@" + item.Row["Type"] + "@" + item.Row["Fabric"] + "@" + item.Row["Colour"];
@@ -671,7 +708,7 @@ namespace WindowBlind.Api.Controllers
 
                     var ret1 = PrintReport(printerName, strParameterArray.ToList(), "LogCut1.rdlc", "Width");
                     var ret2 = PrintReport(printerName, strParameterArray.ToList(), "LogCut2.rdlc", "");
-                 
+
 
                 }
                 return new JsonResult(true);
@@ -883,6 +920,57 @@ namespace WindowBlind.Api.Controllers
             System.IO.File.Copy(source, destination);
             return destination;
 
+        }
+
+
+        [HttpGet("GetHeldObjects")]
+        public async Task<IActionResult> GetHeldObjects([FromHeader] string tableName)
+        {
+            try
+            {
+
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
+
+                CBSearch = true;
+                
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                ColumnsIndex = new Dictionary<string, int>();
+
+                await ReadConfig();
+
+                var check = CheckPaths();
+
+                if (!check) return new JsonResult(false);
+
+
+                var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "LogCut" && rej.TableName == tableName).Result.ToListAsync();
+
+                foreach (var item in HeldObjects)
+                {
+
+                    CB = item.Row.Row["CB Number"];
+                    var HeldData = ReadingData();
+                    var TempFinalData = new FabricCutterCBDetailsModel();
+                    LogCutProcess(ref TempFinalData, ref HeldData);
+
+
+                    Data.Rows.Add(HeldData.Rows.Where(e => e.Row["Line No"] == item.Row.Row["Line No"]).FirstOrDefault());
+                    Data.Rows[Data.Rows.Count - 1].Row["FromHoldingStation"] = "YES";
+                    Data.Rows[Data.Rows.Count - 1].UniqueId = item.Row.UniqueId;
+                    Data.ColumnNames = TempFinalData.ColumnNames;
+
+                }
+
+                return new JsonResult(Data);
+
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(false);
+            }
         }
 
     }

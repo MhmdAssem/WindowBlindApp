@@ -70,6 +70,8 @@ import { AssemblyStationComponent } from './assembly-station/assembly-station.co
 import { HoistStationComponent } from './hoist-station/hoist-station.component';
 import { PackingStationComponent } from './packing-station/packing-station.component';
 import { ReportStationComponent } from './report-station/report-station.component';
+import { HoldingStationComponent } from './holding-station/holding-station.component';
+import { PreEzStopComponent } from './Pre-EzStop/pre-ez-stop.component';
 
 const materialModules = [
   CdkTreeModule,
@@ -134,7 +136,9 @@ const materialModules = [
     AssemblyStationComponent,
     HoistStationComponent,
     PackingStationComponent,
-    ReportStationComponent
+    ReportStationComponent,
+    HoldingStationComponent,
+    PreEzStopComponent
   ],
   imports: [
     ...materialModules,

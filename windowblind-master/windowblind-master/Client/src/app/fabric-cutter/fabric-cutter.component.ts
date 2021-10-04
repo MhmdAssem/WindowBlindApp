@@ -10,6 +10,10 @@ import { FabricCutterService } from './fabric-cutter.service';
 import { FabricCutterCBDetailsModel, FabricCutterCBDetailsModelTableRow } from './FabricCutterCBDetailsModel';
 import { MatDialog } from '@angular/material/dialog';
 import { RollWidthDialogComponent } from './roll-width-dialog/roll-width-dialog.component';
+import { HoldingStationService } from '../holding-station/holding-station.service';
+import { RejectionModel } from '../holding-station/RejectionModel';
+import { data } from 'jquery';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 
 @Component({
@@ -20,30 +24,51 @@ import { RollWidthDialogComponent } from './roll-width-dialog/roll-width-dialog.
 
 
 export class FabricCutterComponent implements OnInit, AfterViewInit {
+  HoldLoading: boolean;
+  UrgentReviewDataWithBlindsNumbers: any;
+  UrgentAutoUploadedSelectedRows: any = [];
+  UrgentBlindNumbers: number[] = [];
+  UrgentReviewDataWithBlindsObjects: any;
 
-  constructor(private dialog: MatDialog, private FBRservice: FabricCutterService, private settingService: SettingService, private apiService: ApiService, private authService: AuthService) { }
+  constructor(private HoldingService: HoldingStationService, private dialog: MatDialog, private FBRservice: FabricCutterService, private settingService: SettingService, private apiService: ApiService, private authService: AuthService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtTrigger: Subject<any> = new Subject();
+  UrgentdtTrigger: Subject<any> = new Subject();
   dtOptions: DataTables.Settings = {};
+  UrgentdtOptions: DataTables.Settings = {};
   dtTriggerReview: Subject<any> = new Subject();
+  UrgentdtTriggerReview: Subject<any> = new Subject();
   dtOptionsReview: DataTables.Settings = {};
+  UrgentdtOptionsReview: DataTables.Settings = {};
 
   tableModelColNames: string[] = [];
   ReviewtableModelColNames: string[] = [];
   BlindNumbers: number[] = [];
   Data: FabricCutterCBDetailsModelTableRow[] = [];
+  UrgentData: FabricCutterCBDetailsModelTableRow[] = [];
   ReviewData: FabricCutterCBDetailsModelTableRow[] = [];
+  UrgentReviewData: FabricCutterCBDetailsModelTableRow[] = [];
   Loading: boolean = false;
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   ReviewDataWithBlindsObjects: { [Key: string]: FabricCutterCBDetailsModelTableRow } = {}
   PrinterTableDictionary = {};
   Printing = false;
   Creating = false;
+  SearchType = false;
+
+  CurrentTab: number;
+  AutoUploadedSelectedRows: string[] = [];
+
+  FirstTimeOnly: boolean;
+
   ngOnInit(): void {
+    this.CurrentTab = -1;
+    this.FirstTimeOnly = true;
+
     this.dtOptions = {
       pagingType: 'full_numbers',
       lengthChange: false,
@@ -56,6 +81,29 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     };
 
     this.dtOptionsReview = {
+      pagingType: 'full_numbers',
+      lengthChange: false,
+      searching: false,
+      destroy: true,
+      ordering: true,
+      //pageLength: 4,
+      paging: false,
+      info: false
+
+    };
+
+    this.UrgentdtOptions = {
+      pagingType: 'full_numbers',
+      lengthChange: false,
+      searching: false,
+      destroy: true,
+      ordering: true,
+      //pageLength: 4,
+      paging: false,
+      info: false
+    };
+
+    this.UrgentdtOptionsReview = {
       pagingType: 'full_numbers',
       lengthChange: false,
       searching: false,
@@ -82,6 +130,10 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
     });
 
+    this.settingService.GetSearchType().subscribe(res => {
+      this.SearchType = res;
+      this.CurrentTab = 0;
+    })
   }
 
   ngAfterViewInit(): void {
@@ -101,28 +153,34 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     catch {
       this.dtTrigger.next();
       this.dtTriggerReview.next();
-
+      this.UrgentdtTrigger.next();
+      this.UrgentdtTriggerReview.next();
       console.log("Catch");
     }
   }
 
-
-
   GetCBDetails() {
     let cb = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
     if (cb == "") { alert("Please enter a valid CB"); return; }
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if (tableName == 'DefaultTableName') {
+      alert("Please Choose a valid Table Name");
+      return;
+    }
     this.Loading = true;
 
     this.FBRservice.getCBNumberDetails(cb.toString()).subscribe(data => {
       if (data && data.columnNames.length != 0) {
-        this.tableModelColNames = [];
-        this.ReviewtableModelColNames = [];
-        this.BlindNumbers = [];
-        this.Data = [];
-        this.ReviewData = [];
-        this.ReviewDataWithBlindsNumbers = {}
-        this.ReviewDataWithBlindsObjects = {}
-       // this.PrinterTableDictionary = {};
+        if (this.FirstTimeOnly) {
+          this.tableModelColNames = [];
+          this.ReviewtableModelColNames = [];
+          this.BlindNumbers = [];
+          this.Data = [];
+          this.ReviewData = [];
+          this.ReviewDataWithBlindsNumbers = {}
+          this.ReviewDataWithBlindsObjects = {}
+          this.PrinterTableDictionary = {};
+        }
 
 
         setTimeout(() => {
@@ -131,24 +189,33 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
         this.tableModelColNames = data.columnNames
         this.ReviewtableModelColNames.push("Blind Number");
-        data.columnNames.forEach((order: any) => {
-          this.ReviewtableModelColNames.push(order);
-        });
-
-        this.Data = data.rows;
-
-        this.updateTable();
+        this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+        if (!this.FirstTimeOnly)
+          this.Data = this.Data.concat(data.rows);
+        else
+          this.Data = data.rows;
 
         setTimeout(() => {
-          $("#Custom_Table_Pagination").html("");
-          $("#Custom_Table_Info").html("");
-          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+          this.updateTable();
+        }, 0);
+        let cntr = 0;
+
+        setTimeout(() => {
+          this.Data.forEach(element => {
+            if (element.row['FromHoldingStation'] == 'YES') {
+              (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+            }
+            cntr++;
+          });
+        }, 40);
+
+        setTimeout(() => {
           (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           });
         }, 500);
+
       }
       this.Loading = false;
 
@@ -157,66 +224,41 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   }
 
   SelectThisRow(ind) {
-    (document.getElementById("TableViewReview") as HTMLElement).style.display = '';
-    this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.Data[ind].blindNumbers.length;
-    this.ReviewDataWithBlindsObjects[this.Data[ind].uniqueId] = this.Data[ind];
 
 
-    if (this.Data[ind].row['Quantity'] != null && this.Data[ind].row['Quantity'] != undefined) this.Data[ind].row['Quantity'] = '1';
-    for (let i = 0; i < this.Data[ind].blindNumbers.length; i++) {
-      let NewEntry = this.Data[ind];
-      NewEntry.row['Blind Number'] = this.Data[ind].blindNumbers[i].toString();
-      this.ReviewData.push(NewEntry);
-      this.BlindNumbers.push(this.Data[ind].blindNumbers[i]);
-    }
-    this.Data.splice(ind, 1);
-
-    this.updateTable();
-    setTimeout(() => {
-
-      $("#Custom_Table_Pagination").html("");
-      $("#Custom_Table_Info").html("");
-
-      $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-      $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-      (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 100);
-
-    setTimeout(() => {
-
-      $("#Custom_Table_Info2").html("");
-      $("#Custom_Table_Pagination2").html("");
-      $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-      $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-      (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 100);
-    console.log(this.ReviewData);
-  }
-
-  UnSelectThisRow(ind) {
-
-    this.ReviewDataWithBlindsNumbers[this.ReviewData[ind].uniqueId]--;
-
-    if (this.ReviewDataWithBlindsNumbers[this.ReviewData[ind].uniqueId] == 0) {
-      this.Data.push(this.ReviewDataWithBlindsObjects[this.ReviewData[ind].uniqueId]);
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if (tableName == 'DefaultTableName') {
+      alert("Please Choose a valid Table Name");
+      return;
     }
 
-    let id = this.ReviewData[ind].uniqueId
+    if (this.CurrentTab <= 0) {
 
-    this.ReviewData.splice(ind, 1);
+      (document.getElementById("TableViewReview") as HTMLElement).style.display = '';
 
-    this.updateTable();
-    if (this.ReviewDataWithBlindsNumbers[id] == 0)
+
+      this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.Data[ind].blindNumbers.length;
+      this.ReviewDataWithBlindsObjects[this.Data[ind].uniqueId] = JSON.parse(JSON.stringify(this.Data[ind]));
+
+      this.AutoUploadedSelectedRows.push(this.Data[ind].uniqueId);
+      if (this.Data[ind].row['Quantity'] != null && this.Data[ind].row['Quantity'] != undefined) this.Data[ind].row['Quantity'] = '1';
+      for (let i = 0; i < this.Data[ind].blindNumbers.length; i++) {
+        let NewEntry = JSON.parse(JSON.stringify(this.Data[ind]));
+
+        NewEntry.row['Blind Number'] = this.Data[ind].blindNumbers[i].toString();
+
+        this.ReviewData.push(NewEntry);
+        this.BlindNumbers.push(this.Data[ind].blindNumbers[i]);
+      }
+
+      this.Data.splice(ind, 1);
+
+      this.updateTable();
       setTimeout(() => {
 
         $("#Custom_Table_Pagination").html("");
         $("#Custom_Table_Info").html("");
+
         $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
         $("#dScenario-table_info").appendTo('#Custom_Table_Info');
         (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
@@ -225,19 +267,113 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         });
       }, 100);
 
-    setTimeout(() => {
-      $("#Custom_Table_Pagination2").html("");
-      $("#Custom_Table_Info2").html("");
-      $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-      $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-      (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 100);
+      setTimeout(() => {
 
-    if (this.ReviewData.length == 0)
-      (document.getElementById("TableViewReview") as HTMLElement).style.display = 'none';
+        $("#Custom_Table_Info2").html("");
+        $("#Custom_Table_Pagination2").html("");
+        $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
+        $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
+        (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+
+    }
+    else {
+      (document.getElementById("UrgentTableViewReview") as HTMLElement).style.display = '';
+
+
+      this.UrgentReviewDataWithBlindsNumbers[this.UrgentData[ind].uniqueId] = this.UrgentData[ind].blindNumbers.length;
+      this.UrgentReviewDataWithBlindsObjects[this.UrgentData[ind].uniqueId] = JSON.parse(JSON.stringify(this.UrgentData[ind]));
+
+      this.UrgentAutoUploadedSelectedRows.push(this.UrgentData[ind].uniqueId);
+      if (this.UrgentData[ind].row['Quantity'] != null && this.UrgentData[ind].row['Quantity'] != undefined)
+        this.UrgentData[ind].row['Quantity'] = '1';
+
+      for (let i = 0; i < this.UrgentData[ind].blindNumbers.length; i++) {
+        let NewEntry = JSON.parse(JSON.stringify(this.UrgentData[ind]));
+
+        NewEntry.row['Blind Number'] = this.UrgentData[ind].blindNumbers[i].toString();
+        this.UrgentReviewData.push(NewEntry);
+        this.UrgentBlindNumbers.push(this.UrgentData[ind].blindNumbers[i]);
+      }
+
+      this.UrgentData.splice(ind, 1);
+
+      this.updateTable();
+
+      setTimeout(() => {
+
+
+        (document.getElementById('UrgenttheSelectColumn') as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+
+      setTimeout(() => {
+
+        $("#Custom_Table_Info2").html("");
+        $("#Custom_Table_Pagination2").html("");
+        $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
+        $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
+        (document.getElementById('UrgenttheSelectColumn2') as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+    }
+
+
+  }
+
+  UnSelectThisRow(ind, local = false) {
+
+    if (this.CurrentTab <= 0) {
+      this.ReviewDataWithBlindsNumbers[this.ReviewData[ind].uniqueId]--;
+
+      if (this.ReviewDataWithBlindsNumbers[this.ReviewData[ind].uniqueId] == 0) {
+        this.Data.push(this.ReviewDataWithBlindsObjects[this.ReviewData[ind].uniqueId]);
+      }
+
+      let id = this.ReviewData[ind].uniqueId;
+      if (!this.SearchType) {
+        let indOfAutoUploadSelected = this.AutoUploadedSelectedRows.findIndex(e => e == id);
+        if (indOfAutoUploadSelected != -1)
+          this.AutoUploadedSelectedRows.splice(indOfAutoUploadSelected, 1);
+
+      }
+      this.ReviewData.splice(ind, 1);
+
+      if (local == false)
+        this.updateTable();
+
+      if (this.ReviewData.length == 0)
+        (document.getElementById("TableViewReview") as HTMLElement).style.display = 'none';
+    }
+    else {
+
+      this.UrgentReviewDataWithBlindsNumbers[this.UrgentReviewData[ind].uniqueId]--;
+
+      if (this.UrgentReviewDataWithBlindsNumbers[this.UrgentReviewData[ind].uniqueId] == 0) {
+        this.UrgentData.push(this.UrgentReviewDataWithBlindsObjects[this.UrgentReviewData[ind].uniqueId]);
+      }
+
+      let id = this.UrgentReviewData[ind].uniqueId;
+      if (!this.SearchType) {
+        let indOfAutoUploadSelected = this.UrgentAutoUploadedSelectedRows.findIndex(e => e == id);
+        if (indOfAutoUploadSelected != -1)
+          this.UrgentAutoUploadedSelectedRows.splice(indOfAutoUploadSelected, 1);
+      }
+      this.UrgentReviewData.splice(ind, 1);
+
+      if (local == false)
+        this.updateTable();
+
+      if (this.UrgentReviewData.length == 0)
+        (document.getElementById("UrgentTableViewReview") as HTMLElement).style.display = 'none';
+    }
   }
 
   PrintLabelsOnly() {
@@ -248,13 +384,54 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       rows: this.ReviewData
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
-    this.FBRservice.PrintLabels(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
-        this.Printing = false;
-        this.ReviewData = [];
-        this.updateTable();
+    if (tableName == 'DefaultTableName') {
+      alert("Please Choose a valid Table Name");
+      return;
+    }
 
-      });
+
+    if (this.SearchType == false) {
+      if (this.CurrentTab <= 0) {
+        this.FBRservice.PrintLabels(
+          tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+            this.FBRservice.UpdateRows(this.AutoUploadedSelectedRows).subscribe();
+            this.AutoUploadedSelectedRows = [];
+            this.Printing = false;
+            this.ReviewData = [];
+            this.updateTable();
+          });
+
+
+
+      }
+      else {
+        Data = {
+          columnNames: this.tableModelColNames,
+          rows: this.UrgentReviewData
+        };
+        this.FBRservice.PrintLabels(
+          tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+            this.FBRservice.UpdateRows(this.UrgentAutoUploadedSelectedRows).subscribe();
+            this.UrgentAutoUploadedSelectedRows = [];
+            this.Printing = false;
+            this.UrgentReviewData = [];
+            this.updateTable();
+
+          });
+
+
+      }
+    }
+    else {
+      this.FBRservice.PrintLabels(
+        tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+          this.Printing = false;
+          this.ReviewData = [];
+          this.updateTable();
+
+        });
+
+    }
 
   }
 
@@ -266,42 +443,72 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       rows: this.ReviewData
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
-    this.FBRservice.CreateFilesAndLabels(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
-        this.Creating = false;
-        this.ReviewData = [];
-        this.updateTable();
+    if (tableName == 'DefaultTableName') {
+      alert("Please Choose a valid Table Name");
+      return;
+    }
 
-      });
+    if (this.SearchType == false) {
+      if (this.CurrentTab <= 0) {
+        this.FBRservice.CreateFilesAndLabels(
+          tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+            this.FBRservice.UpdateRows(this.AutoUploadedSelectedRows).subscribe();
+            this.AutoUploadedSelectedRows = [];
+            this.Creating = false;
+            this.ReviewData = [];
+            this.updateTable();
+
+          });
+
+
+      }
+      else {
+
+        Data = {
+          columnNames: this.tableModelColNames,
+          rows: this.UrgentReviewData
+        };
+        this.FBRservice.CreateFilesAndLabels(
+          tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+            this.FBRservice.UpdateRows(this.UrgentAutoUploadedSelectedRows).subscribe();
+            this.UrgentAutoUploadedSelectedRows = [];
+            this.Creating = false;
+            this.UrgentReviewData = [];
+            this.updateTable();
+
+          });
+
+      }
+    }
+    else {
+      this.FBRservice.CreateFilesAndLabels(
+        tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+          this.Creating = false;
+          this.ReviewData = [];
+          this.updateTable();
+
+        });
+    }
 
   }
 
   ClearReview() {
-    this.ReviewData.forEach(element => {
-      this.Data.push(element);
-    });
-    this.ReviewData.splice(0);
+    let Len;
+    if (this.CurrentTab <= 0) {
+      Len = this.ReviewData.length;
 
-    this.updateTable();
-    setTimeout(() => {
+      for (let i = Len - 1; i >= 0; i--)
+        this.UnSelectThisRow(i, true);
 
-      $("#Custom_Table_Pagination").html("");
-      $("#Custom_Table_Info").html("");
-      $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-      $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-      (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 100);
+      this.updateTable();
+    }
+    else {
+      Len = this.UrgentReviewData.length;
 
-    setTimeout(() => {
-      $("#Custom_Table_Pagination2").html("");
-      $("#Custom_Table_Info2").html("");
-      $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-      $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-    }, 100);
-    (document.getElementById("TableViewReview") as HTMLElement).style.display = 'none';
+      for (let i = Len - 1; i >= 0; i--)
+        this.UnSelectThisRow(i, true);
+      this.updateTable();
+    }
 
   }
 
@@ -310,21 +517,295 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
     diag.afterClosed().subscribe(res => {
       if (res != null && res != "") {
-        this.ReviewData.forEach(element => {
-          element.row['Roll Width'] = res;
-        });
-        this.updateTable();
-        setTimeout(() => {
-          $("#Custom_Table_Pagination2").html("");
-          $("#Custom_Table_Info2").html("");
-          $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-          $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-          (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
+        if (this.CurrentTab <= 0) {
+          this.ReviewData.forEach(element => {
+            element.row['Roll Width'] = res;
           });
-        }, 100);
+          this.updateTable();
+          setTimeout(() => {
+            $("#Custom_Table_Pagination2").html("");
+            $("#Custom_Table_Info2").html("");
+            $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
+            $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
+            (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }, 100);
+        }
+        else {
+          this.UrgentReviewData.forEach(element => {
+            element.row['Roll Width'] = res;
+          });
+          this.updateTable();
+          setTimeout(() => {
+            $("#Custom_Table_Pagination2").html("");
+            $("#Custom_Table_Info2").html("");
+            $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
+            $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
+            (document.getElementById('UrgenttheSelectColumn2') as HTMLElement).scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }, 100);
+        }
       }
     });
   }
+
+  Hold() {
+
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    var time = new Date();
+
+    this.HoldLoading = true;
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+
+    let RejectionModels: RejectionModel[] = [];
+    if (this.CurrentTab <= 0)
+      this.ReviewData.forEach(element => {
+        let RejectionModel: RejectionModel =
+        {
+          dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
+          forwardedToStation: "Admin",
+          id: "",
+          row: element,
+          stationName: "Fabric",
+          tableName: tableName,
+          userName: UserName
+        };
+        RejectionModels.push(RejectionModel);
+      });
+    else
+      this.UrgentReviewData.forEach(element => {
+        let RejectionModel: RejectionModel =
+        {
+          dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
+          forwardedToStation: "Admin",
+          id: "",
+          row: element,
+          stationName: "Fabric",
+          tableName: tableName,
+          userName: UserName
+        };
+        RejectionModels.push(RejectionModel);
+      });
+
+    this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
+
+      this.ReviewData = [];
+
+      this.ReviewDataWithBlindsNumbers = {};
+
+      setTimeout(() => {
+        this.updateTable();
+      }, 50);
+
+
+      this.HoldLoading = false;
+    });
+
+  }
+
+  AutoUploadFeatureOnly() {
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if (tableName == '-') return;
+    let ShiftTable = "";
+    if (!this.SearchType)
+      ShiftTable = (document.getElementById("ShiftTable") as HTMLSelectElement).value.toString();
+
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+
+    if (!this.SearchType) {
+      if (tableName == 'DefaultTableName') {
+        alert("Please Choose a valid Table Name");
+        return;
+      }
+
+      this.FirstTimeOnly = true;
+      this.FBRservice.GetHeldObjects(tableName).subscribe(
+        data => {
+          if (data && data.columnNames.length != 0) {
+
+            this.tableModelColNames = data.columnNames
+
+            if (!this.FirstTimeOnly)
+              this.Data.concat(data.rows);
+            else
+              this.Data = data.rows;
+
+            this.FirstTimeOnly = false;
+            let cntr = 0;
+            setTimeout(() => {
+              this.Data.forEach(element => {
+                if (element.row['FromHoldingStation'] == 'YES') {
+                  (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+                }
+                cntr++;
+              });
+            }, 40);
+
+          }
+
+          this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Normal").subscribe(data => {
+
+            if (data && data.columnNames.length != 0) {
+              if (this.FirstTimeOnly) {
+                this.tableModelColNames = [];
+                this.ReviewtableModelColNames = [];
+                this.BlindNumbers = [];
+                this.Data = [];
+                this.ReviewData = [];
+                this.ReviewDataWithBlindsNumbers = {}
+                this.ReviewDataWithBlindsObjects = {}
+                //this.PrinterTableDictionary = {};
+              }
+
+              setTimeout(() => {
+                this.updateTable();
+              }, 50);
+
+              this.tableModelColNames = data.columnNames
+              this.ReviewtableModelColNames.push("Blind Number");
+              data.columnNames.forEach((order: any) => {
+                this.ReviewtableModelColNames.push(order);
+              });
+
+              if (this.FirstTimeOnly)
+                this.Data = data.rows;
+              else
+                this.Data = this.Data.concat(data.rows);
+
+              this.updateTable();
+              let cntr = 0;
+
+              setTimeout(() => {
+                this.Data.forEach(element => {
+                  if (element.row['FromHoldingStation'] == 'YES') {
+                    (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+                  }
+                  cntr++;
+                });
+              }, 40);
+              setTimeout(() => {
+
+                $("#Custom_Table_Pagination").html("");
+                $("#Custom_Table_Info").html("");
+                $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+                $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+                (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start'
+                });
+              }, 500);
+            }
+
+          });
+        }
+      );
+
+      // get Urgent
+      this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Urgent").subscribe(data => {
+
+        if (data && data.columnNames.length != 0) {
+          this.tableModelColNames = [];
+          this.ReviewtableModelColNames = [];
+          this.BlindNumbers = [];
+          this.UrgentData = [];
+          this.UrgentReviewData = [];
+          this.UrgentReviewDataWithBlindsNumbers = {}
+          this.UrgentReviewDataWithBlindsObjects = {}
+          // this.PrinterTableDictionary = {};
+
+
+          setTimeout(() => {
+            this.updateTable();
+          }, 50);
+
+          this.tableModelColNames = data.columnNames
+          this.ReviewtableModelColNames.push("Blind Number");
+          data.columnNames.forEach((order: any) => {
+            this.ReviewtableModelColNames.push(order);
+          });
+
+          this.UrgentData = data.rows;
+
+          this.updateTable();
+          let cntr = 0;
+
+          setTimeout(() => {
+            this.UrgentData.forEach(element => {
+              if (element.row['FromHoldingStation'] == 'YES') {
+                (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+              }
+              cntr++;
+            });
+          }, 40);
+          setTimeout(() => {
+
+            $("#Custom_Table_Pagination").html("");
+            $("#Custom_Table_Info").html("");
+            $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+            $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+            (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }, 500);
+        }
+
+      });
+
+    }
+    else {
+
+      if (this.FirstTimeOnly) {
+        this.FirstTimeOnly = false;
+
+        (document.getElementById("SearchButton") as HTMLButtonElement).disabled = true;
+
+
+        setTimeout(() => {
+          (document.getElementById("SearchButton") as HTMLButtonElement).disabled = false;
+        }, 1200);
+
+        this.FBRservice.GetHeldObjects(tableName).subscribe(
+          data => {
+            if (data && data.columnNames.length != 0) {
+
+              this.tableModelColNames = data.columnNames
+              this.ReviewtableModelColNames.push("Blind Number");
+              this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+              if (!this.FirstTimeOnly)
+                this.Data = this.Data.concat(data.rows);
+              else
+                this.Data = data.rows;
+
+
+              let cntr = 0;
+              setTimeout(() => {
+                this.Data.forEach(element => {
+                  if (element.row['FromHoldingStation'] == 'YES') {
+                    (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+                  }
+                  cntr++;
+                });
+              }, 40);
+
+            }
+          }
+        );
+      }
+    }
+
+  }
+
+  tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+
+    this.CurrentTab = tabChangeEvent.index;
+
+  }
+
+
+
 }

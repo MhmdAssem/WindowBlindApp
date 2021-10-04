@@ -12,8 +12,8 @@ import { FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetai
 export class PackingStationService {
   constructor(private httpClient: HttpClient) { }
 
-  public GetReadyToPack(): Observable<FabricCutterCBDetailsModel> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  public GetReadyToPack(input): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json',"CbOrLineNumber":input });
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'PackingStation/GetReadyToPack', { headers }).pipe(
@@ -48,4 +48,22 @@ export class PackingStationService {
 
       );
   }
+  
+  
+  public GetHeldObjects(tableName): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'tableName':tableName });
+
+    return this.httpClient
+      .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'PackingStation/GetHeldObjects', { headers }).pipe(
+        tap(
+          data => {
+            if (!data) {
+              alert("Sorry Configuration is not done , please contact your admin !");
+            }
+          }
+        )
+
+      );
+  }
+
 }

@@ -1,0 +1,145 @@
+<div class="container-fluid">
+
+  <div class="row mt-4">
+    <div class="col-lg-4" style="margin-top: 5px;margin-left: 30px;">
+
+      <form class="form-inline">
+        <label> Select a station</label>
+        <select class="form-control" name="StationName" id="ForwardStation" style="display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        text-align: center;
+        min-width:300px;
+        margin-left: 4px;
+        text-align-last: center;
+        font-size: 16px;cursor: pointer;" (change)="GetTablesBasedOnStation()">
+          <option value="..." id="station_default" selected>...</option>
+          <option *ngFor="let table of StationName" value="{{table}}" id="station_{{table}}">{{table}}</option>
+        </select>
+      </form>
+    </div>
+    <div class="col-lg-4" style="margin-top: 5px;margin-left: 30px;">
+
+      <form class="form-inline">
+        <label> Select a Table</label>
+        <select class="form-control" name="TableNames" id="ForwardTable" style="display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        text-align: center;
+        min-width:300px;
+        margin-left: 4px;
+        text-align-last: center;
+        font-size: 16px;cursor: pointer;">
+          <option value="..." id="table_default" selected>...</option>
+          <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
+        </select>
+      </form>
+    </div>
+
+    <div class="col-lg-3" *ngIf="tableModelColNames.length==0">
+
+      <button class="btn btn-primary mr-2" (click)="Send();" style="margin-left: 50%;min-width: 35px;"><span
+          *ngIf="SendLoading" class="spinner-border spinner-border-sm mr-1"></span>
+        Send </button>
+    </div>
+
+
+  </div>
+
+
+
+</div>
+
+<div class="container-fluid mt-3">
+
+  <div class="table-responsive mt-3" id="TableViewSelect">
+    <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
+      [dtTrigger]="dtTrigger">
+      <thead class="bg-light">
+        <tr id="DataTableHeader">
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">CB Number</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Line No.</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Username</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Table name</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Date</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Original station</span>
+            </div>
+          </th>
+
+          <th id="theSelectColumn">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Select</span>
+
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
+          <td>
+            {{row.row.row['CB Number']}}
+          </td>
+
+          <td>
+            {{row.row.row['Line No']}}
+          </td>
+
+          <td>
+            {{row.userName}}
+          </td>
+
+          <td>
+            {{row.tableName}}
+          </td>
+          <td>
+            {{row.dateTime}}
+          </td>
+          <td>
+            {{row.stationName}}
+          </td>
+          <td>
+            <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+  <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
+    <div id="Custom_Table_Info" class="custom-dtable-info"></div>
+    <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
+  </div>
+
+</div>

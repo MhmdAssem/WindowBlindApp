@@ -22,6 +22,9 @@ namespace WindowBlind.Api
         IMongoCollection<LogModel> HoistStation { get; }
         IMongoCollection<LogModel> AssemblyStation { get; }
         IMongoCollection<ComportModel> comport { get; }
+        IMongoCollection<RejectionModel> Rejected { get; }
+        IMongoCollection<ApplicationTableWithOutputPath> Tables { get; }
+        IMongoCollection<AutoUploadModel> AutoUploads { get; }
 
         Task ImportOrders(Station station);
         void Seed();
@@ -37,6 +40,10 @@ namespace WindowBlind.Api
         public IMongoCollection<LogModel> HoistStation => _mongoDb.GetCollection<LogModel>("HoistStation");
         public IMongoCollection<LogModel> PackingStation => _mongoDb.GetCollection<LogModel>("PackingStation");
         public IMongoCollection<ComportModel> comport => _mongoDb.GetCollection<ComportModel>("comport");
+        public IMongoCollection<RejectionModel> Rejected => _mongoDb.GetCollection<RejectionModel>("Rejected");
+        public IMongoCollection<ApplicationTableWithOutputPath> Tables => _mongoDb.GetCollection<ApplicationTableWithOutputPath>("Tables");
+        public IMongoCollection<AutoUploadModel> AutoUploads => _mongoDb.GetCollection<AutoUploadModel>("AutoUploads");
+
 
 
         private readonly IMongoDatabase _mongoDb;
@@ -47,8 +54,8 @@ namespace WindowBlind.Api
             _mongoDb = client.GetDatabase(settings.DatabaseName);
             Console.WriteLine("Connect to MongoDB");
 
-            //DropTables();
-           Seed();
+            // DropTables();
+            Seed();
         }
 
         public void Seed()
@@ -60,6 +67,10 @@ namespace WindowBlind.Api
             var HoistStation = _mongoDb.GetCollection<FileSetting>("HoistStation").EstimatedDocumentCount();
             var AssemblyStation = _mongoDb.GetCollection<FileSetting>("AssemblyStation").EstimatedDocumentCount();
             var comport = _mongoDb.GetCollection<ComportModel>("comport").EstimatedDocumentCount();
+            var Rejected = _mongoDb.GetCollection<ComportModel>("Rejected").EstimatedDocumentCount();
+            var Tables = _mongoDb.GetCollection<ApplicationTableWithOutputPath>("Tables").EstimatedDocumentCount();
+            var AutoUploads = _mongoDb.GetCollection<AutoUploadModel>("AutoUploads").EstimatedDocumentCount();
+
             if (user == 0)
             {
                 SeedUsers();
@@ -89,7 +100,55 @@ namespace WindowBlind.Api
                 seedComport();
 
             }
+            if (Rejected == 0)
+            {
+                seedRejection();
+            }
+            if (Tables == 0)
+            {
+                seedTables();
+            }
 
+            if(AutoUploads ==0)
+            {
+                seedAutoUploads();
+
+            }
+        }
+
+        private void seedAutoUploads()
+        {
+            var table = new AutoUploadModel();
+            table.Id = Guid.NewGuid().ToString();
+            table.Shift = "None";
+            table.TableName = "";
+            table.CreationDate = "";
+            table.UserName = "Admin";
+
+            _mongoDb.GetCollection<AutoUploadModel>("AutoUploads").InsertOne(table);
+        }
+
+        private void seedTables()
+        {
+            var table = new ApplicationTableWithOutputPath();
+            table.Id = Guid.NewGuid().ToString();
+            table.TableName = "AdminTestTables";
+            table.OutputPath = "AdminTestTablesOutput";
+
+
+            _mongoDb.GetCollection<ApplicationTableWithOutputPath>("Tables").InsertOne(table);
+        }
+
+        private void seedRejection()
+        {
+            RejectionModel log = new RejectionModel();
+            log.UserName = "Admin";
+            log.StationName = "None";
+            log.TableName = "None";
+            log.Row = null;
+            log.DateTime = DateTime.Now.ToString();
+            log.Id = Guid.NewGuid().ToString();
+            _mongoDb.GetCollection<RejectionModel>("Rejected").InsertOne(log);
         }
 
         private void SeedUsers()
@@ -109,15 +168,18 @@ namespace WindowBlind.Api
                 new FileSetting{Id = Guid.NewGuid().ToString(), settingName = "ctbsodump",settingPath = "",applicationSetting = "General Setting"},
                 new FileSetting{Id = Guid.NewGuid().ToString(), settingName = "SheetName",settingPath = "",applicationSetting = "General Setting"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Deduction",settingPath = "" ,applicationSetting = "FabricCutter"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SearchType",settingPath = "CB_Line_Number_Search" ,applicationSetting = "_FabricCutter"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "AutoUploadDir",settingPath = "" ,applicationSetting = "_FabricCutter"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "ViewedUploadsDir",settingPath = "" ,applicationSetting = "_FabricCutter"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "DeductionTable",applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "DropTable" , settingPath = "" ,applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "Fabric Rollwidth",applicationSetting = "FabricCutter"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "FabricTable" , settingPath = "",applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "PVCLathe Fabric",settingPath = "" ,applicationSetting = "EzStop"},
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Fabric Cutter Output",settingPath = "" ,applicationSetting = "FabricCutter"},
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCut Output",settingPath = "" ,applicationSetting = "LogCut"},
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStop Output",settingPath = "" ,applicationSetting = "EzStop"},
-                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "XML File",settingPath = "" ,applicationSetting = "EzStop"},
+                //new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Fabric Cutter Output",settingPath = "" ,applicationSetting = "FabricCutter"},
+                //new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCut Output",settingPath = "" ,applicationSetting = "LogCut"},
+                //new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStop Output",settingPath = "" ,applicationSetting = "EzStop"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "XML Folder",settingPath = "" ,applicationSetting = "EzStop"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "",applicationSetting = "FabricCutter" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "",applicationSetting = "LogCut" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath= "",applicationSetting = "EzStop" },
@@ -290,6 +352,7 @@ namespace WindowBlind.Api
             _mongoDb.DropCollection("AssemblyStation");
             _mongoDb.DropCollection("comport");
             _mongoDb.DropCollection("settings");
+            _mongoDb.DropCollection("Rejected");
         }
     }
 }
