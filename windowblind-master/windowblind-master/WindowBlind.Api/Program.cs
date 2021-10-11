@@ -20,7 +20,7 @@ namespace WindowBlind.Api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel().UseIISIntegration().UseStartup<Startup>();
+                    webBuilder.UseIISIntegration().UseStartup<Startup>();
                 });
     }
 }

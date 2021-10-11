@@ -50,7 +50,8 @@ namespace WindowBlind.Api.Controllers
                 string SheetName = Repository.Settings.Find(s => s.settingName == "SheetName").FirstOrDefault().settingPath;
 
                 FileInfo file = new FileInfo(Path);
-                if (!file.Exists) return new List<string>();
+                
+
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 List<string> names = new List<string>();
                 using (var package = new ExcelPackage(file))
@@ -58,7 +59,7 @@ namespace WindowBlind.Api.Controllers
                     var workbook = package.Workbook;
 
                     var worksheet = workbook.Worksheets.Where(e => e.Name == SheetName).FirstOrDefault();
-                    if (worksheet == null) return new List<string>();
+
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
 
@@ -77,7 +78,11 @@ namespace WindowBlind.Api.Controllers
             }
             catch (Exception e)
             {
-                return new List<string>();
+                List<string> error = new List<string>();
+                error.Add(e.Message);
+                error.Add(e.StackTrace);
+
+                return error;
             }
 
         }

@@ -45,6 +45,7 @@
 
   <ItemGroup>
     <Folder Include="DTOs\" />
+    <Folder Include="wwwroot\" />
     <Folder Include="Printer Driver\EzStopPrintFiles\" />
   </ItemGroup>
 

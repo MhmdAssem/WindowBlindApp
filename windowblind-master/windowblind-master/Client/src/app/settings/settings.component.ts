@@ -297,6 +297,7 @@ export class SettingsComponent implements OnInit {
 
     this.settingService.getColumnsNames().subscribe(data => {
       this.ColumnNames = data;
+      console.log(data);
       setTimeout(() => {
         this.FabricSelectedColumnNames.forEach(element => {
           (document.getElementById('FabricCheckBox_' + element) as HTMLInputElement).checked = true;
