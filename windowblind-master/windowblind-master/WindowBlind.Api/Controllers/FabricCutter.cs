@@ -36,6 +36,8 @@ namespace WindowBlind.Api.Controllers
         Dictionary<string, string> FabricRollwidth;
         Dictionary<string, int> ControlTypevalues;
         Dictionary<string, List<string>> LatheType;
+        Dictionary<string, int> ColumnsIndex;
+
         int generalBlindNumber;
         private void Init()
         {
@@ -48,6 +50,7 @@ namespace WindowBlind.Api.Controllers
             ColumnMapper.Add("Fabric", "Fabric Type");
             ColumnMapper.Add("Colour", "Fabric Colour");
             ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
+            ColumnsIndex = new Dictionary<string, int>();
         }
         private async Task ReadConfig()
         {
@@ -101,159 +104,171 @@ namespace WindowBlind.Api.Controllers
 
         private FabricCutterCBDetailsModel ReadingData(string CBNumber)
         {
-            FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
-            var TempctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
-            FileInfo file = new FileInfo(TempctbsodumpPath);
-            if (!file.Exists) return null;
-            List<string> names = new List<string>();
-            //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
-            generalBlindNumber = 1;
-
-            using (var package = new ExcelPackage(file))
+            try
             {
-                var workbook = package.Workbook;
+                FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
+                var TempctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
+                FileInfo file = new FileInfo(TempctbsodumpPath);
+                if (!file.Exists) return null;
+                List<string> names = new List<string>();
+                //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
+                generalBlindNumber = 1;
 
-                var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
-                if (worksheet == null) return null;
-                var start = worksheet.Dimension.Start;
-                var end = worksheet.Dimension.End;
-                bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
-
-                Dictionary<int, int> indexToRemove = new Dictionary<int, int>();
-                for (int i = start.Column; i < end.Column; i++)
+                using (var package = new ExcelPackage(file))
                 {
-                    var text = worksheet.Cells[2, i].Text.Trim();
-                    if (text.StartsWith("CB"))
+                    var workbook = package.Workbook;
+
+                    var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
+                    if (worksheet == null) return null;
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
+
+                    Dictionary<int, int> indexToRemove = new Dictionary<int, int>();
+                    for (int i = start.Column; i < end.Column; i++)
                     {
-                        for (int j = start.Row + 1; j < end.Row; j++)
-                            if (worksheet.Cells[j, i].Text.Trim() != CBNumber) indexToRemove[j] = 1;
+                        var Headertext = worksheet.Cells[1, i].Text.Trim();
+                        ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
 
-                        break;
-                    }
-
-
-                }
-
-
-
-                for (int i = start.Row + 1; i < end.Row; i++)
-                {
-                    if (indexToRemove.ContainsKey(i)) continue;
-                    Dictionary<string, string> row = new Dictionary<string, string>();
-                    row["Line No"] = "";
-                    row["Customer"] = "";
-                    row["Bind Type/# Panels/Rope/Operation"] = "";
-                    row["Description"] = "";
-                    row["Track Col/Roll Type/Batten Col"] = "";
-                    row["Cntrl Side"] = "";
-                    row["Control Type"] = "";
-                    row["Pull Colour/Bottom Weight/Wand Len"] = "";
-
-                    int RowQty = 0;
-                    for (int j = start.Column; j < end.Column; j++)
-                    {
-                        var Headertext = worksheet.Cells[1, j].Text.Trim();
-                        if (String.IsNullOrEmpty(Headertext)) continue;
-                        if (Headertext.Contains("Qty"))
+                        if (Headertext.StartsWith("W/Order NO"))
                         {
-                            RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
+                            for (int j = start.Row + 1; j < end.Row; j++)
+                                if (worksheet.Cells[j, i].Text.Trim() != CBNumber) indexToRemove[j] = 1;
                         }
 
-                        Headertext = Headertext.Replace(".", "");
-
-
-
-                        var cell = worksheet.Cells[i, j].Text.Trim();
-
-                        if (ColumnMapper.ContainsKey(Headertext)) Headertext = ColumnMapper[Headertext];
-                        row[Headertext] = cell;
-
 
                     }
-                    FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
-                    for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
+
+
+
+                    for (int i = start.Row + 1; i < end.Row; i++)
                     {
-                        TblRow.BlindNumbers.Add(cntr);
+                        if (indexToRemove.ContainsKey(i)) continue;
+                        Dictionary<string, string> row = new Dictionary<string, string>();
+                        row["Line No"] = "";
+                        row["Customer"] = "";
+                        row["Bind Type/# Panels/Rope/Operation"] = "";
+                        row["Description"] = "";
+                        row["Track Col/Roll Type/Batten Col"] = "";
+                        row["Cntrl Side"] = "";
+                        row["Control Type"] = "";
+                        row["Pull Colour/Bottom Weight/Wand Len"] = "";
+
+                        int RowQty = 0;
+                        for (int j = start.Column; j < end.Column; j++)
+                        {
+                            var Headertext = worksheet.Cells[1, j].Text.Trim();
+                            if (String.IsNullOrEmpty(Headertext)) continue;
+                            Headertext = Headertext.Replace(".", "");
+
+                            if (Headertext.Contains("Qty"))
+                            {
+                                RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
+                            }
+
+                            if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") { RowQty = 0; break; }
+
+
+                            var cell = worksheet.Cells[i, j].Text.Trim();
+
+                            if (ColumnMapper.ContainsKey(Headertext))
+                                Headertext = ColumnMapper[Headertext];
+                            row[Headertext] = cell;
+
+
+                        }
+                        if (RowQty == 0) continue;
+                        FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
+                        for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
+                        {
+                            TblRow.BlindNumbers.Add(cntr);
+                        }
+                        generalBlindNumber += RowQty;
+                        TblRow.Row = row;
+                        TblRow.UniqueId = Guid.NewGuid().ToString();
+                        Data.Rows.Add(TblRow);
                     }
-                    generalBlindNumber += RowQty;
-                    TblRow.Row = row;
-                    TblRow.UniqueId = Guid.NewGuid().ToString();
-                    Data.Rows.Add(TblRow);
+
+
+                    package.Dispose();
                 }
 
+                System.IO.File.Delete(TempctbsodumpPath);
 
-                package.Dispose();
-            }
+                FabricRollwidth = new Dictionary<string, string>();
+                ControlTypevalues = new Dictionary<string, int>();
+                LatheType = new Dictionary<string, List<string>>();
 
-            System.IO.File.Delete(TempctbsodumpPath);
-
-            FabricRollwidth = new Dictionary<string, string>();
-            ControlTypevalues = new Dictionary<string, int>();
-            LatheType = new Dictionary<string, List<string>>();
-
-            var TempFBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
-            file = new FileInfo(FBRPath);
-            using (var package = new ExcelPackage(file))
-            {
-                var workbook = package.Workbook;
-
-                var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                var start = worksheet.Dimension.Start;
-                var end = worksheet.Dimension.End;
-                for (int i = start.Row + 1; i < end.Row; i++)
+                var TempFBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
+                file = new FileInfo(FBRPath);
+                using (var package = new ExcelPackage(file))
                 {
-                    FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
+                    var workbook = package.Workbook;
+
+                    var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Row + 1; i < end.Row; i++)
+                    {
+                        FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
+                    }
                 }
-            }
 
-            System.IO.File.Delete(TempFBRPath);
+                System.IO.File.Delete(TempFBRPath);
 
 
-            var TempDeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
+                var TempDeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
 
-            file = new FileInfo(TempDeductionPath);
-            using (var package = new ExcelPackage(file))
-            {
-                var workbook = package.Workbook;
-
-                var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                var start = worksheet.Dimension.Start;
-                var end = worksheet.Dimension.End;
-                for (int i = start.Row + 1; i < end.Row; i++)
+                file = new FileInfo(TempDeductionPath);
+                using (var package = new ExcelPackage(file))
                 {
-                    ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
+                    var workbook = package.Workbook;
+
+                    var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Row + 1; i < end.Row; i++)
+                    {
+                        ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
+                    }
                 }
-            }
 
-            System.IO.File.Delete(TempDeductionPath);
+                System.IO.File.Delete(TempDeductionPath);
 
-            var TempLathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
+                var TempLathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
 
-            file = new FileInfo(TempLathePath);
-            using (var package = new ExcelPackage(file))
-            {
-                var workbook = package.Workbook;
-
-                var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                var start = worksheet.Dimension.Start;
-                var end = worksheet.Dimension.End;
-                for (int i = start.Row + 1; i < end.Row; i++)
+                file = new FileInfo(TempLathePath);
+                using (var package = new ExcelPackage(file))
                 {
-                    if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
-                        LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
+                    var workbook = package.Workbook;
 
-                    LatheType[worksheet.Cells[i, 1].Text.Trim()].Add(worksheet.Cells[i, 2].Text.Trim());
+                    var worksheet = workbook.Worksheets.FirstOrDefault();
 
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Row + 1; i < end.Row; i++)
+                    {
+                        if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
+                            LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
+
+                        LatheType[worksheet.Cells[i, 1].Text.Trim()].Add(worksheet.Cells[i, 2].Text.Trim());
+
+                    }
                 }
+
+                System.IO.File.Delete(TempLathePath);
+
+
+                return Data;
+            }
+            catch (Exception e)
+            {
+
+                throw;
             }
 
-            System.IO.File.Delete(TempLathePath);
-
-
-            return Data;
         }
 
         private void FabricCutProcess(ref FabricCutterCBDetailsModel Data)

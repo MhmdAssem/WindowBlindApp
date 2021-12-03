@@ -252,21 +252,21 @@ namespace WindowBlind.Api.Controllers
                     for (int i = start.Column; i < end.Column; i++)
                     {
                         var text = worksheet.Cells[1, i].Text.Trim();
+
                         if (text.Equals("W/Order NO")) CBINdex = i;
                         if (text.Equals("Line No."))
                         {
                             for (int j = start.Row + 1; j < end.Row; j++)
-                                if (worksheet.Cells[j, i].Text.Trim() == LineNumber) CB = worksheet.Cells[j, CBINdex].Text.Trim();
-                            break;
+                                if (worksheet.Cells[j, i].Text.Trim() == LineNumber) { CB = worksheet.Cells[j, CBINdex].Text.Trim(); break; }
                         }
                     }
                 }
 
                 for (int i = start.Column; i < end.Column; i++)
                 {
-                    var text = worksheet.Cells[2, i].Text.Trim();
                     ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
-                    if (text.StartsWith("CB"))
+                    var Headertext = worksheet.Cells[1, i].Text.Trim();
+                    if (Headertext.StartsWith("W/Order NO"))
                     {
                         for (int j = start.Row + 1; j < end.Row; j++)
                             if (worksheet.Cells[j, i].Text.Trim() != CB) indexToRemove[j] = 1;
@@ -286,11 +286,14 @@ namespace WindowBlind.Api.Controllers
 
                         Headertext = Headertext.Replace(".", "");
                         /// special check 
-                        if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") continue;
+                        if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") { 
+                            RowQty = 0; break;
+                        };
                         var cell = worksheet.Cells[i, j].Text.Trim();
 
                         if (Headertext.Contains("Qty") && cell != "")
                         {
+                            RowQty = int.Parse(cell);
                             TotalQty += int.Parse(cell);
                         }
                         if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
@@ -299,7 +302,7 @@ namespace WindowBlind.Api.Controllers
                         row[Headertext] = cell;
 
                     }
-
+                    if (RowQty == 0) continue;
                     FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                     TblRow.Row = row;
                     TblRow.UniqueId = Guid.NewGuid().ToString();

@@ -4,7 +4,7 @@
     <a mat-button href="settings" *ngIf="isAdministrator">Settings</a>
     <a mat-button href="fabric-cutter" *ngIf="isAdministrator || isFactoryStaff">Fabric Cutter</a>
     <a mat-button href="log-cut" *ngIf="isAdministrator || isFactoryStaff">Log Cut</a>
-    <a mat-button href="Pre-EzStop" >Pre EzStop</a>
+    <a mat-button href="Pre-EzStop" *ngIf="isAdministrator || isFactoryStaff">Pre EzStop</a>
     <a mat-button href="Ez-Stop" *ngIf="isAdministrator || isFactoryStaff">Ezystop</a>
     
     <a mat-button href="Assembly-Station" *ngIf="isAdministrator || isFactoryStaff">Assembly</a>

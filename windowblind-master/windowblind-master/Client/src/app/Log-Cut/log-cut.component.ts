@@ -152,19 +152,19 @@ export class LogCutComponent implements OnInit {
 
         this.updateTable();
 
-
+        console.log(this.Data);
         setTimeout(() => {
           for (let index = 0; index < this.Data.length; index++) {
             if (this.Data[index].row['FromHoldingStation'] == 'YES') {
               (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important'); continue;
             }
-
             (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'background-color:' + this.Data[index].row['DropColour'] + " !important")
-            if (this.Data[index].row['DropColour'].toLowerCase() != "white" && this.Data[index].row['DropColour'].trim() != "")
+            
+            if (this.Data[index].row['DropColour'] != undefined &&  this.Data[index].row['DropColour'].toString().toLowerCase() != "white" && this.Data[index].row['DropColour'].trim() != "")
               (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color:' + this.Data[index].row['DropColour'] + " !important")
 
-            if (this.Data[index].row['DropColour'].toLowerCase() == "yellow" && this.Data[index].row['DropColour'].trim() != "")
-              (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: LightYellow !important');
+            if (this.Data[index].row['DropColour'] != undefined &&  this.Data[index].row['DropColour'].toString().toLowerCase() == "yellow" && this.Data[index].row['DropColour'].trim() != "")
+              (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: black !important;' + 'background-color: LightYellow !important');
           }
 
           (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
@@ -284,7 +284,7 @@ export class LogCutComponent implements OnInit {
       this.ReviewData.forEach(element => {
 
         var ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
-        this.Data.splice(ind, 1);
+        this.Data = this.Data.splice(ind, 1);
 
       });
       this.ReviewData = [];

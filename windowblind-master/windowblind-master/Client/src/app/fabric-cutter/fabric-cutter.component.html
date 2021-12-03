@@ -337,13 +337,9 @@
 
     </div>
 
-    <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
-      <div id="Custom_Table_Info" class="custom-dtable-info"></div>
-      <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
-    </div>
-
-
-    <div class="table-responsive mt-3" id="TableViewReview" [style.display]="ReviewData.length !=0">
+   
+  
+    <div class="table-responsive mt-3" id="TableViewReview" [style.display]="ReviewData.length ==0?'none':'block'">
       <table datatable [dtOptions]="dtOptionsReview" class="table table-bordered" id="DScenario-table"
         [dtTrigger]="dtTriggerReview">
         <thead class="bg-light">
@@ -380,10 +376,8 @@
 
     </div>
 
-    <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="ReviewData.length!=0" style="cursor: pointer;">
-      <div id="Custom_Table_Info2" class="custom-dtable-info"></div>
-      <div id="Custom_Table_Pagination2" class="custom-dtable-pagination"></div>
-    </div>
+   
+    
 
 
   </div>

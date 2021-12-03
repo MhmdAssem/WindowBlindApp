@@ -255,21 +255,22 @@ namespace WindowBlind.Api.Controllers
                     for (int i = start.Column; i < end.Column; i++)
                     {
                         var text = worksheet.Cells[1, i].Text.Trim();
+
                         if (text.Equals("W/Order NO")) CBINdex = i;
                         if (text.Equals("Line No."))
                         {
                             for (int j = start.Row + 1; j < end.Row; j++)
-                                if (worksheet.Cells[j, i].Text.Trim() == LineNumber) CB = worksheet.Cells[j, CBINdex].Text.Trim();
-                            break;
+                                if (worksheet.Cells[j, i].Text.Trim() == LineNumber) { CB = worksheet.Cells[j, CBINdex].Text.Trim(); break; }
                         }
                     }
                 }
 
                 for (int i = start.Column; i < end.Column; i++)
                 {
-                    var text = worksheet.Cells[2, i].Text.Trim();
+                    var Headertext = worksheet.Cells[1, i].Text.Trim();
                     ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
-                    if (text.StartsWith("CB"))
+
+                    if (Headertext.StartsWith("W/Order NO"))
                     {
                         for (int j = start.Row + 1; j < end.Row; j++)
                             if (worksheet.Cells[j, i].Text.Trim() != CB) indexToRemove[j] = 1;
@@ -290,11 +291,12 @@ namespace WindowBlind.Api.Controllers
                         if (String.IsNullOrEmpty(Headertext)) continue;
 
                         /// special check 
-                        if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") takeRowCqty = false;
+                        if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") { takeRowCqty = false; RowQty = 0; break; }
                         var cell = worksheet.Cells[i, j].Text.Trim();
 
                         if (Headertext.Contains("Qty") && cell != "" && takeRowCqty)
                         {
+                            RowQty = int.Parse(cell);
                             TotalQty += int.Parse(cell);
                         }
                         if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
@@ -302,6 +304,7 @@ namespace WindowBlind.Api.Controllers
                         row[Headertext] = cell;
 
                     }
+                    if (RowQty == 0) continue;
 
                     FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                     TblRow.Row = row;
@@ -872,7 +875,7 @@ namespace WindowBlind.Api.Controllers
                 {
                     CB = item.Row.Row["CB Number"];
                     var HeldData = ReadData();
-                     EzStopProcessing( ref HeldData);
+                    EzStopProcessing(ref HeldData);
 
 
                     Data.Rows.Add(HeldData.Rows.Where(e => e.Row["Line No"] == item.Row.Row["Line No"]).FirstOrDefault());
@@ -882,7 +885,7 @@ namespace WindowBlind.Api.Controllers
                     Data.ColumnNames = HeldData.ColumnNames;
                 }
 
-              
+
 
                 return new JsonResult(Data);
 
