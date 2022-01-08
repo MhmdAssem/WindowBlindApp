@@ -37,7 +37,8 @@ namespace WindowBlind.Api.Controllers
         Dictionary<string, int> ControlTypevalues;
         Dictionary<string, List<string>> LatheType;
         Dictionary<string, int> ColumnsIndex;
-
+        bool CBSearchOrLineNumberSearch;
+        string LineNumber;
         int generalBlindNumber;
         private void Init()
         {
@@ -114,6 +115,9 @@ namespace WindowBlind.Api.Controllers
                 //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
                 generalBlindNumber = 1;
 
+
+                CBSearchOrLineNumberSearch = !char.IsDigit(CBNumber[0]);
+
                 using (var package = new ExcelPackage(file))
                 {
                     var workbook = package.Workbook;
@@ -125,6 +129,25 @@ namespace WindowBlind.Api.Controllers
                     bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
 
                     Dictionary<int, int> indexToRemove = new Dictionary<int, int>();
+
+
+                    if (!CBSearchOrLineNumberSearch)
+                    {
+                        var CBINdex = 0;
+                        LineNumber = CBNumber;
+                        for (int i = start.Column; i < end.Column; i++)
+                        {
+                            var text = worksheet.Cells[1, i].Text.Trim();
+
+                            if (text.Equals("W/Order NO")) CBINdex = i;
+                            if (text.Equals("Line No."))
+                            {
+                                for (int j = start.Row + 1; j < end.Row; j++)
+                                    if (worksheet.Cells[j, i].Text.Trim() == LineNumber) { CBNumber = worksheet.Cells[j, CBINdex].Text.Trim(); break; }
+                            }
+                        }
+                    }
+
                     for (int i = start.Column; i < end.Column; i++)
                     {
                         var Headertext = worksheet.Cells[1, i].Text.Trim();
@@ -135,11 +158,7 @@ namespace WindowBlind.Api.Controllers
                             for (int j = start.Row + 1; j < end.Row; j++)
                                 if (worksheet.Cells[j, i].Text.Trim() != CBNumber) indexToRemove[j] = 1;
                         }
-
-
                     }
-
-
 
                     for (int i = start.Row + 1; i < end.Row; i++)
                     {
@@ -385,6 +404,8 @@ namespace WindowBlind.Api.Controllers
 
                 FabricCutProcess(ref Data);
 
+                if (!CBSearchOrLineNumberSearch)
+                    Data.Rows = Data.Rows.Where(e=>e.Row["Line No"] == CBNumber).ToList();
 
                 return new JsonResult(Data);
 
@@ -1150,7 +1171,7 @@ namespace WindowBlind.Api.Controllers
 
 
 
-                var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "Fabric" && rej.TableName == tableName).Result.ToListAsync();
+                var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "FabricCut" && rej.TableName == tableName).Result.ToListAsync();
 
                 foreach (var item in HeldObjects)
                 {

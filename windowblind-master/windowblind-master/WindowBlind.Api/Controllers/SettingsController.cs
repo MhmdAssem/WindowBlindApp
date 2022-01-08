@@ -221,7 +221,7 @@ namespace WindowBlind.Api.Controllers
 
                 switch (application)
                 {
-                    case "Fabric":
+                    case "FabricCut":
                         var temp = await Repository.Settings.FindAsync(setting => setting.settingName == "FabricCutterTable").Result.FirstOrDefaultAsync();
                         applicationEntry = temp.settingPath;
                         break;

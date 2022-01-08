@@ -96,7 +96,7 @@ export class ReportStationComponent implements OnInit {
         this.tableModelColNames = data.columnNames
 
         this.Data = data.rows;
-
+        console.log(this.Data);
         this.updateTable();
 
         setTimeout(() => {

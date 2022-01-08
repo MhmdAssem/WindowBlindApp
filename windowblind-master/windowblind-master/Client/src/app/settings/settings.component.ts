@@ -55,12 +55,17 @@ export class SettingsComponent implements OnInit {
   SelectedPrinterId = "";
 
   Columns: string[] = []; //for the printe tables
+  CommentColumns: string[] = []; //for the printe tables
+  CommentsId: string;
   PrinterTableArray: TablePrinterModel[] = [];
+  CommentsTableArray: string[] = [];
 
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtTrigger: Subject<any> = new Subject();
   dtOptions: DataTables.Settings = {};
+  dtTriggerComments: Subject<any> = new Subject();
+  dtOptionsComments: DataTables.Settings = {};
 
   AutoUploadPath: string;
   ViewedUploadsPath: string;
@@ -82,6 +87,15 @@ export class SettingsComponent implements OnInit {
     this.HoistStationSelectedColumnNames = [];
     this.PackingStationSelectedColumnNames = [];
     this.dtOptions = {
+      pagingType: 'full_numbers',
+      lengthChange: false,
+      searching: false,
+      destroy: true,
+      ordering: false,
+      pageLength: 4,
+
+    };
+    this.dtOptionsComments = {
       pagingType: 'full_numbers',
       lengthChange: false,
       searching: false,
@@ -272,7 +286,7 @@ export class SettingsComponent implements OnInit {
       this.Columns.push('Table Name');
       this.Columns.push('Output Path');
 
-
+      this.CommentColumns.push('Comment')
       /// get the Search Type For Fabric Cutter
 
       let SearchTypeIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'SearchType');
@@ -291,7 +305,15 @@ export class SettingsComponent implements OnInit {
       this.ViewedUploadsPath = ViewedUploadsDirValue;
 
 
+      let CommentsIndex = this.ListOfFiles.findIndex(file => file.settingName == 'Comments');
+      let CommentsValue = this.ListOfFiles[CommentsIndex].settingPath.split("@@@");
 
+
+      CommentsValue.forEach(element => {
+        this.CommentsTableArray.push(element);
+      });
+      this.CommentsId = this.ListOfFiles[CommentsIndex].id;
+      this.ListOfFiles.splice(CommentsIndex, 1);
       this.updateTable();
     });
 
@@ -351,6 +373,7 @@ export class SettingsComponent implements OnInit {
     }
     catch {
       this.dtTrigger.next();
+      this.dtTriggerComments.next();
       console.log("Catch");
     }
   }
@@ -639,8 +662,13 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-
-
+    let CommentsEntry: FileSettings = {
+      settingName: "Comments",
+      settingPath: this.CommentsTableArray.join('@@@'),
+      id: this.CommentsId,
+      applicationSetting: ""
+    }
+    newList.push(CommentsEntry);
     this.settingService.UpdateSettings(newList).subscribe(data => {
       this.Saving = false;
       if (!this.localCalling)
@@ -710,6 +738,25 @@ export class SettingsComponent implements OnInit {
 
   RadioOn(radioType) {
     this.AutoUpload = (radioType == 'AutoUpload');
+  }
+
+
+  AddNewComment() {
+    var Comment = (document.getElementById("NewComment") as HTMLInputElement).value;
+
+    let ind = this.CommentsTableArray.findIndex(e => e == Comment);
+    if (ind == -1) {
+      this.CommentsTableArray.push(Comment);
+    }
+    (document.getElementById("NewComment") as HTMLInputElement).value = "";
+    this.updateTable();
+
+  }
+
+  DeleteComment(i) {
+
+    this.CommentsTableArray.splice(i, 1);
+    this.updateTable();
   }
 
 }

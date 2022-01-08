@@ -254,7 +254,8 @@ export class AssemblyStationComponent implements OnInit {
         row :element,
         stationName :"Assembly",
         tableName :tableName,
-        userName :UserName
+        userName :UserName,
+        rejectionReasons:[]
       };
       RejectionModels.push(RejectionModel);
     });
@@ -322,5 +323,27 @@ export class AssemblyStationComponent implements OnInit {
         }
       }
     );
+  }
+  
+  
+  SelectAll() {
+    let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
+    console.log(Buttons.length)
+    let btn = document.getElementById("AllButton");
+
+    if (btn?.textContent?.trim() == 'Select All') {
+
+      btn.textContent = "UnSelect All";
+      for (let i = Buttons.length-1; i >=0; i--) {
+        if (Buttons[i].textContent == 'Select') Buttons[i].click();
+      }
+    }
+    else {
+      btn ? btn.textContent = "Select All" : null;
+      for (let i = Buttons.length-1; i >=0; i--) {
+        if (Buttons[i].textContent == 'UnSelect') Buttons[i].click();
+      }
+    }
+
   }
 }

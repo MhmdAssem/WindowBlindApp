@@ -1,14 +1,21 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { faTintSlash } from '@fortawesome/free-solid-svg-icons';
+import { R3FactoryTarget } from '@angular/compiler';
+import { splitAtColon } from '@angular/compiler/src/util';
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { faThumbsDown, faTintSlash } from '@fortawesome/free-solid-svg-icons';
 import { DataTableDirective } from 'angular-datatables';
-import { data } from 'jquery';
+import { data, noConflict } from 'jquery';
 import { Subject } from 'rxjs';
+import { textChangeRangeIsUnchanged } from 'typescript';
 import { AuthService } from '../auth.service';
 import { FabricCutterCBDetailsModelTableRow, FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetailsModel';
 import { PackingStationService } from '../packing-station/packing-station.service';
 import { SettingService } from '../settings/setting.service';
 import { HoldingStationService } from './holding-station.service';
 import { OrdersApprovalModel } from './OrdersApprovalModel';
+import { ReasonModel } from './ReasonModel';
 import { RejectionModel } from './RejectionModel';
 
 @Component({
@@ -17,6 +24,13 @@ import { RejectionModel } from './RejectionModel';
   styleUrls: ['./holding-station.component.scss']
 })
 export class HoldingStationComponent implements OnInit {
+
+  ReasonsSelect: FormControl[];
+
+
+  ReasonsList: string[] = [];
+
+
   LineLoading: boolean;
   HoldLoading: boolean = false;
   CBLoading: boolean;
@@ -37,11 +51,14 @@ export class HoldingStationComponent implements OnInit {
   ReviewtableModelColNames: string[] = [];
   BlindNumbers: number[] = [];
   Data: RejectionModel[] = [];
+
   ReviewData: RejectionModel[] = [];
   RefreshLoading: boolean = false;
   SendLoading: boolean = false;
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   PrinterTableDictionary = {};
+  hideRows: boolean[] = [];
+
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -65,8 +82,8 @@ export class HoldingStationComponent implements OnInit {
     };
 
     //#region applications
-
-    this.StationName.push('Fabric');
+    this.hideRows = [];
+    this.StationName.push('FabricCut');
     this.StationName.push('LogCut');
     this.StationName.push('EzStop');
     this.StationName.push('Assembly');
@@ -77,9 +94,57 @@ export class HoldingStationComponent implements OnInit {
 
     this.HoldingService.GetAllRejectedOrders().subscribe(data => {
       this.Data = data;
-      console.log(data);
+
     });
 
+    /// getting the Reasons
+    this.settingService.getSettings().subscribe(data => {
+
+      let CommentsIndex = data.findIndex(file => file.settingName == 'Comments');
+      this.ReasonsList = data[CommentsIndex].settingPath.split("@@@");
+      this.ReasonsSelect = [];
+      for (let i = 0; i < data.length; i++)
+        this.ReasonsSelect.push(new FormControl());
+
+      setTimeout(() => {
+        /// selecting already checked before reasons
+        var checkList = document.getElementsByClassName("dropdown-check-list");
+
+        for (let i = 0; i < checkList.length; i++) {
+          //  alert(document.getElementById('anchor_' + i))
+          document.getElementById('anchor_' + i)?.addEventListener("click", function () {
+            if (document.getElementById('items_' + i)?.style.display == 'none')
+              (document.getElementById('items_' + i) as HTMLElement).style.display = ''
+            else
+              (document.getElementById('items_' + i) as HTMLElement).style.display = 'none'
+          });
+        }
+
+
+        /// For the Filter
+        document.getElementById('ReasonFilteranchor_ReasonFilter')?.addEventListener("click", function () {
+          if (document.getElementById('ReasonFilteritems_ReasonFilter')?.style.display == 'none')
+            (document.getElementById('ReasonFilteritems_ReasonFilter') as HTMLElement).style.display = ''
+          else
+            (document.getElementById('ReasonFilteritems_ReasonFilter') as HTMLElement).style.display = 'none'
+        });
+        for (let i = 0; i < this.Data.length; i++) {
+          this.hideRows.push(false);
+          for (let j = 0; j < this.Data[i].rejectionReasons.length; j++) {
+            (document.getElementById(this.Data[i].rejectionReasons[j] + "__" + i) as HTMLInputElement).checked = true;
+            let Span = document.getElementById("anchor_" + i) as HTMLSpanElement;
+            if (Span.textContent == 'Select Reasons')
+              Span.textContent = '';
+            if (Span.textContent == '')
+              Span.textContent += this.Data[i].rejectionReasons[j].trim()
+            else
+              Span.textContent += "," + this.Data[i].rejectionReasons[j].trim();
+
+          }
+        }
+
+      }, 50);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -92,13 +157,14 @@ export class HoldingStationComponent implements OnInit {
         dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           dtInstance.destroy(); // Will be ok on last dataTable, will fail on previous instances
           dtElement.dtTrigger.next();
+
           console.log("Try");
         });
       });
     }
     catch {
       this.dtTrigger.next();
-      this.dtTriggerReview.next();
+
 
       console.log("Catch");
     }
@@ -137,13 +203,13 @@ export class HoldingStationComponent implements OnInit {
       return;
     }
     let TableName = (document.getElementById("ForwardTable") as HTMLSelectElement).value;
-    
+
     if (TableName == '...') {
       alert("Please Choose a Table !!");
       return;
     }
     this.ReviewData.forEach(element => {
-    element.tableName = TableName;
+      element.tableName = TableName;
     });
     let Data: OrdersApprovalModel = {
       forwardStation: ForwardStation,
@@ -184,16 +250,119 @@ export class HoldingStationComponent implements OnInit {
 
   GetTablesBasedOnStation() {
     let ForwardStation = (document.getElementById("ForwardStation") as HTMLSelectElement).value;
-    
-    this.settingService.GetTablesBasedOnApplication(ForwardStation).subscribe(res=>{
+
+    this.settingService.GetTablesBasedOnApplication(ForwardStation).subscribe(res => {
       this.TableNames = [];
       res.forEach(element => {
         this.TableNames.push(element);
       });
     });
-    
-    
-    
+
+
+
   }
 
+  UpdateReasons(reason: string, i) {
+    i = +this.Data.findIndex(e => e.row.uniqueId == i);
+    let OrderId = this.Data[i].id;
+    reason = reason.trim();
+    let model: ReasonModel = {
+      orderid: OrderId,
+      reason: reason,
+      addOrRemove: (document.getElementById(reason + "__" + i) as HTMLInputElement).checked,
+      originalStation: this.Data[i].stationName
+    };
+
+    let Span = document.getElementById("anchor_" + i) as HTMLSpanElement;
+    if (model.addOrRemove) {
+      if (Span.textContent == 'Select Reasons')
+        Span.textContent = '';
+      if (Span.textContent == '')
+        Span.textContent += reason.trim()
+      else
+        Span.textContent += "," + reason.trim();
+
+      this.Data[i].rejectionReasons.push(reason);
+    }
+    else {
+      Span.textContent = Span.textContent ? Span.textContent.replace(reason.trim(), '') : '';
+      Span.textContent = Span.textContent.replace(',,', ',');
+      Span.textContent = Span.textContent.trim();
+      if (Span.textContent.startsWith(','))
+        Span.textContent = Span.textContent.substring(1);
+
+
+      if (Span.textContent[Span.textContent.length - 1] == ',')
+        Span.textContent = Span.textContent.substring(0, Span.textContent.length - 1);
+
+      if (Span.textContent == '')
+        Span.textContent = "Select Reasons";
+
+      this.Data[i].rejectionReasons.splice(this.Data[i].rejectionReasons.findIndex(e=>e == reason),1);
+    }
+
+    this.HoldingService.UpdateReasonsForHeldObject(model).subscribe(data => { });
+
+  }
+
+
+  wheelHandler: any;
+
+  FilterTableBasedOnReasons(Reason: string) {
+    let checked = (document.getElementById(Reason + "__ReasonFilter") as HTMLInputElement).checked;
+    let Span = document.getElementById("ReasonFilteranchor_ReasonFilter") as HTMLSpanElement;
+    Reason = Reason.trim();
+    let ListOfReasons = [];
+    if (checked) {
+      if (Span.textContent == 'Filter')
+        Span.textContent = '';
+      if (Span.textContent == '')
+        Span.textContent += Reason.trim()
+      else
+        Span.textContent += "," + Reason.trim();
+      ListOfReasons = Span.textContent?.split(",") as [];
+
+    }
+    else {
+      Span.textContent = Span.textContent ? Span.textContent.replace(Reason.trim(), '') : '';
+      Span.textContent = Span.textContent.replace(',,', ',');
+      Span.textContent = Span.textContent.trim();
+      if (Span.textContent.startsWith(','))
+        Span.textContent = Span.textContent.substring(1);
+      if (Span.textContent[Span.textContent.length - 1] == ',')
+        Span.textContent = Span.textContent.substring(0, Span.textContent.length - 1);
+      ListOfReasons = Span.textContent.split(",") as [];
+      if (Span.textContent == '')
+        Span.textContent = "Filter";
+    }
+    
+    let cntr = 0;
+    this.Data.forEach(element => {
+      let found = false;
+      ListOfReasons.forEach(res => {
+        let ind = element.rejectionReasons.findIndex(e => e == res);
+        found = found || ind != -1;
+
+      });
+
+      if (checked) {
+        if (!found) {
+          this.hideRows[cntr] = true;
+        }
+        else
+        this.hideRows[cntr] = false;
+      }
+      else {
+        if (found || Span.textContent == "Filter") {
+          this.hideRows[cntr] = false;
+        }
+        else 
+        this.hideRows[cntr] = true;
+      }
+
+      cntr++;
+    });
+
+
+  }
 }

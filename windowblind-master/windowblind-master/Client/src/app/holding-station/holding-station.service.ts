@@ -5,12 +5,31 @@ import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetailsModel';
 import { OrdersApprovalModel } from './OrdersApprovalModel';
+import { ReasonModel } from './ReasonModel';
 import { RejectionModel } from './RejectionModel';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HoldingStationService {
+
+  UpdateReasonsForHeldObject(model: ReasonModel): Observable<boolean> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.httpClient
+    .post<boolean>(environment.apiUrl + 'HoldingStation/UpdateReasonsForHeldObject', model, { headers }).pipe(
+      tap(
+        data => {
+          if (!data) {
+            alert("Error Happend while updating this row!");
+          }
+        }
+      )
+
+    );
+
+
+  }
 
   constructor(private httpClient: HttpClient) { }
 

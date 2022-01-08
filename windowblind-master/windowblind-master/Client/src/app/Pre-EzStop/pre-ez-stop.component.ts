@@ -9,11 +9,18 @@ import { PreEzStopService } from './pre-ez-stop.service';
 export class PreEzStopComponent implements OnInit {
   Generating: boolean;
 
-  constructor(private PreEzStopService:PreEzStopService) { }
+  constructor(private PreEzStopService: PreEzStopService) { }
 
   ngOnInit(): void {
 
 
+    let Ts = this;
+    document.addEventListener("keyup", function (event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        Ts.Generate();
+      }
+    });
   }
 
   Generate() {
@@ -21,15 +28,13 @@ export class PreEzStopComponent implements OnInit {
     let LineNumber = (document.getElementById("LineNumber") as HTMLInputElement).value.toString();
     if (LineNumber == '') return;
     this.Generating = true;
-    this.PreEzStopService.getCBNumberDetails(LineNumber).subscribe(data =>{
-      if(data == true)
-      {
-        alert("Your File is created successfully!");
-        
+    this.PreEzStopService.getCBNumberDetails(LineNumber).subscribe(data => {
+      if (data == true) {
+        (document.getElementById("LineNumber") as HTMLInputElement).value = "";
       }
       this.Generating = false;
     })
-    
+
   }
 
 }

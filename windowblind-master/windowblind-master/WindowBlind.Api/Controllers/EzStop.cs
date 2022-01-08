@@ -435,7 +435,8 @@ namespace WindowBlind.Api.Controllers
 
             }
 
-            Data.ColumnNames = LogCut.AddColumnIfNotExists(Data.ColumnNames, "CB Number");
+            Data.ColumnNames = SelectedColumnsPath;
+            //Data.ColumnNames = LogCut.AddColumnIfNotExists(Data.ColumnNames, "CB Number");
             Data.ColumnNames = LogCut.AddColumnIfNotExists(Data.ColumnNames, "item");
             Data.ColumnNames = LogCut.AddColumnIfNotExists(Data.ColumnNames, "Qty");
             Data.ColumnNames = LogCut.AddColumnIfNotExists(Data.ColumnNames, "Width");
@@ -473,10 +474,27 @@ namespace WindowBlind.Api.Controllers
 
                 EzStopProcessing(ref Data);
 
-                FinalData.ColumnNames = Data.ColumnNames;
-                FinalData.Rows.AddRange(Data.Rows);
+                Data.Rows = Data.Rows.Where(e => e.Row["Line No"] == CBNumberOrLineNumber).ToList();
 
 
+                EzStopModel model = new EzStopModel
+                {
+                    id = Guid.NewGuid().ToString(),
+                    data = Data
+                };
+                _repository.EzStopData.InsertOne(model);
+
+
+                FinalData.ColumnNames = SelectedColumnsPath;
+                //Data.ColumnNames = LogCut.AddColumnIfNotExists(Data.ColumnNames, "CB Number");
+                FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "item");
+                FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "Qty");
+                FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "Width");
+                FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "CutWidth");
+                FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "Tube");
+                FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "Spring");
+                FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "Finish");
+                FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "Colour");
 
 
                 return new JsonResult(FinalData);
@@ -543,6 +561,16 @@ namespace WindowBlind.Api.Controllers
                     await getCBNumberDetails(result.OrderNumber);
 
                 }
+                /// Getting Data from the DB
+
+                var EzStopData = _repository.EzStopData.Find(e => e.data != null).ToList();
+
+                for (int i = 0; i < EzStopData.Count; i++)
+                {
+                    FinalData.ColumnNames = (EzStopData[i].data.ColumnNames.Count > FinalData.ColumnNames.Count) ? EzStopData[i].data.ColumnNames : FinalData.ColumnNames;
+                    if (EzStopData[i].data.Rows.Count > 0) EzStopData[i].data.Rows[0].UniqueId = EzStopData[i].id;
+                    FinalData.Rows.AddRange(EzStopData[i].data.Rows);
+                }
 
                 return new JsonResult(FinalData);
 
@@ -583,6 +611,7 @@ namespace WindowBlind.Api.Controllers
                         await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
                                             Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
 
+                    await _repository.EzStopData.DeleteOneAsync(e => e.id == item.UniqueId);
                     strconcat = item.Row["CB Number"] + "@" + item.Row["Width"];
                     strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["Department"];
                     strconcat += "@" + item.Row["Fabric"] + "@" + item.Row["Control Type"] + "@" + item.Row["Colour"];

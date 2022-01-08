@@ -1,7 +1,7 @@
 <div class="container-fluid mt-3">
 
   <div class="row" style="padding-bottom: 7px;">
-    <div>
+    <div style="margin-left: 7px;">
       <label> Select a Printer</label>
       <select class="" name="Printers" id="Printers" style="margin-left: 5px;">
         <option *ngFor="let printer of PrinterNames" value="{{printer}}" id="PrinterName_{{printer}}">{{printer}}
@@ -9,7 +9,7 @@
       </select>
     </div>
 
-    <div style="margin-left: 120px;">
+    <div style="margin-left: 60px;">
       <label> Select application</label>
       <select class="" name="Application" id="Application" style="margin-left: 5px;">
         <option value="Fabric Cutter">Fabric Cutter</option>
@@ -21,12 +21,12 @@
       </select>
     </div>
 
-    <div style="margin-left: 120px;">
+    <div style="margin-left: 80px;">
       <label>Enter Table Name:</label>
       <input type="text" id="TableName" style="margin-left: 2px;">
     </div>
-    
-    <div style="margin-left: 120px; margin-top: -13px;">
+
+    <div style="margin-left: 80px; margin-top: -13px;">
       <label>Output Path:</label>
       <input type="text" id="OutputPath" style="margin-left: 2px;">
       <button class="btn btn-primary" style="margin-left: 2px;" (click)="AddToTheTable()">Add</button>
@@ -61,7 +61,7 @@
           <td>{{row.printerName}}</td>
           <td>{{row.tableName}}</td>
           <td>{{row.OutputPath}}</td>
-          
+
           <td>
             <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="Delete(i);">Delete</button>
           </td>
@@ -72,11 +72,51 @@
 
 
   </div>
+  
 
-  <div id="Custom_Table_Holder2" class="custom-dtable-holder" *ngIf="PrinterTableArray.length!=0"
-    style="cursor: pointer;">
-    <div id="Custom_Table_Info2" class="custom-dtable-info"></div>
-    <div id="Custom_Table_Pagination2" class="custom-dtable-pagination"></div>
+
+  <div class="row" style="padding-bottom: 7px;margin-left: 1px;margin-top: 30px;">
+    <div >
+      <label> Add Reason for Holding</label>
+      <input type="text" id="NewComment" style="margin-left: 2px;width: 500px;">
+      <button class="btn btn-primary" style="margin-left: 2px;" (click)="AddNewComment()">Add</button>
+    </div>
+
+  </div>
+
+
+  <div class="table-responsive mt-3" id="CommentsTable">
+    <table datatable [dtOptions]="dtOptionsComments" class="table table-bordered" id="CommentsTable" [dtTrigger]="dtTriggerComments">
+      <thead class="bg-light">
+        <tr id="DataTableHeader2">
+          <th class="align-baseline  mw-200" *ngFor="let col of CommentColumns; let i=index"
+            id="UniqueDataTableHeader2_{{col}}">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">{{col}}</span>
+
+            </div>
+
+          </th>
+          <th id="theSelectColumn2" *ngIf="Columns.length !=0">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Delete Comment</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of CommentsTableArray;let i = index" id="RowNumber_i">
+          <td>{{row}}</td>
+          <td>
+            <button class="btn btn-sm" id="DeleteSelectCol_{{i}}" (click)="DeleteComment(i);">Delete</button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+
   </div>
 
 
@@ -118,17 +158,19 @@
                   FileSetting.settingName}}:</Label>
               </div>
               <div class="col-9" *ngIf="FileSetting.applicationSetting=='FabricCutter'" style="margin-top: -10px;">
-                <input class="form-control"   type="text" id="ID_{{FileSetting.settingName}}"
+                <input class="form-control" type="text" id="ID_{{FileSetting.settingName}}"
                   value="{{FileSetting.settingPath}}">
               </div>
             </div>
-            <div class="row" *ngIf = "AutoUpload">
+            <div class="row" *ngIf="AutoUpload">
 
               <div class="col-3"><Label id="AutoUploadDir"> Upload Folder:</Label></div>
-              <div class="col-9"  style="margin-top: -10px;"><input class="form-control"  type="text" id="ID_AutoUploadDir" value="{{AutoUploadPath}}"></div>
-              
+              <div class="col-9" style="margin-top: -10px;"><input class="form-control" type="text"
+                  id="ID_AutoUploadDir" value="{{AutoUploadPath}}"></div>
+
               <div class="col-3"><Label id="ViewedUploadDir"> Viewed Folder:</Label></div>
-              <div class="col-9"  style="margin-top: -10px;"><input class="form-control"   type="text" id="ID_ViewedUploadDir" value="{{ViewedUploadsPath}}"></div>
+              <div class="col-9" style="margin-top: -10px;"><input class="form-control" type="text"
+                  id="ID_ViewedUploadDir" value="{{ViewedUploadsPath}}"></div>
             </div>
           </div>
 

@@ -13,8 +13,8 @@ export class LogCutService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getCBNumberDetails(CBNumber: string, CBorLine: string): Observable<FabricCutterCBDetailsModel> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json', "CBNumberOrLineNumber": CBNumber, "CBorLine": CBorLine });
+  public getCBNumberDetails(CBNumber: string): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', "CBNumberOrLineNumber": CBNumber });
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'LogCut/getCBNumberDetails', { headers }).pipe(

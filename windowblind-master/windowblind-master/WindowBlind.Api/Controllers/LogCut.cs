@@ -286,7 +286,8 @@ namespace WindowBlind.Api.Controllers
 
                         Headertext = Headertext.Replace(".", "");
                         /// special check 
-                        if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") { 
+                        if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "")
+                        {
                             RowQty = 0; break;
                         };
                         var cell = worksheet.Cells[i, j].Text.Trim();
@@ -315,7 +316,7 @@ namespace WindowBlind.Api.Controllers
             return Data;
         }
 
-        private void LogCutProcess(ref FabricCutterCBDetailsModel FinalizedData,ref FabricCutterCBDetailsModel Data)
+        private void LogCutProcess(ref FabricCutterCBDetailsModel FinalizedData, ref FabricCutterCBDetailsModel Data)
         {
 
             var f = 0;
@@ -529,12 +530,12 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("getCBNumberDetails")]
-        public async Task<IActionResult> getCBNumberDetails([FromHeader] string CBNumberOrLineNumber, [FromHeader] string CBorLine)
+        public async Task<IActionResult> getCBNumberDetails([FromHeader] string CBNumberOrLineNumber)
         {
             try
             {
-               
-                CBSearch = CBorLine == "CB" ? true : false;
+
+                CBSearch = !char.IsDigit(CBNumberOrLineNumber[0]);
                 CB = CBNumberOrLineNumber;
                 LineNumber = CBNumberOrLineNumber;
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -550,7 +551,7 @@ namespace WindowBlind.Api.Controllers
 
                 FabricCutterCBDetailsModel FinalizedData = new FabricCutterCBDetailsModel();
 
-                LogCutProcess(ref FinalizedData,ref Data);
+                LogCutProcess(ref FinalizedData, ref Data);
 
                 return new JsonResult(FinalizedData);
 
@@ -937,7 +938,7 @@ namespace WindowBlind.Api.Controllers
                 FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
 
                 CBSearch = true;
-                
+
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 ColumnsIndex = new Dictionary<string, int>();
 

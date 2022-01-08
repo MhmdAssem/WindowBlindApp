@@ -43,6 +43,10 @@
   
   <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0" style="margin-right: 50px;">
     
+    <button class="btn btn-primary mr-2" (click)="SelectAll();" id="AllButton"><span *ngIf="HoldLoading"
+      class="spinner-border spinner-border-sm mr-1"></span>
+    Select All </button>
+    
     <button class="btn btn-primary mr-2" (click) = "Hold();" ><span *ngIf="HoldLoading" class="spinner-border spinner-border-sm mr-1"></span>
       Hold </button>
     
@@ -84,7 +88,7 @@
           <td *ngFor="let col of tableModelColNames" style="background-color: '{{row.row['DropColour']}}'">
             {{row.row[col]}}</td>
           <td>
-            <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+            <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
           </td>
         </tr>
       </tbody>

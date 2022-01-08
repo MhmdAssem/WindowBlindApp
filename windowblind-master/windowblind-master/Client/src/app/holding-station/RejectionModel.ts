@@ -8,5 +8,6 @@ export class RejectionModel {
   userName: string;
   tableName: string
   forwardedToStation: string;
-
+  rejectionReasons:string[];
+  
 }

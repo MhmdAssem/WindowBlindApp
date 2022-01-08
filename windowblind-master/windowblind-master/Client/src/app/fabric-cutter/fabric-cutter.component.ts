@@ -66,6 +66,15 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   FirstTimeOnly: boolean;
 
   ngOnInit(): void {
+    let Ts = this;
+    document.addEventListener("keydown", function (event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+
+        Ts.GetCBDetails();
+      }
+    });
+
     this.CurrentTab = -1;
     this.FirstTimeOnly = true;
 
@@ -250,6 +259,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         this.ReviewData.push(NewEntry);
         this.BlindNumbers.push(this.Data[ind].blindNumbers[i]);
       }
+      this.ReviewData.sort((a, b) => a.row['Blind Number'].localeCompare(b.row['Blind Number']));
 
       this.Data.splice(ind, 1);
 
@@ -570,9 +580,10 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           forwardedToStation: "Admin",
           id: "",
           row: element,
-          stationName: "Fabric",
+          stationName: "FabricCut",
           tableName: tableName,
-          userName: UserName
+          userName: UserName,
+          rejectionReasons: []
         };
         RejectionModels.push(RejectionModel);
       });
@@ -586,7 +597,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           row: element,
           stationName: "Fabric",
           tableName: tableName,
-          userName: UserName
+          userName: UserName,
+          rejectionReasons: []
         };
         RejectionModels.push(RejectionModel);
       });
@@ -767,7 +779,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
         setTimeout(() => {
           (document.getElementById("SearchButton") as HTMLButtonElement).disabled = false;
-        }, 1200);
+        }, 1000);
 
         this.FBRservice.GetHeldObjects(tableName).subscribe(
           data => {
@@ -806,6 +818,26 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
   }
 
+  SelectAll() {
+    let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
+    console.log(Buttons.length)
+    let btn = document.getElementById("AllButton");
 
+    if (btn?.textContent?.trim() == 'Select All') {
+
+      btn.textContent = "UnSelect All";
+      for (let i = Buttons.length - 1; i >= 0; i--) {
+        if (Buttons[i].textContent == 'Select') Buttons[i].click();
+      }
+    }
+    else {
+      btn ? btn.textContent = "Select All" : null;
+      Buttons = document.getElementsByClassName("UnSelectAllTag") as unknown as HTMLButtonElement[];
+      for (let i = Buttons.length - 1; i >= 0; i--) {
+        if (Buttons[i].textContent == 'UnSelect') Buttons[i].click();
+      }
+    }
+
+  }
 
 }

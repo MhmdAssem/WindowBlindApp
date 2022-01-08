@@ -4,8 +4,7 @@
     <div class="col-md-6" *ngIf="SearchType == false">
       <form class="form-inline">
         <label> Select a Shift</label>
-        <select class="form-control ml-4" name="ShiftTable" id="ShiftTable" style="width: 50%;"
-          style="text-align-last:center;;width: 50%;">
+        <select class="form-control ml-4" name="ShiftTable" id="ShiftTable" style="width: 50%;text-align-last:center;">
           <option selected value="Morning">Morning Shift</option>
           <option value="Afternoon">Afternoon Shift</option>
         </select>
@@ -18,7 +17,12 @@
     <div class="col-md-6">
       <form class="form-inline">
         <label> Select a Table</label>
-        <select class="form-control ml-4" name="TableNames" id="TableNames" style="text-align-last:center;width: 50%;"
+        <select class="form-control ml-4" name="TableNames" id="TableNames" style="display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        text-align: center;
+        min-width:300px "
           (change)="AutoUploadFeatureOnly()">
           <option selected value="DefaultTableName">-</option>
           <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
@@ -30,19 +34,34 @@
 
 
    
-    <div class="col-md-6 row" *ngIf="SearchType == true">
+    <div class="col-md-6" *ngIf="SearchType == true">
       <form class="form-inline">
-        <label> Enter CB Number:</label>
-        <input class="form-control ml-4 mr-5" type="text" name="CBNumber" id="CBNumber" required>
-      </form>
-      <button style="margin-left: 7px;margin-top: -5px;" id = 'SearchButton' class="btn btn-primary btn-sm" (click)="GetCBDetails();"> <span
-          *ngIf="Loading" class="spinner-border spinner-border-sm mr-1"></span>
-        Get CB Details</button>
+        <label> Enter CB/Line Number:</label>
+        <input class="form-control ml-1 mr-1" type="text" name="CBNumber" id="CBNumber" required style="display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        text-align: center;">
+     <button style="margin-left: 7px;margin-top: 0px; font-size: 11px;" id = 'SearchButton' class="btn btn-primary btn-sm" (click)="GetCBDetails();"> <span
+      *ngIf="Loading" class="spinner-border spinner-border-sm mr-1"></span>
+    Get CB Details</button> 
+  </form>
     </div>
 
   </div>
 </div>
 
+
+<div class="container">
+
+  <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0 && SearchType == true">
+    <button class="btn btn-primary mr-2" (click)="SelectAll();" id="AllButton"><span *ngIf="HoldLoading"
+      class="spinner-border spinner-border-sm mr-1"></span>
+    Select All </button>
+
+  </div>
+
+</div>
 
 <mat-tab-group style="margin-top: 50px;" *ngIf="SearchType == false" mat-align-tabs="center" animationDuration="1000ms" (selectedTabChange)="tabChanged($event)">
 
@@ -328,7 +347,7 @@
           <tr *ngFor="let row of Data;let i = index" id="RowNumber_{{i}}">
             <td *ngFor="let col of tableModelColNames">{{row.row[col]}}</td>
             <td>
-              <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+              <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
             </td>
           </tr>
         </tbody>
@@ -366,7 +385,7 @@
           <tr *ngFor="let row of ReviewData;let i = index" id="RowNumber_i">
             <td *ngFor="let col of ReviewtableModelColNames">{{row.row[col]}}</td>
             <td>
-              <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="UnSelectThisRow(i);">UnSelect</button>
+              <button class="btn btn-sm UnSelectAllTag" id="SelectCol_{{i}}" (click)="UnSelectThisRow(i);">UnSelect</button>
             </td>
 
           </tr>

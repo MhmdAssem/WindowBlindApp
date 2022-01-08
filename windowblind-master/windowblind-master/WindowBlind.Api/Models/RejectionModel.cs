@@ -14,6 +14,8 @@ namespace WindowBlind.Api.Models
         public string UserName { get; set; }
         public string TableName { get; set; }
 
+        public List<string> RejectionReasons { get; set; }
+
         public string ForwardedToStation { get; set; }
 
     }

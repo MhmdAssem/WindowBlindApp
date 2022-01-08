@@ -1,16 +1,16 @@
-<div class="container-fluid">
-  <div class="row mt-3">
+<div class="container mt-4">
+  <div class="row">
 
-    <div class="col-lg-3">
+    <div class="col-md-6">
 
       <form class="form-inline">
         <label> Select a Table</label>
-        <select class="form-control" name="TableNames" id="TableNames" (change)="GetHeldBasedOnTable()" style="display: inline-block;
+        <select class="form-control ml-4" name="TableNames" id="TableNames" (change)="GetHeldBasedOnTable()" style="display: inline-block;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
         text-align: center;
-        min-width:200px ">
+        min-width:300px ">
           <option value="-" id="table_Default">-</option>
           <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
         </select>
@@ -18,35 +18,23 @@
     </div>
 
 
-    <div class="col-lg-5">
-      <form class="form-inline flex-nowrap" style="margin-left: 75px;">
+    <div class="col-md-6">
+      <form class="form-inline">
 
-        <label> Enter CB Number:</label>
-        <input class="form-control" type="text" name="CBNumber" id="CBNumber" required style="display: inline-block;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          box-sizing: border-box;
-          text-align: center; ">
-        <button style="margin-left: 7px;font-size: 11px;" id = 'SearchButton2' class="btn btn-primary btn-sm p-2"
-          (click)="GetCBDetails('CB');"> <span *ngIf="CBLoading" class="spinner-border spinner-border-sm mr-1"></span>
-          Get CB Details</button>
-      </form>
-    </div>
-
-    <div class="col-lg-4">
-      <form class="form-inline flex-nowrap">
-        <label> Enter Line No.:</label>
-        <input class="form-control" type="text" name="LineNumber" id="LineNumber" required style="display: inline-block;
+        <label> Enter CB/Line Number:</label>
+        <input class="form-control ml-1 mr-1" type="text" name="CBNumber" id="CBNumber" required style="display: inline-block;
           border: 1px solid #ccc;
           border-radius: 4px;
           box-sizing: border-box;
           text-align: center;">
-        <button style="margin-left: 7px;font-size: 11px;" id = 'SearchButton1' class="btn btn-primary btn-sm p-2"
-          (click)="GetCBDetails('Line');"> <span *ngIf="LineLoading"
-            class="spinner-border spinner-border-sm mr-1"></span>
-          Get Line No. Details</button>
-      </form>
+      
+      <button style="margin-left: 7px;font-size: 11px;" id = 'SearchButton2' class="btn btn-primary btn-sm"
+      (click)="GetCBDetails();"> <span *ngIf="CBLoading" class="spinner-border spinner-border-sm mr-1"></span>
+      Get CB Details</button>
+    </form>
+     
     </div>
+
 
   </div>
 
@@ -55,6 +43,11 @@
 <div class="container">
 
   <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0">
+    <button class="btn btn-primary mr-2" (click)="SelectAll();" id="AllButton"><span *ngIf="HoldLoading"
+      class="spinner-border spinner-border-sm mr-1"></span>
+    Select All </button>
+
+    
     <button class="btn btn-primary mr-2" (click)="Hold();"><span *ngIf="HoldLoading"
         class="spinner-border spinner-border-sm mr-1"></span>
       Hold </button>
@@ -102,7 +95,7 @@
           <td *ngFor="let col of tableModelColNames">
             {{row.row[col]}}</td>
           <td>
-            <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+            <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
           </td>
         </tr>
       </tbody>

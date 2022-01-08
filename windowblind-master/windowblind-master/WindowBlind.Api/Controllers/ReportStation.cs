@@ -40,6 +40,7 @@ namespace WindowBlind.Api.Controllers
                 data.ColumnNames.Add("CB Number");
                 data.ColumnNames.Add("Line No");
                 data.ColumnNames.Add("Customer");
+                data.ColumnNames.Add("Hold Reasons");
                 data.ColumnNames.Add("Status");
                 Dictionary<string, int> LineNumberIndex = new Dictionary<string, int>();
 
@@ -65,7 +66,7 @@ namespace WindowBlind.Api.Controllers
                 var AssemblyObjs = await _repository.AssemblyStation.FindAsync(log => log.ProcessType == "Assembly" && log.CBNumber == CBNumber);
                 var AssemblyObjsList = AssemblyObjs.ToList();
 
-                GenerateStatusForLineNumber(ref data, AssemblyObjsList, "AssemblyStation",ref LineNumberIndex);
+                GenerateStatusForLineNumber(ref data, AssemblyObjsList, "AssemblyStation", ref LineNumberIndex);
 
                 var HoistObjs = await _repository.HoistStation.FindAsync(log => log.ProcessType == "Qualified" && log.CBNumber == CBNumber);
                 var HoistObjsList = HoistObjs.ToList();
@@ -76,6 +77,11 @@ namespace WindowBlind.Api.Controllers
                 var PackingObjsList = PackingObjs.ToList();
 
                 GenerateStatusForLineNumber(ref data, PackingObjsList, "PackingStation", ref LineNumberIndex);
+
+                var HeldObjs = await _repository.Logs.FindAsync(log => log.status == "Held" && log.CBNumber == CBNumber);
+                var HeldObjsList = HeldObjs.ToList();
+
+                GenerateStatusForLineNumber(ref data, HeldObjsList, "", ref LineNumberIndex);
 
 
                 return new JsonResult(data);
@@ -88,23 +94,47 @@ namespace WindowBlind.Api.Controllers
 
 
         }
-        private void GenerateStatusForLineNumber(ref FabricCutterCBDetailsModel Data,List<LogModel>list,string AppType,ref Dictionary<string, int> LineNumberIndex)
+        private void GenerateStatusForLineNumber(ref FabricCutterCBDetailsModel Data, List<LogModel> list, string AppType, ref Dictionary<string, int> LineNumberIndex)
         {
-        
 
             for (int i = 0; i < list.Count; i++)
             {
-                if(!LineNumberIndex.ContainsKey( list[i].LineNumber))
+                if (!LineNumberIndex.ContainsKey(list[i].LineNumber))
                 {
                     LineNumberIndex[list[i].LineNumber] = Data.Rows.Count;
-                    list[i].row.Row["Status"] = AppType + "-" + list[i].dateTime + " " + list[i].UserName + " " + list[i].TableName;
-                    list[i].row.Row["Date-Time"] = DateTime.Now.ToString(); 
+                    if (AppType != "")
+                        list[i].row.Row["Status"] = AppType + "-" + list[i].dateTime + " " + list[i].UserName + " " + list[i].TableName;
+                    else
+                        list[i].row.Row["Status"] = list[i].ProcessType + " -" + list[i].dateTime + " " + list[i].UserName + " " + list[i].TableName;
+                    list[i].row.Row["Status"] = list[i].row.Row["Status"].Trim();
+                    list[i].row.Row["Date-Time"] = DateTime.Now.ToString();
                     Data.Rows.Add(list[i].row);
                 }
                 else
                 {
                     int ind = LineNumberIndex[list[i].LineNumber];
-                    Data.Rows[ind].Row["Status"] += "\n" + AppType + "-" + list[i].dateTime + " " + list[i].UserName + " " + list[i].TableName;
+                    if (AppType != "")
+                    {
+                        Data.Rows[ind].Row["Status"] += "\n" + AppType + "-" + list[i].dateTime + " " + list[i].UserName + " " + list[i].TableName;
+                        if(list[i].row.Row.ContainsKey("Hold Reasons"))
+                        {
+                            if (Data.Rows[ind].Row.ContainsKey("Hold Reasons"))
+                                Data.Rows[ind].Row["Hold Reasons"] += "\n\n" + list[i].row.Row["Hold Reasons"];
+                            else
+                                Data.Rows[ind].Row["Hold Reasons"] = "\n\n" + list[i].row.Row["Hold Reasons"];
+                        }
+                    }
+                    else
+                    {
+                        Data.Rows[ind].Row["Status"] += "\n" + list[i].ProcessType + " -" + list[i].dateTime + " " + list[i].UserName + " " + list[i].TableName;
+                        if (list[i].row.Row.ContainsKey("Hold Reasons"))
+                        {
+                            if (Data.Rows[ind].Row.ContainsKey("Hold Reasons"))
+                                Data.Rows[ind].Row["Hold Reasons"] += "\n\n" + list[i].row.Row["Hold Reasons"];
+                            else
+                                Data.Rows[ind].Row["Hold Reasons"] = "\n\n" + list[i].row.Row["Hold Reasons"];
+                        }
+                    }
                 }
             }
 

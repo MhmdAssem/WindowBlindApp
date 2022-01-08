@@ -49,15 +49,12 @@ import { LabelsComponent } from './labels/labels.component';
 
 import { NgxBarcode6Module } from 'ngx-barcode6';
 import { UsersComponent } from './users/users.component';
-import { StationsComponent } from './stations/stations.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TableDialogComponent } from './table-dialog/table-dialog.component';
-import { StationDialogComponent } from './station-dialog/station-dialog.component';
 import { SettingsComponent } from './settings/settings.component';
-import { SettingsTableComponent } from './settings-table/settings-table.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -121,13 +118,10 @@ const materialModules = [
     LogoutComponent,
     LabelsComponent,
     UsersComponent,
-    StationsComponent,
     UserDialogComponent,
     ConfirmDialogComponent,
     TableDialogComponent,
-    StationDialogComponent,
     SettingsComponent,
-    SettingsTableComponent,
     UserProfileComponent,
     HomeComponent,
     LogCutComponent,

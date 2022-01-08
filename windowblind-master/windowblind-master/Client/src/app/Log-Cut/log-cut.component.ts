@@ -41,6 +41,21 @@ export class LogCutComponent implements OnInit {
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   PrinterTableDictionary = {};
   ngOnInit(): void {
+
+    let Ts = this;
+    document.addEventListener("keydown", function (event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+
+        let CBNumber = (document.getElementById("CBNumber") as HTMLInputElement).value;
+
+        if (CBNumber != '')
+          Ts.GetCBDetails();
+
+      }
+    });
+
+
     this.dtOptions = {
       pagingType: 'full_numbers',
       lengthChange: false,
@@ -110,19 +125,15 @@ export class LogCutComponent implements OnInit {
 
   }
 
-  GetCBDetails(CBOrLine) {
+  GetCBDetails() {
     let input = "";
-    if (CBOrLine == "CB") {
-      input = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
-      this.CBLoading = true;
-    }
-    else {
-      input = (document.getElementById("LineNumber") as HTMLInputElement).value.trim();
-      this.LineLoading = true;
-    }
+
+    input = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
+    this.CBLoading = true;
 
 
-    this.logcutService.getCBNumberDetails(input, CBOrLine).subscribe(data => {
+
+    this.logcutService.getCBNumberDetails(input).subscribe(data => {
 
       if (data && data.columnNames.length != 0) {
         if (this.FirstTimeOnly) {
@@ -159,11 +170,11 @@ export class LogCutComponent implements OnInit {
               (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important'); continue;
             }
             (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'background-color:' + this.Data[index].row['DropColour'] + " !important")
-            
-            if (this.Data[index].row['DropColour'] != undefined &&  this.Data[index].row['DropColour'].toString().toLowerCase() != "white" && this.Data[index].row['DropColour'].trim() != "")
+
+            if (this.Data[index].row['DropColour'] != undefined && this.Data[index].row['DropColour'].toString().toLowerCase() != "white" && this.Data[index].row['DropColour'].trim() != "")
               (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color:' + this.Data[index].row['DropColour'] + " !important")
 
-            if (this.Data[index].row['DropColour'] != undefined &&  this.Data[index].row['DropColour'].toString().toLowerCase() == "yellow" && this.Data[index].row['DropColour'].trim() != "")
+            if (this.Data[index].row['DropColour'] != undefined && this.Data[index].row['DropColour'].toString().toLowerCase() == "yellow" && this.Data[index].row['DropColour'].trim() != "")
               (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: black !important;' + 'background-color: LightYellow !important');
           }
 
@@ -272,7 +283,8 @@ export class LogCutComponent implements OnInit {
         row: element,
         stationName: "LogCut",
         tableName: tableName,
-        userName: UserName
+        userName: UserName,
+        rejectionReasons: []
       };
       RejectionModels.push(RejectionModel);
     });
@@ -284,7 +296,7 @@ export class LogCutComponent implements OnInit {
       this.ReviewData.forEach(element => {
 
         var ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
-        this.Data = this.Data.splice(ind, 1);
+        this.Data.splice(ind, 1);
 
       });
       this.ReviewData = [];
@@ -299,14 +311,12 @@ export class LogCutComponent implements OnInit {
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     if (tableName == '-') return;
 
-    (document.getElementById("SearchButton1") as HTMLButtonElement).disabled = true;
     (document.getElementById("SearchButton2") as HTMLButtonElement).disabled = true;
 
 
     setTimeout(() => {
-      (document.getElementById("SearchButton1") as HTMLButtonElement).disabled = false;
       (document.getElementById("SearchButton2") as HTMLButtonElement).disabled = false;
-    }, 1200);
+    }, 1000);
 
     if (this.FirstTimeOnly) {
       this.FirstTimeOnly = false;
@@ -321,9 +331,6 @@ export class LogCutComponent implements OnInit {
               this.Data = this.Data.concat(data.rows);
             else
               this.Data = data.rows;
-
-
-
             let cntr = 0;
             setTimeout(() => {
               this.Data.forEach(element => {
@@ -338,6 +345,27 @@ export class LogCutComponent implements OnInit {
         }
       );
     }
+  }
+
+  SelectAll() {
+    let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
+    console.log(Buttons.length)
+    let btn = document.getElementById("AllButton");
+
+    if (btn?.textContent?.trim() == 'Select All') {
+
+      btn.textContent = "UnSelect All";
+      for (let i = Buttons.length-1; i >=0; i--) {
+        if (Buttons[i].textContent == 'Select') Buttons[i].click();
+      }
+    }
+    else {
+      btn ? btn.textContent = "Select All" : null;
+      for (let i = Buttons.length-1; i >=0; i--) {
+        if (Buttons[i].textContent == 'UnSelect') Buttons[i].click();
+      }
+    }
+
   }
 
 }

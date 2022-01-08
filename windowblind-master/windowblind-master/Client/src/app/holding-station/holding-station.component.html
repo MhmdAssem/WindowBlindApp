@@ -53,6 +53,18 @@
 </div>
 
 <div class="container-fluid mt-3">
+  <div id="ReasonFilter" class="dropdown-check-list"  style="margin-left: 15px;">
+    <span class="anchor" id="ReasonFilteranchor_ReasonFilter" style="width: 100%;">Filter</span>
+    <ul class="items" id="ReasonFilteritems_ReasonFilter"
+      style="z-index: 1;position: absolute;display: none;background-color: #eee;">
+      <li *ngFor="let Reason of ReasonsList;let j = index" [value]="Reason"><input type="checkbox"
+          id="{{Reason}}__ReasonFilter" (click)="FilterTableBasedOnReasons(Reason)" />{{Reason}} </li>
+
+    </ul>
+  </div>
+
+</div>
+<div class="container-fluid mt-5">
 
   <div class="table-responsive mt-3" id="TableViewSelect">
     <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
@@ -101,11 +113,18 @@
 
             </div>
           </th>
+          <th id="ReasonForHoldColumn">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Reason</span>
+
+            </div>
+          </th>
+
         </tr>
       </thead>
 
       <tbody>
-        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
+        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i" [style.display]="!hideRows[i] ? '' : 'none'">
           <td>
             {{row.row.row['CB Number']}}
           </td>
@@ -129,6 +148,16 @@
           </td>
           <td>
             <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+          </td>
+          <td>
+            <div id="ReasonSelectNumber_{{i}}" class="dropdown-check-list nonFilter" style="word-wrap: break-word;">
+              <span class="anchor" id="anchor_{{i}}" style="width: 100%;word-wrap: break-word;">Select Reasons</span>
+              <ul class="items" id="items_{{i}}" style="display: none;width: 100%;">
+                <li *ngFor="let Reason of ReasonsList;let j = index" [value]="Reason"><input type="checkbox"
+                    id="{{Reason}}__{{i}}" (click)="UpdateReasons(Reason,row.row.uniqueId)" />{{Reason}} </li>
+
+              </ul>
+            </div>
           </td>
         </tr>
       </tbody>

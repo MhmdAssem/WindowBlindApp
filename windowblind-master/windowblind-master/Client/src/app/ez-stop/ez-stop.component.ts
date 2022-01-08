@@ -291,6 +291,7 @@ export class EzStopComponent implements OnInit {
 
     let RejectionModels: RejectionModel[] = [];
     this.ReviewData.forEach(element => {
+      //alert(element.uniqueId)
       let RejectionModel: RejectionModel =
       {
         dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
@@ -299,7 +300,8 @@ export class EzStopComponent implements OnInit {
         row: element,
         stationName: "EzStop",
         tableName: tableName,
-        userName: UserName
+        userName: UserName,
+         rejectionReasons: []
       };
       RejectionModels.push(RejectionModel);
     });
@@ -324,6 +326,25 @@ export class EzStopComponent implements OnInit {
     });
   }
   
-  
+  SelectAll() {
+    let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
+    console.log(Buttons.length)
+    let btn = document.getElementById("AllButton");
+
+    if (btn?.textContent?.trim() == 'Select All') {
+
+      btn.textContent = "UnSelect All";
+      for (let i = Buttons.length-1; i >=0; i--) {
+        if (Buttons[i].textContent == 'Select') Buttons[i].click();
+      }
+    }
+    else {
+      btn ? btn.textContent = "Select All" : null;
+      for (let i = Buttons.length-1; i >=0; i--) {
+        if (Buttons[i].textContent == 'UnSelect') Buttons[i].click();
+      }
+    }
+
+  }
 
 }

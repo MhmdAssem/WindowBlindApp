@@ -25,6 +25,7 @@ namespace WindowBlind.Api
         IMongoCollection<RejectionModel> Rejected { get; }
         IMongoCollection<ApplicationTableWithOutputPath> Tables { get; }
         IMongoCollection<AutoUploadModel> AutoUploads { get; }
+        IMongoCollection<EzStopModel> EzStopData { get; }
 
         Task ImportOrders(Station station);
         void Seed();
@@ -43,6 +44,7 @@ namespace WindowBlind.Api
         public IMongoCollection<RejectionModel> Rejected => _mongoDb.GetCollection<RejectionModel>("Rejected");
         public IMongoCollection<ApplicationTableWithOutputPath> Tables => _mongoDb.GetCollection<ApplicationTableWithOutputPath>("Tables");
         public IMongoCollection<AutoUploadModel> AutoUploads => _mongoDb.GetCollection<AutoUploadModel>("AutoUploads");
+        public IMongoCollection<EzStopModel> EzStopData => _mongoDb.GetCollection<EzStopModel>("EzStopData");
 
 
 
@@ -54,7 +56,7 @@ namespace WindowBlind.Api
             _mongoDb = client.GetDatabase(settings.DatabaseName);
             Console.WriteLine("Connect to MongoDB");
 
-            // DropTables();
+            //DropTables();
             Seed();
         }
 
@@ -70,6 +72,7 @@ namespace WindowBlind.Api
             var Rejected = _mongoDb.GetCollection<ComportModel>("Rejected").EstimatedDocumentCount();
             var Tables = _mongoDb.GetCollection<ApplicationTableWithOutputPath>("Tables").EstimatedDocumentCount();
             var AutoUploads = _mongoDb.GetCollection<AutoUploadModel>("AutoUploads").EstimatedDocumentCount();
+            var EzStopData = _mongoDb.GetCollection<EzStopModel>("EzStopData").EstimatedDocumentCount();
 
             if (user == 0)
             {
@@ -108,12 +111,24 @@ namespace WindowBlind.Api
             {
                 seedTables();
             }
-
             if(AutoUploads ==0)
             {
                 seedAutoUploads();
 
             }
+
+            if(EzStopData == 0)
+            {
+                seedEzStopData();
+            }
+        }
+
+        private void seedEzStopData()
+        {
+            var data = new EzStopModel();
+            data.id = Guid.NewGuid().ToString();
+            data.data = null;
+            _mongoDb.GetCollection<EzStopModel>("EzStopData").InsertOne(data);
         }
 
         private void seedAutoUploads()
@@ -192,6 +207,7 @@ namespace WindowBlind.Api
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "AssemblyStationTable",settingPath = "" ,applicationSetting = ""},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "HoistStationTable",settingPath = "" ,applicationSetting = ""},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "PackingStationTable",settingPath = "" ,applicationSetting = ""},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Comments",settingPath = "Move to Production scheduler@@@Missing Fabric@@@Color not match @@@Broken chain@@@Size not correct" ,applicationSetting = ""},
             };
             _mongoDb.GetCollection<FileSetting>("settings").InsertMany(setting);
         }
@@ -351,8 +367,10 @@ namespace WindowBlind.Api
             _mongoDb.DropCollection("HoistStation");
             _mongoDb.DropCollection("AssemblyStation");
             _mongoDb.DropCollection("comport");
-            _mongoDb.DropCollection("settings");
+            //_mongoDb.DropCollection("settings");
             _mongoDb.DropCollection("Rejected");
+            _mongoDb.DropCollection("EzStopData");
+            _mongoDb.DropCollection("AutoUploads");
         }
     }
 }
