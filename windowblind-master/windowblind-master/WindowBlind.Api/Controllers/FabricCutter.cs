@@ -807,7 +807,6 @@ namespace WindowBlind.Api.Controllers
                 var check = CheckingPaths();
 
                 if (!check) return new JsonResult(false);
-
                 var AutoUploadDirSetting = await _repository.Settings.FindAsync(e => e.settingName == "AutoUploadDir");
                 var AutoUploadDirPath = AutoUploadDirSetting.FirstOrDefault().settingPath;
 
@@ -817,6 +816,8 @@ namespace WindowBlind.Api.Controllers
                 var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
                 if (AutoUploadFolder.Exists == false)
                     return new JsonResult(false);
+
+
 
                 #region Reading Data
 
@@ -913,6 +914,7 @@ namespace WindowBlind.Api.Controllers
                     }
 
                     FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, file.Name));
+                    Console.WriteLine(Path.Combine(ViewedUplaodsPath, file.Name));
                     Random rd = new Random();
 
 
@@ -1107,12 +1109,7 @@ namespace WindowBlind.Api.Controllers
 
                 #region getting Held Orders
 
-                var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "Fabric").Result.ToListAsync();
-
-                foreach (var item in HeldObjects)
-                {
-                    Data.Rows.Add(item.Row);
-                }
+                GetHeldObjects(TableName);
 
                 #endregion
 
@@ -1124,6 +1121,8 @@ namespace WindowBlind.Api.Controllers
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.StackTrace);
+
                 return new JsonResult(false);
             }
         }
