@@ -10,6 +10,26 @@ import { FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetai
   providedIn: 'root'
 })
 export class AssemblyStationService {
+  
+  
+  ClearOrdersFromAssembly(Model: FabricCutterCBDetailsModel, UserName: any, tableName: string) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let model: CreateFileAndLabelModel = {
+      data: Model,
+      tableName: tableName,
+      userName: UserName,
+      printer: "None"
+    }
+
+    return this.httpClient
+      .post<any>(environment.apiUrl + 'AssemblyStation/ClearOrdersFromAssembly', model, { headers }).pipe(
+        tap(
+          data => {
+          }
+        )
+
+      );
+  }
 
   constructor(private httpClient: HttpClient) { }
   

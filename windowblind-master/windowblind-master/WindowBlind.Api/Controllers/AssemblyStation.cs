@@ -36,19 +36,6 @@ namespace WindowBlind.Api.Controllers
             try
             {
                 FabricCutterCBDetailsModel data = new FabricCutterCBDetailsModel();
-                /*data.ColumnNames.Add("CB Number");
-                data.ColumnNames.Add("Line No");
-                data.ColumnNames.Add("item");
-
-                data.ColumnNames.Add("FabricCut-User");
-                data.ColumnNames.Add("LogCut-User");
-                data.ColumnNames.Add("EzStop-User");
-
-                data.ColumnNames.Add("FabricCutDate-Time");
-                data.ColumnNames.Add("LogCutDate-Time");
-                data.ColumnNames.Add("EzStopDate-Time");
-                */
-
 
                 var FabricCutterOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "FabricCut" && log.status == "IDLE" && (log.CBNumber == CbOrLineNumber || log.LineNumber == CbOrLineNumber));
                 var LogCutOflogModels = await _repository.Logs.FindAsync(log => log.ProcessType == "LogCut" && log.status == "IDLE" && (log.CBNumber == CbOrLineNumber || log.LineNumber == CbOrLineNumber));
@@ -61,11 +48,6 @@ namespace WindowBlind.Api.Controllers
                 var AssemblyColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "AssemblyStation").Result.FirstOrDefaultAsync();
                 var AssemblyColumns = AssemblyColumnsSetting.settingPath.Split("@@@").ToList();
                 if (AssemblyColumns[AssemblyColumns.Count - 1] == "") AssemblyColumns.RemoveAt(AssemblyColumns.Count - 1);
-
-
-
-                //AssemblyColumns = LogCut.AddColumnIfNotExists(AssemblyColumns, "CB Number");
-                //AssemblyColumns = LogCut.AddColumnIfNotExists(AssemblyColumns, "Line No");
 
 
 
@@ -112,6 +94,9 @@ namespace WindowBlind.Api.Controllers
                         ProcessCounter[row.LineNumber] = -100000000;
                         row.row.Row["FromHoldingStation"] = "NO";
                         row.row.UniqueId = row.Id;
+                        row.row.rows_AssociatedIds.Add(row.Id);
+                        row.row.rows_AssociatedIds.Add(LogCutterDic[row.LineNumber].Id);
+                        row.row.rows_AssociatedIds.Add(FabricCutterDic[row.LineNumber].Id);
                         data.Rows.Add(row.row);
                     }
                 }
@@ -153,8 +138,13 @@ namespace WindowBlind.Api.Controllers
                     log.TableName = model.tableName;
                     log.Message = "This Line No.: " + log.LineNumber + ", has been assembled at " + log.dateTime;
                     await _repository.AssemblyStation.InsertOneAsync(log);
-                    await _repository.Logs.UpdateManyAsync(log => log.LineNumber == row.Row["Line No"] && log.Id == row.UniqueId,
-                        Builders<LogModel>.Update.Set(p => p.status, "Assembly"), new UpdateOptions { IsUpsert = false });
+
+                    foreach (var id in row.rows_AssociatedIds)
+                    {
+                        await _repository.Logs.UpdateOneAsync(log => log.Id == id,
+                                                                Builders<LogModel>.Update.Set(p => p.status, "Assembly"), new UpdateOptions { IsUpsert = false });
+                    }
+
 
                 }
 
@@ -190,7 +180,7 @@ namespace WindowBlind.Api.Controllers
                 var AssemblyColumns = AssemblyColumnsSetting.settingPath.Split("@@@").ToList();
                 if (AssemblyColumns[AssemblyColumns.Count - 1] == "") AssemblyColumns.RemoveAt(AssemblyColumns.Count - 1);
                 //AssemblyColumns = LogCut.AddColumnIfNotExists(AssemblyColumns, "CB Number");
-               // AssemblyColumns = LogCut.AddColumnIfNotExists(AssemblyColumns, "Line No");
+                // AssemblyColumns = LogCut.AddColumnIfNotExists(AssemblyColumns, "Line No");
                 if (Data.Rows.Count != 0)
                     Data.ColumnNames = AssemblyColumns;
 
@@ -202,6 +192,32 @@ namespace WindowBlind.Api.Controllers
 
                 return new JsonResult(false);
             }
+        }
+
+        [HttpPost("ClearOrdersFromAssembly")]
+        public async Task<IActionResult> ClearOrdersFromAssembly([FromBody] CreateFileAndLabelModel model)
+        {
+            try
+            {
+                foreach (var item in model.data.Rows)
+                {
+                    if (item.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
+                    foreach (var id in item.rows_AssociatedIds)
+                    {
+                        await _repository.Logs.UpdateOneAsync(log => log.Id == id,
+                                                                Builders<LogModel>.Update.Set(p => p.status, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
+                    }
+                }
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(e.Message);
+            }
+
         }
     }
 }

@@ -206,5 +206,33 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
+
+
+        [HttpPost("ClearOrdersFromHoldingStation")]
+        public async Task<IActionResult> ClearOrdersFromHoldingStation([FromBody] List<RejectionModel> Model, [FromHeader] string UserName)
+        {
+            try
+            {
+
+                foreach (var rejected in Model)
+                {
+                    var item = rejected.Row;
+
+                    await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                        Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + UserName), new UpdateOptions { IsUpsert = false });
+
+                }
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(e.Message);
+            }
+
+        }
+
+
+
     }
 }

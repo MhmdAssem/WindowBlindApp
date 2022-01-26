@@ -375,6 +375,47 @@ export class PackingStationComponent implements OnInit {
     }
 
   }
+  Delete() {
 
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if (tableName == 'DefaultTableName') {
+      alert("Please Choose a valid Table Name");
+      return;
+    }
+
+
+    
+    this.ReviewData.forEach(element => {
+      let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
+      this.Data.splice(ind, 1);
+
+    });
+
+    let Model: FabricCutterCBDetailsModel = {
+      columnNames: this.tableModelColNames,
+      rows: this.ReviewData
+    };
+
+    this.PackingService.ClearOrdersFromPacking(Model, UserName, tableName).subscribe(res => {
+      this.ReviewData = [];
+      this.ReviewDataWithBlindsNumbers = {};
+      //this.updateTable();
+      setTimeout(() => {
+
+        $("#Custom_Table_Pagination").html("");
+        $("#Custom_Table_Info").html("");
+
+        $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+        $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+        (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+      
+    });
+
+  }
 
 }

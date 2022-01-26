@@ -18,6 +18,7 @@ import { LogCutService } from './log-cut.service';
 export class LogCutComponent implements OnInit {
   HoldLoading: boolean;
   FirstTimeOnly: boolean;
+  ButtonIsDisabled: boolean;
 
   constructor(private HoldingService: HoldingStationService, private logcutService: LogCutService, private FBRservice: FabricCutterService, private settingService: SettingService, private authService: AuthService) { }
 
@@ -241,26 +242,44 @@ export class LogCutComponent implements OnInit {
 
   Delete() {
 
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if (tableName == 'DefaultTableName') {
+      alert("Please Choose a valid Table Name");
+      return;
+    }
+
+
+    
     this.ReviewData.forEach(element => {
       let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
       this.Data.splice(ind, 1);
 
     });
-    this.ReviewData = [];
-    this.ReviewDataWithBlindsNumbers = {};
-    this.updateTable();
-    setTimeout(() => {
 
-      $("#Custom_Table_Pagination").html("");
-      $("#Custom_Table_Info").html("");
+    let Model: FabricCutterCBDetailsModel = {
+      columnNames: this.tableModelColNames,
+      rows: this.ReviewData
+    };
 
-      $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-      $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-      (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 100);
+    this.logcutService.ClearOrdersFromLogCut(Model, UserName, tableName).subscribe(res => {
+      this.ReviewData = [];
+      this.ReviewDataWithBlindsNumbers = {};
+      //this.updateTable();
+      setTimeout(() => {
+
+        $("#Custom_Table_Pagination").html("");
+        $("#Custom_Table_Info").html("");
+
+        $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+        $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+        (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+      
+    });
 
   }
 
@@ -311,12 +330,10 @@ export class LogCutComponent implements OnInit {
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     if (tableName == '-') return;
 
-    (document.getElementById("SearchButton2") as HTMLButtonElement).disabled = true;
+    this.ButtonIsDisabled  = true;
 
 
-    setTimeout(() => {
-      (document.getElementById("SearchButton2") as HTMLButtonElement).disabled = false;
-    }, 1000);
+     
 
     if (this.FirstTimeOnly) {
       this.FirstTimeOnly = false;
@@ -342,6 +359,7 @@ export class LogCutComponent implements OnInit {
             }, 40);
 
           }
+          this.ButtonIsDisabled  = false;
         }
       );
     }
@@ -355,13 +373,13 @@ export class LogCutComponent implements OnInit {
     if (btn?.textContent?.trim() == 'Select All') {
 
       btn.textContent = "UnSelect All";
-      for (let i = Buttons.length-1; i >=0; i--) {
+      for (let i = Buttons.length - 1; i >= 0; i--) {
         if (Buttons[i].textContent == 'Select') Buttons[i].click();
       }
     }
     else {
       btn ? btn.textContent = "Select All" : null;
-      for (let i = Buttons.length-1; i >=0; i--) {
+      for (let i = Buttons.length - 1; i >= 0; i--) {
         if (Buttons[i].textContent == 'UnSelect') Buttons[i].click();
       }
     }

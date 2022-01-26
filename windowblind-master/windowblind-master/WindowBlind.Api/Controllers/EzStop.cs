@@ -309,6 +309,7 @@ namespace WindowBlind.Api.Controllers
                     FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                     TblRow.Row = row;
                     TblRow.UniqueId = Guid.NewGuid().ToString();
+                    TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
                     Data.Rows.Add(TblRow);
                 }
                 package.Dispose();
@@ -837,6 +838,7 @@ namespace WindowBlind.Api.Controllers
                 log.UserName = uName;
                 log.CBNumber = cbNumber;
                 log.status = "IDLE";
+                log.Id = row.UniqueId;
                 foreach (var key in row.Row.Keys.ToList())
                 {
                     if (key == "")
@@ -924,6 +926,29 @@ namespace WindowBlind.Api.Controllers
 
                 return new JsonResult(false);
             }
+        }
+
+        [HttpPost("ClearOrdersFromEzStop")]
+        public async Task<IActionResult> ClearOrdersFromEzStop([FromBody] CreateFileAndLabelModel model)
+        {
+            try
+            {
+                foreach (var item in model.data.Rows)
+                {
+                    if (item.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
+
+                    await _repository.EzStopData.DeleteOneAsync(e => e.id == item.UniqueId);
+                }
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(e.Message);
+            }
+
         }
 
     }

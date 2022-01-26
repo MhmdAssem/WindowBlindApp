@@ -29,7 +29,7 @@
           text-align: center;">
       
       <button style="margin-left: 7px;font-size: 11px;" id = 'SearchButton2' class="btn btn-primary btn-sm"
-      (click)="GetCBDetails();"> <span *ngIf="CBLoading" class="spinner-border spinner-border-sm mr-1"></span>
+      (click)="GetCBDetails();" [disabled]='ButtonIsDisabled'> <span *ngIf="CBLoading" class="spinner-border spinner-border-sm mr-1"></span>
       Get CB Details</button>
     </form>
      
@@ -42,7 +42,7 @@
 
 <div class="container">
 
-  <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0">
+  <div class="row my-4 justify-content-end" *ngIf="Data.length!=0">
     <button class="btn btn-primary mr-2" (click)="SelectAll();" id="AllButton"><span *ngIf="HoldLoading"
       class="spinner-border spinner-border-sm mr-1"></span>
     Select All </button>
@@ -65,7 +65,7 @@
 
 <div class="container-fluid mt-3">
 
-  <div class="table-responsive mt-3" id="TableViewSelect">
+  <div class="table-responsive mt-3" id="TableViewSelect" *ngIf = "Data.length !=0">
     <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
       [dtTrigger]="dtTrigger">
       <thead class="bg-light">

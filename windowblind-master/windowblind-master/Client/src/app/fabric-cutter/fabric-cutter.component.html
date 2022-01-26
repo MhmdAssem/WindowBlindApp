@@ -42,8 +42,8 @@
         border-radius: 4px;
         box-sizing: border-box;
         text-align: center;">
-     <button style="margin-left: 7px;margin-top: 0px; font-size: 11px;" id = 'SearchButton' class="btn btn-primary btn-sm" (click)="GetCBDetails();"> <span
-      *ngIf="Loading" class="spinner-border spinner-border-sm mr-1"></span>
+     <button style="margin-left: 7px;margin-top: 0px; font-size: 11px;" id = 'SearchButton' class="btn btn-primary btn-sm" (click)="GetCBDetails();" [disabled] ="ButtonIsDisabled"> <span
+      *ngIf="Loading" class="spinner-border spinner-border-sm mr-1" ></span>
     Get CB Details</button> 
   </form>
     </div>
@@ -318,7 +318,7 @@
 
   <div class="container-fluid mt-3">
 
-    <div class="table-responsive mt-3" id="TableViewSelect">
+    <div class="table-responsive mt-3" id="TableViewSelect" [style.display]="Data.length ==0 && ReviewData.length == 0?'none':'block'">
       <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
         [dtTrigger]="dtTrigger">
         <thead class="bg-light">

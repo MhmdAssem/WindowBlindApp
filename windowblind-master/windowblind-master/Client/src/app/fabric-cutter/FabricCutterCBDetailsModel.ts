@@ -9,4 +9,5 @@ export class FabricCutterCBDetailsModelTableRow {
   row: { [key: string]: string } = {};
   blindNumbers: number[] = [];
   PackingType:string;
+  rows_AssociatedIds:[] = [];
 }

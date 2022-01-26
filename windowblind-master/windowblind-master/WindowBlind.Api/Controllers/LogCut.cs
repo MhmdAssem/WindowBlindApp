@@ -307,6 +307,7 @@ namespace WindowBlind.Api.Controllers
                     FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                     TblRow.Row = row;
                     TblRow.UniqueId = Guid.NewGuid().ToString();
+                    TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
                     Data.Rows.Add(TblRow);
                 }
                 package.Dispose();
@@ -486,6 +487,7 @@ namespace WindowBlind.Api.Controllers
 
                                 blindNumber++;
                                 a += 1;
+                                FinalRow.rows_AssociatedIds.Add(FinalRow.UniqueId);
                                 FinalizedData.Rows.Add(FinalRow);
 
                             }
@@ -503,6 +505,7 @@ namespace WindowBlind.Api.Controllers
                                     FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                     FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
                                     FinalRow.Row["FromHoldingStation"] = "NO";
+                                    FinalRow.rows_AssociatedIds.Add(FinalRow.UniqueId);
 
                                     blindNumber++;
                                     a += 1;
@@ -886,6 +889,7 @@ namespace WindowBlind.Api.Controllers
                 log.UserName = uName;
                 log.CBNumber = cbNumber;
                 log.status = "IDLE";
+                log.Id = row.UniqueId;
                 foreach (var key in row.Row.Keys.ToList())
                 {
                     if (key == "")
@@ -976,6 +980,28 @@ namespace WindowBlind.Api.Controllers
                 return new JsonResult(false);
             }
         }
+
+        [HttpPost("ClearOrdersFromLogCut")]
+        public async Task<IActionResult> ClearOrdersFromLogCut([FromBody] CreateFileAndLabelModel model)
+        {
+            try
+            {
+                foreach (var item in model.data.Rows)
+                {
+                    if (item.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
+                }
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(e.Message);
+            }
+
+        }
+
 
     }
 }

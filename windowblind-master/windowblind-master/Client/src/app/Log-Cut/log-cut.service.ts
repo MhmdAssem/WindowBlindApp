@@ -13,6 +13,27 @@ export class LogCutService {
 
   constructor(private httpClient: HttpClient) { }
 
+  
+  public ClearOrdersFromLogCut(Data: FabricCutterCBDetailsModel, UserName, tableName): Observable<FabricCutterCBDetailsModel> {
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let model: CreateFileAndLabelModel = {
+      data: Data,
+      tableName: tableName,
+      userName: UserName,
+      printer: "None"
+    }
+
+    return this.httpClient
+      .post<any>(environment.apiUrl + 'LogCut/ClearOrdersFromLogCut', model, { headers }).pipe(
+        tap(
+          data => {
+          }
+        )
+
+      );
+  }
+  
   public getCBNumberDetails(CBNumber: string): Observable<FabricCutterCBDetailsModel> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', "CBNumberOrLineNumber": CBNumber });
 

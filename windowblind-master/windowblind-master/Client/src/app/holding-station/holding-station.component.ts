@@ -6,6 +6,7 @@ import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { faThumbsDown, faTintSlash } from '@fortawesome/free-solid-svg-icons';
 import { DataTableDirective } from 'angular-datatables';
+import { rejects } from 'assert';
 import { data, noConflict } from 'jquery';
 import { Subject } from 'rxjs';
 import { textChangeRangeIsUnchanged } from 'typescript';
@@ -298,7 +299,7 @@ export class HoldingStationComponent implements OnInit {
       if (Span.textContent == '')
         Span.textContent = "Select Reasons";
 
-      this.Data[i].rejectionReasons.splice(this.Data[i].rejectionReasons.findIndex(e=>e == reason),1);
+      this.Data[i].rejectionReasons.splice(this.Data[i].rejectionReasons.findIndex(e => e == reason), 1);
     }
 
     this.HoldingService.UpdateReasonsForHeldObject(model).subscribe(data => { });
@@ -335,7 +336,7 @@ export class HoldingStationComponent implements OnInit {
       if (Span.textContent == '')
         Span.textContent = "Filter";
     }
-    
+
     let cntr = 0;
     this.Data.forEach(element => {
       let found = false;
@@ -350,14 +351,14 @@ export class HoldingStationComponent implements OnInit {
           this.hideRows[cntr] = true;
         }
         else
-        this.hideRows[cntr] = false;
+          this.hideRows[cntr] = false;
       }
       else {
         if (found || Span.textContent == "Filter") {
           this.hideRows[cntr] = false;
         }
-        else 
-        this.hideRows[cntr] = true;
+        else
+          this.hideRows[cntr] = true;
       }
 
       cntr++;
@@ -365,4 +366,23 @@ export class HoldingStationComponent implements OnInit {
 
 
   }
+
+
+  Delete() {
+
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    
+    this.HoldingService.ClearOrdersFromHoldingStation(this.ReviewData, UserName).subscribe(res => {
+      this.ReviewData.forEach(element => {
+        let ind = this.Data.findIndex(e => e.id == element.id);
+        this.Data.splice(ind, 1);
+
+      });
+
+      this.updateTable();
+
+    });
+
+  }
+
 }

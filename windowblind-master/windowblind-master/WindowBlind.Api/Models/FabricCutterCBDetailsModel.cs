@@ -23,10 +23,14 @@ namespace WindowBlind.Api.Models
         public Dictionary<string, string> Row { get; set; }
         public List<int> BlindNumbers { get; set; }
         public string PackingType { get; set; }
+        public List<string> rows_AssociatedIds { get; set; }
+
         public FabricCutterCBDetailsModelTableRow()
         {
             BlindNumbers = new List<int>();
             Row = new Dictionary<string, string>();
+            rows_AssociatedIds = new List<string>();
+
         }
 
     }

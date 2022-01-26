@@ -12,8 +12,31 @@ import { FabricCutterCBDetailsModel } from './FabricCutterCBDetailsModel';
 })
 export class FabricCutterService {
 
+
+
+
   constructor(private httpClient: HttpClient) { }
 
+
+  public ClearOrdersFromFabricCutter(Data: FabricCutterCBDetailsModel, UserName, tableName): Observable<FabricCutterCBDetailsModel> {
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let model: CreateFileAndLabelModel = {
+      data: Data,
+      tableName: tableName,
+      userName: UserName,
+      printer: "None"
+    }
+
+    return this.httpClient
+      .post<any>(environment.apiUrl + 'FabricCutter/ClearOrdersFromFabricCutter', model, { headers }).pipe(
+        tap(
+          data => {
+          }
+        )
+
+      );
+  }
 
   public getCBNumberDetails(CBNumber: string): Observable<FabricCutterCBDetailsModel> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', "CBNumber": CBNumber });
@@ -74,8 +97,8 @@ export class FabricCutterService {
       );
   }
 
-  public GetDataUsingAutoUpload(TableName: string,UserName:string,ShiftTable:string,Type:string): Observable<FabricCutterCBDetailsModel> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json', "TableName": TableName,"UserName":UserName,"Shift":ShiftTable,"Type":Type });
+  public GetDataUsingAutoUpload(TableName: string, UserName: string, ShiftTable: string, Type: string): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', "TableName": TableName, "UserName": UserName, "Shift": ShiftTable, "Type": Type });
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/GetDataUsingAutoUpload', { headers }).pipe(
@@ -90,12 +113,12 @@ export class FabricCutterService {
       );
   }
 
-  
-  public UpdateRows(ids:string[] ): Observable<FabricCutterCBDetailsModel> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json',});
+
+  public UpdateRows(ids: string[]): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', });
 
     return this.httpClient
-      .post<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/UpdateRows',ids, { headers }).pipe(
+      .post<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/UpdateRows', ids, { headers }).pipe(
         tap(
           data => {
             if (!data) {
@@ -107,9 +130,9 @@ export class FabricCutterService {
       );
   }
 
-  
-  public GetHeldObjects(tableName:string): Observable<FabricCutterCBDetailsModel> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json', "tableName":tableName });
+
+  public GetHeldObjects(tableName: string): Observable<FabricCutterCBDetailsModel> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', "tableName": tableName });
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/GetHeldObjects', { headers }).pipe(
@@ -124,5 +147,5 @@ export class FabricCutterService {
       );
   }
 
-  
+
 }

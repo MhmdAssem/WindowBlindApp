@@ -63,10 +63,14 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   CurrentTab: number;
   AutoUploadedSelectedRows: string[] = [];
 
-  FirstTimeOnly: boolean;
+  ButtonIsDisabled = false;
 
   ngOnInit(): void {
     let Ts = this;
+
+    this.PrinterTableDictionary = {};
+    this.CurrentTab = -1;
+
     document.addEventListener("keydown", function (event) {
       if (event.keyCode === 13) {
         event.preventDefault();
@@ -75,8 +79,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.CurrentTab = -1;
-    this.FirstTimeOnly = true;
+    this.InitAllVariables();
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -151,9 +154,11 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
   updateTable() {
     try {
+
       this.dtElements.forEach((dtElement: DataTableDirective) => {
         dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           dtInstance.destroy(); // Will be ok on last dataTable, will fail on previous instances
+          //dtInstance.data().clear();
           dtElement.dtTrigger.next();
           console.log("Try");
         });
@@ -168,6 +173,28 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     }
   }
 
+  ClearTable() {
+    try {
+
+      this.dtElements.forEach((dtElement: DataTableDirective) => {
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          //dtInstance.destroy(); // Will be ok on last dataTable, will fail on previous instances
+          dtInstance.data().clear();
+          dtElement.dtTrigger.next();
+          console.log("Try");
+        });
+      });
+    }
+    catch {
+      this.dtTrigger.next();
+      this.dtTriggerReview.next();
+      this.UrgentdtTrigger.next();
+      this.UrgentdtTriggerReview.next();
+      console.log("Catch");
+    }
+  }
+  
+  
   GetCBDetails() {
     let cb = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
     if (cb == "") { alert("Please enter a valid CB"); return; }
@@ -180,18 +207,6 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
     this.FBRservice.getCBNumberDetails(cb.toString()).subscribe(data => {
       if (data && data.columnNames.length != 0) {
-        if (this.FirstTimeOnly) {
-          this.tableModelColNames = [];
-          this.ReviewtableModelColNames = [];
-          this.BlindNumbers = [];
-          this.Data = [];
-          this.ReviewData = [];
-          this.ReviewDataWithBlindsNumbers = {}
-          this.ReviewDataWithBlindsObjects = {}
-          this.PrinterTableDictionary = {};
-        }
-
-
         setTimeout(() => {
           this.updateTable();
         }, 50);
@@ -199,10 +214,9 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         this.tableModelColNames = data.columnNames
         this.ReviewtableModelColNames.push("Blind Number");
         this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
-        if (!this.FirstTimeOnly)
-          this.Data = this.Data.concat(data.rows);
-        else
-          this.Data = data.rows;
+
+        this.Data = this.Data.concat(data.rows);
+
 
         setTimeout(() => {
           this.updateTable();
@@ -224,6 +238,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             block: 'start'
           });
         }, 500);
+
 
       }
       this.Loading = false;
@@ -276,19 +291,6 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           block: 'start'
         });
       }, 100);
-
-      setTimeout(() => {
-
-        $("#Custom_Table_Info2").html("");
-        $("#Custom_Table_Pagination2").html("");
-        $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-        $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-        (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }, 100);
-
     }
     else {
       (document.getElementById("UrgentTableViewReview") as HTMLElement).style.display = '';
@@ -322,17 +324,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         });
       }, 100);
 
-      setTimeout(() => {
 
-        $("#Custom_Table_Info2").html("");
-        $("#Custom_Table_Pagination2").html("");
-        $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-        $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-        (document.getElementById('UrgenttheSelectColumn2') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }, 100);
+
     }
 
 
@@ -354,6 +347,17 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           this.AutoUploadedSelectedRows.splice(indOfAutoUploadSelected, 1);
 
       }
+
+      setTimeout(() => {
+        let cntr = 0;
+        this.Data.forEach(element => {
+          if (element.row['FromHoldingStation'] == 'YES') {
+            (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+          }
+          cntr++;
+        });
+      }, 40);
+
       this.ReviewData.splice(ind, 1);
 
       if (local == false)
@@ -503,21 +507,37 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   }
 
   ClearReview() {
-    let Len;
+
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if (tableName == 'DefaultTableName') {
+      alert("Please Choose a valid Table Name");
+      return;
+    }
+
     if (this.CurrentTab <= 0) {
-      Len = this.ReviewData.length;
+      let Data: FabricCutterCBDetailsModel = {
+        columnNames: this.tableModelColNames,
+        rows: this.ReviewData
+      };
 
-      for (let i = Len - 1; i >= 0; i--)
-        this.UnSelectThisRow(i, true);
+      this.FBRservice.ClearOrdersFromFabricCutter(Data, UserName, tableName).subscribe(ans => {
 
-      this.updateTable();
+        this.ReviewData.splice(0);
+        this.updateTable();
+
+      });
     }
     else {
-      Len = this.UrgentReviewData.length;
 
-      for (let i = Len - 1; i >= 0; i--)
-        this.UnSelectThisRow(i, true);
-      this.updateTable();
+      let Data: FabricCutterCBDetailsModel = {
+        columnNames: this.tableModelColNames,
+        rows: this.UrgentReviewData
+      };
+      this.FBRservice.ClearOrdersFromFabricCutter(Data, UserName, tableName).subscribe(ans => {
+        this.UrgentReviewData.splice(0);
+        this.updateTable();
+      });
     }
 
   }
@@ -532,32 +552,14 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             element.row['Roll Width'] = res;
           });
           this.updateTable();
-          setTimeout(() => {
-            $("#Custom_Table_Pagination2").html("");
-            $("#Custom_Table_Info2").html("");
-            $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-            $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-            (document.getElementById('theSelectColumn2') as HTMLElement).scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }, 100);
+
         }
         else {
           this.UrgentReviewData.forEach(element => {
             element.row['Roll Width'] = res;
           });
           this.updateTable();
-          setTimeout(() => {
-            $("#Custom_Table_Pagination2").html("");
-            $("#Custom_Table_Info2").html("");
-            $("#DScenario-table_paginate").appendTo('#Custom_Table_Pagination2');
-            $("#DScenario-table_info").appendTo('#Custom_Table_Info2');
-            (document.getElementById('UrgenttheSelectColumn2') as HTMLElement).scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }, 100);
+
         }
       }
     });
@@ -620,6 +622,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   }
 
   AutoUploadFeatureOnly() {
+    this.InitAllVariables();
+
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     if (tableName == '-') return;
     let ShiftTable = "";
@@ -633,119 +637,70 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         alert("Please Choose a valid Table Name");
         return;
       }
-
-      this.FirstTimeOnly = true;
-      this.FBRservice.GetHeldObjects(tableName).subscribe(
-        data => {
-          if (data && data.columnNames.length != 0) {
-
-            this.tableModelColNames = data.columnNames
-
-            if (!this.FirstTimeOnly)
-              this.Data.concat(data.rows);
-            else
-              this.Data = data.rows;
-
-            this.FirstTimeOnly = false;
-            let cntr = 0;
-            setTimeout(() => {
-              this.Data.forEach(element => {
-                if (element.row['FromHoldingStation'] == 'YES') {
-                  (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-                }
-                cntr++;
-              });
-            }, 40);
-
-          }
-
-          this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Normal").subscribe(data => {
-
-            if (data && data.columnNames.length != 0) {
-              if (this.FirstTimeOnly) {
-                this.tableModelColNames = [];
-                this.ReviewtableModelColNames = [];
-                this.BlindNumbers = [];
-                this.Data = [];
-                this.ReviewData = [];
-                this.ReviewDataWithBlindsNumbers = {}
-                this.ReviewDataWithBlindsObjects = {}
-                //this.PrinterTableDictionary = {};
-              }
-
-              setTimeout(() => {
-                this.updateTable();
-              }, 50);
-
-              this.tableModelColNames = data.columnNames
-              this.ReviewtableModelColNames.push("Blind Number");
-              data.columnNames.forEach((order: any) => {
-                this.ReviewtableModelColNames.push(order);
-              });
-
-              if (this.FirstTimeOnly)
-                this.Data = data.rows;
-              else
-                this.Data = this.Data.concat(data.rows);
-
-              this.updateTable();
-              let cntr = 0;
-
-              setTimeout(() => {
-                this.Data.forEach(element => {
-                  if (element.row['FromHoldingStation'] == 'YES') {
-                    (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-                  }
-                  cntr++;
-                });
-              }, 40);
-              setTimeout(() => {
-
-                $("#Custom_Table_Pagination").html("");
-                $("#Custom_Table_Info").html("");
-                $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-                $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-                (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start'
-                });
-              }, 500);
-            }
-
-          });
-        }
-      );
-
-      // get Urgent
-      this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Urgent").subscribe(data => {
+      //normal
+      this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Normal").subscribe(data => {
 
         if (data && data.columnNames.length != 0) {
-          this.tableModelColNames = [];
-          this.ReviewtableModelColNames = [];
-          this.BlindNumbers = [];
-          this.UrgentData = [];
-          this.UrgentReviewData = [];
-          this.UrgentReviewDataWithBlindsNumbers = {}
-          this.UrgentReviewDataWithBlindsObjects = {}
-          // this.PrinterTableDictionary = {};
-
-
-          setTimeout(() => {
-            this.updateTable();
-          }, 50);
 
           this.tableModelColNames = data.columnNames
           this.ReviewtableModelColNames.push("Blind Number");
           data.columnNames.forEach((order: any) => {
             this.ReviewtableModelColNames.push(order);
           });
+          
+         
+          this.ClearTable();  
+        
+          
+          
+          this.Data = data.rows;
 
+          this.updateTable();
+
+          setTimeout(() => {
+            let cntr = 0;
+
+            this.Data.forEach(element => {
+              if (element.row['FromHoldingStation'] == 'YES') {
+                (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+              }
+              cntr++;
+            });
+          }, 40);
+          setTimeout(() => {
+
+            $("#Custom_Table_Pagination").html("");
+            $("#Custom_Table_Info").html("");
+            $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+            $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+            (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }, 500);
+        }
+
+      });
+
+      // get Urgent
+      this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Urgent").subscribe(data => {
+
+        if (data && data.columnNames.length != 0) {
+          
+
+          setTimeout(() => {
+            this.updateTable();
+          }, 50);
+
+          this.tableModelColNames = data.columnNames
+        
           this.UrgentData = data.rows;
 
           this.updateTable();
-          let cntr = 0;
 
           setTimeout(() => {
+            let cntr = 0;
+
             this.UrgentData.forEach(element => {
               if (element.row['FromHoldingStation'] == 'YES') {
                 (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
@@ -771,43 +726,34 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     }
     else {
 
-      if (this.FirstTimeOnly) {
-        this.FirstTimeOnly = false;
+      this.ButtonIsDisabled = true;
 
-        (document.getElementById("SearchButton") as HTMLButtonElement).disabled = true;
+      this.FBRservice.GetHeldObjects(tableName).subscribe(
+        data => {
+          if (data && data.columnNames.length != 0) {
 
+            this.tableModelColNames = data.columnNames
+            this.ReviewtableModelColNames.push("Blind Number");
+            this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
 
-        setTimeout(() => {
-          (document.getElementById("SearchButton") as HTMLButtonElement).disabled = false;
-        }, 1000);
+            this.Data = this.Data.concat(data.rows);
 
-        this.FBRservice.GetHeldObjects(tableName).subscribe(
-          data => {
-            if (data && data.columnNames.length != 0) {
+            let cntr = 0;
+            setTimeout(() => {
+              this.Data.forEach(element => {
+                if (element.row['FromHoldingStation'] == 'YES') {
+                  (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+                }
+                cntr++;
+              });
+            }, 40);
 
-              this.tableModelColNames = data.columnNames
-              this.ReviewtableModelColNames.push("Blind Number");
-              this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
-              if (!this.FirstTimeOnly)
-                this.Data = this.Data.concat(data.rows);
-              else
-                this.Data = data.rows;
-
-
-              let cntr = 0;
-              setTimeout(() => {
-                this.Data.forEach(element => {
-                  if (element.row['FromHoldingStation'] == 'YES') {
-                    (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-                  }
-                  cntr++;
-                });
-              }, 40);
-
-            }
           }
-        );
-      }
+          this.ButtonIsDisabled = false;
+        }
+
+      );
+
     }
 
   }
@@ -840,4 +786,18 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
   }
 
+
+  InitAllVariables() {
+    this.tableModelColNames = [];
+    this.ReviewtableModelColNames = [];
+    this.BlindNumbers = [];
+    this.Data = [];
+    this.ReviewData = [];
+    this.ReviewDataWithBlindsNumbers = {}
+    this.ReviewDataWithBlindsObjects = {}
+    this.UrgentData = [];
+    this.UrgentReviewData = [];
+    this.UrgentReviewDataWithBlindsNumbers = {}
+    this.UrgentReviewDataWithBlindsObjects = {}
+   }
 }
