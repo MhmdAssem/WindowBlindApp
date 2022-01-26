@@ -40,7 +40,7 @@
   </div>
 
 
-  <div class="row my-4 justify-content-end" *ngIf="tableModelColNames.length!=0">
+  <div class="row my-4 justify-content-end" *ngIf="Data.length!=0">
 
     <button class="btn btn-primary mr-2" (click)="SelectAll();" id="AllButton"><span *ngIf="HoldLoading"
       class="spinner-border spinner-border-sm mr-1"></span>
@@ -53,11 +53,14 @@
     <button class="btn btn-primary mr-2" (click)="Send();"><span *ngIf="SendLoading"
         class="spinner-border spinner-border-sm mr-1"></span>
       Update </button>
+      
+      <button class="btn btn-primary" (click)="Delete();">
+        Delete</button>
   </div>
 
 </div>
 
-<div class="container-fluid mt-3">
+<div class="container-fluid mt-3" *ngIf="Data.length!=0">
 
   <div class="table-responsive mt-3" id="TableViewSelect">
     <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"

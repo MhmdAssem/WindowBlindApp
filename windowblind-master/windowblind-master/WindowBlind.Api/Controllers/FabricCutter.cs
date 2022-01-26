@@ -205,6 +205,7 @@ namespace WindowBlind.Api.Controllers
                         generalBlindNumber += RowQty;
                         TblRow.Row = row;
                         TblRow.UniqueId = Guid.NewGuid().ToString();
+                        TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
                         Data.Rows.Add(TblRow);
                     }
 
@@ -405,7 +406,7 @@ namespace WindowBlind.Api.Controllers
                 FabricCutProcess(ref Data);
 
                 if (!CBSearchOrLineNumberSearch)
-                    Data.Rows = Data.Rows.Where(e=>e.Row["Line No"] == CBNumber).ToList();
+                    Data.Rows = Data.Rows.Where(e => e.Row["Line No"] == CBNumber).ToList();
 
                 return new JsonResult(Data);
 
@@ -559,6 +560,7 @@ namespace WindowBlind.Api.Controllers
                 log.UserName = uName;
                 log.CBNumber = cbNumber;
                 log.status = "IDLE";
+                log.Id = row.UniqueId;
                 foreach (var key in row.Row.Keys.ToList())
                 {
                     if (key == "")
@@ -892,7 +894,7 @@ namespace WindowBlind.Api.Controllers
                             generalBlindNumber += RowQty;
                             TblRow.Row = row;
                             TblRow.UniqueId = Guid.NewGuid().ToString();
-
+                            TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
 
                             AutoUploadModel model = new AutoUploadModel
                             {
@@ -1106,16 +1108,31 @@ namespace WindowBlind.Api.Controllers
                         Data.ColumnNames.Add(Headertext);
                 }
 
+                #endregion
 
                 #region getting Held Orders
+<<<<<<< HEAD
 
                 GetHeldObjects(TableName);
 
+=======
+                if (Type == "Normal")
+                {
+                    FabricCutterCBDetailsModel newdata = (FabricCutterCBDetailsModel)(await GetHeldObjects(TableName));
+                    if (Data.Rows != null)
+                    {
+                        newdata.Rows.AddRange(Data.Rows);
+                        newdata.ColumnNames = Data.ColumnNames;
+                        Data = newdata;
+                    }
+                    else
+                        Data = newdata;
+                }
+>>>>>>> 72b4f46dcfe5f5813932f6ceccff0fca1fb44afe
                 #endregion
-
-
+                
                 Data.ColumnNames.Add("Roll Width");
-                #endregion
+                
                 return new JsonResult(Data);
 
             }
@@ -1150,7 +1167,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("GetHeldObjects")]
-        public async Task<IActionResult> GetHeldObjects([FromHeader] string tableName)
+        public async Task<object> GetHeldObjects([FromHeader] string tableName)
         {
             try
             {
@@ -1186,7 +1203,7 @@ namespace WindowBlind.Api.Controllers
                     Data.ColumnNames = HeldData.ColumnNames;
                 }
 
-                return new JsonResult(Data);
+                return Data;
 
             }
             catch (Exception e)
@@ -1195,6 +1212,30 @@ namespace WindowBlind.Api.Controllers
                 return new JsonResult(false);
             }
         }
+
+        [HttpPost("ClearOrdersFromFabricCutter")]
+        public async Task<IActionResult> ClearOrdersFromFabricCutter([FromBody] CreateFileAndLabelModel model)
+        {
+            try
+            {
+                foreach (var item in model.data.Rows)
+                {
+                    if (item.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
+
+                    await _repository.AutoUploads.DeleteOneAsync(entry => entry.Id == item.UniqueId);
+                }
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(e.Message);
+            }
+
+        }
+
 
     }
 }

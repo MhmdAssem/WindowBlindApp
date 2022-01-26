@@ -13,6 +13,28 @@ export class EzStopService {
 
   constructor(private httpClient: HttpClient) { }
 
+  public ClearOrdersFromEzStop(Data: FabricCutterCBDetailsModel, UserName, tableName): Observable<FabricCutterCBDetailsModel> {
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let model: CreateFileAndLabelModel = {
+      data: Data,
+      tableName: tableName,
+      userName: UserName,
+      printer: "None"
+    }
+
+    return this.httpClient
+      .post<any>(environment.apiUrl + 'EzStop/ClearOrdersFromEzStop', model, { headers }).pipe(
+        tap(
+          data => {
+          }
+        )
+
+      );
+  }
+  
+  
+  
   public RefreshEzStopTable(): Observable<FabricCutterCBDetailsModel> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 

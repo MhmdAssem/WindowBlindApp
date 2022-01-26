@@ -60,11 +60,13 @@ namespace WindowBlind.Api.Controllers
                 foreach (var row in FabricCutterlistOflogModels)
                 {
 
-                  
+                    row.row.rows_AssociatedIds.Clear();
                     row.row.Row["FromHoldingStation"] = "NO";
 
                     row.row.Row["Total"] = CBNumberCounter[row.CBNumber].ToString();
                     row.row.UniqueId = row.Id;
+                    row.row.rows_AssociatedIds.Add(row.Id);
+
                     var RowsWithTheSameCBNumber = _repository.PackingStation.Find(pack => pack.CBNumber == row.CBNumber && pack.status == "Packed").ToList();
 
                     if (RowsWithTheSameCBNumber == null)
@@ -231,6 +233,32 @@ namespace WindowBlind.Api.Controllers
 
                 return new JsonResult(false);
             }
+        }
+
+        [HttpPost("ClearOrdersFromPacking")]
+        public async Task<IActionResult> ClearOrdersFromPacking([FromBody] CreateFileAndLabelModel model)
+        {
+            try
+            {
+                foreach (var item in model.data.Rows)
+                {
+                    if (item.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
+                    foreach (var id in item.rows_AssociatedIds)
+                    {
+                        await _repository.HoistStation.UpdateOneAsync(log => log.Id == id,
+                                                                Builders<LogModel>.Update.Set(p => p.status, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
+                    }
+                }
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(e.Message);
+            }
+
         }
     }
 }
