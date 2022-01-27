@@ -19,15 +19,29 @@ namespace WindowBlind.Api.Controllers
     public class PackingStation : ControllerBase
     {
 
-        public PackingStation(IRepository repository, IWebHostEnvironment env)
-        {
-            _repository = repository;
-            _env = env;
-        }
+       
         private IRepository _repository;
         private IWebHostEnvironment _env;
         private static Dictionary<string, int> CBNumberCounter;
 
+        Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
+
+        public PackingStation(IRepository repository, IWebHostEnvironment env)
+        {
+            _repository = repository;
+            _env = env;
+
+            if (ColumnMapper.Count > 0) return;
+            ColumnMapper.Add("Customer Name 1", "Customer");
+            ColumnMapper.Add("W/Order NO", "CB Number");
+            ColumnMapper.Add("Qty", "Quantity");
+            ColumnMapper.Add("Width", "Measured Width");
+            ColumnMapper.Add("Drop", "Measured Drop");
+            ColumnMapper.Add("Fabric", "Fabric Type");
+            ColumnMapper.Add("Colour", "Fabric Colour");
+            ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
+
+        }
 
         public async Task CheckCBNumber()
         {
@@ -45,6 +59,16 @@ namespace WindowBlind.Api.Controllers
                 var PackingColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "PackingStation").Result.FirstOrDefaultAsync();
                 var PackingColumns = PackingColumnsSetting.settingPath.Split("@@@").ToList();
                 if (PackingColumns[PackingColumns.Count - 1] == "") PackingColumns.RemoveAt(PackingColumns.Count - 1);
+
+
+                for (var i = 0; i < PackingColumns.Count; i++)
+                {
+
+                    if (ColumnMapper.ContainsKey(PackingColumns[i]))
+                    {
+                        PackingColumns[i] = ColumnMapper[PackingColumns[i]];
+                    }
+                }
 
                 //PackingColumns = LogCut.AddColumnIfNotExists(PackingColumns, "CB Number");
                 //PackingColumns = LogCut.AddColumnIfNotExists(PackingColumns, "Line No");
@@ -178,11 +202,11 @@ namespace WindowBlind.Api.Controllers
                 if (worksheet == null) new JsonResult(false);
                 var start = worksheet.Dimension.Start;
                 var end = worksheet.Dimension.End;
-                for (int i = start.Column; i < end.Column; i++)
+                for (int i = start.Column; i <= end.Column; i++)
                 {
                     var Headertext = worksheet.Cells[1, i].Text.Trim();
                     if (Headertext == "W/Order NO")
-                        for (int j = start.Row + 1; j < end.Row; j++)
+                        for (int j = start.Row + 1; j <= end.Row; j++)
                         {
                             var text = worksheet.Cells[j, i].Text.Trim();
 
@@ -219,6 +243,15 @@ namespace WindowBlind.Api.Controllers
                 var PackingColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "PackingStation").Result.FirstOrDefaultAsync();
                 var PackingColumns = PackingColumnsSetting.settingPath.Split("@@@").ToList();
                 if (PackingColumns[PackingColumns.Count - 1] == "") PackingColumns.RemoveAt(PackingColumns.Count - 1);
+
+                for (var i = 0; i < PackingColumns.Count; i++)
+                {
+
+                    if (ColumnMapper.ContainsKey(PackingColumns[i]))
+                    {
+                        PackingColumns[i] = ColumnMapper[PackingColumns[i]];
+                    }
+                }
 
                 //PackingColumns = LogCut.AddColumnIfNotExists(PackingColumns, "CB Number");
                 //PackingColumns = LogCut.AddColumnIfNotExists(PackingColumns, "Line No");
