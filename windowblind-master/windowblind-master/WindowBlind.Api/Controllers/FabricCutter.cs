@@ -135,32 +135,32 @@ namespace WindowBlind.Api.Controllers
                     {
                         var CBINdex = 0;
                         LineNumber = CBNumber;
-                        for (int i = start.Column; i < end.Column; i++)
+                        for (int i = start.Column; i <= end.Column; i++)
                         {
                             var text = worksheet.Cells[1, i].Text.Trim();
 
                             if (text.Equals("W/Order NO")) CBINdex = i;
                             if (text.Equals("Line No."))
                             {
-                                for (int j = start.Row + 1; j < end.Row; j++)
+                                for (int j = start.Row + 1; j <= end.Row; j++)
                                     if (worksheet.Cells[j, i].Text.Trim() == LineNumber) { CBNumber = worksheet.Cells[j, CBINdex].Text.Trim(); break; }
                             }
                         }
                     }
 
-                    for (int i = start.Column; i < end.Column; i++)
+                    for (int i = start.Column; i <= end.Column; i++)
                     {
                         var Headertext = worksheet.Cells[1, i].Text.Trim();
                         ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
 
                         if (Headertext.StartsWith("W/Order NO"))
                         {
-                            for (int j = start.Row + 1; j < end.Row; j++)
+                            for (int j = start.Row + 1; j <= end.Row; j++)
                                 if (worksheet.Cells[j, i].Text.Trim() != CBNumber) indexToRemove[j] = 1;
                         }
                     }
 
-                    for (int i = start.Row + 1; i < end.Row; i++)
+                    for (int i = start.Row + 1; i <= end.Row; i++)
                     {
                         if (indexToRemove.ContainsKey(i)) continue;
                         Dictionary<string, string> row = new Dictionary<string, string>();
@@ -174,7 +174,7 @@ namespace WindowBlind.Api.Controllers
                         row["Pull Colour/Bottom Weight/Wand Len"] = "";
 
                         int RowQty = 0;
-                        for (int j = start.Column; j < end.Column; j++)
+                        for (int j = start.Column; j <= end.Column; j++)
                         {
                             var Headertext = worksheet.Cells[1, j].Text.Trim();
                             if (String.IsNullOrEmpty(Headertext)) continue;
@@ -229,7 +229,7 @@ namespace WindowBlind.Api.Controllers
 
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
+                    for (int i = start.Row + 1; i <= end.Row; i++)
                     {
                         FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
                     }
@@ -249,7 +249,7 @@ namespace WindowBlind.Api.Controllers
 
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
+                    for (int i = start.Row + 1; i <= end.Row; i++)
                     {
                         ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
                     }
@@ -268,7 +268,7 @@ namespace WindowBlind.Api.Controllers
 
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
+                    for (int i = start.Row + 1; i <= end.Row; i++)
                     {
                         if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
                             LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
@@ -847,7 +847,7 @@ namespace WindowBlind.Api.Controllers
                         var last = end.Column;
                         worksheet.Cells[1, last].Value = "done";
                         worksheet.Cells[1, last + 1].Value = "Processed By";
-                        for (int i = start.Row + 1; i < end.Row; i++)
+                        for (int i = start.Row + 1; i <= end.Row; i++)
                         {
                             Dictionary<string, string> row = new Dictionary<string, string>();
 
@@ -860,7 +860,7 @@ namespace WindowBlind.Api.Controllers
                             row["Control Type"] = "";
                             row["Pull Colour/Bottom Weight/Wand Len"] = "";
                             int RowQty = 0;
-                            for (int j = start.Column; j < end.Column; j++)
+                            for (int j = start.Column; j <= end.Column; j++)
                             {
                                 var Headertext = worksheet.Cells[1, j].Text.Trim();
                                 if (String.IsNullOrEmpty(Headertext)) continue;
@@ -959,7 +959,7 @@ namespace WindowBlind.Api.Controllers
 
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
+                    for (int i = start.Row + 1; i <= end.Row; i++)
                     {
                         FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
                     }
@@ -979,7 +979,7 @@ namespace WindowBlind.Api.Controllers
 
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
+                    for (int i = start.Row + 1; i <= end.Row; i++)
                     {
                         ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
                     }
@@ -998,7 +998,7 @@ namespace WindowBlind.Api.Controllers
 
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i < end.Row; i++)
+                    for (int i = start.Row + 1; i <= end.Row; i++)
                     {
                         if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
                             LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();

@@ -19,15 +19,25 @@ namespace WindowBlind.Api.Controllers
     [ApiController]
     public class HoistStation : ControllerBase
     {
+      
+        private IRepository _repository;
+        private IWebHostEnvironment _env;
+        Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
+
         public HoistStation(IRepository repository, IWebHostEnvironment env)
         {
             _repository = repository;
             _env = env;
+            if (ColumnMapper.Count > 0) return;
+            ColumnMapper.Add("Customer Name 1", "Customer");
+            ColumnMapper.Add("W/Order NO", "CB Number");
+            ColumnMapper.Add("Qty", "Quantity");
+            ColumnMapper.Add("Width", "Measured Width");
+            ColumnMapper.Add("Drop", "Measured Drop");
+            ColumnMapper.Add("Fabric", "Fabric Type");
+            ColumnMapper.Add("Colour", "Fabric Colour");
+            ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
         }
-        private IRepository _repository;
-        private IWebHostEnvironment _env;
-
-
 
         [HttpGet("GetReadyToQualify")]
         public async Task<IActionResult> GetReadyToQualify([FromHeader] string CbOrLineNumber)
@@ -39,6 +49,14 @@ namespace WindowBlind.Api.Controllers
                 var HoistColumns = HoistColumnsSetting.settingPath.Split("@@@").ToList();
                 if (HoistColumns[HoistColumns.Count - 1] == "") HoistColumns.RemoveAt(HoistColumns.Count - 1);
 
+                for (var i = 0; i < HoistColumns.Count; i++)
+                {
+
+                    if (ColumnMapper.ContainsKey(HoistColumns[i]))
+                    {
+                        HoistColumns[i] = ColumnMapper[HoistColumns[i]];
+                    }
+                }
 
                 //HoistColumns = LogCut.AddColumnIfNotExists(HoistColumns, "CB Number");
                 //HoistColumns = LogCut.AddColumnIfNotExists(HoistColumns, "Line No");
@@ -132,6 +150,17 @@ namespace WindowBlind.Api.Controllers
                 var HoistColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "HoistStation").Result.FirstOrDefaultAsync();
                 var HoistColumns = HoistColumnsSetting.settingPath.Split("@@@").ToList();
                 if (HoistColumns[HoistColumns.Count - 1] == "") HoistColumns.RemoveAt(HoistColumns.Count - 1);
+
+
+                for (var i = 0; i < HoistColumns.Count; i++)
+                {
+
+                    if (ColumnMapper.ContainsKey(HoistColumns[i]))
+                    {
+                        HoistColumns[i] = ColumnMapper[HoistColumns[i]];
+                    }
+                }
+
                 //HoistColumns = LogCut.AddColumnIfNotExists(HoistColumns, "CB Number");
                 //HoistColumns = LogCut.AddColumnIfNotExists(HoistColumns, "Line No");
                 if (Data.Rows.Count != 0)

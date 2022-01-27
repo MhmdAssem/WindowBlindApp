@@ -42,6 +42,22 @@ namespace WindowBlind.Api.Controllers
         bool CBSearch;
         string CB;
         string LineNumber;
+        Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
+
+
+        public void Init()
+        {
+            if (ColumnMapper.Count > 0) return;
+            ColumnMapper.Add("Customer Name 1", "Customer");
+            ColumnMapper.Add("W/Order NO", "CB Number");
+            ColumnMapper.Add("Qty", "Quantity");
+            ColumnMapper.Add("Width", "Measured Width");
+            ColumnMapper.Add("Drop", "Measured Drop");
+            ColumnMapper.Add("Fabric", "Fabric Type");
+            ColumnMapper.Add("Colour", "Fabric Colour");
+            ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
+            ColumnsIndex = new Dictionary<string, int>();
+        }
         private async Task ReadConfig()
         {
 
@@ -135,7 +151,7 @@ namespace WindowBlind.Api.Controllers
 
                 var start = worksheet.Dimension.Start;
                 var end = worksheet.Dimension.End;
-                for (int i = start.Row + 1; i < end.Row; i++)
+                for (int i = start.Row + 1; i <= end.Row; i++)
                 {
                     FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
                 }
@@ -154,7 +170,7 @@ namespace WindowBlind.Api.Controllers
 
                 var start = worksheet.Dimension.Start;
                 var end = worksheet.Dimension.End;
-                for (int i = start.Row + 1; i < end.Row; i++)
+                for (int i = start.Row + 1; i <= end.Row; i++)
                 {
                     ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
                 }
@@ -173,7 +189,7 @@ namespace WindowBlind.Api.Controllers
 
                 var start = worksheet.Dimension.Start;
                 var end = worksheet.Dimension.End;
-                for (int i = start.Row + 1; i < end.Row; i++)
+                for (int i = start.Row + 1; i <= end.Row; i++)
                 {
                     if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
                         LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
@@ -196,7 +212,7 @@ namespace WindowBlind.Api.Controllers
 
                 var start = worksheet.Dimension.Start;
                 var end = worksheet.Dimension.End;
-                for (int i = start.Row + 1; i < end.Row; i++)
+                for (int i = start.Row + 1; i <= end.Row; i++)
                 {
                     var text = worksheet.Cells[i, 1].Text.Trim();
                     if (!FabricDatable.Contains(text))
@@ -217,7 +233,7 @@ namespace WindowBlind.Api.Controllers
 
                 var start = worksheet.Dimension.Start;
                 var end = worksheet.Dimension.End;
-                for (int i = start.Row + 1; i < end.Row; i++)
+                for (int i = start.Row + 1; i <= end.Row; i++)
                 {
                     DropTableModel model = new DropTableModel
                     {
@@ -249,37 +265,37 @@ namespace WindowBlind.Api.Controllers
                 if (!CBSearch)
                 {
                     var CBINdex = 0;
-                    for (int i = start.Column; i < end.Column; i++)
+                    for (int i = start.Column; i <= end.Column; i++)
                     {
                         var text = worksheet.Cells[1, i].Text.Trim();
 
                         if (text.Equals("W/Order NO")) CBINdex = i;
                         if (text.Equals("Line No."))
                         {
-                            for (int j = start.Row + 1; j < end.Row; j++)
+                            for (int j = start.Row + 1; j <= end.Row; j++)
                                 if (worksheet.Cells[j, i].Text.Trim() == LineNumber) { CB = worksheet.Cells[j, CBINdex].Text.Trim(); break; }
                         }
                     }
                 }
 
-                for (int i = start.Column; i < end.Column; i++)
+                for (int i = start.Column; i <= end.Column; i++)
                 {
                     ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
                     var Headertext = worksheet.Cells[1, i].Text.Trim();
                     if (Headertext.StartsWith("W/Order NO"))
                     {
-                        for (int j = start.Row + 1; j < end.Row; j++)
+                        for (int j = start.Row + 1; j <= end.Row; j++)
                             if (worksheet.Cells[j, i].Text.Trim() != CB) indexToRemove[j] = 1;
 
                     }
                 }
 
-                for (int i = start.Row + 1; i < end.Row; i++)
+                for (int i = start.Row + 1; i <= end.Row; i++)
                 {
                     if (indexToRemove.ContainsKey(i)) continue;
                     Dictionary<string, string> row = new Dictionary<string, string>();
                     int RowQty = 0;
-                    for (int j = start.Column; j < end.Column; j++)
+                    for (int j = start.Column; j <= end.Column; j++)
                     {
                         var Headertext = worksheet.Cells[1, j].Text.Trim();
                         if (String.IsNullOrEmpty(Headertext)) continue;
@@ -300,6 +316,11 @@ namespace WindowBlind.Api.Controllers
                         if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
                             Data.ColumnNames.Add(Headertext);
 
+                        if (ColumnMapper.ContainsKey(Headertext))
+                        {
+                            row[Headertext] = cell;
+                            Headertext = ColumnMapper[Headertext];
+                        }
                         row[Headertext] = cell;
 
                     }
@@ -329,9 +350,7 @@ namespace WindowBlind.Api.Controllers
             {
                 rowCntr++;
                 Fbindex = 0;
-                item.Row["CB Number"] = item.Row["W/Order NO"].Trim();
-                item.Row["Fabric"] = item.Row["Fabric"];
-
+                
                 if (item.Row["Fabric"] != "")
                 {
                     for (int n = 0; n < FabricDatable.Count; n++)
@@ -544,7 +563,7 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 ColumnsIndex = new Dictionary<string, int>();
 
-
+                Init();
                 await ReadConfig();
                 var Checks = CheckPaths();
 
@@ -946,6 +965,7 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 ColumnsIndex = new Dictionary<string, int>();
 
+                Init();
                 await ReadConfig();
 
                 var check = CheckPaths();

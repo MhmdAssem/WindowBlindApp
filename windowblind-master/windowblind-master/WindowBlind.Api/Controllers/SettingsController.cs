@@ -63,7 +63,7 @@ namespace WindowBlind.Api.Controllers
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
 
-                    for (int i = start.Column; i < end.Column; i++)
+                    for (int i = start.Column; i <= end.Column; i++)
                     {
                         var text = worksheet.Cells[1, i].Text.Trim();
                         text = text.Replace(".", "");
