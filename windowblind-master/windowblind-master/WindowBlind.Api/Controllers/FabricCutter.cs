@@ -809,7 +809,6 @@ namespace WindowBlind.Api.Controllers
                 var check = CheckingPaths();
 
                 if (!check) return new JsonResult(false);
-
                 var AutoUploadDirSetting = await _repository.Settings.FindAsync(e => e.settingName == "AutoUploadDir");
                 var AutoUploadDirPath = AutoUploadDirSetting.FirstOrDefault().settingPath;
 
@@ -819,6 +818,8 @@ namespace WindowBlind.Api.Controllers
                 var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
                 if (AutoUploadFolder.Exists == false)
                     return new JsonResult(false);
+
+
 
                 #region Reading Data
 
@@ -915,6 +916,7 @@ namespace WindowBlind.Api.Controllers
                     }
 
                     FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, file.Name));
+                    Console.WriteLine(Path.Combine(ViewedUplaodsPath, file.Name));
                     Random rd = new Random();
 
 
@@ -1109,6 +1111,11 @@ namespace WindowBlind.Api.Controllers
                 #endregion
 
                 #region getting Held Orders
+<<<<<<< HEAD
+
+                GetHeldObjects(TableName);
+
+=======
                 if (Type == "Normal")
                 {
                     FabricCutterCBDetailsModel newdata = (FabricCutterCBDetailsModel)(await GetHeldObjects(TableName));
@@ -1121,6 +1128,7 @@ namespace WindowBlind.Api.Controllers
                     else
                         Data = newdata;
                 }
+>>>>>>> 72b4f46dcfe5f5813932f6ceccff0fca1fb44afe
                 #endregion
                 
                 Data.ColumnNames.Add("Roll Width");
@@ -1130,6 +1138,8 @@ namespace WindowBlind.Api.Controllers
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.StackTrace);
+
                 return new JsonResult(false);
             }
         }

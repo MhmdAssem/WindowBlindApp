@@ -55,7 +55,10 @@ namespace WindowBlind.Api
             var client = new MongoClient(settings.ConnectionString);
             _mongoDb = client.GetDatabase(settings.DatabaseName);
             Console.WriteLine("Connect to MongoDB");
+            //var setting =
+            //    new FileSetting { Id = Guid.NewGuid().ToString(), settingName = "Comments", settingPath = "Move to Production scheduler@@@Missing Fabric@@@Color not match@@@Broken chain@@@Size not correct", applicationSetting = "" };
 
+           // _mongoDb.GetCollection<FileSetting>("AutoUploads").DeleteMany(e => e.Id != null);
             //DropTables();
             Seed();
         }
