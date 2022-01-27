@@ -1111,11 +1111,7 @@ namespace WindowBlind.Api.Controllers
                 #endregion
 
                 #region getting Held Orders
-<<<<<<< HEAD
 
-                GetHeldObjects(TableName);
-
-=======
                 if (Type == "Normal")
                 {
                     FabricCutterCBDetailsModel newdata = (FabricCutterCBDetailsModel)(await GetHeldObjects(TableName));
@@ -1128,7 +1124,6 @@ namespace WindowBlind.Api.Controllers
                     else
                         Data = newdata;
                 }
->>>>>>> 72b4f46dcfe5f5813932f6ceccff0fca1fb44afe
                 #endregion
                 
                 Data.ColumnNames.Add("Roll Width");
