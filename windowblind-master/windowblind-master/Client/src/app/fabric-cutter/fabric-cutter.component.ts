@@ -193,8 +193,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       console.log("Catch");
     }
   }
-  
-  
+
+
   GetCBDetails() {
     let cb = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
     if (cb == "") { alert("Please enter a valid CB"); return; }
@@ -206,7 +206,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     this.Loading = true;
 
     this.FBRservice.getCBNumberDetails(cb.toString()).subscribe(data => {
-      if (data && data.columnNames.length != 0) {
+      if (data && data.rows.length != 0 && data.columnNames.length != 0) {
         setTimeout(() => {
           this.updateTable();
         }, 50);
@@ -241,6 +241,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
 
       }
+      if (this.Data.length == 0)
+        alert("This CB or Line number is not found !");
       this.Loading = false;
 
     });
@@ -647,12 +649,12 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           data.columnNames.forEach((order: any) => {
             this.ReviewtableModelColNames.push(order);
           });
-          
-         
-          this.ClearTable();  
-        
-          
-          
+
+
+          this.ClearTable();
+
+
+
           this.Data = data.rows;
 
           this.updateTable();
@@ -686,14 +688,14 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Urgent").subscribe(data => {
 
         if (data && data.columnNames.length != 0) {
-          
+
 
           setTimeout(() => {
             this.updateTable();
           }, 50);
 
           this.tableModelColNames = data.columnNames
-        
+
           this.UrgentData = data.rows;
 
           this.updateTable();
@@ -799,5 +801,5 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     this.UrgentReviewData = [];
     this.UrgentReviewDataWithBlindsNumbers = {}
     this.UrgentReviewDataWithBlindsObjects = {}
-   }
+  }
 }
