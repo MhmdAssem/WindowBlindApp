@@ -612,7 +612,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       this.ReviewDataWithBlindsNumbers = {};
 
       setTimeout(() => {
-        this.updateTable();
+        this.ClearTable();
       }, 50);
 
 

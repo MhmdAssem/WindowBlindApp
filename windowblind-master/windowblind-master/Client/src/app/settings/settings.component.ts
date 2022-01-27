@@ -267,7 +267,7 @@ export class SettingsComponent implements OnInit {
       }
 
       if (PackingTables.indexOf("@@@@@") != -1) {
-        let PackingTablesEntries = EzStopTables.split("#####");
+        let PackingTablesEntries = PackingTables.split("#####");
         PackingTablesEntries.forEach(element => {
           let entry = element.split("@@@@@");
           let model: TablePrinterModel =

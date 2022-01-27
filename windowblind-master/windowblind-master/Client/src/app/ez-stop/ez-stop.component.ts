@@ -85,7 +85,12 @@ export class EzStopComponent implements OnInit {
 
 
     });
-    this.Refresh();
+    
+    
+    setTimeout(() => {
+      this.Refresh();  
+    }, 100);
+    
     setInterval(() => {
       this.Refresh();
     }
@@ -168,11 +173,11 @@ export class EzStopComponent implements OnInit {
   Refresh() {
     this.RefreshLoading = true;
 
-    setTimeout(() => {
+   
       let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
-
+      
+      
       this.ezStopService.GetHeldObjects(tableName).subscribe(data=>{
-        
         if (data && data.columnNames.length != 0) {
         
           setTimeout(() => {
@@ -218,65 +223,61 @@ export class EzStopComponent implements OnInit {
           }, 500);
         }
         
-        
+        this.ezStopService.RefreshEzStopTable().subscribe(data => {
+
+          if (data && data.columnNames.length != 0) {
+            
+            setTimeout(() => {
+              this.updateTable();
+            }, 50);
+    
+            if (data.columnNames.length != 0)
+              this.tableModelColNames = data.columnNames
+    
+            data.rows.forEach(element => {
+              if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {
+                this.DataInTheTable[element.uniqueId] = true;
+                this.Data.push(element);
+              }
+              else {
+                //let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
+                //this.Data[ind] = element;
+              }
+            });
+    
+            
+            
+            
+            
+            this.updateTable();
+    
+            let cntr = 0;
+    
+            setTimeout(() => {
+              this.Data.forEach(element => {
+                if (element.row['FromHoldingStation'] == 'YES') {
+                  (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+                }
+                cntr++;
+              });
+            }, 40);
+    
+            setTimeout(() => {
+              $("#Custom_Table_Pagination").html("");
+              $("#Custom_Table_Info").html("");
+              $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+              $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+              (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }, 500);
+          }
+          this.RefreshLoading = false;
+        });
       });
       
-      
-    }, 1000);
-    this.ezStopService.RefreshEzStopTable().subscribe(data => {
-
-      if (data && data.columnNames.length != 0) {
         
-        setTimeout(() => {
-          this.updateTable();
-        }, 50);
-
-        if (data.columnNames.length != 0)
-          this.tableModelColNames = data.columnNames
-
-        data.rows.forEach(element => {
-          if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {
-            this.DataInTheTable[element.uniqueId] = true;
-            this.Data.push(element);
-          }
-          else {
-            //let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
-            //this.Data[ind] = element;
-          }
-        });
-
-        
-        
-        
-        
-        this.updateTable();
-
-        let cntr = 0;
-
-        setTimeout(() => {
-          this.Data.forEach(element => {
-            if (element.row['FromHoldingStation'] == 'YES') {
-              (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-            }
-            cntr++;
-          });
-        }, 40);
-
-        setTimeout(() => {
-          $("#Custom_Table_Pagination").html("");
-          $("#Custom_Table_Info").html("");
-          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 500);
-      }
-      this.RefreshLoading = false;
-    });
-
-    
     
   }
 
