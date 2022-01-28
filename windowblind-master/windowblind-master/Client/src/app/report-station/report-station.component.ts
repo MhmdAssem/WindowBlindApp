@@ -88,7 +88,7 @@ export class ReportStationComponent implements OnInit {
 
     this.reportservice.GenerateReports(cb).subscribe(data => {
 
-      if (data && data.columnNames.length != 0) {
+      if (data && data.rows.length !=0 && data.columnNames.length != 0) {
         setTimeout(() => {
           this.updateTable();
         }, 50);
@@ -110,6 +110,8 @@ export class ReportStationComponent implements OnInit {
           });
         }, 500);
       }
+      if (this.Data.length == 0)
+        alert("This CB or Line number is not found !");
       this.Loading = false;
     });
 

@@ -82,11 +82,11 @@ export class AssemblyStationComponent implements OnInit {
 
     });
 
-    
-    
+
+
     this.FirstTimeOnly = true;
-   
-    
+
+
   }
 
   ngAfterViewInit(): void {
@@ -144,8 +144,7 @@ export class AssemblyStationComponent implements OnInit {
       rows: this.ReviewData
     };
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
-    if(tableName == '-')
-    {
+    if (tableName == '-') {
       alert("Please select a table");
       return;
     }
@@ -189,7 +188,7 @@ export class AssemblyStationComponent implements OnInit {
 
     this.assemblyService.GetReadyToAssemble(input).subscribe(data => {
 
-      if (data && data.columnNames.length != 0) {
+      if (data && data.rows.length != 0 && data.columnNames.length != 0) {
         setTimeout(() => {
           this.updateTable();
         }, 50);
@@ -218,8 +217,8 @@ export class AssemblyStationComponent implements OnInit {
             cntr++;
           });
         }, 40);
-        
-        
+
+
         setTimeout(() => {
           $("#Custom_Table_Pagination").html("");
           $("#Custom_Table_Info").html("");
@@ -231,6 +230,8 @@ export class AssemblyStationComponent implements OnInit {
           });
         }, 500);
       }
+      if (this.Data.length == 0)
+        alert("This CB or Line number is not found !");
       this.CBLoading = false;
     });
 
@@ -241,63 +242,62 @@ export class AssemblyStationComponent implements OnInit {
 
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
     var time = new Date();
-   
+
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
 
-    let RejectionModels:RejectionModel[] = [];
+    let RejectionModels: RejectionModel[] = [];
     this.ReviewData.forEach(element => {
-      let RejectionModel:RejectionModel =
+      let RejectionModel: RejectionModel =
       {
-        dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12:true }),
-        forwardedToStation : "Admin",
-        id : "",
-        row :element,
-        stationName :"Assembly",
-        tableName :tableName,
-        userName :UserName,
-        rejectionReasons:[]
+        dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
+        forwardedToStation: "Admin",
+        id: "",
+        row: element,
+        stationName: "Assembly",
+        tableName: tableName,
+        userName: UserName,
+        rejectionReasons: []
       };
       RejectionModels.push(RejectionModel);
     });
-    
-   
-    
+
+
+
     this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
-        this.SendLoading = false;
+      this.SendLoading = false;
 
-        this.ReviewData = [];
-        let keys = Object.keys(this.ReviewDataWithBlindsNumbers);
+      this.ReviewData = [];
+      let keys = Object.keys(this.ReviewDataWithBlindsNumbers);
 
-        keys.forEach(key => {
-          let ind = this.Data.findIndex(d => d.uniqueId == key);
-          if (ind != -1 && this.ReviewDataWithBlindsNumbers[key] != -1) {
-            this.DataInTheTable[this.Data[ind]['Line No']] = null;
-            this.Data.splice(ind, 1);
-          }
-        });
-
-        this.ReviewDataWithBlindsNumbers = {};
-        this.updateTable();
-
-        setTimeout(() => {
-          $("#Custom_Table_Pagination").html("");
-          $("#Custom_Table_Info").html("");
-          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 500);
-
-
+      keys.forEach(key => {
+        let ind = this.Data.findIndex(d => d.uniqueId == key);
+        if (ind != -1 && this.ReviewDataWithBlindsNumbers[key] != -1) {
+          this.DataInTheTable[this.Data[ind]['Line No']] = null;
+          this.Data.splice(ind, 1);
+        }
       });
+
+      this.ReviewDataWithBlindsNumbers = {};
+      this.updateTable();
+
+      setTimeout(() => {
+        $("#Custom_Table_Pagination").html("");
+        $("#Custom_Table_Info").html("");
+        $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
+        $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+        (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 500);
+
+
+    });
   }
 
-  GetHeldBasedOnTable()
-  {
+  GetHeldBasedOnTable() {
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
-   
+
     this.assemblyService.GetHeldObjects(tableName).subscribe(
       data => {
         if (data && data.columnNames.length != 0) {
@@ -324,8 +324,8 @@ export class AssemblyStationComponent implements OnInit {
       }
     );
   }
-  
-  
+
+
   SelectAll() {
     let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
     console.log(Buttons.length)
@@ -334,21 +334,21 @@ export class AssemblyStationComponent implements OnInit {
     if (btn?.textContent?.trim() == 'Select All') {
 
       btn.textContent = "UnSelect All";
-      for (let i = Buttons.length-1; i >=0; i--) {
+      for (let i = Buttons.length - 1; i >= 0; i--) {
         if (Buttons[i].textContent == 'Select') Buttons[i].click();
       }
     }
     else {
       btn ? btn.textContent = "Select All" : null;
-      for (let i = Buttons.length-1; i >=0; i--) {
+      for (let i = Buttons.length - 1; i >= 0; i--) {
         if (Buttons[i].textContent == 'UnSelect') Buttons[i].click();
       }
     }
 
   }
-  
-  
-  
+
+
+
   Delete() {
 
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
@@ -359,7 +359,7 @@ export class AssemblyStationComponent implements OnInit {
     }
 
 
-    
+
     this.ReviewData.forEach(element => {
       let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
       this.Data.splice(ind, 1);
@@ -387,7 +387,7 @@ export class AssemblyStationComponent implements OnInit {
           block: 'start'
         });
       }, 100);
-      
+
     });
 
   }

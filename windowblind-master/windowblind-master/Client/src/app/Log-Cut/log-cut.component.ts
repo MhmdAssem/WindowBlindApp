@@ -136,7 +136,7 @@ export class LogCutComponent implements OnInit {
 
     this.logcutService.getCBNumberDetails(input).subscribe(data => {
 
-      if (data && data.columnNames.length != 0) {
+      if (data && data.rows.length != 0 && data.columnNames.length != 0) {
         if (this.FirstTimeOnly) {
 
           this.tableModelColNames = [];
@@ -186,6 +186,9 @@ export class LogCutComponent implements OnInit {
         }, 50);
 
       }
+      
+      if (this.Data.length == 0)
+        alert("This CB or Line number is not found !");
       this.LineLoading = false;
       this.CBLoading = false;
 
@@ -250,7 +253,7 @@ export class LogCutComponent implements OnInit {
     }
 
 
-    
+
     this.ReviewData.forEach(element => {
       let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
       this.Data.splice(ind, 1);
@@ -278,7 +281,7 @@ export class LogCutComponent implements OnInit {
           block: 'start'
         });
       }, 100);
-      
+
     });
 
   }
@@ -330,10 +333,10 @@ export class LogCutComponent implements OnInit {
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     if (tableName == '-') return;
 
-    this.ButtonIsDisabled  = true;
+    this.ButtonIsDisabled = true;
 
 
-     
+
 
     if (this.FirstTimeOnly) {
       this.FirstTimeOnly = false;
@@ -359,7 +362,7 @@ export class LogCutComponent implements OnInit {
             }, 40);
 
           }
-          this.ButtonIsDisabled  = false;
+          this.ButtonIsDisabled = false;
         }
       );
     }

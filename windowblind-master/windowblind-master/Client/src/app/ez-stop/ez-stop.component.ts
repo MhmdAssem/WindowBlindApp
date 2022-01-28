@@ -178,7 +178,12 @@ export class EzStopComponent implements OnInit {
       
       
       this.ezStopService.GetHeldObjects(tableName).subscribe(data=>{
+<<<<<<< HEAD
         if (data && data.rows.length !=0 && data.columnNames.length != 0) {
+=======
+        
+        if (data && data.rows.length!=0 &&  data.columnNames.length != 0) {
+>>>>>>> a201ca0f2f620b46c28725fcc6cb7b226e7fb792
         
           setTimeout(() => {
             this.updateTable();
@@ -225,7 +230,11 @@ export class EzStopComponent implements OnInit {
         
         this.ezStopService.RefreshEzStopTable().subscribe(data => {
 
+<<<<<<< HEAD
           if (data && data.rows.length !=0 && data.columnNames.length != 0) {
+=======
+          if (data &&  data.rows.length!=0 && data.columnNames.length != 0) {
+>>>>>>> a201ca0f2f620b46c28725fcc6cb7b226e7fb792
             
             setTimeout(() => {
               this.updateTable();
@@ -273,6 +282,8 @@ export class EzStopComponent implements OnInit {
               });
             }, 500);
           }
+          if(this.Data.length == 0)
+          alert("Line number not found !");
           this.RefreshLoading = false;
           if(this.Data.length)
           {

@@ -146,7 +146,7 @@ export class PackingStationComponent implements OnInit {
       alert("Please select a table name");
       return;
     }
-    
+
     this.PackingService.pushLinesNoToHoistStation(
       tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
         this.SendLoading = false;
@@ -187,7 +187,7 @@ export class PackingStationComponent implements OnInit {
 
     this.PackingService.GetReadyToPack(input).subscribe(data => {
 
-      if (data && data.columnNames.length != 0) {
+      if (data && data.rows.length != 0 && data.columnNames.length != 0) {
         setTimeout(() => {
           this.updateTable();
         }, 50);
@@ -264,6 +264,8 @@ export class PackingStationComponent implements OnInit {
           });
         }, 500);
       }
+      if (this.Data.length == 0)
+        alert("This CB or Line number is not found !");
       this.CBLoading = false;
     });
   }
@@ -287,7 +289,7 @@ export class PackingStationComponent implements OnInit {
         stationName: "Packing",
         tableName: tableName,
         userName: UserName,
-        rejectionReasons:[]
+        rejectionReasons: []
       };
       RejectionModels.push(RejectionModel);
     });
@@ -363,13 +365,13 @@ export class PackingStationComponent implements OnInit {
     if (btn?.textContent?.trim() == 'Select All') {
 
       btn.textContent = "UnSelect All";
-      for (let i = Buttons.length-1; i >=0; i--) {
+      for (let i = Buttons.length - 1; i >= 0; i--) {
         if (Buttons[i].textContent == 'Select') Buttons[i].click();
       }
     }
     else {
       btn ? btn.textContent = "Select All" : null;
-      for (let i = Buttons.length-1; i >=0; i--) {
+      for (let i = Buttons.length - 1; i >= 0; i--) {
         if (Buttons[i].textContent == 'UnSelect') Buttons[i].click();
       }
     }
@@ -385,7 +387,7 @@ export class PackingStationComponent implements OnInit {
     }
 
 
-    
+
     this.ReviewData.forEach(element => {
       let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
       this.Data.splice(ind, 1);
@@ -413,7 +415,7 @@ export class PackingStationComponent implements OnInit {
           block: 'start'
         });
       }, 100);
-      
+
     });
 
   }
