@@ -277,10 +277,7 @@ export class EzStopComponent implements OnInit {
           if(this.Data.length == 0)
           alert("Line number not found !");
           this.RefreshLoading = false;
-          if(this.Data.length)
-          {
-            alert("This line is not found !");
-          }
+          
         });
       });
       

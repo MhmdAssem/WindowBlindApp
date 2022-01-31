@@ -1055,9 +1055,9 @@ namespace WindowBlind.Api.Controllers
                     if (item.Row["Fabric Type"] != "")
                     {
                         var fab = item.Row["Fabric Type"].TrimEnd();
-                        if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.LastIndexOf(' ')).TrimEnd()))
+                        if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.LastIndexOf(' ') ==-1?fab.Length: fab.LastIndexOf(' ')).TrimEnd()))
                         {
-                            item.Row["Roll Width"] = FabricRollwidth[fab.Substring(0, fab.LastIndexOf(' ')).TrimEnd()].ToLower().Replace("mm", "");
+                            item.Row["Roll Width"] = FabricRollwidth[fab.Substring(0, fab.LastIndexOf(' ') == -1 ? fab.Length : fab.LastIndexOf(' ')).TrimEnd()].ToLower().Replace("mm", "");
                         }
                         else
                         {
@@ -1134,15 +1134,10 @@ namespace WindowBlind.Api.Controllers
                     else
                         Data = newdata;
                 }
-<<<<<<< HEAD
-                 #endregion
+                  #endregion
  
                 
-=======
-                #endregion
-
-
->>>>>>> 79e3b492ba91d9f38c51374a1255b55e257e43cd
+ 
                 Data.ColumnNames.Add("Roll Width");
 
                 return new JsonResult(Data);
