@@ -622,99 +622,108 @@ namespace WindowBlind.Api.Controllers
         [HttpPost("CreateFilesAndLabels")]
         public async Task<IActionResult> CreateFilesAndLabels([FromBody] CreateFileAndLabelModel model)
         {
-            var Data = model.data;
-            var TableNumber = model.tableName;
-            var UserName = model.userName;
-            var PrinterName = model.printer;
-            var FBRSetting = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
-            var FBRPath = FBRSetting.FirstOrDefault().OutputPath;
-
-            if (FBRPath == "") return new JsonResult(false);
-            DirectoryInfo F = new DirectoryInfo(FBRPath);
-            if (!F.Exists) return new JsonResult(false);
-
-
-            StringBuilder sb = new StringBuilder();
-            StringBuilder labels = new StringBuilder();
-            foreach (var item in Data.Rows)
+            try
             {
-                if (item.Row["FromHoldingStation"] == "YES")
-                    await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
-                                        Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
-                sb.Append("START##\t" + item.Row["Department"].ToString().TrimEnd() + Environment.NewLine);
-                sb.Append("ORDER NUMBER\t" + item.Row["CB Number"].ToString().TrimEnd() + Environment.NewLine);
-                sb.Append("LINE NUMBER\t" + item.Row["Blind Number"].ToString().TrimEnd() + "\t\t" + Environment.NewLine);
-                sb.Append("QUANTITY\t" + item.Row["Quantity"].ToString().TrimEnd() + Environment.NewLine);
-                sb.Append("MEASURED WIDTH\t" + item.Row["Measured Width"].ToString().TrimEnd() + Environment.NewLine);
-                sb.Append("MEASURED DROP\t" + item.Row["Measured Drop"].ToString().TrimEnd() + Environment.NewLine);
-                sb.Append(Environment.NewLine);
-                sb.Append("CONTROL TYPE\t" + item.Row["Control Type"].ToString().TrimEnd() + Environment.NewLine);
-                sb.Append(Environment.NewLine);
-                sb.Append("HEM\t" + Environment.NewLine);
-                sb.Append("FABRIC TYPE\t" + item.Row["Roll Width"].ToString().TrimEnd() + Environment.NewLine);
-                sb.Append(Environment.NewLine);
-                sb.Append("FABRIC COLOUR\t" + item.Row["Fabric Colour"].ToString().TrimEnd() + Environment.NewLine);
-                sb.Append("TRIM TYPE\t" + item.Row["Trim Type"].ToString().TrimEnd() + Environment.NewLine);
-                item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
-                bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), TableNumber, UserName, System.DateTime.Now.ToString(), item.Row["Alpha Number"], "FabricCut", item);
+                var Data = model.data;
+                var TableNumber = model.tableName;
+                var UserName = model.userName;
+                var PrinterName = model.printer;
+                var FBRSetting = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
+                var FBRPath = FBRSetting.FirstOrDefault().OutputPath;
+
+                if (FBRPath == "") return new JsonResult(false);
+                DirectoryInfo F = new DirectoryInfo(FBRPath);
+                if (!F.Exists) return new JsonResult(false);
 
 
-                labels.Append("@" + item.Row["CB Number"].ToString().TrimEnd());
-
-                if (item.Row["Trim Type"].ToString().TrimEnd() == "FIN 36" && item.Row["Control Type"].ToString().TrimEnd() == "Motorised")
+                StringBuilder sb = new StringBuilder();
+                StringBuilder labels = new StringBuilder();
+                foreach (var item in Data.Rows)
                 {
-                    labels.Append("@" + (Convert.ToInt32((item.Row["Measured Width"].ToString().TrimEnd() == "") ? "0" : item.Row["Measured Width"].ToString().TrimEnd()) + 5).ToString());
-                }
-                else
-                {
-                    labels.Append("@" + item.Row["Measured Width"].ToString().TrimEnd());
-                }
-
-                labels.Append("@" + item.Row["Measured Drop"].ToString().TrimEnd());
-                labels.Append("@" + item.Row["Customer"].ToString().TrimEnd());
-                labels.Append("@" + item.Row["Department"].ToString().TrimEnd());
-
-
-                if (item.Row["Track Colour"].ToString().TrimEnd() == "OVEROLL")
-                {
-                    labels.Append("@O/R");
-                }
-                else
-                {
-                    labels.Append("@" + item.Row["Track Colour"].ToString().TrimEnd());
-                }
-
-                item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
-                if (item.Row["Fabric Type"] != "")
-                {
-                    labels.Append("@" + item.Row["Fabric Type"].ToString().TrimEnd().Substring(0, item.Row["Fabric Type"].ToString().TrimEnd().Length - 6).TrimEnd());
-                }
-                else
-                {
-                    labels.Append("@");
-                }
-                labels.Append("@" + item.Row["Fabric Colour"].ToString().TrimEnd());
-                labels.Append("@" + item.Row["Trim Type"].ToString().TrimEnd());
-                labels.Append("@" + item.Row["Pull Colour"].ToString().TrimEnd());//Added on 8-10-2016
-                labels.Append("@" + item.Row["Alpha Number"].ToString().TrimEnd() + " " + item.Row["Cut Width"].ToString().TrimEnd());
-                labels.Append("@" + item.Row["Barcode"].ToString().TrimEnd()); /// it's the line number
-                labels.Append("@" + item.Row["Control Side"].ToString().TrimEnd() + " " + item.Row["Blind Number"].ToString().TrimEnd()); //TODO: Suppy cut width here
-                labels.Append("@" + item.Row["Total Blinds"].ToString().TrimEnd());
-                labels.Append("|");
+                    if (item.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
+                    sb.Append("START##\t" + item.Row["Department"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append("ORDER NUMBER\t" + item.Row["CB Number"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append("LINE NUMBER\t" + item.Row["Blind Number"].ToString().TrimEnd() + "\t\t" + Environment.NewLine);
+                    sb.Append("QUANTITY\t" + item.Row["Quantity"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append("MEASURED WIDTH\t" + item.Row["Measured Width"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append("MEASURED DROP\t" + item.Row["Measured Drop"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append(Environment.NewLine);
+                    sb.Append("CONTROL TYPE\t" + item.Row["Control Type"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append(Environment.NewLine);
+                    sb.Append("HEM\t" + Environment.NewLine);
+                    sb.Append("FABRIC TYPE\t" + item.Row["Roll Width"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append(Environment.NewLine);
+                    sb.Append("FABRIC COLOUR\t" + item.Row["Fabric Colour"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append("TRIM TYPE\t" + item.Row["Trim Type"].ToString().TrimEnd() + Environment.NewLine);
+                    item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
+                    bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), TableNumber, UserName, System.DateTime.Now.ToString(), item.Row["Alpha Number"], "FabricCut", item);
 
 
+                    labels.Append("@" + item.Row["CB Number"].ToString().TrimEnd());
+
+                    if (item.Row["Trim Type"].ToString().TrimEnd() == "FIN 36" && item.Row["Control Type"].ToString().TrimEnd() == "Motorised")
+                    {
+                        labels.Append("@" + (Convert.ToInt32((item.Row["Measured Width"].ToString().TrimEnd() == "") ? "0" : item.Row["Measured Width"].ToString().TrimEnd()) + 5).ToString());
+                    }
+                    else
+                    {
+                        labels.Append("@" + item.Row["Measured Width"].ToString().TrimEnd());
+                    }
+
+                    labels.Append("@" + item.Row["Measured Drop"].ToString().TrimEnd());
+                    labels.Append("@" + item.Row["Customer"].ToString().TrimEnd());
+                    labels.Append("@" + item.Row["Department"].ToString().TrimEnd());
+
+
+                    if (item.Row["Track Colour"].ToString().TrimEnd() == "OVEROLL")
+                    {
+                        labels.Append("@O/R");
+                    }
+                    else
+                    {
+                        labels.Append("@" + item.Row["Track Colour"].ToString().TrimEnd());
+                    }
+
+                    item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
+                    if (item.Row["Fabric Type"] != "")
+                    {
+                        labels.Append("@" + item.Row["Fabric Type"].ToString().TrimEnd().Substring(0, item.Row["Fabric Type"].ToString().TrimEnd().Length - 6).TrimEnd());
+                    }
+                    else
+                    {
+                        labels.Append("@");
+                    }
+                    labels.Append("@" + item.Row["Fabric Colour"].ToString().TrimEnd());
+                    labels.Append("@" + item.Row["Trim Type"].ToString().TrimEnd());
+                    labels.Append("@" + item.Row["Pull Colour"].ToString().TrimEnd());//Added on 8-10-2016
+                    labels.Append("@" + item.Row["Alpha Number"].ToString().TrimEnd() + " " + item.Row["Cut Width"].ToString().TrimEnd());
+                    labels.Append("@" + item.Row["Barcode"].ToString().TrimEnd()); /// it's the line number
+                    labels.Append("@" + item.Row["Control Side"].ToString().TrimEnd() + " " + item.Row["Blind Number"].ToString().TrimEnd()); //TODO: Suppy cut width here
+                    labels.Append("@" + item.Row["Total Blinds"].ToString().TrimEnd());
+                    labels.Append("|");
+
+
+                }
+
+
+                string labeldata = labels.ToString().TrimEnd('|');
+
+                writefile(sb.ToString().TrimEnd(), FBRPath, "");
+
+
+
+                PrintLabels(PrinterName + "|" + labeldata);
+
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return new JsonResult(false);
             }
 
-
-            string labeldata = labels.ToString().TrimEnd('|');
-
-            writefile(sb.ToString().TrimEnd(), FBRPath, "");
-
-
-
-            PrintLabels(PrinterName + "|" + labeldata);
-
-            return new JsonResult(true);
         }
 
         [HttpPost("PrintLabelsOnly")]
@@ -1040,7 +1049,8 @@ namespace WindowBlind.Api.Controllers
                     {
                         item.Row["Measured Width"] = (Convert.ToInt32(item.Row["Measured Width"]) - 5).ToString();
                     }
-
+                    else
+                        item.Row["Measured Width"] = "0";
 
                     if (item.Row["Fabric Type"] != "")
                     {
@@ -1111,7 +1121,7 @@ namespace WindowBlind.Api.Controllers
                 #endregion
 
                 #region getting Held Orders
- 
+
                 if (Type == "Normal")
                 {
                     FabricCutterCBDetailsModel newdata = (FabricCutterCBDetailsModel)(await GetHeldObjects(TableName));
@@ -1124,10 +1134,10 @@ namespace WindowBlind.Api.Controllers
                     else
                         Data = newdata;
                 }
-                 #endregion
-                
+                #endregion
+
                 Data.ColumnNames.Add("Roll Width");
-                
+
                 return new JsonResult(Data);
 
             }
