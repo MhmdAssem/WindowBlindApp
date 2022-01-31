@@ -657,7 +657,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
           this.Data = data.rows;
 
-          this.updateTable();
+          
 
           setTimeout(() => {
             let cntr = 0;
@@ -670,7 +670,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             });
           }, 40);
           setTimeout(() => {
-
+            this.updateTable();
             $("#Custom_Table_Pagination").html("");
             $("#Custom_Table_Info").html("");
             $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
@@ -688,17 +688,13 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Urgent").subscribe(data => {
 
         if (data && data.columnNames.length != 0) {
-
-
-          setTimeout(() => {
-            this.updateTable();
-          }, 50);
+          this.ClearTable();
 
           this.tableModelColNames = data.columnNames
 
           this.UrgentData = data.rows;
 
-          this.updateTable();
+          
 
           setTimeout(() => {
             let cntr = 0;
@@ -711,7 +707,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             });
           }, 40);
           setTimeout(() => {
-
+            this.updateTable();
             $("#Custom_Table_Pagination").html("");
             $("#Custom_Table_Info").html("");
             $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
