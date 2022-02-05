@@ -87,8 +87,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       searching: false,
       destroy: true,
       ordering: true,
-      //pageLength: 4,
-      paging: false,
+      pageLength: 4,
+      paging: true,
       info: false
     };
 
@@ -98,8 +98,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       searching: false,
       destroy: true,
       ordering: true,
-      //pageLength: 4,
-      paging: false,
+      pageLength: 4,
+      paging: true,
       info: false
 
     };
@@ -110,8 +110,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       searching: false,
       destroy: true,
       ordering: true,
-      //pageLength: 4,
-      paging: false,
+      pageLength: 4,
+      paging: true,
       info: false
     };
 
@@ -121,8 +121,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       searching: false,
       destroy: true,
       ordering: true,
-      //pageLength: 4,
-      paging: false,
+      pageLength: 4,
+      paging: true,
       info: false
 
     };
@@ -649,7 +649,9 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           });
           
          
-          this.ClearTable();  
+          setTimeout(() => {
+            this.updateTable();
+          }, 50);
         
           
           
@@ -710,10 +712,10 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           }, 40);
           setTimeout(() => {
 
-            $("#Custom_Table_Pagination").html("");
-            $("#Custom_Table_Info").html("");
-            $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-            $("#dScenario-table_info").appendTo('#Custom_Table_Info');
+            $("#UrgentCustom_Table_Pagination").html("");
+            $("#UrgentCustom_Table_Info").html("");
+            $("#UrgentdScenario-table_paginate").appendTo('#UrgentCustom_Table_Pagination');
+            $("#UrgentdScenario-table_info").appendTo('#UrgentCustom_Table_Info');
             (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
               behavior: 'smooth',
               block: 'start'
