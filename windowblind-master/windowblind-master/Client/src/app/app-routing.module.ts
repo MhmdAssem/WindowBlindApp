@@ -14,6 +14,7 @@ import { PackingStationComponent } from './packing-station/packing-station.compo
 import { PreEzStopComponent } from './Pre-EzStop/pre-ez-stop.component';
 import { ReportStationComponent } from './report-station/report-station.component';
 import { SettingsComponent } from './settings/settings.component';
+import { TablesComponent } from './tables/tables.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UsersComponent } from './users/users.component';
 
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: 'Report-Station', component: ReportStationComponent, canActivate: [AuthGuard] },
   { path: 'Holding-Station', component: HoldingStationComponent, canActivate: [AuthGuard] },
   { path: 'Pre-EzStop', component: PreEzStopComponent, canActivate: [AuthGuard] },
+  { path: 'Tables', component: TablesComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/Home', pathMatch: 'full' },
   { path: 'Home', component: HomeComponent, canActivate:[AuthGuard] }
 ];

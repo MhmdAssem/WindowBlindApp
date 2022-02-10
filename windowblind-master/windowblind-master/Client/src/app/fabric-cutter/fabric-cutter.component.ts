@@ -14,6 +14,9 @@ import { HoldingStationService } from '../holding-station/holding-station.servic
 import { RejectionModel } from '../holding-station/RejectionModel';
 import { data } from 'jquery';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { PeriodicElement } from '../tables/tables.component';
+import { MatPaginator } from '@angular/material/paginator';
 
 
 @Component({
@@ -59,14 +62,38 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   Printing = false;
   Creating = false;
   SearchType = false;
+  testCntr = 0;
 
   CurrentTab: number;
   AutoUploadedSelectedRows: string[] = [];
 
   ButtonIsDisabled = false;
+  //// For Mat tables
+  //// for the normal table
+  @ViewChild('Datatable', { static: false }) Datatable: MatTable<any>;
+  DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+  tableModelColNamesWithActions: string[] = [];
+  @ViewChild('paginator', { static: false }) paginator: MatPaginator;
+
+  ///for the normal review table
+  @ViewChild('ReviewDatatable', { static: false }) ReviewDatatable: MatTable<any>;
+  ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+  ReviewtableModelColNamesWithActions: string[] = [];
+  @ViewChild('Reviewpaginator', { static: false }) Reviewpaginator: MatPaginator;
+
+  /// for the urgent table
+  @ViewChild('UrgentDatatable', { static: false }) UrgentDatatable: MatTable<any>;
+  UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+  @ViewChild('Urgentpaginator', { static: false }) Urgentpaginator: MatPaginator;
+
+  /// for the urgent review table
+  @ViewChild('UrgentReviewDatatable', { static: false }) UrgentReviewDatatable: MatTable<any>;
+  UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+  @ViewChild('UrgentReviewpaginator', { static: false }) UrgentReviewpaginator: MatPaginator;
 
   ngOnInit(): void {
     let Ts = this;
+    this.testCntr = 0;
 
     this.PrinterTableDictionary = {};
     this.CurrentTab = -1;
@@ -88,7 +115,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       destroy: true,
       ordering: true,
       pageLength: 4,
-      paging: true,
+      //paging: true,
       info: false
     };
 
@@ -99,7 +126,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       destroy: true,
       ordering: true,
       pageLength: 4,
-      paging: true,
+      //paging: true,
       info: false
 
     };
@@ -111,7 +138,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       destroy: true,
       ordering: true,
       pageLength: 4,
-      paging: true,
+      //paging: true,
       info: false
     };
 
@@ -122,7 +149,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       destroy: true,
       ordering: true,
       pageLength: 4,
-      paging: true,
+      //paging: true,
       info: false
 
     };
@@ -148,53 +175,12 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     })
   }
 
-  ngAfterViewInit(): void {
-
+  ngAfterViewInit() {
+    this.DataSource.paginator = this.paginator;
+    this.ReviewDataSource.paginator = this.Reviewpaginator;
   }
 
-  updateTable() {
-    try {
 
-      this.dtElements.forEach((dtElement: DataTableDirective) => {
-        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy(); // Will be ok on last dataTable, will fail on previous instances
-          //dtInstance.data().clear();
-          dtElement.dtTrigger.next();
-          console.log("Try");
-        });
-      });
-    }
-    catch {
-      this.dtTrigger.next();
-      this.dtTriggerReview.next();
-      this.UrgentdtTrigger.next();
-      this.UrgentdtTriggerReview.next();
-      console.log("Catch");
-    }
-  }
-
-  ClearTable() {
-    try {
-
-      this.dtElements.forEach((dtElement: DataTableDirective) => {
-        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          //dtInstance.destroy(); // Will be ok on last dataTable, will fail on previous instances
-          dtInstance.data().clear();
-          dtElement.dtTrigger.next();
-          console.log("Try");
-        });
-      });
-    }
-    catch {
-      this.dtTrigger.next();
-      this.dtTriggerReview.next();
-      this.UrgentdtTrigger.next();
-      this.UrgentdtTriggerReview.next();
-      console.log("Catch");
-    }
-  }
-  
-  
   GetCBDetails() {
     let cb = (document.getElementById("CBNumber") as HTMLInputElement).value.trim();
     if (cb == "") { alert("Please enter a valid CB"); return; }
@@ -207,20 +193,27 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
     this.FBRservice.getCBNumberDetails(cb.toString()).subscribe(data => {
       if (data && data.columnNames.length != 0) {
-        setTimeout(() => {
-          this.updateTable();
-        }, 50);
 
-        this.tableModelColNames = data.columnNames
+
+        this.tableModelColNames = data.columnNames;
+        this.tableModelColNamesWithActions = [...data.columnNames];
+
         this.ReviewtableModelColNames.push("Blind Number");
         this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+        this.ReviewtableModelColNamesWithActions = [...this.ReviewtableModelColNames];
+
+        this.tableModelColNamesWithActions.push('SelectColumn')
+        this.ReviewtableModelColNamesWithActions.push('SelectColumn')
 
         this.Data = this.Data.concat(data.rows);
-
-
+        this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+        this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
         setTimeout(() => {
-          this.updateTable();
-        }, 0);
+          this.DataSource.paginator = this.paginator;
+          this.ReviewDataSource.paginator = this.Reviewpaginator;
+          this.UpdateMatTables();
+        }, 100);
+
         let cntr = 0;
 
         setTimeout(() => {
@@ -232,14 +225,6 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           });
         }, 40);
 
-        setTimeout(() => {
-          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 500);
-
-
       }
       this.Loading = false;
 
@@ -249,7 +234,6 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
   SelectThisRow(ind) {
 
-
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     if (tableName == 'DefaultTableName') {
       alert("Please Choose a valid Table Name");
@@ -257,10 +241,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     }
 
     if (this.CurrentTab <= 0) {
-
-      (document.getElementById("TableViewReview") as HTMLElement).style.display = '';
-
-
+      ind += this.paginator.pageIndex * this.paginator.pageSize;
       this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.Data[ind].blindNumbers.length;
       this.ReviewDataWithBlindsObjects[this.Data[ind].uniqueId] = JSON.parse(JSON.stringify(this.Data[ind]));
 
@@ -275,27 +256,20 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         this.BlindNumbers.push(this.Data[ind].blindNumbers[i]);
       }
       this.ReviewData.sort((a, b) => a.row['Blind Number'].localeCompare(b.row['Blind Number']));
-
       this.Data.splice(ind, 1);
 
-      this.updateTable();
+      this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+      this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
       setTimeout(() => {
-
-        $("#Custom_Table_Pagination").html("");
-        $("#Custom_Table_Info").html("");
-
-        $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-        $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-        (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        this.DataSource.paginator = this.paginator;
+        this.ReviewDataSource.paginator = this.Reviewpaginator;
+        this.UpdateMatTables();
       }, 100);
+
+
     }
     else {
-      (document.getElementById("UrgentTableViewReview") as HTMLElement).style.display = '';
-
-
+      ind += this.Urgentpaginator.pageIndex * this.Urgentpaginator.pageSize;
       this.UrgentReviewDataWithBlindsNumbers[this.UrgentData[ind].uniqueId] = this.UrgentData[ind].blindNumbers.length;
       this.UrgentReviewDataWithBlindsObjects[this.UrgentData[ind].uniqueId] = JSON.parse(JSON.stringify(this.UrgentData[ind]));
 
@@ -310,22 +284,16 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         this.UrgentReviewData.push(NewEntry);
         this.UrgentBlindNumbers.push(this.UrgentData[ind].blindNumbers[i]);
       }
-
+      this.UrgentReviewData.sort((a, b) => a.row['Blind Number'].localeCompare(b.row['Blind Number']));
       this.UrgentData.splice(ind, 1);
 
-      this.updateTable();
-
+      this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+      this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
       setTimeout(() => {
-
-
-        (document.getElementById('UrgenttheSelectColumn') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        this.UrgentdataSource.paginator = this.Urgentpaginator;
+        this.UrgentreviewdataSource.paginator = this.UrgentReviewpaginator;
+        this.UpdateMatTables();
       }, 100);
-
-
-
     }
 
 
@@ -334,6 +302,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   UnSelectThisRow(ind, local = false) {
 
     if (this.CurrentTab <= 0) {
+      ind += this.Reviewpaginator.pageIndex * this.Reviewpaginator.pageSize;
+
       this.ReviewDataWithBlindsNumbers[this.ReviewData[ind].uniqueId]--;
 
       if (this.ReviewDataWithBlindsNumbers[this.ReviewData[ind].uniqueId] == 0) {
@@ -360,13 +330,19 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
       this.ReviewData.splice(ind, 1);
 
-      if (local == false)
-        this.updateTable();
+      this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+      this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
 
-      if (this.ReviewData.length == 0)
-        (document.getElementById("TableViewReview") as HTMLElement).style.display = 'none';
+      setTimeout(() => {
+        this.DataSource.paginator = this.paginator;
+        this.ReviewDataSource.paginator = this.Reviewpaginator;
+        this.UpdateMatTables();
+      }, 100);
+
+
     }
     else {
+      ind += this.UrgentReviewpaginator.pageIndex * this.UrgentReviewpaginator.pageSize;
 
       this.UrgentReviewDataWithBlindsNumbers[this.UrgentReviewData[ind].uniqueId]--;
 
@@ -382,11 +358,13 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       }
       this.UrgentReviewData.splice(ind, 1);
 
-      if (local == false)
-        this.updateTable();
-
-      if (this.UrgentReviewData.length == 0)
-        (document.getElementById("UrgentTableViewReview") as HTMLElement).style.display = 'none';
+      this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+      this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+      setTimeout(() => {
+        this.UrgentdataSource.paginator = this.Urgentpaginator;
+        this.UrgentreviewdataSource.paginator = this.UrgentReviewpaginator;
+        this.UpdateMatTables();
+      }, 100);
     }
   }
 
@@ -412,7 +390,13 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             this.AutoUploadedSelectedRows = [];
             this.Printing = false;
             this.ReviewData = [];
-            this.updateTable();
+            this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+            this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+            setTimeout(() => {
+              this.DataSource.paginator = this.paginator;
+              this.ReviewDataSource.paginator = this.Reviewpaginator;
+              this.UpdateMatTables();
+            }, 100);
           });
 
 
@@ -429,8 +413,13 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             this.UrgentAutoUploadedSelectedRows = [];
             this.Printing = false;
             this.UrgentReviewData = [];
-            this.updateTable();
-
+            this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+            this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+            setTimeout(() => {
+              this.UrgentdataSource.paginator = this.Urgentpaginator;
+              this.UrgentreviewdataSource.paginator = this.UrgentReviewpaginator;
+              this.UpdateMatTables();
+            }, 100);
           });
 
 
@@ -441,7 +430,13 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
           this.Printing = false;
           this.ReviewData = [];
-          this.updateTable();
+          this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+          this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+          setTimeout(() => {
+            this.DataSource.paginator = this.paginator;
+            this.ReviewDataSource.paginator = this.Reviewpaginator;
+            this.UpdateMatTables();
+          }, 100);
 
         });
 
@@ -470,7 +465,14 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             this.AutoUploadedSelectedRows = [];
             this.Creating = false;
             this.ReviewData = [];
-            this.updateTable();
+            this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+            this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+
+            setTimeout(() => {
+              this.DataSource.paginator = this.paginator;
+              this.ReviewDataSource.paginator = this.Reviewpaginator;
+              this.UpdateMatTables();
+            }, 100);
 
           });
 
@@ -488,7 +490,13 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             this.UrgentAutoUploadedSelectedRows = [];
             this.Creating = false;
             this.UrgentReviewData = [];
-            this.updateTable();
+            this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+            this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+            setTimeout(() => {
+              this.UrgentdataSource.paginator = this.Urgentpaginator;
+              this.UrgentreviewdataSource.paginator = this.UrgentReviewpaginator;
+              this.UpdateMatTables();
+            }, 100);
 
           });
 
@@ -499,7 +507,14 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
           this.Creating = false;
           this.ReviewData = [];
-          this.updateTable();
+          this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+          this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+
+          setTimeout(() => {
+            this.DataSource.paginator = this.paginator;
+            this.ReviewDataSource.paginator = this.Reviewpaginator;
+            this.UpdateMatTables();
+          }, 100);
 
         });
     }
@@ -524,7 +539,14 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       this.FBRservice.ClearOrdersFromFabricCutter(Data, UserName, tableName).subscribe(ans => {
 
         this.ReviewData.splice(0);
-        this.updateTable();
+        this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+        this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+
+        setTimeout(() => {
+          this.DataSource.paginator = this.paginator;
+          this.ReviewDataSource.paginator = this.Reviewpaginator;
+          this.UpdateMatTables();
+        }, 100);
 
       });
     }
@@ -536,7 +558,14 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       };
       this.FBRservice.ClearOrdersFromFabricCutter(Data, UserName, tableName).subscribe(ans => {
         this.UrgentReviewData.splice(0);
-        this.updateTable();
+        this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+        this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+        setTimeout(() => {
+          this.UrgentdataSource.paginator = this.Urgentpaginator;
+          this.UrgentreviewdataSource.paginator = this.UrgentReviewpaginator;
+          this.UpdateMatTables();
+        }, 100);
+
       });
     }
 
@@ -551,14 +580,28 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           this.ReviewData.forEach(element => {
             element.row['Roll Width'] = res;
           });
-          this.updateTable();
+          this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+          this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+          setTimeout(() => {
+            this.DataSource.paginator = this.paginator;
+            this.ReviewDataSource.paginator = this.Reviewpaginator;
+            this.UpdateMatTables();
+          }, 100);
+
 
         }
         else {
           this.UrgentReviewData.forEach(element => {
             element.row['Roll Width'] = res;
           });
-          this.updateTable();
+          this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+          this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+          setTimeout(() => {
+            this.UrgentdataSource.paginator = this.Urgentpaginator;
+            this.UrgentreviewdataSource.paginator = this.UrgentReviewpaginator;
+            this.UpdateMatTables();
+          }, 100);
+
 
         }
       }
@@ -574,7 +617,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
 
     let RejectionModels: RejectionModel[] = [];
-    if (this.CurrentTab <= 0)
+    if (this.CurrentTab <= 0) {
       this.ReviewData.forEach(element => {
         let RejectionModel: RejectionModel =
         {
@@ -589,7 +632,25 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         };
         RejectionModels.push(RejectionModel);
       });
-    else
+
+      this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
+
+        this.ReviewData = [];
+
+        this.ReviewDataWithBlindsNumbers = {};
+
+        this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+        this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+
+        setTimeout(() => {
+          this.DataSource.paginator = this.paginator;
+          this.ReviewDataSource.paginator = this.Reviewpaginator;
+          this.UpdateMatTables();
+        }, 100);
+        this.HoldLoading = false;
+      });
+    }
+    else {
       this.UrgentReviewData.forEach(element => {
         let RejectionModel: RejectionModel =
         {
@@ -605,19 +666,24 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         RejectionModels.push(RejectionModel);
       });
 
-    this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
+      this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
 
-      this.ReviewData = [];
+        this.UrgentReviewData = [];
 
-      this.ReviewDataWithBlindsNumbers = {};
+        this.UrgentReviewDataWithBlindsNumbers = {};
 
-      setTimeout(() => {
-        this.ClearTable();
-      }, 50);
+        this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+        this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+        setTimeout(() => {
+          this.UrgentdataSource.paginator = this.Urgentpaginator;
+          this.UrgentreviewdataSource.paginator = this.UrgentReviewpaginator;
+          this.UpdateMatTables();
+        }, 100);
 
+        this.HoldLoading = false;
+      });
+    }
 
-      this.HoldLoading = false;
-    });
 
   }
 
@@ -640,24 +706,27 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       //normal
       this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Normal").subscribe(data => {
 
-        if (data && data.columnNames.length != 0) {
+        if (data && data.rows.length != 0 && data.columnNames.length != 0) {
 
-          this.tableModelColNames = data.columnNames
+          this.tableModelColNames = data.columnNames;
+          this.tableModelColNamesWithActions = [...data.columnNames];
+          this.ReviewtableModelColNames = [];
           this.ReviewtableModelColNames.push("Blind Number");
-          data.columnNames.forEach((order: any) => {
-            this.ReviewtableModelColNames.push(order);
-          });
-          
-         
-          setTimeout(() => {
-            this.updateTable();
-          }, 50);
-        
-          
-          
-          this.Data = data.rows;
+          this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+          this.ReviewtableModelColNamesWithActions = [...this.ReviewtableModelColNames];
 
-          this.updateTable();
+          this.tableModelColNamesWithActions.push('SelectColumn')
+          this.ReviewtableModelColNamesWithActions.push('SelectColumn')
+
+          this.Data = this.Data.concat(data.rows);
+          this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+          this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+          setTimeout(() => {
+            this.DataSource.paginator = this.paginator;
+            this.ReviewDataSource.paginator = this.Reviewpaginator;
+            this.UpdateMatTables();
+          }, 100);
+
 
           setTimeout(() => {
             let cntr = 0;
@@ -669,17 +738,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
               cntr++;
             });
           }, 40);
-          setTimeout(() => {
 
-            $("#Custom_Table_Pagination").html("");
-            $("#Custom_Table_Info").html("");
-            $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-            $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-            (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }, 500);
         }
 
       });
@@ -687,18 +746,27 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       // get Urgent
       this.FBRservice.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Urgent").subscribe(data => {
 
-        if (data && data.columnNames.length != 0) {
-          
+        if (data && data.rows.length != 0 && data.columnNames.length != 0) {
+
+          this.tableModelColNames = [...data.columnNames];
+          this.tableModelColNamesWithActions = [...data.columnNames];
+          this.ReviewtableModelColNames = [];
+          this.ReviewtableModelColNames.push("Blind Number");
+          this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+          this.ReviewtableModelColNamesWithActions = [...this.ReviewtableModelColNames];
+
+          this.tableModelColNamesWithActions.push('SelectColumn')
+          this.ReviewtableModelColNamesWithActions.push('SelectColumn')
+          this.UrgentData = this.UrgentData.concat(data.rows);
+          this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+          this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
 
           setTimeout(() => {
-            this.updateTable();
-          }, 50);
+            this.UrgentdataSource.paginator = this.Urgentpaginator;
+            this.UrgentreviewdataSource.paginator = this.UrgentReviewpaginator;
+            this.UpdateMatTables();
+          }, 100);
 
-          this.tableModelColNames = data.columnNames
-        
-          this.UrgentData = data.rows;
-
-          this.updateTable();
 
           setTimeout(() => {
             let cntr = 0;
@@ -710,17 +778,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
               cntr++;
             });
           }, 40);
-          setTimeout(() => {
 
-            $("#UrgentCustom_Table_Pagination").html("");
-            $("#UrgentCustom_Table_Info").html("");
-            $("#UrgentdScenario-table_paginate").appendTo('#UrgentCustom_Table_Pagination');
-            $("#UrgentdScenario-table_info").appendTo('#UrgentCustom_Table_Info');
-            (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }, 500);
         }
 
       });
@@ -734,14 +792,29 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
         data => {
           if (data && data.columnNames.length != 0) {
 
-            this.tableModelColNames = data.columnNames
+            this.tableModelColNames = data.columnNames;
+            this.tableModelColNamesWithActions = [...data.columnNames];
+            this.ReviewtableModelColNames = [];
             this.ReviewtableModelColNames.push("Blind Number");
             this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+            this.ReviewtableModelColNamesWithActions = [...this.ReviewtableModelColNames];
+
+            this.tableModelColNamesWithActions.push('SelectColumn')
+            this.ReviewtableModelColNamesWithActions.push('SelectColumn')
 
             this.Data = this.Data.concat(data.rows);
-
-            let cntr = 0;
+            this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+            this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
             setTimeout(() => {
+              this.DataSource.paginator = this.paginator;
+              this.ReviewDataSource.paginator = this.Reviewpaginator;
+              this.UpdateMatTables();
+            }, 100);
+
+
+            setTimeout(() => {
+              let cntr = 0;
+
               this.Data.forEach(element => {
                 if (element.row['FromHoldingStation'] == 'YES') {
                   (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
@@ -801,5 +874,30 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     this.UrgentReviewData = [];
     this.UrgentReviewDataWithBlindsNumbers = {}
     this.UrgentReviewDataWithBlindsObjects = {}
-   }
+  }
+
+  UpdateMatTables() {
+    try {
+      this.Datatable.renderRows();
+    }
+    catch (e) { }
+
+    try {
+      this.ReviewDatatable.renderRows();
+    }
+    catch (e) { }
+
+    try {
+      this.UrgentDatatable.renderRows();
+    }
+    catch (e) { }
+
+    try {
+      this.UrgentReviewDatatable.renderRows();
+    }
+    catch (e) { }
+
+  }
+
+
 }

@@ -834,7 +834,7 @@ namespace WindowBlind.Api.Controllers
 
                 /// first Get all Files that Starts with the TableName
 
-                var files = AutoUploadFolder.GetFiles().Where(file => file.Name.Contains(TableName + "_" + Shift)).ToList();
+                var files = AutoUploadFolder.GetFiles().Where(file => file.Name.Contains(TableName + "_" + Shift) && !file.Name.Contains("Urgent")).ToList();
                 if (Type == "Urgent")
                     files = AutoUploadFolder.GetFiles().Where(file => file.Name.Contains("Urgent_" + TableName + "_" + Shift)).ToList();
 
