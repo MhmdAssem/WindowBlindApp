@@ -23,12 +23,12 @@ namespace WindowBlind.Api.Controllers
 
         public FabricCutter(IRepository repository, IWebHostEnvironment env)
         {
-            path = "";
+
             _repository = repository;
             _env = env;
         }
         private IRepository _repository;
-        private string path;
+
         private IWebHostEnvironment _env;
         Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
         string ctbsodumpPath, SheetNamePath, FBRPath, DeductionPath, LathePath;
@@ -173,6 +173,7 @@ namespace WindowBlind.Api.Controllers
                         row["Control Type"] = "";
                         row["Pull Colour/Bottom Weight/Wand Len"] = "";
 
+
                         int RowQty = 0;
                         for (int j = start.Column; j <= end.Column; j++)
                         {
@@ -286,7 +287,7 @@ namespace WindowBlind.Api.Controllers
             catch (Exception e)
             {
 
-                throw;
+                return new FabricCutterCBDetailsModel();
             }
 
         }
@@ -818,10 +819,10 @@ namespace WindowBlind.Api.Controllers
                 var check = CheckingPaths();
 
                 if (!check) return new JsonResult(false);
-                var AutoUploadDirSetting = await _repository.Settings.FindAsync(e => e.settingName == "AutoUploadDir");
+                var AutoUploadDirSetting = await _repository.Settings.FindAsync(e => e.settingName == "AutoUploadDir" && e.applicationSetting == "_FabricCutter");
                 var AutoUploadDirPath = AutoUploadDirSetting.FirstOrDefault().settingPath;
 
-                var ViewedUploadsSetting = await _repository.Settings.FindAsync(e => e.settingName == "ViewedUploadsDir");
+                var ViewedUploadsSetting = await _repository.Settings.FindAsync(e => e.settingName == "ViewedUploadsDir" && e.applicationSetting == "_FabricCutter");
                 var ViewedUplaodsPath = ViewedUploadsSetting.FirstOrDefault().settingPath;
 
                 var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
@@ -855,8 +856,7 @@ namespace WindowBlind.Api.Controllers
                         var end = worksheet.Dimension.End;
                         bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
                         var last = end.Column;
-                        worksheet.Cells[1, last].Value = "done";
-                        worksheet.Cells[1, last + 1].Value = "Processed By";
+                         
                         for (int i = start.Row + 1; i <= end.Row; i++)
                         {
                             Dictionary<string, string> row = new Dictionary<string, string>();
@@ -869,6 +869,7 @@ namespace WindowBlind.Api.Controllers
                             row["Cntrl Side"] = "";
                             row["Control Type"] = "";
                             row["Pull Colour/Bottom Weight/Wand Len"] = "";
+                            row["BlueSleeve"] = "";
                             int RowQty = 0;
                             for (int j = start.Column; j <= end.Column; j++)
                             {
@@ -893,8 +894,7 @@ namespace WindowBlind.Api.Controllers
 
 
                             }
-                            worksheet.Cells[i, last].Value = "No";
-                            worksheet.Cells[i, last + 1].Value = UserName;
+                            
                             FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                             for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
                             {
@@ -914,7 +914,8 @@ namespace WindowBlind.Api.Controllers
                                 Shift = Shift,
                                 UserName = UserName,
                                 TableName = TableName,
-                                Type = Type
+                                Type = Type,
+                                Station = "FabricCut"
                             };
 
                             await _repository.AutoUploads.InsertOneAsync(model);
@@ -939,7 +940,7 @@ namespace WindowBlind.Api.Controllers
 
                 /// getting Data from db 
 
-                var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type).Result.ToListAsync();
+                var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type && res.Station == "FabricCut").Result.ToListAsync();
                 var FirstFileName = "";
                 var FirstFileCreationTime = "";
 
@@ -1055,7 +1056,7 @@ namespace WindowBlind.Api.Controllers
                     if (item.Row["Fabric Type"] != "")
                     {
                         var fab = item.Row["Fabric Type"].TrimEnd();
-                        if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.LastIndexOf(' ') ==-1?fab.Length: fab.LastIndexOf(' ')).TrimEnd()))
+                        if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.LastIndexOf(' ') == -1 ? fab.Length : fab.LastIndexOf(' ')).TrimEnd()))
                         {
                             item.Row["Roll Width"] = FabricRollwidth[fab.Substring(0, fab.LastIndexOf(' ') == -1 ? fab.Length : fab.LastIndexOf(' ')).TrimEnd()].ToLower().Replace("mm", "");
                         }
@@ -1134,10 +1135,10 @@ namespace WindowBlind.Api.Controllers
                     else
                         Data = newdata;
                 }
-                  #endregion
- 
-                
- 
+                #endregion
+
+
+
                 Data.ColumnNames.Add("Roll Width");
 
                 return new JsonResult(Data);
@@ -1196,19 +1197,20 @@ namespace WindowBlind.Api.Controllers
 
                 var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "FabricCut" && rej.TableName == tableName).Result.ToListAsync();
 
-                foreach (var item in HeldObjects)
-                {
+                Parallel.ForEach(HeldObjects, item =>
+                 {
+                     var HeldData = ReadingData(item.Row.Row["CB Number"]);
 
-                    var HeldData = ReadingData(item.Row.Row["CB Number"]);
+                     FabricCutProcess(ref HeldData);
+                     if (HeldData.Rows.Count != 0)
 
-                    FabricCutProcess(ref HeldData);
-
-
-                    Data.Rows.Add(HeldData.Rows.Where(e => e.Row["Line No"] == item.Row.Row["Line No"]).FirstOrDefault());
-                    Data.Rows[Data.Rows.Count - 1].Row["FromHoldingStation"] = "YES";
-                    Data.Rows[Data.Rows.Count - 1].UniqueId = item.Row.UniqueId;
-                    Data.ColumnNames = HeldData.ColumnNames;
-                }
+                     {
+                         Data.Rows.Add(HeldData.Rows.Where(e => e.Row["Line No"] == item.Row.Row["Line No"]).FirstOrDefault());
+                         Data.Rows[Data.Rows.Count - 1].Row["FromHoldingStation"] = "YES";
+                         Data.Rows[Data.Rows.Count - 1].UniqueId = item.Row.UniqueId;
+                         Data.ColumnNames = HeldData.ColumnNames;
+                     }
+                 });
 
                 return Data;
 

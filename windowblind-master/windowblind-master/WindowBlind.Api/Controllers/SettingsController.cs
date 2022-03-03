@@ -144,13 +144,13 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("GetSearchType")]
-        public async Task<IActionResult> GetSearchType()
+        public async Task<IActionResult> GetSearchType([FromHeader] string applicationType)
         {
             try
             {
-                var val = await Repository.Settings.FindAsync(setting => setting.settingName == "SearchType").Result.FirstOrDefaultAsync();
+                var val = await Repository.Settings.FindAsync(setting => setting.settingName == "SearchType" && setting.applicationSetting == applicationType).Result.FirstOrDefaultAsync();
 
-                return new JsonResult(val.settingPath == "CB_Line_Number_Search");
+                return new JsonResult(val.settingPath.Contains("CB_Line_Number_Search"));
             }
             catch (Exception e)
             {

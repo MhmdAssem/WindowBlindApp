@@ -72,11 +72,11 @@
 
 
   </div>
-  
+
 
 
   <div class="row" style="padding-bottom: 7px;margin-left: 1px;margin-top: 30px;">
-    <div >
+    <div>
       <label> Add Reason for Holding</label>
       <input type="text" id="NewComment" style="margin-left: 2px;width: 500px;">
       <button class="btn btn-primary" style="margin-left: 2px;" (click)="AddNewComment()">Add</button>
@@ -86,7 +86,8 @@
 
 
   <div class="table-responsive mt-3" id="CommentsTable">
-    <table datatable [dtOptions]="dtOptionsComments" class="table table-bordered" id="CommentsTable" [dtTrigger]="dtTriggerComments">
+    <table datatable [dtOptions]="dtOptionsComments" class="table table-bordered" id="CommentsTable"
+      [dtTrigger]="dtTriggerComments">
       <thead class="bg-light">
         <tr id="DataTableHeader2">
           <th class="align-baseline  mw-200" *ngFor="let col of CommentColumns; let i=index"
@@ -142,12 +143,14 @@
       <div class="FabricCutter settings">
         <h2 style="margin-left: 400px;"> FabricCutter Settings</h2>
 
-        <p>Please select type:</p>
-          <input type="radio" id="CB_Line_Number_Search" name="fav_language" value="CB_Line_Number_Search"
-          checked="checked" (click)="RadioOn('CB_Line_Number_Search')">
-          <label for="CB_Line_Number_Search">CB/Line Number Search</label><br>
-          <input type="radio" id="AutoUpload" name="fav_language" value="AutoUpload" (click)="RadioOn('AutoUpload')">
-          <label for="AutoUpload">Auto Upload</label><br>
+        <mat-radio-group>
+            <mat-radio-button id="CB_Line_Number_Search" value="CB_Line_Number_Search" checked="{{FabricCBSearch}}"
+            (click)="RadioOn('CB_Line_Number_Search','FabricCut')">CB/Line Number Search</mat-radio-button>
+            
+            <mat-radio-button id="AutoUpload" value="AutoUpload" (click)="RadioOn('AutoUpload','FabricCut')" checked="{{!FabricCBSearch}}">Auto Upload
+          </mat-radio-button>
+          <br>
+        </mat-radio-group>
 
         <div class="row">
           <div class="col-md-6" style="margin-top: 70px;">
@@ -191,6 +194,20 @@
       <div class="LogCut settings">
         <h2 style="margin-left: 400px;"> LogCut Settings</h2>
 
+        
+        <mat-radio-group>
+            <mat-radio-button id="LogCut_CB_Line_Number_Search" value="LogCut_CB_Line_Number_Search" checked="{{LogCutCBSearch}}"
+            (click)="RadioOn('LogCut_CB_Line_Number_Search','LogCut')">CB/Line Number Search</mat-radio-button>
+            
+            <mat-radio-button id="LogCutAutoUpload" value="LogCutAutoUpload" (click)="RadioOn('AutoUpload','LogCut')" checked="{{!LogCutCBSearch}}">Auto Upload
+          </mat-radio-button>
+          <br>
+        </mat-radio-group>
+        
+        
+       
+
+
         <div class="row">
           <div class="col-md-6" style="margin-top: 70px;">
             <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
@@ -203,6 +220,17 @@
                   value="{{FileSetting.settingPath}}">
               </div>
 
+            </div>
+
+            <div class="row" *ngIf="LogCutAutoUpload">
+
+              <div class="col-3"><Label id="LogCutAutoUploadDir"> Upload Folder:</Label></div>
+              <div class="col-9" style="margin-top: -10px;"><input class="form-control" type="text"
+                  id="ID_LogCutAutoUploadDir" value="{{LogCutAutoUploadPath}}"></div>
+
+              <div class="col-3"><Label id="LogCutViewedUploadDir"> Viewed Folder:</Label></div>
+              <div class="col-9" style="margin-top: -10px;"><input class="form-control" type="text"
+                  id="ID_LogCutViewedUploadDir" value="{{LogCutViewedUploadsPath}}"></div>
             </div>
           </div>
 

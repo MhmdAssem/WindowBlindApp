@@ -33,7 +33,7 @@ export class ReportStationComponent implements OnInit {
   ReviewData: FabricCutterCBDetailsModelTableRow[] = [];
   RefreshLoading: boolean = false;
   SendLoading: boolean = false;
-  Loading:boolean = false;
+  Loading: boolean = false;
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   PrinterTableDictionary = {};
   ngOnInit(): void {
@@ -59,7 +59,7 @@ export class ReportStationComponent implements OnInit {
     };
 
   }
-      
+
   updateTable() {
     try {
       this.dtElements.forEach((dtElement: DataTableDirective) => {
@@ -88,7 +88,7 @@ export class ReportStationComponent implements OnInit {
 
     this.reportservice.GenerateReports(cb).subscribe(data => {
 
-      if (data && data.rows.length !=0 && data.columnNames.length != 0) {
+      if (data && data.rows.length != 0 && data.columnNames.length != 0) {
         setTimeout(() => {
           this.updateTable();
         }, 50);
@@ -112,6 +112,7 @@ export class ReportStationComponent implements OnInit {
       }
       if (this.Data.length == 0)
         alert("This CB or Line number is not found !");
+      (document.getElementById("CBNumber") as HTMLInputElement).value = "";
       this.Loading = false;
     });
 

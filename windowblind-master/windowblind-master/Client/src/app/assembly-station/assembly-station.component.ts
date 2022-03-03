@@ -233,6 +233,7 @@ export class AssemblyStationComponent implements OnInit {
       if (this.Data.length == 0)
         alert("This CB or Line number is not found !");
       this.CBLoading = false;
+      (document.getElementById("CBNumber") as HTMLInputElement).value = "";
     });
 
   }

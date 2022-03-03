@@ -33,7 +33,7 @@ namespace WindowBlind.Api.Controllers
         string ctbsodumpPath, SheetNamePath, FBRPath, DeductionPath, LathePath, FabricPath, DropPath;
         int TotalQty;
         List<string> SelectedColumnsPath;
-        int generalBlindNumber;
+
         Dictionary<string, string> FabricRollwidth;
         Dictionary<string, int> ControlTypevalues;
         Dictionary<string, List<string>> LatheType;
@@ -131,7 +131,7 @@ namespace WindowBlind.Api.Controllers
             if (!file.Exists) return null;
             List<string> names = new List<string>();
             //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
-            generalBlindNumber = 1;
+
 
 
             FabricRollwidth = new Dictionary<string, string>();
@@ -350,8 +350,8 @@ namespace WindowBlind.Api.Controllers
             {
                 rowCntr++;
                 Fbindex = 0;
-                
-                if (item.Row["Fabric"] != "")
+
+                if (item.Row.ContainsKey("Fabric") && item.Row["Fabric"] != "")
                 {
                     for (int n = 0; n < FabricDatable.Count; n++)
                     {
@@ -451,6 +451,10 @@ namespace WindowBlind.Api.Controllers
                     if (item.Row.ContainsKey("Finish"))
                     {
                         item.Row["Finish"] = item.Row["Finish"]; // there is no FInish in the file !
+                    }
+                    else
+                    {
+                        item.Row["Finish"] = item.Row["Description"].ToString().Trim(); /// check with dhaval
                     }
                 }
                 item.Row["Colour"] = item.Row["Colour"].Trim();
@@ -951,7 +955,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("GetHeldObjects")]
-        public async Task<IActionResult> GetHeldObjects([FromHeader] string tableName)
+        public async Task<Object> GetHeldObjects([FromHeader] string tableName)
         {
             try
             {
@@ -975,7 +979,7 @@ namespace WindowBlind.Api.Controllers
 
                 var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "LogCut" && rej.TableName == tableName).Result.ToListAsync();
 
-                foreach (var item in HeldObjects)
+                Parallel.ForEach(HeldObjects, item =>
                 {
 
                     CB = item.Row.Row["CB Number"];
@@ -989,15 +993,15 @@ namespace WindowBlind.Api.Controllers
                     Data.Rows[Data.Rows.Count - 1].UniqueId = item.Row.UniqueId;
                     Data.ColumnNames = TempFinalData.ColumnNames;
 
-                }
+                });
 
-                return new JsonResult(Data);
+                return Data;
 
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return new FabricCutterCBDetailsModel();
             }
         }
 
@@ -1022,6 +1026,346 @@ namespace WindowBlind.Api.Controllers
 
         }
 
+        [HttpGet("GetDataUsingAutoUpload")]
+        public async Task<IActionResult> GetDataUsingAutoUpload([FromHeader] string TableName, [FromHeader] string UserName, [FromHeader] string Shift, [FromHeader] string Type)
+        {
+            try
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                Init();
+
+
+                await ReadConfig();
+                var check = CheckPaths();
+
+                if (!check) return new JsonResult(false);
+                var AutoUploadDirSetting = await _repository.Settings.FindAsync(e => e.settingName == "AutoUploadDir" && e.applicationSetting == "_LogCut");
+                var AutoUploadDirPath = AutoUploadDirSetting.FirstOrDefault().settingPath;
+
+                var ViewedUploadsSetting = await _repository.Settings.FindAsync(e => e.settingName == "ViewedUploadsDir" && e.applicationSetting == "_LogCut");
+                var ViewedUplaodsPath = ViewedUploadsSetting.FirstOrDefault().settingPath;
+
+                var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
+                if (AutoUploadFolder.Exists == false)
+                    return new JsonResult(false);
+
+
+                CBSearch = true;
+                #region Reading Data
+
+                /// first Get all Files that Starts with the TableName
+
+                var files = AutoUploadFolder.GetFiles().Where(file => file.Name.Contains(TableName + "_" + Shift) && !file.Name.Contains("Urgent")).ToList();
+                if (Type == "Urgent")
+                    files = AutoUploadFolder.GetFiles().Where(file => file.Name.Contains("Urgent_" + TableName + "_" + Shift)).ToList();
+
+                FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
+                List<string> names = new List<string>();
+                //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
+
+                int generalBlindNumber = 1;
+                foreach (var AutoUploadFile in files)
+                {
+                    using (var package = new ExcelPackage(AutoUploadFile))
+                    {
+                        var workbook = package.Workbook;
+
+                        var worksheet = workbook.Worksheets.FirstOrDefault();
+                        if (worksheet == null) return null;
+                        var start = worksheet.Dimension.Start;
+                        var end = worksheet.Dimension.End;
+                        bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
+                        var last = end.Column;
+                       
+                        for (int i = start.Row + 1; i <= end.Row; i++)
+                        {
+                            Dictionary<string, string> row = new Dictionary<string, string>();
+
+                            row["Line No"] = "";
+                            row["Customer"] = "";
+                            row["Bind Type/# Panels/Rope/Operation"] = "";
+                            row["Description"] = "";
+                            row["Track Col/Roll Type/Batten Col"] = "";
+                            row["Cntrl Side"] = "";
+                            row["Control Type"] = "";
+                            row["Pull Colour/Bottom Weight/Wand Len"] = "";
+                            int RowQty = 0;
+                            for (int j = start.Column; j <= end.Column; j++)
+                            {
+                                var Headertext = worksheet.Cells[1, j].Text.Trim();
+                                if (String.IsNullOrEmpty(Headertext)) continue;
+                                if (Headertext.Contains("Qty"))
+                                {
+                                    if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
+                                        continue;
+
+                                    RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
+                                }
+
+                                Headertext = Headertext.Replace(".", "");
+
+
+
+                                var cell = worksheet.Cells[i, j].Text.Trim();
+
+                                if (ColumnMapper.ContainsKey(Headertext))
+                                {
+                                    row[Headertext] = cell;
+                                    Headertext = ColumnMapper[Headertext];
+                                }
+                                row[Headertext] = cell;
+
+
+                            }
+                             
+                            FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
+                            for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
+                            {
+                                TblRow.BlindNumbers.Add(cntr);
+                            }
+                            generalBlindNumber += RowQty;
+                            TblRow.Row = row;
+                            TblRow.UniqueId = Guid.NewGuid().ToString();
+                            TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
+
+                            AutoUploadModel model = new AutoUploadModel
+                            {
+                                Id = TblRow.UniqueId,
+                                FileName = AutoUploadFile.Name,
+                                CreationDate = AutoUploadFile.CreationTime.ToString(),
+                                row = TblRow,
+                                Shift = Shift,
+                                UserName = UserName,
+                                TableName = TableName,
+                                Type = Type,
+                                Station = "LogCut"
+                            };
+
+                            await _repository.AutoUploads.InsertOneAsync(model);
+                        }
+
+
+                        package.Dispose();
+                    }
+
+                    FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
+                    Console.WriteLine(Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
+                    Random rd = new Random();
+
+
+                    if (checking.Exists)
+                        CreateNewFile(AutoUploadFile.FullName, Path.Combine(ViewedUplaodsPath, rd.Next(1, 1000000).ToString() + "_" + AutoUploadFile.Name));
+                    else
+                        CreateNewFile(AutoUploadFile.FullName, Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
+                    System.IO.File.Delete(AutoUploadFile.FullName);
+
+                }
+
+                /// getting Data from db 
+
+                var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type && res.Station == "LogCut").Result.ToListAsync();
+                var FirstFileName = "";
+                var FirstFileCreationTime = "";
+
+                foreach (var item in AutoUploadsModels)
+                {
+                    if (FirstFileName == "")
+                    {
+                        FirstFileName = item.FileName;
+                        FirstFileCreationTime = item.CreationDate;
+                    }
+                    if (FirstFileName != item.FileName || FirstFileCreationTime != item.CreationDate) break;
+
+                    Data.Rows.Add(item.row);
+                }
+
+                ///
+                FabricRollwidth = new Dictionary<string, string>();
+                ControlTypevalues = new Dictionary<string, int>();
+                LatheType = new Dictionary<string, List<string>>();
+                Droptable = new List<DropTableModel>();
+                FabricDatable = new List<string>();
+
+                var TempFBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
+
+                var file = new FileInfo(TempFBRPath);
+                using (var package = new ExcelPackage(file))
+                {
+                    var workbook = package.Workbook;
+
+                    var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Row + 1; i <= end.Row; i++)
+                    {
+                        FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
+                    }
+                }
+
+                System.IO.File.Delete(TempFBRPath);
+
+                var TempDeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
+
+                file = new FileInfo(TempDeductionPath);
+                using (var package = new ExcelPackage(file))
+                {
+                    var workbook = package.Workbook;
+
+                    var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Row + 1; i <= end.Row; i++)
+                    {
+                        ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
+                    }
+                }
+
+                System.IO.File.Delete(TempDeductionPath);
+
+                var TempLathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
+
+                file = new FileInfo(TempLathePath);
+                using (var package = new ExcelPackage(file))
+                {
+                    var workbook = package.Workbook;
+
+                    var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Row + 1; i <= end.Row; i++)
+                    {
+                        if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
+                            LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
+
+                        LatheType[worksheet.Cells[i, 1].Text.Trim()].Add(worksheet.Cells[i, 2].Text.Trim());
+
+                    }
+                }
+
+                System.IO.File.Delete(TempLathePath);
+
+                var TempFabricPath = CreateNewFile(FabricPath, FabricPath.Substring(0, FabricPath.IndexOf(".")) + Guid.NewGuid().ToString() + FabricPath.Substring(FabricPath.IndexOf(".")));
+
+                file = new FileInfo(TempFabricPath);
+                using (var package = new ExcelPackage(file))
+                {
+                    var workbook = package.Workbook;
+
+                    var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Row + 1; i <= end.Row; i++)
+                    {
+                        var text = worksheet.Cells[i, 1].Text.Trim();
+                        if (!FabricDatable.Contains(text))
+                            FabricDatable.Add(text);
+                    }
+                }
+
+                System.IO.File.Delete(TempFabricPath);
+
+                var TempDropPath = CreateNewFile(DropPath, DropPath.Substring(0, DropPath.IndexOf(".")) + Guid.NewGuid().ToString() + DropPath.Substring(DropPath.IndexOf(".")));
+
+                file = new FileInfo(TempDropPath);
+                using (var package = new ExcelPackage(file))
+                {
+                    var workbook = package.Workbook;
+
+                    var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+                    for (int i = start.Row + 1; i <= end.Row; i++)
+                    {
+                        DropTableModel model = new DropTableModel
+                        {
+                            From = int.Parse(worksheet.Cells[i, 1].Text.Trim()),
+                            To = int.Parse(worksheet.Cells[i, 2].Text.Trim()),
+                            DropGroup = worksheet.Cells[i, 3].Text.Trim(),
+                            DropColour = worksheet.Cells[i, 4].Text.Trim()
+                        };
+                        Droptable.Add(model);
+                    }
+                }
+
+                System.IO.File.Delete(TempDropPath);
+
+
+                #endregion
+
+
+                #region Customization of columns
+
+                FabricCutterCBDetailsModel Finalized = new FabricCutterCBDetailsModel();
+                LogCutProcess(ref Finalized, ref Data);
+
+                foreach (var header in SelectedColumnsPath)
+                {
+                    var Headertext = header.Replace(".", "");
+
+                    if (ColumnMapper.ContainsKey(Headertext)) Headertext = ColumnMapper[Headertext];
+
+                    if (!Finalized.ColumnNames.Contains(Headertext))
+                        Finalized.ColumnNames.Add(Headertext);
+                }
+
+                #endregion
+
+                #region getting Held Orders
+
+                if (Type == "Normal")
+                {
+                    FabricCutterCBDetailsModel newdata = (FabricCutterCBDetailsModel)(await GetHeldObjects(TableName));
+                    if (Finalized.Rows != null)
+                    {
+                        newdata.Rows.AddRange(Finalized.Rows);
+                        newdata.ColumnNames = Finalized.ColumnNames;
+                        Finalized = newdata;
+                    }
+                    else
+                        Finalized = newdata;
+                }
+                #endregion
+
+
+
+
+                return new JsonResult(Finalized);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+
+                return new JsonResult(false);
+            }
+        }
+
+        [HttpPost("UpdateRows")]
+        public async Task<IActionResult> UpdateRows(List<string> ids)
+        {
+
+            try
+            {
+                foreach (var id in ids)
+                {
+                    await _repository.AutoUploads.DeleteOneAsync(entry => entry.Id == id);
+                }
+
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(false);
+            }
+
+
+        }
 
     }
 }

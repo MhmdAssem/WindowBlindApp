@@ -1,6 +1,9 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { DataTableDirective } from 'angular-datatables';
-import { table } from 'console';
+import { Console, debug, table } from 'console';
 import { Subject } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { FabricCutterService } from '../fabric-cutter/fabric-cutter.service';
@@ -16,6 +19,7 @@ import { LogCutService } from './log-cut.service';
   styleUrls: ['./log-cut.component.scss']
 })
 export class LogCutComponent implements OnInit {
+  [x: string]: {};
   HoldLoading: boolean;
   FirstTimeOnly: boolean;
   ButtonIsDisabled: boolean;
@@ -41,9 +45,42 @@ export class LogCutComponent implements OnInit {
   SendLoading: boolean = false;
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   PrinterTableDictionary = {};
+
+  SearchType = false;
+  CurrentTab: number;
+  AutoUploadedSelectedRows: string[] = [];
+  UrgentAutoUploadedSelectedRows: string[] = [];
+  UrgentData: FabricCutterCBDetailsModelTableRow[] = [];
+  UrgentReviewDataWithBlindsNumbers: any;
+  UrgentReviewData: FabricCutterCBDetailsModelTableRow[] = [];
+  //// For Mat tables
+  //// for the normal table
+  @ViewChild('Datatable', { static: false }) Datatable: MatTable<any>;
+  DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+  tableModelColNamesWithActions: string[] = [];
+  @ViewChild('paginator', { static: false }) paginator: MatPaginator;
+
+
+
+  /// for the urgent table
+  @ViewChild('UrgentDatatable', { static: false }) UrgentDatatable: MatTable<any>;
+  UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+  @ViewChild('Urgentpaginator', { static: false }) Urgentpaginator: MatPaginator;
+
+
+  /// To Hold SelectedRows in the table
+
+
+
+  SelectedRows = {};
+
+
   ngOnInit(): void {
 
     let Ts = this;
+    this.SelectedRows = {};
+    this.SelectedRows['Default'] = 's';
+    this.InitAllVariables();
     document.addEventListener("keydown", function (event) {
       if (event.keyCode === 13) {
         event.preventDefault();
@@ -95,34 +132,15 @@ export class LogCutComponent implements OnInit {
     });
 
 
-
+    this.settingService.GetSearchType('_LogCut').subscribe(res => {
+      this.SearchType = res;
+      this.CurrentTab = 0;
+    })
     this.FirstTimeOnly = true;
 
   }
 
   ngAfterViewInit(): void {
-
-  }
-
-  updateTable() {
-    try {
-      this.dtElements.forEach((dtElement: DataTableDirective) => {
-        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy(); // Will be ok on last dataTable, will fail on previous instances
-          dtElement.dtTrigger.next();
-          console.log("Try");
-        });
-      });
-    }
-    catch {
-      this.dtTrigger.next();
-      this.dtTriggerReview.next();
-
-      console.log("Catch");
-    }
-  }
-
-  GetLineNoDetails() {
 
   }
 
@@ -137,85 +155,104 @@ export class LogCutComponent implements OnInit {
     this.logcutService.getCBNumberDetails(input).subscribe(data => {
 
       if (data && data.rows.length != 0 && data.columnNames.length != 0) {
-        if (this.FirstTimeOnly) {
-
-          this.tableModelColNames = [];
-          this.ReviewtableModelColNames = [];
-          this.BlindNumbers = [];
-          this.Data = [];
-          this.ReviewData = [];
-          this.ReviewDataWithBlindsNumbers = {}
-        }
-
-
-        setTimeout(() => {
-          this.updateTable();
-        }, 10);
-
-        this.tableModelColNames = data.columnNames
+        this.tableModelColNames = data.columnNames;
+        this.tableModelColNamesWithActions = [...data.columnNames];
+        this.ReviewtableModelColNames = [];
         this.ReviewtableModelColNames.push("Blind Number");
+        this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
 
-        if (!this.FirstTimeOnly)
-          this.Data = this.Data.concat(data.rows);
-        else
-          this.Data = data.rows;
 
-        console.log(this.Data);
+        this.tableModelColNamesWithActions.push('SelectColumn')
 
-        this.updateTable();
+        this.Data = this.Data.concat(data.rows);
+        this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
 
-        console.log(this.Data);
         setTimeout(() => {
-          for (let index = 0; index < this.Data.length; index++) {
-            if (this.Data[index].row['FromHoldingStation'] == 'YES') {
-              (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important'); continue;
-            }
-            (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'background-color:' + this.Data[index].row['DropColour'] + " !important")
+          this.DataSource.paginator = this.paginator;
+          this.UpdateMatTables();
+        }, 100);
 
-            if (this.Data[index].row['DropColour'] != undefined && this.Data[index].row['DropColour'].toString().toLowerCase() != "white" && this.Data[index].row['DropColour'].trim() != "")
-              (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color:' + this.Data[index].row['DropColour'] + " !important")
 
-            if (this.Data[index].row['DropColour'] != undefined && this.Data[index].row['DropColour'].toString().toLowerCase() == "yellow" && this.Data[index].row['DropColour'].trim() != "")
-              (document.getElementById("RowNumber_" + index) as HTMLElement).setAttribute("style", 'color: black !important;' + 'background-color: LightYellow !important');
-          }
-
-          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 50);
 
       }
-      
+
       if (this.Data.length == 0)
         alert("This CB or Line number is not found !");
       this.LineLoading = false;
       this.CBLoading = false;
+      (document.getElementById("CBNumber") as HTMLInputElement).value = "";
 
     });
 
   }
 
   SelectThisRow(ind) {
+    if (this.CurrentTab <= 0) {
+      if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent?.trim() == "Select") {
 
-    if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent == "Select") {
-      (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnSelect";
+        (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnSelect";
+        ind += this.paginator.pageIndex * this.paginator.pageSize;
 
-      this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.ReviewData.length;
-      this.ReviewData.push(this.Data[ind]);
+        this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.ReviewData.length;
+        this.ReviewData.push(this.Data[ind]);
+        this.AutoUploadedSelectedRows.push(this.Data[ind].uniqueId);
+        this.SelectedRows[this.Data[ind].uniqueId] = 'Selected';
+
+      }
+      else {
+        ind += this.paginator.pageIndex * this.paginator.pageSize;
+        this.UnSelectThisRow(ind);
+        this.SelectedRows[this.Data[ind].uniqueId] = 'UnSelected';
+      }
     }
     else {
-      this.UnSelectThisRow(ind);
+      if ((document.getElementById('UrgentSelectCol_' + ind) as HTMLButtonElement).textContent?.trim() == "Select") {
+        (document.getElementById('UrgentSelectCol_' + ind) as HTMLButtonElement).textContent = "UnSelect";
+
+        ind += this.Urgentpaginator.pageIndex * this.Urgentpaginator.pageSize;
+        this.UrgentReviewDataWithBlindsNumbers[this.UrgentData[ind].uniqueId] = this.UrgentReviewData.length;
+        this.UrgentReviewData.push(this.UrgentData[ind]);
+        this.SelectedRows[this.UrgentData[ind].uniqueId] = 'Selected';
+        this.UrgentAutoUploadedSelectedRows.push(this.UrgentData[ind].uniqueId);
+      }
+      else {
+        ind += this.Urgentpaginator.pageIndex * this.Urgentpaginator.pageSize;
+
+        this.UnSelectThisRow(ind);
+        this.SelectedRows[this.UrgentData[ind].uniqueId] = 'UnSelected';
+
+      }
     }
   }
 
   UnSelectThisRow(ind) {
+    if (this.CurrentTab <= 0) {
+      (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
+      let id = this.ReviewData[ind].uniqueId;
+      if (!this.SearchType) {
+        let indOfAutoUploadSelected = this.AutoUploadedSelectedRows.findIndex(e => e == id);
+        if (indOfAutoUploadSelected != -1)
+          this.AutoUploadedSelectedRows.splice(indOfAutoUploadSelected, 1);
 
-    (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
+      }
+      this.ReviewData.splice(this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId], 1);
+      this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = -1;
 
-    this.ReviewData.splice(this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId], 1);
-    this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = -1;
 
+
+    }
+    else {
+      (document.getElementById('UrgentSelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
+      let id = this.UrgentReviewData[ind].uniqueId;
+      if (!this.SearchType) {
+        let indOfAutoUploadSelected = this.UrgentAutoUploadedSelectedRows.findIndex(e => e == id);
+        if (indOfAutoUploadSelected != -1)
+          this.UrgentAutoUploadedSelectedRows.splice(indOfAutoUploadSelected, 1);
+
+      }
+      this.UrgentReviewData.splice(this.UrgentReviewDataWithBlindsNumbers[this.UrgentData[ind].uniqueId], 1);
+      this.UrgentReviewDataWithBlindsNumbers[this.UrgentData[ind].uniqueId] = -1;
+    }
   }
 
 
@@ -223,24 +260,54 @@ export class LogCutComponent implements OnInit {
     this.SendLoading = true;
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
 
+    if (this.CurrentTab <= 0) {
+      let Data: FabricCutterCBDetailsModel = {
+        columnNames: this.tableModelColNames,
+        rows: this.ReviewData
+      };
+      let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+      this.logcutService.LogCutSend(
+        tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+          this.SendLoading = false;
 
-    let Data: FabricCutterCBDetailsModel = {
-      columnNames: this.tableModelColNames,
-      rows: this.ReviewData
-    };
-    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
-    this.logcutService.LogCutSend(
-      tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
-        this.SendLoading = false;
-
-        this.ReviewData.forEach(element => {
-          let ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
-          this.Data.splice(ind, 1);
+          this.ReviewData.forEach(element => {
+            let ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
+            this.Data.splice(ind, 1);
+            setTimeout(() => {
+              this.DataSource.paginator = this.paginator;
+              this.UpdateMatTables();
+            }, 100);
+          });
+          this.logcutService.UpdateRows(this.AutoUploadedSelectedRows).subscribe();
+          this.AutoUploadedSelectedRows = [];
+          this.ReviewData = [];
+          this.ReviewDataWithBlindsNumbers = {};
         });
+    }
+    else {
+      let Data: FabricCutterCBDetailsModel = {
+        columnNames: this.tableModelColNames,
+        rows: this.UrgentReviewData
+      };
+      let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+      this.logcutService.LogCutSend(
+        tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+          this.SendLoading = false;
 
-        this.ReviewData = [];
-        this.ReviewDataWithBlindsNumbers = {};
-      });
+          this.UrgentReviewData.forEach(element => {
+            let ind = this.UrgentData.findIndex(d => d.uniqueId == element.uniqueId);
+            this.UrgentData.splice(ind, 1);
+            setTimeout(() => {
+              this.UrgentdataSource.paginator = this.Urgentpaginator;
+              this.UpdateMatTables();
+            }, 100);
+          });
+          this.logcutService.UpdateRows(this.UrgentAutoUploadedSelectedRows).subscribe();
+          this.UrgentAutoUploadedSelectedRows = [];
+          this.UrgentReviewData = [];
+          this.UrgentReviewDataWithBlindsNumbers = {};
+        });
+    }
   }
 
   Delete() {
@@ -252,37 +319,57 @@ export class LogCutComponent implements OnInit {
       return;
     }
 
+    if (this.CurrentTab <= 0) {
+      this.ReviewData.forEach(element => {
+        let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
+        this.Data.splice(ind, 1);
+      });
+
+      let Model: FabricCutterCBDetailsModel = {
+        columnNames: this.tableModelColNames,
+        rows: this.ReviewData
+      };
+
+      this.logcutService.ClearOrdersFromLogCut(Model, UserName, tableName).subscribe(res => {
+        this.ReviewData = [];
+        this.ReviewDataWithBlindsNumbers = {};
+        setTimeout(() => {
+          this.DataSource.paginator = this.paginator;
+          this.UpdateMatTables();
+        }, 100);
+
+      });
+      this.logcutService.UpdateRows(this.AutoUploadedSelectedRows).subscribe();
+      this.AutoUploadedSelectedRows = [];
+    }
+    else {
+      this.UrgentReviewData.forEach(element => {
+        let ind = this.UrgentData.findIndex(e => e.uniqueId == element.uniqueId);
+        this.UrgentData.splice(ind, 1);
+
+      });
+
+      let Model: FabricCutterCBDetailsModel = {
+        columnNames: this.tableModelColNames,
+        rows: this.UrgentReviewData
+      };
+
+      this.logcutService.ClearOrdersFromLogCut(Model, UserName, tableName).subscribe(res => {
+        this.UrgentReviewData = [];
+        this.UrgentReviewDataWithBlindsNumbers = {};
+
+        setTimeout(() => {
+          this.UrgentdataSource.paginator = this.Urgentpaginator;
+          this.UpdateMatTables();
+        }, 100);
+
+      });
+      this.logcutService.UpdateRows(this.UrgentAutoUploadedSelectedRows).subscribe();
+      this.UrgentAutoUploadedSelectedRows = [];
+    }
 
 
-    this.ReviewData.forEach(element => {
-      let ind = this.Data.findIndex(e => e.uniqueId == element.uniqueId);
-      this.Data.splice(ind, 1);
 
-    });
-
-    let Model: FabricCutterCBDetailsModel = {
-      columnNames: this.tableModelColNames,
-      rows: this.ReviewData
-    };
-
-    this.logcutService.ClearOrdersFromLogCut(Model, UserName, tableName).subscribe(res => {
-      this.ReviewData = [];
-      this.ReviewDataWithBlindsNumbers = {};
-      //this.updateTable();
-      setTimeout(() => {
-
-        $("#Custom_Table_Pagination").html("");
-        $("#Custom_Table_Info").html("");
-
-        $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-        $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-        (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }, 100);
-
-    });
 
   }
 
@@ -296,37 +383,76 @@ export class LogCutComponent implements OnInit {
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
 
     let RejectionModels: RejectionModel[] = [];
-    this.ReviewData.forEach(element => {
-      let RejectionModel: RejectionModel =
-      {
-        dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
-        forwardedToStation: "Admin",
-        id: "",
-        row: element,
-        stationName: "LogCut",
-        tableName: tableName,
-        userName: UserName,
-        rejectionReasons: []
-      };
-      RejectionModels.push(RejectionModel);
-    });
-
-
-
-    this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
-
+    if (this.CurrentTab <= 0) {
       this.ReviewData.forEach(element => {
-
-        var ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
-        this.Data.splice(ind, 1);
-
+        let RejectionModel: RejectionModel =
+        {
+          dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
+          forwardedToStation: "Admin",
+          id: "",
+          row: element,
+          stationName: "LogCut",
+          tableName: tableName,
+          userName: UserName,
+          rejectionReasons: []
+        };
+        RejectionModels.push(RejectionModel);
       });
-      this.ReviewData = [];
-      this.ReviewDataWithBlindsNumbers = {};
-      this.updateTable();
 
-      this.HoldLoading = false;
-    });
+      this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
+
+        this.ReviewData.forEach(element => {
+
+          var ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
+          this.Data.splice(ind, 1);
+          setTimeout(() => {
+            this.DataSource.paginator = this.paginator;
+            this.UpdateMatTables();
+          }, 100);
+        });
+        this.ReviewData = [];
+        this.ReviewDataWithBlindsNumbers = {};
+
+        this.HoldLoading = false;
+      });
+      this.logcutService.UpdateRows(this.AutoUploadedSelectedRows).subscribe();
+          this.AutoUploadedSelectedRows = [];
+    }
+    else {
+      this.UrgentReviewData.forEach(element => {
+        let RejectionModel: RejectionModel =
+        {
+          dateTime: time.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: "2-digit", year: 'numeric', hour12: true }),
+          forwardedToStation: "Admin",
+          id: "",
+          row: element,
+          stationName: "LogCut",
+          tableName: tableName,
+          userName: UserName,
+          rejectionReasons: []
+        };
+        RejectionModels.push(RejectionModel);
+      });
+
+      this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
+
+        this.UrgentReviewData.forEach(element => {
+
+          var ind = this.UrgentData.findIndex(d => d.uniqueId == element.uniqueId);
+          this.UrgentData.splice(ind, 1);
+          setTimeout(() => {
+            this.UrgentdataSource.paginator = this.Urgentpaginator;
+            this.UpdateMatTables();
+          }, 100);
+        });
+        this.UrgentReviewData = [];
+        this.UrgentReviewDataWithBlindsNumbers = {};
+
+        this.UrgentHoldLoading = false;
+      });
+      this.logcutService.UpdateRows(this.UrgentAutoUploadedSelectedRows).subscribe();
+      this.UrgentAutoUploadedSelectedRows = [];
+    }
   }
 
   GetHeldBasedOnTable() {
@@ -368,25 +494,201 @@ export class LogCutComponent implements OnInit {
     }
   }
 
+
+  AutoUploadFeatureOnly() {
+    this.InitAllVariables();
+
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    if (tableName == '-') return;
+    let ShiftTable = "";
+    if (!this.SearchType)
+      ShiftTable = (document.getElementById("ShiftTable") as HTMLSelectElement).value.toString();
+
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+
+    if (!this.SearchType) {
+      if (tableName == 'DefaultTableName') {
+        alert("Please Choose a valid Table Name");
+        return;
+      }
+      //normal
+      this.logcutService.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Normal").subscribe(data => {
+
+        if (data && data.rows.length != 0 && data.columnNames.length != 0) {
+
+          this.tableModelColNames = data.columnNames;
+          this.tableModelColNamesWithActions = [...data.columnNames];
+          this.ReviewtableModelColNames = [];
+          this.ReviewtableModelColNames.push("Blind Number");
+          this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+          this.ReviewtableModelColNamesWithActions = [...this.ReviewtableModelColNames];
+
+          this.tableModelColNamesWithActions.push('SelectColumn')
+
+          this.Data = this.Data.concat(data.rows);
+          this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+          this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+          setTimeout(() => {
+            this.DataSource.paginator = this.paginator;
+            this.UpdateMatTables();
+          }, 100);
+        }
+
+      });
+
+      // get Urgent
+      this.logcutService.GetDataUsingAutoUpload(tableName, UserName, ShiftTable, "Urgent").subscribe(data => {
+
+        if (data && data.rows.length != 0 && data.columnNames.length != 0) {
+
+          this.tableModelColNames = [...data.columnNames];
+          this.tableModelColNamesWithActions = [...data.columnNames];
+          this.ReviewtableModelColNames = [];
+          this.ReviewtableModelColNames.push("Blind Number");
+          this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+          this.ReviewtableModelColNamesWithActions = [...this.ReviewtableModelColNames];
+
+          this.tableModelColNamesWithActions.push('SelectColumn')
+          this.UrgentData = this.UrgentData.concat(data.rows);
+          this.UrgentdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentData);
+          this.UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
+
+          setTimeout(() => {
+            this.UrgentdataSource.paginator = this.Urgentpaginator;
+            this.UpdateMatTables();
+          }, 100);
+        }
+
+      });
+
+    }
+    else {
+
+      this.ButtonIsDisabled = true;
+
+      this.FBRservice.GetHeldObjects(tableName).subscribe(
+        data => {
+          if (data && data.columnNames.length != 0) {
+
+            this.tableModelColNames = data.columnNames;
+            this.tableModelColNamesWithActions = [...data.columnNames];
+            this.ReviewtableModelColNames = [];
+            this.ReviewtableModelColNames.push("Blind Number");
+            this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+            this.ReviewtableModelColNamesWithActions = [...this.ReviewtableModelColNames];
+
+            this.tableModelColNamesWithActions.push('SelectColumn')
+
+            this.Data = this.Data.concat(data.rows);
+            this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+            this.ReviewDataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.ReviewData);
+            setTimeout(() => {
+              this.DataSource.paginator = this.paginator;
+              this.UpdateMatTables();
+            }, 100);
+
+
+
+
+          }
+          this.ButtonIsDisabled = false;
+        }
+
+      );
+
+    }
+
+  }
+
+
   SelectAll() {
     let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
-    console.log(Buttons.length)
     let btn = document.getElementById("AllButton");
 
     if (btn?.textContent?.trim() == 'Select All') {
 
       btn.textContent = "UnSelect All";
       for (let i = Buttons.length - 1; i >= 0; i--) {
-        if (Buttons[i].textContent == 'Select') Buttons[i].click();
+        if (Buttons[i].textContent?.trim() == 'Select') Buttons[i].click();
       }
     }
     else {
       btn ? btn.textContent = "Select All" : null;
       for (let i = Buttons.length - 1; i >= 0; i--) {
-        if (Buttons[i].textContent == 'UnSelect') Buttons[i].click();
+        if (Buttons[i].textContent?.trim() == 'UnSelect') Buttons[i].click();
       }
     }
 
   }
 
+  tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+
+    this.CurrentTab = tabChangeEvent.index;
+
+  }
+
+
+  InitAllVariables() {
+    this.tableModelColNames = [];
+    this.ReviewtableModelColNames = [];
+    this.BlindNumbers = [];
+    this.Data = [];
+    this.ReviewData = [];
+    this.UrgentData = [];
+    this.UrgentReviewDataWithBlindsNumbers = {}
+    this.UrgentReviewDataWithBlindsObjects = {}
+    this.UrgentReviewData = [];
+    this.UrgentAutoUploadedSelectedRows = [];
+    this.AutoUploadedSelectedRows = [];
+  }
+
+  UpdateMatTables() {
+    try {
+      this.Datatable.renderRows();
+    }
+    catch (e) { }
+
+    try {
+      this.UrgentDatatable.renderRows();
+    }
+    catch (e) { }
+
+  }
+
+  PageChange() {
+    if (this.CurrentTab <= 0) {
+      setTimeout(() => { /// to do the action after the table update as pagechange happens on clicking next or prev
+        let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
+
+        for (let i = Buttons.length - 1; i >= 0; i--) {
+
+          let index = ((Buttons[i].id)?.indexOf('_'));
+          var ID = Buttons[i].id?.substring(index ? index + 1 : -1);
+          let ind: number = (ID != undefined) ? +ID : 0;
+          ind += this.paginator.pageIndex * this.paginator.pageSize;
+
+          if (this.SelectedRows[ind != undefined ? this.Data[ind].uniqueId : 'Default'] == 'Selected') Buttons[i].textContent = 'UnSelect';
+
+        }
+      }, 10);
+    }
+
+    else {
+      setTimeout(() => { /// to do the action after the table update as pagechange happens on clicking next or prev
+        let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
+
+        for (let i = Buttons.length - 1; i >= 0; i--) {
+
+          let index = ((Buttons[i].id)?.indexOf('_'));
+          var ID = Buttons[i].id?.substring(index ? index + 1 : -1);
+          let ind: number = (ID != undefined) ? +ID : 0;
+          ind += this.paginator.pageIndex * this.paginator.pageSize;
+
+          if (this.SelectedRows[ind != undefined ? this.UrgentData[ind].uniqueId : 'Default'] == 'Selected') Buttons[i].textContent = 'UnSelect';
+
+        }
+      }, 10);
+    }
+
+  }
 }

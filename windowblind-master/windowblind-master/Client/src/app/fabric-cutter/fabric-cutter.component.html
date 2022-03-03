@@ -90,7 +90,7 @@
 
 
           <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
-          <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}" [style.background-color]="row.row['BlueSleeve'] == 'Blue'?'lightblue':row.row['FromHoldingStation'] == 'YES'?'crimson':'white'"></tr>
 
         </table>
         <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons 
@@ -100,7 +100,7 @@
       </div>
 
 
-      <div class="table-responsive mt-3" id="TableViewReview" *ngIf="ReviewData.length !=0">
+      <div class="table-responsive mt-3" id="TableViewReview" *ngIf="Data.length !=0 || ReviewData.length !=0">
     
         <table mat-table #ReviewDatatable class="table table-bordered w-100" id="ReviewdScenario-table" [dataSource]="ReviewDataSource">
 
@@ -171,7 +171,7 @@
     </ng-template>
     <div class="container-fluid mt-3">
 
-      <div class="table-responsive mt-3" id="UrgentTableViewSelect" *ngIf="UrgentData.length !=0">
+      <div class="table-responsive mt-3" id="UrgentTableViewSelect" *ngIf="UrgentData.length !=0 ">
         <table mat-table #UrgentDatatable class="table table-bordered w-100" id="UrgentdScenario-table" [dataSource]="UrgentdataSource">
 
           <div *ngFor="let col of tableModelColNames; let i=index">
@@ -191,7 +191,7 @@
 
 
           <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
-          <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="UrgentRowNumber_{{i}}"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="UrgentRowNumber_{{i}}" [style.background-color]="row.row['BlueSleeve'] == 'Blue'?'lightblue':row.row['FromHoldingStation'] == 'YES'?'crimson':'white'"></tr>
 
         </table>
         <mat-paginator #Urgentpaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons 
@@ -203,7 +203,7 @@
        
 
 
-      <div class="table-responsive mt-3" id="UrgentTableViewReview" *ngIf="UrgentReviewData.length!=0">
+      <div class="table-responsive mt-3" id="UrgentTableViewReview" *ngIf="UrgentData.length !=0 || UrgentReviewData.length!=0">
             
 
         <table mat-table #UrgentReviewDatatable class="table table-bordered w-100" id="UrgentReviewdScenario-table" [dataSource]="UrgentreviewdataSource">
@@ -276,7 +276,7 @@
 
   <div class="container-fluid mt-3" >
 
-    <div class="table-responsive mt-3" id="TableViewSelect" *ngIf="Data.length !=0">
+    <div class="table-responsive mt-3" id="TableViewSelect" *ngIf="Data.length !=0 || ReviewData.length !=0">
       <table mat-table #Datatable class="table table-bordered w-100" id="dScenario-table" [dataSource]="DataSource">
 
         <div *ngFor="let col of tableModelColNames; let i=index">
@@ -296,7 +296,7 @@
 
 
         <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
-        <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}" [style.background-color]="row.row['FromHoldingStation'] == 'YES'?'crimson':'white'"></tr>
 
       </table>
       <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons 
@@ -306,7 +306,7 @@
     </div>
 
 
-    <div class="table-responsive mt-3" id="TableViewReview" *ngIf="ReviewData.length !=0">
+    <div class="table-responsive mt-3" id="TableViewReview" *ngIf="ReviewData.length !=0 || Data.length !=0">
   
       <table mat-table #ReviewDatatable class="table table-bordered w-100" id="ReviewdScenario-table" [dataSource]="ReviewDataSource">
 

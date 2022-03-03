@@ -53,8 +53,8 @@ export class SettingService {
   }
 
 
-  public GetSearchType(): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  public GetSearchType(applicationType): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json','applicationType': applicationType});
 
     return this.httpClient
       .get<any>(environment.apiUrl + 'Settings/GetSearchType', { headers }).pipe(

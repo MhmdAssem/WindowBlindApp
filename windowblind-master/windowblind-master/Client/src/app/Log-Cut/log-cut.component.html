@@ -1,11 +1,24 @@
 <div class="container mt-4">
   <div class="row">
 
+
+    <div class="col-md-6" *ngIf="SearchType == false">
+      <form class="form-inline">
+        <label> Select a Shift</label>
+        <select class="form-control ml-4" name="ShiftTable" id="ShiftTable" style="width: 50%;text-align-last:center;">
+          <option selected value="Morning">Morning Shift</option>
+          <option value="Afternoon">Afternoon Shift</option>
+        </select>
+      </form>
+
+    </div>
+
+
     <div class="col-md-6">
 
       <form class="form-inline">
         <label> Select a Table</label>
-        <select class="form-control ml-4" name="TableNames" id="TableNames" (change)="GetHeldBasedOnTable()" style="display: inline-block;
+        <select class="form-control ml-4" name="TableNames" id="TableNames" (change)="AutoUploadFeatureOnly()" style="display: inline-block;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
@@ -18,7 +31,7 @@
     </div>
 
 
-    <div class="col-md-6">
+    <div class="col-md-6" *ngIf="SearchType == true">
       <form class="form-inline">
 
         <label> Enter CB/Line Number:</label>
@@ -27,12 +40,13 @@
           border-radius: 4px;
           box-sizing: border-box;
           text-align: center;">
-      
-      <button style="margin-left: 7px;font-size: 11px;" id = 'SearchButton2' class="btn btn-primary btn-sm"
-      (click)="GetCBDetails();" [disabled]='ButtonIsDisabled'> <span *ngIf="CBLoading" class="spinner-border spinner-border-sm mr-1"></span>
-      Get CB Details</button>
-    </form>
-     
+
+        <button style="margin-left: 7px;font-size: 11px;" id='SearchButton2' class="btn btn-primary btn-sm"
+          (click)="GetCBDetails();" [disabled]='ButtonIsDisabled'> <span *ngIf="CBLoading"
+            class="spinner-border spinner-border-sm mr-1"></span>
+          Get CB Details</button>
+      </form>
+
     </div>
 
 
@@ -42,12 +56,11 @@
 
 <div class="container">
 
-  <div class="row my-4 justify-content-end" *ngIf="Data.length!=0">
-    <button class="btn btn-primary mr-2" (click)="SelectAll();" id="AllButton"><span *ngIf="HoldLoading"
-      class="spinner-border spinner-border-sm mr-1"></span>
-    Select All </button>
+  <div class="row my-4 justify-content-end" *ngIf="Data.length !=0 || UrgentData.length !=0">
+    <button class="btn btn-primary mr-2" (click)="SelectAll();" *ngIf="SearchType == true" id="AllButton"> Select All
+    </button>
 
-    
+
     <button class="btn btn-primary mr-2" (click)="Hold();"><span *ngIf="HoldLoading"
         class="spinner-border spinner-border-sm mr-1"></span>
       Hold </button>
@@ -63,50 +76,162 @@
 
 </div>
 
-<div class="container-fluid mt-3">
-
-  <div class="table-responsive mt-3" id="TableViewSelect" *ngIf = "Data.length !=0">
-    <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
-      [dtTrigger]="dtTrigger">
-      <thead class="bg-light">
-        <tr id="DataTableHeader">
-          <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
-            id="UniqueDataTableHeader_{{col}}">
 
 
-            <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">{{col}}</span>
+<mat-tab-group style="margin-top: 50px;" *ngIf="SearchType == false" mat-align-tabs="center" animationDuration="1000ms"
+  (selectedTabChange)="tabChanged($event)">
 
-            </div>
+  <mat-tab label="Normal">
+
+    <div class="container-fluid mt-3">
+
+      <div class="table-responsive mt-3" id="TableViewSelect" *ngIf="Data.length !=0 || ReviewData.length !=0">
+        <table mat-table #Datatable class="table table-bordered w-100" id="dScenario-table" [dataSource]="DataSource">
+
+          <div *ngFor="let col of tableModelColNames; let i=index">
+            <ng-container matColumnDef="{{col}}" *ngIf="col != 'SelectColumn'">
+              <th mat-header-cell *matHeaderCellDef> {{col}} </th>
+              <td mat-cell *matCellDef="let element" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
+              element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+              element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
+                [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
+                                element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
+                                element.row['DropColour'].toString().toLowerCase() != 'white'?'white !important':'black'">
+                {{element.row[col]}} </td>
+            </ng-container>
+
+          </div>
+
+          <ng-container matColumnDef="SelectColumn">
+            <th mat-header-cell *matHeaderCellDef> SelectColumn </th>
+            <td mat-cell *matCellDef="let element;let i = index" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
+            element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+            element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
+              [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
+                              element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
+                              element.row['DropColour'].toString().toLowerCase() != 'white'?'white !important':'black'">
+              <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}"
+                (click)="SelectThisRow(i);">{{element.row['SelectColumn'] = 'Selected'?'Select':'UnSelect'}}</button>
+            </td>
+          </ng-container>
 
 
-          </th>
-          <th id="theSelectColumn" *ngIf="tableModelColNames.length !=0">
-            <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">SelectColumn</span>
+          <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}">
+          </tr>
 
-            </div>
-          </th>
-        </tr>
-      </thead>
+        </table>
+        <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="PageChange()"
+          aria-label="Select page of periodic elements">
+        </mat-paginator>
 
-      <tbody>
-        <tr *ngFor="let row of Data;let i = index" id="RowNumber_{{i}}">
-          <td *ngFor="let col of tableModelColNames">
-            {{row.row[col]}}</td>
-          <td>
-            <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
-          </td>
-        </tr>
-      </tbody>
+      </div>
+
+    </div>
+
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Urgent
+      <mat-icon class="example-tab-icon" style="margin-left: 5px; color: red;" *ngIf="UrgentData.length!=0">
+        notification_important</mat-icon>
+    </ng-template>
+    <div class="container-fluid mt-3">
+
+      <div class="table-responsive mt-3" id="UrgentTableViewSelect" *ngIf="UrgentData.length !=0">
+        <table mat-table #UrgentDatatable class="table table-bordered w-100" id="UrgentdScenario-table"
+          [dataSource]="UrgentdataSource">
+
+          <div *ngFor="let col of tableModelColNames; let i=index">
+            <ng-container matColumnDef="{{col}}" *ngIf="col != 'SelectColumn'">
+              <th mat-header-cell *matHeaderCellDef> {{col}} </th>
+              <td mat-cell *matCellDef="let element" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
+              element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+              element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
+                [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
+                                element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
+                                element.row['DropColour'].toString().toLowerCase() != 'white'?'white !important':'black'"> {{element.row[col]}} </td>
+            </ng-container>
+
+          </div>
+
+          <ng-container matColumnDef="SelectColumn">
+            <th mat-header-cell *matHeaderCellDef> SelectColumn </th>
+            <td mat-cell *matCellDef="let element;let i = index" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
+            element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+            element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
+              [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
+                              element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
+                              element.row['DropColour'].toString().toLowerCase() != 'white'?'white !important':'black'">
+              <button class="btn btn-sm SelectAllTag" id="UrgentSelectCol_{{i}}"
+                (click)="SelectThisRow(i);">{{element.row['SelectColumn'] = 'Selected'?'Select':'UnSelect'}}</button>
+            </td>
+          </ng-container>
+
+
+          <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index"
+            id="UrgentRowNumber_{{i}}"
+           >
+          </tr>
+
+        </table>
+        <mat-paginator #Urgentpaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="PageChange()"
+          aria-label="Select page of periodic elements">
+        </mat-paginator>
+
+      </div>
+
+    </div>
+
+  </mat-tab>
+
+</mat-tab-group>
+
+
+
+<div class="container-fluid mt-3" *ngIf="SearchType == true">
+
+  <div class="table-responsive mt-3" id="TableViewSelect" *ngIf="Data.length !=0">
+    <table mat-table #Datatable class="table table-bordered w-100" id="dScenario-table" [dataSource]="DataSource">
+
+      <div *ngFor="let col of tableModelColNames; let i=index">
+        <ng-container matColumnDef="{{col}}" *ngIf="col != 'SelectColumn'">
+          <th mat-header-cell *matHeaderCellDef> {{col}} </th>
+          <td mat-cell *matCellDef="let element" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
+          element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+          element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
+            [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
+                            element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
+                            element.row['DropColour'].toString().toLowerCase() != 'white'?'white !important':'black'"> {{element.row[col]}} </td>
+        </ng-container>
+
+      </div>
+
+      <ng-container matColumnDef="SelectColumn">
+        <th mat-header-cell *matHeaderCellDef> SelectColumn </th>
+        <td mat-cell *matCellDef="let element;let i = index" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
+        element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+        element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
+          [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
+                          element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
+                          element.row['DropColour'].toString().toLowerCase() != 'white'?'white !important':'black'">
+          <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select </button>
+        </td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}">
+      </tr>
+
     </table>
-
-
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="PageChange()"
+      aria-label="Select page of periodic elements">
+    </mat-paginator>
   </div>
 
-  <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
-    <div id="Custom_Table_Info" class="custom-dtable-info"></div>
-    <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
-  </div>
+
 
 </div>

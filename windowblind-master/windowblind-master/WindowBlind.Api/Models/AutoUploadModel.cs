@@ -14,6 +14,7 @@ namespace WindowBlind.Api.Models
         public string TableName { get; set; }
         public string CreationDate { get; set; }
         public string Type{ get; set; }
+        public string Station{ get; set; }
         public FabricCutterCBDetailsModelTableRow row { get; set; }
 
     }

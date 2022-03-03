@@ -91,12 +91,17 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
   UrgentreviewdataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.UrgentReviewData);
   @ViewChild('UrgentReviewpaginator', { static: false }) UrgentReviewpaginator: MatPaginator;
 
+
+  /// for keeping track of index from the Data array, it will be [uniqueId] = index
+  OrignalDataIndexArray = {};
+
   ngOnInit(): void {
     let Ts = this;
     this.testCntr = 0;
 
     this.PrinterTableDictionary = {};
     this.CurrentTab = -1;
+    this.OrignalDataIndexArray = {};
 
     document.addEventListener("keydown", function (event) {
       if (event.keyCode === 13) {
@@ -169,7 +174,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
     });
 
-    this.settingService.GetSearchType().subscribe(res => {
+    this.settingService.GetSearchType('_FabricCutter').subscribe(res => {
       this.SearchType = res;
       this.CurrentTab = 0;
     })
@@ -197,13 +202,15 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
         this.tableModelColNames = data.columnNames;
         this.tableModelColNamesWithActions = [...data.columnNames];
-
+        this.ReviewtableModelColNames = [];
         this.ReviewtableModelColNames.push("Blind Number");
         this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
         this.ReviewtableModelColNamesWithActions = [...this.ReviewtableModelColNames];
 
         this.tableModelColNamesWithActions.push('SelectColumn')
         this.ReviewtableModelColNamesWithActions.push('SelectColumn')
+
+
 
         this.Data = this.Data.concat(data.rows);
         this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
@@ -214,20 +221,12 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           this.UpdateMatTables();
         }, 100);
 
-        let cntr = 0;
-
-        setTimeout(() => {
-          this.Data.forEach(element => {
-            if (element.row['FromHoldingStation'] == 'YES') {
-              (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-            }
-            cntr++;
-          });
-        }, 40);
 
       }
+      if (this.Data.length == 0)
+        alert("This CB or Line number is not found !");
       this.Loading = false;
-
+      (document.getElementById("CBNumber") as HTMLInputElement).value = "";
     });
 
   }
@@ -244,7 +243,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       ind += this.paginator.pageIndex * this.paginator.pageSize;
       this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.Data[ind].blindNumbers.length;
       this.ReviewDataWithBlindsObjects[this.Data[ind].uniqueId] = JSON.parse(JSON.stringify(this.Data[ind]));
-
+      this.OrignalDataIndexArray[this.Data[ind].uniqueId] = ind;
       this.AutoUploadedSelectedRows.push(this.Data[ind].uniqueId);
       if (this.Data[ind].row['Quantity'] != null && this.Data[ind].row['Quantity'] != undefined) this.Data[ind].row['Quantity'] = '1';
       for (let i = 0; i < this.Data[ind].blindNumbers.length; i++) {
@@ -272,7 +271,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       ind += this.Urgentpaginator.pageIndex * this.Urgentpaginator.pageSize;
       this.UrgentReviewDataWithBlindsNumbers[this.UrgentData[ind].uniqueId] = this.UrgentData[ind].blindNumbers.length;
       this.UrgentReviewDataWithBlindsObjects[this.UrgentData[ind].uniqueId] = JSON.parse(JSON.stringify(this.UrgentData[ind]));
-
+      this.OrignalDataIndexArray[this.UrgentData[ind].uniqueId] = ind;
       this.UrgentAutoUploadedSelectedRows.push(this.UrgentData[ind].uniqueId);
       if (this.UrgentData[ind].row['Quantity'] != null && this.UrgentData[ind].row['Quantity'] != undefined)
         this.UrgentData[ind].row['Quantity'] = '1';
@@ -307,7 +306,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
       this.ReviewDataWithBlindsNumbers[this.ReviewData[ind].uniqueId]--;
 
       if (this.ReviewDataWithBlindsNumbers[this.ReviewData[ind].uniqueId] == 0) {
-        this.Data.push(this.ReviewDataWithBlindsObjects[this.ReviewData[ind].uniqueId]);
+        this.Data.splice(this.OrignalDataIndexArray[this.ReviewData[ind].uniqueId], 0, this.ReviewDataWithBlindsObjects[this.ReviewData[ind].uniqueId]);
       }
 
       let id = this.ReviewData[ind].uniqueId;
@@ -728,16 +727,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
           }, 100);
 
 
-          setTimeout(() => {
-            let cntr = 0;
 
-            this.Data.forEach(element => {
-              if (element.row['FromHoldingStation'] == 'YES') {
-                (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-              }
-              cntr++;
-            });
-          }, 40);
 
         }
 
@@ -774,6 +764,9 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             this.UrgentData.forEach(element => {
               if (element.row['FromHoldingStation'] == 'YES') {
                 (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
+              }
+              else if (element.row['BlueSleeve'] == 'Blue') {
+                (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: blue !important');
               }
               cntr++;
             });
@@ -812,16 +805,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
             }, 100);
 
 
-            setTimeout(() => {
-              let cntr = 0;
-
-              this.Data.forEach(element => {
-                if (element.row['FromHoldingStation'] == 'YES') {
-                  (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-                }
-                cntr++;
-              });
-            }, 40);
+            
 
           }
           this.ButtonIsDisabled = false;
@@ -874,6 +858,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     this.UrgentReviewData = [];
     this.UrgentReviewDataWithBlindsNumbers = {}
     this.UrgentReviewDataWithBlindsObjects = {}
+    this.OrignalDataIndexArray = {};
   }
 
   UpdateMatTables() {

@@ -142,6 +142,7 @@ namespace WindowBlind.Api
             table.TableName = "";
             table.CreationDate = "";
             table.UserName = "Admin";
+            table.Station = "Test";
 
             _mongoDb.GetCollection<AutoUploadModel>("AutoUploads").InsertOne(table);
         }
@@ -189,14 +190,14 @@ namespace WindowBlind.Api
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SearchType",settingPath = "CB_Line_Number_Search" ,applicationSetting = "_FabricCutter"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "AutoUploadDir",settingPath = "" ,applicationSetting = "_FabricCutter"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "ViewedUploadsDir",settingPath = "" ,applicationSetting = "_FabricCutter"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SearchType",settingPath = "LogCut_CB_Line_Number_Search" ,applicationSetting = "_LogCut"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "AutoUploadDir",settingPath = "" ,applicationSetting = "_LogCut"},
+                new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "ViewedUploadsDir",settingPath = "" ,applicationSetting = "_LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "DeductionTable",applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "DropTable" , settingPath = "" ,applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingPath = "",settingName = "Fabric Rollwidth",applicationSetting = "FabricCutter"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "FabricTable" , settingPath = "",applicationSetting = "LogCut"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "PVCLathe Fabric",settingPath = "" ,applicationSetting = "EzStop"},
-                //new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "Fabric Cutter Output",settingPath = "" ,applicationSetting = "FabricCutter"},
-                //new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "LogCut Output",settingPath = "" ,applicationSetting = "LogCut"},
-                //new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "EzStop Output",settingPath = "" ,applicationSetting = "EzStop"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "XML Folder",settingPath = "" ,applicationSetting = "EzStop"},
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "",applicationSetting = "FabricCutter" },
                 new FileSetting{Id = Guid.NewGuid().ToString(),settingName = "SelectedColumnsNames",settingPath = "",applicationSetting = "LogCut" },

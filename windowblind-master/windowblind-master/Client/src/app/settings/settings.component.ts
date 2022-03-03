@@ -1,5 +1,6 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
+import { MatRadioButton } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
@@ -19,6 +20,7 @@ import { TablePrinterModel } from './TablePrinterModel';
 })
 export class SettingsComponent implements OnInit {
   AutoUpload: boolean;
+  LogCutAutoUpload: boolean;
 
   constructor(private settingService: SettingService, private apiService: ApiService, private snackBar: MatSnackBar) { }
   private selection = new StationListSelection();
@@ -70,6 +72,13 @@ export class SettingsComponent implements OnInit {
   AutoUploadPath: string;
   ViewedUploadsPath: string;
 
+  LogCutAutoUploadPath: string;
+  LogCutViewedUploadsPath: string;
+
+  FabricCBSearch: boolean;
+  LogCutCBSearch: boolean;
+
+
   ApplicationMap = {
     "Fabric Cutter": "FabricCutterTable",
     "Log Cut": "LogCutterTable",
@@ -80,12 +89,16 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.FabricCBSearch = true;
+    this.LogCutCBSearch = true;
     this.FabricSelectedColumnNames = [];
     this.LogCutSelectedColumnNames = [];
     this.EzStopSelectedColumnNames = [];
     this.AssemblyStationSelectedColumnNames = [];
     this.HoistStationSelectedColumnNames = [];
     this.PackingStationSelectedColumnNames = [];
+    this.LogCutAutoUpload = true;
+    this.AutoUpload = true;
     this.dtOptions = {
       pagingType: 'full_numbers',
       lengthChange: false,
@@ -109,6 +122,7 @@ export class SettingsComponent implements OnInit {
     this.settingService.getSettings().subscribe(data => {
       this.ListOfFiles = data;
 
+      //#region  getting selected columns
 
       let indFabric = this.ListOfFiles.findIndex(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "FabricCutter");
 
@@ -160,6 +174,10 @@ export class SettingsComponent implements OnInit {
       this.PackingStationSelectedColumnNamesId = this.ListOfFiles[indPackingStation].id;
       this.ListOfFiles.splice(indPackingStation, 1);
 
+      //#endregion
+
+
+      //#region getting Tables
 
       let ind = this.ListOfFiles.findIndex(e => e.settingName == "FabricCutterTable");
       this.FabricCutterTableNumberId = this.ListOfFiles[ind].id;
@@ -287,6 +305,10 @@ export class SettingsComponent implements OnInit {
       this.Columns.push('Output Path');
 
       this.CommentColumns.push('Comment')
+
+
+      //#endregion
+
       /// get the Search Type For Fabric Cutter
 
       let SearchTypeIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'SearchType');
@@ -298,11 +320,30 @@ export class SettingsComponent implements OnInit {
       let ViewedUploadsDir = this.ListOfFiles.findIndex(file => file.applicationSetting == '_FabricCutter' && file.settingName == 'ViewedUploadsDir');
       let ViewedUploadsDirValue = this.ListOfFiles[ViewedUploadsDir].settingPath;
 
-      this.RadioOn(SearchTypeValue);
+      this.RadioOn(SearchTypeValue, 'FabricCut');
 
-      (document.getElementById(SearchTypeValue) as HTMLInputElement).click();
+      this.FabricCBSearch = (SearchTypeValue == 'CB_Line_Number_Search');
       this.AutoUploadPath = AutoUploadDirValue;
       this.ViewedUploadsPath = ViewedUploadsDirValue;
+
+      ///get search type for logcut
+
+      let LogCutSearchTypeIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_LogCut' && file.settingName == 'SearchType');
+      let LogCutSearchTypeValue = this.ListOfFiles[LogCutSearchTypeIndex].settingPath;
+
+      let LogCutAutoUploadDir = this.ListOfFiles.findIndex(file => file.applicationSetting == '_LogCut' && file.settingName == 'AutoUploadDir');
+      let LogCutAutoUploadDirValue = this.ListOfFiles[LogCutAutoUploadDir].settingPath;
+
+      let LogCutViewedUploadsDir = this.ListOfFiles.findIndex(file => file.applicationSetting == '_LogCut' && file.settingName == 'ViewedUploadsDir');
+      let LogCutViewedUploadsDirValue = this.ListOfFiles[LogCutViewedUploadsDir].settingPath;
+
+      this.RadioOn(LogCutSearchTypeValue, 'LogCut');
+
+      this.LogCutCBSearch = (LogCutSearchTypeValue == 'LogCut_CB_Line_Number_Search');
+
+      this.LogCutAutoUploadPath = LogCutAutoUploadDirValue;
+      this.LogCutViewedUploadsPath = LogCutViewedUploadsDirValue;
+
 
 
       let CommentsIndex = this.ListOfFiles.findIndex(file => file.settingName == 'Comments');
@@ -315,6 +356,7 @@ export class SettingsComponent implements OnInit {
       this.CommentsId = this.ListOfFiles[CommentsIndex].id;
       this.ListOfFiles.splice(CommentsIndex, 1);
       this.updateTable();
+
     });
 
     this.settingService.getColumnsNames().subscribe(data => {
@@ -628,7 +670,37 @@ export class SettingsComponent implements OnInit {
       newList.push(ViewedUploadsDirEntry);
 
     }
+    
+    
+    
+    let LogCutSearchTypeIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_LogCut' && file.settingName == 'SearchType');
+    let LogCutSearchTypeValue = (this.LogCutAutoUpload) ? 'AutoUpload' : 'LogCut_CB_Line_Number_Search';
+    this.ListOfFiles[LogCutSearchTypeIndex].settingPath = LogCutSearchTypeValue;
+    let LogCutSearchTypeEntry = this.ListOfFiles[LogCutSearchTypeIndex];
+
+    if ((document.getElementById('ID_LogCutAutoUploadDir') as HTMLInputElement) != null && (document.getElementById('ID_LogCutAutoUploadDir') as HTMLInputElement) != undefined) {
+      let AutoUploadDirIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_LogCut' && file.settingName == 'AutoUploadDir');
+      let AutoUploadDirValue = (document.getElementById('ID_LogCutAutoUploadDir') as HTMLInputElement).value
+      this.ListOfFiles[AutoUploadDirIndex].settingPath = AutoUploadDirValue;
+      let AutoUploadDirEntry = this.ListOfFiles[AutoUploadDirIndex];
+      newList.push(AutoUploadDirEntry);
+
+    }
+    if ((document.getElementById('ID_LogCutViewedUploadDir') as HTMLInputElement) != null && (document.getElementById('ID_LogCutViewedUploadDir') as HTMLInputElement) != undefined) {
+
+      let ViewedUploadsDir = this.ListOfFiles.findIndex(file => file.applicationSetting == '_LogCut' && file.settingName == 'ViewedUploadsDir');
+      let ViewedUploadsDirValue = (document.getElementById('ID_LogCutViewedUploadDir') as HTMLInputElement).value
+      this.ListOfFiles[ViewedUploadsDir].settingPath = ViewedUploadsDirValue;
+      let ViewedUploadsDirEntry = this.ListOfFiles[ViewedUploadsDir];
+      newList.push(ViewedUploadsDirEntry);
+
+    }
+    
+    
+    
+    
     newList.push(SearchTypeEntry);
+    newList.push(LogCutSearchTypeEntry);
 
     if (!this.localCalling && this.FabricSelectedColumnNames.length == 0) {
       this.Saving = false;
@@ -730,14 +802,20 @@ export class SettingsComponent implements OnInit {
       }
     })
 
-
-
-
   }
 
 
-  RadioOn(radioType) {
-    this.AutoUpload = (radioType == 'AutoUpload');
+  RadioOn(radioType, Type) {
+    switch (Type) {
+      case "FabricCut":
+        this.AutoUpload = (radioType == 'AutoUpload');
+        break;
+      case "LogCut":
+        this.LogCutAutoUpload = (radioType == 'AutoUpload');
+        break;
+
+    }
+
   }
 
 
