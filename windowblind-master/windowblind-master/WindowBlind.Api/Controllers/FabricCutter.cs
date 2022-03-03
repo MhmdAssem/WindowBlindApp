@@ -889,7 +889,8 @@ namespace WindowBlind.Api.Controllers
 
                                 var cell = worksheet.Cells[i, j].Text.Trim();
 
-                                if (ColumnMapper.ContainsKey(Headertext)) Headertext = ColumnMapper[Headertext];
+                                if (ColumnMapper.ContainsKey(Headertext)) 
+                                    Headertext = ColumnMapper[Headertext];
                                 row[Headertext] = cell;
 
 
@@ -1050,8 +1051,7 @@ namespace WindowBlind.Api.Controllers
                     {
                         item.Row["Measured Width"] = (Convert.ToInt32(item.Row["Measured Width"]) - 5).ToString();
                     }
-                    else
-                        item.Row["Measured Width"] = "0";
+                  
 
                     if (item.Row["Fabric Type"] != "")
                     {
