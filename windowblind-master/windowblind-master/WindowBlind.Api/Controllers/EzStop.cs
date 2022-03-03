@@ -418,9 +418,8 @@ namespace WindowBlind.Api.Controllers
                         item.Row["Finish"] = item.Row["Finish"]; // there is no FInish in the file !
                     }
                 }
-
-                if (item.Row["Pull Type / Control Type /Draw Type"] == "OVAL ALUMINIUM BOTTOM BAR")
-
+                //  If New String() {"FIN 31", "FIN 40", "FIN 41"}.Contains(DR("Finish").ToString.Trim)
+                if (new List<string> { "FIN 31", "FIN 40", "FIN 41" }.Contains(item.Row["Finish"]))
                     item.Row["Colour"] = item.Row["Pull Colour/Bottom Weight/Wand Len"];
                 else
                 {
