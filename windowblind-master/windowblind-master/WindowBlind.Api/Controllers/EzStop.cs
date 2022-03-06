@@ -765,6 +765,13 @@ namespace WindowBlind.Api.Controllers
         {
             try
             {
+                for (int i = 0; i < strParameterArray.Count; i++)
+                {
+                    strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                    if (String.IsNullOrEmpty(strParameterArray[i]))
+                        strParameterArray[i] = " ";
+                }
+
                 string mimtype = "";
                 int extension = 1;
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);

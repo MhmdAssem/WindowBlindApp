@@ -819,6 +819,15 @@ namespace WindowBlind.Api.Controllers
                 Encoding.GetEncoding("windows-1252");
                 var parametersList = new Dictionary<string, string>();
 
+
+                for (int i = 0; i < strParameterArray.Count; i++)
+                {
+                    strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                    if (String.IsNullOrEmpty(strParameterArray[i]))
+                        strParameterArray[i] = " ";
+                }
+
+
                 parametersList.Add("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString());
                 parametersList.Add("lathe", strParameterArray[9].ToString());
                 parametersList.Add("controltype", strParameterArray[8].ToString());

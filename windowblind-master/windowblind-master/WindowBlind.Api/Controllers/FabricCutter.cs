@@ -433,6 +433,14 @@ namespace WindowBlind.Api.Controllers
                 var parametersList = new Dictionary<string, string>();
 
 
+                for (int i = 0; i < strParameterArray.Length; i++)
+                {
+                    strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                    if (String.IsNullOrEmpty(strParameterArray[i]))
+                        strParameterArray[i] = " ";
+                }
+
+
                 parametersList.Add("someoftotal", strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString());
                 parametersList.Add("cutwidth", strParameterArray[10].Split(" ")[1].ToString());
                 parametersList.Add("controlside", strParameterArray[12].Split(" ")[0].ToString());
