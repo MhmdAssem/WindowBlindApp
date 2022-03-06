@@ -59,6 +59,7 @@ namespace WindowBlind.Api.Controllers
                 {
                     var oldId = rejectModel.Row.UniqueId;
                     rejectModel.Row.UniqueId = Guid.NewGuid().ToString();
+                    rejectModel.Row.Row["Admin_Notes"] = "HOLA";
                     rejectModel.Id = rejectModel.Row.UniqueId;
                     try
                     {

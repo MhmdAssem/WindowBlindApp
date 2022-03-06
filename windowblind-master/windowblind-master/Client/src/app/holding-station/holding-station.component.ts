@@ -3,7 +3,9 @@ import { splitAtColon } from '@angular/compiler/src/util';
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSelect } from '@angular/material/select';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { faThumbsDown, faTintSlash } from '@fortawesome/free-solid-svg-icons';
 import { DataTableDirective } from 'angular-datatables';
 import { rejects } from 'assert';
@@ -52,7 +54,7 @@ export class HoldingStationComponent implements OnInit {
   ReviewtableModelColNames: string[] = [];
   BlindNumbers: number[] = [];
   Data: RejectionModel[] = [];
-
+  OriginalData: RejectionModel[] = [];
   ReviewData: RejectionModel[] = [];
   RefreshLoading: boolean = false;
   SendLoading: boolean = false;
@@ -60,27 +62,18 @@ export class HoldingStationComponent implements OnInit {
   PrinterTableDictionary = {};
   hideRows: boolean[] = [];
 
+
+  @ViewChild('Datatable', { static: false }) Datatable: MatTable<any>;
+  DataSource = new MatTableDataSource<RejectionModel>(this.Data);
+  tableModelColNamesWithActions: string[] = [];
+  @ViewChild('paginator', { static: false }) paginator: MatPaginator;
+
+  SelectedRows = {};
+
+
+
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      lengthChange: false,
-      searching: false,
-      destroy: true,
-      ordering: true,
-      //pageLength: 10,
-      paging: false,
-      info: false
-    };
 
-    this.dtOptionsReview = {
-      pagingType: 'full_numbers',
-      lengthChange: false,
-      searching: false,
-      destroy: true,
-      ordering: true,
-      pageLength: 4,
-
-    };
 
     //#region applications
     this.hideRows = [];
@@ -94,10 +87,34 @@ export class HoldingStationComponent implements OnInit {
     //#endregion
 
     this.HoldingService.GetAllRejectedOrders().subscribe(data => {
+
+      this.InitAllVariables();
+
+      this.tableModelColNamesWithActions.push('CB Number');
+      this.tableModelColNamesWithActions.push('Line No');
+      this.tableModelColNamesWithActions.push('UserName');
+      this.tableModelColNamesWithActions.push('TableName');
+      this.tableModelColNamesWithActions.push('DateTime');
+      this.tableModelColNamesWithActions.push('StationName');
+      this.tableModelColNamesWithActions.push('Select Reasons');
+      this.tableModelColNamesWithActions.push('Admin Notes');
+      this.tableModelColNamesWithActions.push('SelectColumn');
       this.Data = data;
+      this.DataSource = new MatTableDataSource<RejectionModel>(this.Data);
+
+      setTimeout(() => {
+        this.DataSource.paginator = this.paginator;
+        this.UpdateMatTables();
+      }, 100);
+
 
     });
 
+    /// getting the Reasons
+    this.GettingRejectionReasons();
+  }
+
+  GettingRejectionReasons() {
     /// getting the Reasons
     this.settingService.getSettings().subscribe(data => {
 
@@ -130,17 +147,17 @@ export class HoldingStationComponent implements OnInit {
             (document.getElementById('ReasonFilteritems_ReasonFilter') as HTMLElement).style.display = 'none'
         });
         for (let i = 0; i < this.Data.length; i++) {
-          this.hideRows.push(false);
+          let FirstTime = true;
           for (let j = 0; j < this.Data[i].rejectionReasons.length; j++) {
             (document.getElementById(this.Data[i].rejectionReasons[j] + "__" + i) as HTMLInputElement).checked = true;
             let Span = document.getElementById("anchor_" + i) as HTMLSpanElement;
-            if (Span.textContent == 'Select Reasons')
+            if (FirstTime)
               Span.textContent = '';
             if (Span.textContent == '')
               Span.textContent += this.Data[i].rejectionReasons[j].trim()
             else
               Span.textContent += "," + this.Data[i].rejectionReasons[j].trim();
-
+            FirstTime = false;
           }
         }
 
@@ -148,35 +165,11 @@ export class HoldingStationComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit(): void {
-
-  }
-
-  updateTable() {
-    try {
-      this.dtElements.forEach((dtElement: DataTableDirective) => {
-        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy(); // Will be ok on last dataTable, will fail on previous instances
-          dtElement.dtTrigger.next();
-
-          console.log("Try");
-        });
-      });
-    }
-    catch {
-      this.dtTrigger.next();
-
-
-      console.log("Catch");
-    }
-  }
-
-
   SelectThisRow(ind) {
 
     if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent == "Select") {
       (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnSelect";
-
+      ind += this.paginator.pageIndex * this.paginator.pageSize;
       this.ReviewDataWithBlindsNumbers[this.Data[ind].id] = this.ReviewData.length;
       this.ReviewData.push(this.Data[ind]);
     }
@@ -188,7 +181,7 @@ export class HoldingStationComponent implements OnInit {
   UnSelectThisRow(ind) {
 
     (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
-
+    ind += this.paginator.pageIndex * this.paginator.pageSize;
     this.ReviewData.splice(this.ReviewDataWithBlindsNumbers[this.Data[ind].id], 1);
     this.ReviewDataWithBlindsNumbers[this.Data[ind].id] = -1;
 
@@ -231,18 +224,13 @@ export class HoldingStationComponent implements OnInit {
       });
 
       this.ReviewDataWithBlindsNumbers = {};
-      this.updateTable();
+      this.DataSource = new MatTableDataSource<RejectionModel>(this.Data);
 
       setTimeout(() => {
-        $("#Custom_Table_Pagination").html("");
-        $("#Custom_Table_Info").html("");
-        $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-        $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-        (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }, 500);
+        this.DataSource.paginator = this.paginator;
+        this.UpdateMatTables();
+        this.GettingRejectionReasons();
+      }, 100);
 
       this.SendLoading = false;
     });
@@ -259,11 +247,10 @@ export class HoldingStationComponent implements OnInit {
       });
     });
 
-
-
   }
 
   UpdateReasons(reason: string, i) {
+    //console.log(i);
     i = +this.Data.findIndex(e => e.row.uniqueId == i);
     let OrderId = this.Data[i].id;
     reason = reason.trim();
@@ -306,14 +293,12 @@ export class HoldingStationComponent implements OnInit {
 
   }
 
-
-  wheelHandler: any;
-
   FilterTableBasedOnReasons(Reason: string) {
     let checked = (document.getElementById(Reason + "__ReasonFilter") as HTMLInputElement).checked;
     let Span = document.getElementById("ReasonFilteranchor_ReasonFilter") as HTMLSpanElement;
     Reason = Reason.trim();
     let ListOfReasons = [];
+    this.OriginalData = [...this.Data];
     if (checked) {
       if (Span.textContent == 'Filter')
         Span.textContent = '';
@@ -348,40 +333,97 @@ export class HoldingStationComponent implements OnInit {
 
       if (checked) {
         if (!found) {
-          this.hideRows[cntr] = true;
+          let INDEX = this.OriginalData.findIndex(e => e.row.uniqueId == element.row.uniqueId);
+          this.OriginalData.splice(INDEX, 1);
         }
-        else
-          this.hideRows[cntr] = false;
+
       }
       else {
-        if (found || Span.textContent == "Filter") {
-          this.hideRows[cntr] = false;
+        if (found || Span.textContent == "Filter") { }
+        else {
+          let INDEX = this.OriginalData.findIndex(e => e.row.uniqueId == element.row.uniqueId);
+          this.OriginalData.splice(INDEX, 1);
         }
-        else
-          this.hideRows[cntr] = true;
       }
 
       cntr++;
     });
 
+    this.DataSource = new MatTableDataSource<RejectionModel>(this.OriginalData);
 
+    setTimeout(() => {
+      this.DataSource.paginator = this.paginator;
+      this.UpdateMatTables();
+      this.GettingRejectionReasons();
+    }, 100);
   }
-
 
   Delete() {
 
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
-    
+
     this.HoldingService.ClearOrdersFromHoldingStation(this.ReviewData, UserName).subscribe(res => {
       this.ReviewData.forEach(element => {
         let ind = this.Data.findIndex(e => e.id == element.id);
         this.Data.splice(ind, 1);
+        this.DataSource = new MatTableDataSource<RejectionModel>(this.Data);
 
+        setTimeout(() => {
+          this.DataSource.paginator = this.paginator;
+          this.UpdateMatTables();
+          this.GettingRejectionReasons();
+        }, 100);
       });
 
-      this.updateTable();
-
+     
     });
+
+  }
+
+  InitAllVariables() {
+    this.tableModelColNames = [];
+    this.ReviewtableModelColNames = [];
+    this.BlindNumbers = [];
+    this.Data = [];
+    this.ReviewData = [];
+    this.tableModelColNamesWithActions = [];
+  }
+
+  UpdateMatTables() {
+    try {
+      this.Datatable.renderRows();
+    }
+    catch (e) { }
+
+
+
+  }
+
+  PageChange() {
+    setTimeout(() => { /// to do the action after the table update as pagechange happens on clicking next or prev
+      let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
+
+      for (let i = Buttons.length - 1; i >= 0; i--) {
+
+        let index = ((Buttons[i].id)?.indexOf('_'));
+        var ID = Buttons[i].id?.substring(index ? index + 1 : -1);
+        let ind: number = (ID != undefined) ? +ID : 0;
+        ind += this.paginator.pageIndex * this.paginator.pageSize;
+
+        if (this.SelectedRows[ind != undefined ? this.Data[ind].id : 'Default'] == 'Selected') Buttons[i].textContent = 'UnSelect';
+
+      }
+    }, 10);
+
+
+  }
+
+  AppendOnly(i) {
+    i += this.paginator.pageIndex * this.paginator.pageSize;
+
+    let textArea = (document.getElementById('Admin_Notes_' + i) as HTMLTextAreaElement).value;
+
+
 
   }
 

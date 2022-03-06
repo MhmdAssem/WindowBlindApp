@@ -28,6 +28,7 @@
     <PackageReference Include="FreeSpire.PDF" Version="5.4.0" />
     <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.7" />
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" />
+    <PackageReference Include="Microsoft.ReportingServices.ReportViewerControl.WebForms" Version="150.1484.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.2" />
     <PackageReference Include="RDLCPrinter" Version="1.2.0" />
     <PackageReference Include="RDLCReportRunner" Version="1.0.0" />
@@ -39,6 +40,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.4" />
     <PackageReference Include="System.CodeDom" Version="6.0.0-preview.5.21301.5" />
     <PackageReference Include="System.Data.OleDb" Version="5.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="System.Reactive.Windows.Forms" Version="5.0.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-preview.5.21301.5" />
   </ItemGroup>

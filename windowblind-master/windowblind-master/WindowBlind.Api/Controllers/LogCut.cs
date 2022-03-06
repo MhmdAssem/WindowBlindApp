@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AspNetCore.Reporting;
+using AspNetCore.Reporting.ReportExecutionService;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Reporting.NETCore;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -816,37 +817,36 @@ namespace WindowBlind.Api.Controllers
                 var path = Path.Combine(_env.ContentRootPath, "Printer Driver", StrReportPath);
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
-                var parametersList = new List<ReportParameter>();
+                var parametersList = new Dictionary<string, string>();
 
-                parametersList.Add(new ReportParameter("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString()));
-                parametersList.Add(new ReportParameter("lathe", strParameterArray[9].ToString()));
-                parametersList.Add(new ReportParameter("controltype", strParameterArray[8].ToString()));
-                parametersList.Add(new ReportParameter("color", strParameterArray[7].ToString()));
-                parametersList.Add(new ReportParameter("fabric", strParameterArray[6].ToString()));
-                parametersList.Add(new ReportParameter("type", strParameterArray[5].ToString()));
-                parametersList.Add(new ReportParameter("department", strParameterArray[4].ToString()));
-                parametersList.Add(new ReportParameter("customer", strParameterArray[3].ToString()));
-                parametersList.Add(new ReportParameter("drop", strParameterArray[2].ToString()));
-                parametersList.Add(new ReportParameter("width", strParameterArray[1].ToString()));
-                parametersList.Add(new ReportParameter("cbNumber", strParameterArray[0].ToString()));
+                parametersList.Add("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString());
+                parametersList.Add("lathe", strParameterArray[9].ToString());
+                parametersList.Add("controltype", strParameterArray[8].ToString());
+                parametersList.Add("color", strParameterArray[7].ToString());
+                parametersList.Add("fabric", strParameterArray[6].ToString());
+                parametersList.Add("type", strParameterArray[5].ToString());
+                parametersList.Add("department", strParameterArray[4].ToString());
+                parametersList.Add("customer", strParameterArray[3].ToString());
+                parametersList.Add("drop", strParameterArray[2].ToString());
+                parametersList.Add("width", strParameterArray[1].ToString());
+                parametersList.Add("cbNumber", strParameterArray[0].ToString());
 
 
                 if (StrType != "")
                 {
-                    parametersList.Add(new ReportParameter("char", strParameterArray[10]));
-                    parametersList.Add(new ReportParameter("cutwidth", strParameterArray[14]));
-                    parametersList.Add(new ReportParameter("lineNumber", strParameterArray[15]));
-                    parametersList.Add(new ReportParameter("cntrside", strParameterArray[16]));
+                    parametersList.Add("char", strParameterArray[10]);
+                    parametersList.Add("cutwidth", strParameterArray[14]);
+                    parametersList.Add("lineNumber", strParameterArray[15]);
+                    parametersList.Add("cntrside", strParameterArray[16]);
                 }
 
 
 
-                LocalReport report = new LocalReport();
-                report.ReportPath = path;
-                report.SetParameters(parametersList);
-                report.Refresh();
-                byte[] result = report.Render("IMAGE");
-                report.Dispose();
+
+                LocalReport report = new LocalReport(path);
+
+
+                byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
 
                 var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
@@ -1076,7 +1076,7 @@ namespace WindowBlind.Api.Controllers
                         var end = worksheet.Dimension.End;
                         bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
                         var last = end.Column;
-                       
+
                         for (int i = start.Row + 1; i <= end.Row; i++)
                         {
                             Dictionary<string, string> row = new Dictionary<string, string>();
@@ -1117,7 +1117,7 @@ namespace WindowBlind.Api.Controllers
 
 
                             }
-                             
+
                             FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                             for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
                             {
