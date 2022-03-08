@@ -221,7 +221,7 @@
       <ng-container matColumnDef="Admin Notes">
         <th mat-header-cell *matHeaderCellDef>Admin Notes</th>
         <td mat-cell *matCellDef="let element;let i = index">
-          <textarea cols="30" rows="3" style="overflow-y: scroll;" id="Admin_Notes_{{i}}" (keydown) = 'AppendOnly(i)' >{{element.row.row['Admin_Notes']}}</textarea>
+          <textarea cols="30" rows="3" style="overflow-y: scroll;" id="Admin_Notes_{{i}}" (keydown) = 'AppendOnly(i)' (change)="SaveAdminNotes(i)">{{element.row.row['Admin_Notes']}}</textarea>
         </td>
       </ng-container>
 

@@ -70,6 +70,7 @@ import { ReportStationComponent } from './report-station/report-station.componen
 import { HoldingStationComponent } from './holding-station/holding-station.component';
 import { PreEzStopComponent } from './Pre-EzStop/pre-ez-stop.component';
 import { TablesComponent } from './tables/tables.component';
+import { AdminNotesModelComponent } from './report-station/Admin_Notes_Model/admin-notes-model/admin-notes-model.component';
 
 const materialModules = [
   CdkTreeModule,
@@ -134,7 +135,8 @@ const materialModules = [
     ReportStationComponent,
     HoldingStationComponent,
     PreEzStopComponent,
-    TablesComponent
+    TablesComponent,
+    AdminNotesModelComponent
   ],
   imports: [
     ...materialModules,

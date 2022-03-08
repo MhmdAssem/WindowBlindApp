@@ -233,7 +233,30 @@ namespace WindowBlind.Api.Controllers
 
         }
 
+        [HttpPost("SaveAdminNotes")]
+        public async Task<IActionResult> SaveAdminNotes([FromBody] RejectionModel model)
+        {
+            try
+            {
+                await _repository.Rejected.UpdateOneAsync(rej => rej.Id == model.Id,
+                        Builders<RejectionModel>.Update.Set(p => p.Row.Row, model.Row.Row), new UpdateOptions { IsUpsert = false });
 
+
+                var row = _repository.Logs.Find(log => log.Id == model.Id).FirstOrDefault().row.Row;
+                row["Admin_Notes"] = model.Row.Row["Admin_Notes"];
+                
+                _repository.Logs.UpdateOne(log => log.Id == model.Id,
+                  Builders<LogModel>.Update.Set(p => p.row.Row, row), new UpdateOptions { IsUpsert = false });
+
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+
+                return new JsonResult(e.StackTrace);
+            }
+
+        }
 
     }
 }

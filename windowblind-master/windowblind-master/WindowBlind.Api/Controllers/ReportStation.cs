@@ -41,6 +41,7 @@ namespace WindowBlind.Api.Controllers
                 data.ColumnNames.Add("Line No");
                 data.ColumnNames.Add("Customer");
                 data.ColumnNames.Add("Hold Reasons");
+                data.ColumnNames.Add("Admin_Notes");
                 data.ColumnNames.Add("Status");
                 Dictionary<string, int> LineNumberIndex = new Dictionary<string, int>();
 

@@ -1,4 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { AuthService } from '../auth.service';
@@ -7,6 +8,7 @@ import { FabricCutterCBDetailsModelTableRow } from '../fabric-cutter/FabricCutte
 import { LogCutService } from '../Log-Cut/log-cut.service';
 import { PackingStationService } from '../packing-station/packing-station.service';
 import { SettingService } from '../settings/setting.service';
+import { AdminNotesModelComponent } from './Admin_Notes_Model/admin-notes-model/admin-notes-model.component';
 import { ReportStationService } from './report-station.service';
 
 @Component({
@@ -15,7 +17,7 @@ import { ReportStationService } from './report-station.service';
   styleUrls: ['./report-station.component.scss']
 })
 export class ReportStationComponent implements OnInit {
-  constructor(private reportservice: ReportStationService, private settingService: SettingService, private authService: AuthService) { }
+  constructor(private dialog: MatDialog, private reportservice: ReportStationService, private settingService: SettingService, private authService: AuthService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
@@ -96,19 +98,9 @@ export class ReportStationComponent implements OnInit {
         this.tableModelColNames = data.columnNames
 
         this.Data = data.rows;
-        console.log(this.Data);
         this.updateTable();
 
-        setTimeout(() => {
-          $("#Custom_Table_Pagination").html("");
-          $("#Custom_Table_Info").html("");
-          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 500);
+
       }
       if (this.Data.length == 0)
         alert("This CB or Line number is not found !");
@@ -118,5 +110,9 @@ export class ReportStationComponent implements OnInit {
 
   }
 
+
+  ViewAdminNotes(i) {
+    this.dialog.open(AdminNotesModelComponent, { data: this.Data[i].row['Admin_Notes'] });
+  }
 
 }

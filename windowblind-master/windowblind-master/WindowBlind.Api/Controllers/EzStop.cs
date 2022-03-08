@@ -767,7 +767,8 @@ namespace WindowBlind.Api.Controllers
             {
                 for (int i = 0; i < strParameterArray.Count; i++)
                 {
-                    strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                    while (strParameterArray[i].IndexOf("  ") != -1)
+                        strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
                     if (String.IsNullOrEmpty(strParameterArray[i]))
                         strParameterArray[i] = " ";
                 }
@@ -786,7 +787,6 @@ namespace WindowBlind.Api.Controllers
                 parametersList.Add("controltype", strParameterArray[6].ToString());
                 parametersList.Add("color", strParameterArray[7].ToString());
                 parametersList.Add("fabric", strParameterArray[5].ToString());
-                //parametersList.Add("type", strParameterArray[5].ToString());
                 parametersList.Add("department", strParameterArray[4].ToString());
                 parametersList.Add("customer", strParameterArray[3].ToString());
                 parametersList.Add("drop", strParameterArray[2].ToString());

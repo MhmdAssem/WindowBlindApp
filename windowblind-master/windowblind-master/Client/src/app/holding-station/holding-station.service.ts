@@ -14,13 +14,13 @@ import { RejectionModel } from './RejectionModel';
   providedIn: 'root'
 })
 export class HoldingStationService {
-  
-  ClearOrdersFromHoldingStation(Model: RejectionModel[], UserName: any) : Observable<FabricCutterCBDetailsModel> {
 
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json','UserName':UserName });
-  
+  ClearOrdersFromHoldingStation(Model: RejectionModel[], UserName: any): Observable<FabricCutterCBDetailsModel> {
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'UserName': UserName });
+
     return this.httpClient
-      .post<any>(environment.apiUrl + 'HoldingStation/ClearOrdersFromHoldingStation', Model , { headers }).pipe(
+      .post<any>(environment.apiUrl + 'HoldingStation/ClearOrdersFromHoldingStation', Model, { headers }).pipe(
         tap(
           data => {
           }
@@ -32,16 +32,16 @@ export class HoldingStationService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.httpClient
-    .post<boolean>(environment.apiUrl + 'HoldingStation/UpdateReasonsForHeldObject', model, { headers }).pipe(
-      tap(
-        data => {
-          if (!data) {
-            alert("Error Happend while updating this row!");
+      .post<boolean>(environment.apiUrl + 'HoldingStation/UpdateReasonsForHeldObject', model, { headers }).pipe(
+        tap(
+          data => {
+            if (!data) {
+              alert("Error Happend while updating this row!");
+            }
           }
-        }
-      )
+        )
 
-    );
+      );
 
 
   }
@@ -95,4 +95,22 @@ export class HoldingStationService {
 
       );
   }
+
+
+  public SaveAdminNotes(model: RejectionModel): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.httpClient
+      .post<any>(environment.apiUrl + 'HoldingStation/SaveAdminNotes', model, { headers }).pipe(
+        tap(
+          data => {
+            if (!data) {
+              alert("Error Happend while holding this row!");
+            }
+          }
+        )
+
+      );
+  }
+
 }

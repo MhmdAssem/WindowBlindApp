@@ -38,7 +38,7 @@
         <tr *ngFor="let row of Data;let i = index" id="RowNumber_i">
           <td *ngFor="let col of tableModelColNames" style="white-space: pre">
 
-            <div *ngIf="col != 'Hold Reasons'">
+            <div *ngIf="col != 'Hold Reasons' && col != 'Admin_Notes'">
               {{row.row[col]}}
             </div>
             <div *ngIf="col == 'Hold Reasons'">
@@ -61,6 +61,9 @@
             </div>
 
 
+            <div *ngIf = "col == 'Admin_Notes'">
+              <button (click)="ViewAdminNotes(i)">View Admin Notes</button>
+            </div>
           </td>
         </tr>
       </tbody>

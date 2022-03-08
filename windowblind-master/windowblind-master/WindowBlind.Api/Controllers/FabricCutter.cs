@@ -435,7 +435,8 @@ namespace WindowBlind.Api.Controllers
 
                 for (int i = 0; i < strParameterArray.Length; i++)
                 {
-                    strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                    while (strParameterArray[i].IndexOf("  ") != -1)
+                        strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
                     if (String.IsNullOrEmpty(strParameterArray[i]))
                         strParameterArray[i] = " ";
                 }

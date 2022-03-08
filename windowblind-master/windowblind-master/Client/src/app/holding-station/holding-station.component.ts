@@ -172,16 +172,19 @@ export class HoldingStationComponent implements OnInit {
       ind += this.paginator.pageIndex * this.paginator.pageSize;
       this.ReviewDataWithBlindsNumbers[this.Data[ind].id] = this.ReviewData.length;
       this.ReviewData.push(this.Data[ind]);
+      this.SelectedRows[this.Data[ind].row.uniqueId] = 'Selected';
     }
     else {
+      ind += this.paginator.pageIndex * this.paginator.pageSize;
       this.UnSelectThisRow(ind);
+      this.SelectedRows[this.Data[ind].row.uniqueId] = 'UnSelected';
     }
   }
 
   UnSelectThisRow(ind) {
 
     (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
-    ind += this.paginator.pageIndex * this.paginator.pageSize;
+
     this.ReviewData.splice(this.ReviewDataWithBlindsNumbers[this.Data[ind].id], 1);
     this.ReviewDataWithBlindsNumbers[this.Data[ind].id] = -1;
 
@@ -375,7 +378,7 @@ export class HoldingStationComponent implements OnInit {
         }, 100);
       });
 
-     
+
     });
 
   }
@@ -419,12 +422,43 @@ export class HoldingStationComponent implements OnInit {
   }
 
   AppendOnly(i) {
+    let textArea = (document.getElementById('Admin_Notes_' + i) as HTMLTextAreaElement).value;
     i += this.paginator.pageIndex * this.paginator.pageSize;
 
-    let textArea = (document.getElementById('Admin_Notes_' + i) as HTMLTextAreaElement).value;
+    var OldText = this.Data[i].row.row['Admin_Notes'];
+    let ind = textArea.indexOf(OldText);
+    if (ind != -1 && OldText != textArea) {
 
-
+    }
+    else if (ind == -1 || OldText == textArea) {
+      console.log(OldText);
+      (document.getElementById('Admin_Notes_' + i) as HTMLTextAreaElement).value = OldText + " ";
+    }
 
   }
 
+  SaveAdminNotes(i) {
+    let textArea = (document.getElementById('Admin_Notes_' + i) as HTMLTextAreaElement).value;
+    textArea = textArea.replace(/  +/g, ' ');
+    i += this.paginator.pageIndex * this.paginator.pageSize;
+    let temp = this.Data[i];
+    temp.row.row['Admin_Notes'] = textArea;
+
+    let Model: RejectionModel = {
+      id: temp.id,
+      userName: temp.userName,
+      tableName: temp.tableName,
+      stationName: temp.stationName,
+      row: temp.row,
+      rejectionReasons: temp.rejectionReasons,
+      forwardedToStation: temp.forwardedToStation,
+      dateTime: temp.dateTime
+    };
+
+    console.log(Model)
+    this.HoldingService.SaveAdminNotes(Model).subscribe(data => {
+
+    });
+
+  }
 }
