@@ -384,7 +384,8 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     if (this.SearchType == false) {
       if (this.CurrentTab <= 0) {
         this.FBRservice.PrintLabels(
-          tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
+          tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(data => {
+            console.log(data)
             this.FBRservice.UpdateRows(this.AutoUploadedSelectedRows).subscribe();
             this.AutoUploadedSelectedRows = [];
             this.Printing = false;
