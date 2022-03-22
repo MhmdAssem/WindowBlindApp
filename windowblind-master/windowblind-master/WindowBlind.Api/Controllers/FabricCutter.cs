@@ -419,14 +419,14 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
-        public void PrintReport(string strPrinterName, string[] strParameterArray)
+        public string PrintReport(string strPrinterName, string[] strParameterArray)
         {
 
             try
             {
                 string mimtype = "";
                 int extension = 1;
-                var path = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutter.rdlc");
+                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutter.rdlc");
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
@@ -465,7 +465,7 @@ namespace WindowBlind.Api.Controllers
 
                 byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
 
-                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".png");
+                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
@@ -512,13 +512,14 @@ namespace WindowBlind.Api.Controllers
                 {
                     printErrorMessage = "Printing Error: " + ex.ToString();
                     printedOK = false;
+                    return ex.StackTrace;
                 }
 
-                return;
+                return "";
             }
             catch (Exception ex)
             {
-                return;
+                return ex.StackTrace;
             }
         }
 
@@ -528,37 +529,48 @@ namespace WindowBlind.Api.Controllers
 
         }
 
-        public void PrintLabels(string strParameter)
+        public string PrintLabels(string strParameter)
         {
-            string[] strpara = null;
-            strpara = strParameter.Replace("|@", "|").Split('|');
-
-            if (strpara.GetUpperBound(0) == 0)
+            try
             {
-                System.Environment.Exit(0);
-            }
-            else
-            {
+                string[] strpara = null;
+                strpara = strParameter.Replace("|@", "|").Split('|');
+                var Error = "";
 
-                string strPrinterName = null;
-                strPrinterName = strpara[0];
-
-                for (int x = 1; x <= strpara.Length - 1; x++)
+                if (strpara.GetUpperBound(0) == 0)
+                {
+                    System.Environment.Exit(0);
+                }
+                else
                 {
 
-                    string[] strParameterArray = strpara[x].Split('@');
+                    string strPrinterName = null;
+                    strPrinterName = strpara[0];
 
-                    if (strParameterArray.GetUpperBound(0) == 0)
+                    for (int x = 1; x <= strpara.Length - 1; x++)
                     {
-                        System.Environment.Exit(0);
+
+                        string[] strParameterArray = strpara[x].Split('@');
+
+                        if (strParameterArray.GetUpperBound(0) == 0)
+                        {
+                            System.Environment.Exit(0);
+                        }
+                        else
+                        {
+                            Error = PrintReport(strPrinterName, strParameterArray);
+                        }
                     }
-                    else
-                    {
-                        PrintReport(strPrinterName, strParameterArray);
-                    }
+
                 }
-
+                return Error;
             }
+            catch (Exception e)
+            {
+
+                return e.StackTrace;
+            }
+
 
         }
 
@@ -798,8 +810,8 @@ namespace WindowBlind.Api.Controllers
 
                 string labeldata = labels.ToString().TrimEnd('|');
 
-                PrintLabels(PrinterName + "|" + labeldata);
-                return new JsonResult(true);
+                var error = PrintLabels(PrinterName + "|" + labeldata);
+                return new JsonResult(error.Trim() == "" ? true : error);
             }
             catch (Exception e)
             {
@@ -865,7 +877,7 @@ namespace WindowBlind.Api.Controllers
                         var end = worksheet.Dimension.End;
                         bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
                         var last = end.Column;
-                         
+
                         for (int i = start.Row + 1; i <= end.Row; i++)
                         {
                             Dictionary<string, string> row = new Dictionary<string, string>();
@@ -898,13 +910,13 @@ namespace WindowBlind.Api.Controllers
 
                                 var cell = worksheet.Cells[i, j].Text.Trim();
 
-                                if (ColumnMapper.ContainsKey(Headertext)) 
+                                if (ColumnMapper.ContainsKey(Headertext))
                                     Headertext = ColumnMapper[Headertext];
                                 row[Headertext] = cell;
 
 
                             }
-                            
+
                             FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                             for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
                             {
@@ -1060,7 +1072,7 @@ namespace WindowBlind.Api.Controllers
                     {
                         item.Row["Measured Width"] = (Convert.ToInt32(item.Row["Measured Width"]) - 5).ToString();
                     }
-                  
+
 
                     if (item.Row["Fabric Type"] != "")
                     {
