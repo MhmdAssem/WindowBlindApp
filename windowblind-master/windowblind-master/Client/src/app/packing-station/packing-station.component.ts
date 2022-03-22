@@ -234,7 +234,7 @@ export class PackingStationComponent implements OnInit {
           console.log("Packed: " + Packed.toString());
           console.log("Count: " + Count.toString());
           if (Count >= Total) element.row['Status'] = 'Dispatch';
-          else if (Count + Packed == Total) element.row['Status'] = 'Dispatch via holding bay';
+          else if (Count + Packed >= Total) element.row['Status'] = 'Dispatch via holding bay';
           else element.row['Status'] = 'Holding bay';
 
         });

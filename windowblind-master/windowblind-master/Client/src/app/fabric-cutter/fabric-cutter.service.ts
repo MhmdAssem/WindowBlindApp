@@ -88,6 +88,7 @@ export class FabricCutterService {
       .post<any>(environment.apiUrl + 'FabricCutter/PrintLabelsOnly', model, { headers }).pipe(
         tap(
           data => {
+            console.log(data);
             if (!data) {
               alert("Sorry Configuration is not done , please contact your admin !");
             }

@@ -59,7 +59,7 @@ namespace WindowBlind.Api
             //    new FileSetting { Id = Guid.NewGuid().ToString(), settingName = "Comments", settingPath = "Move to Production scheduler@@@Missing Fabric@@@Color not match@@@Broken chain@@@Size not correct", applicationSetting = "" };
 
             //_mongoDb.GetCollection<FileSetting>("AutoUploads").DeleteMany(e => e.Id != null);
-            DropTables();
+            //DropTables();
             Seed();
         }
 
@@ -366,14 +366,14 @@ namespace WindowBlind.Api
 
         private void DropTables()
         {
-            //_mongoDb.DropCollection("logs");
-            //_mongoDb.DropCollection("PackingStation");
-            //_mongoDb.DropCollection("HoistStation");
-            //_mongoDb.DropCollection("AssemblyStation");
-            //_mongoDb.DropCollection("comport");
-            ////_mongoDb.DropCollection("settings");
-            //_mongoDb.DropCollection("Rejected");
-            //_mongoDb.DropCollection("EzStopData");
+            _mongoDb.DropCollection("logs");
+            _mongoDb.DropCollection("PackingStation");
+            _mongoDb.DropCollection("HoistStation");
+            _mongoDb.DropCollection("AssemblyStation");
+            _mongoDb.DropCollection("comport");
+            //_mongoDb.DropCollection("settings");
+            _mongoDb.DropCollection("Rejected");
+            _mongoDb.DropCollection("EzStopData");
             _mongoDb.DropCollection("AutoUploads");
         }
     }
