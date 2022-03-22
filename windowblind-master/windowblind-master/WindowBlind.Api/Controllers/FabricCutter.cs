@@ -914,21 +914,10 @@ namespace WindowBlind.Api.Controllers
                             TblRow.Row = row;
                             TblRow.UniqueId = Guid.NewGuid().ToString();
                             TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
+                            TblRow.FileName = file.Name;
+                            TblRow.CreationDate = file.CreationTime.ToString();
 
-                            AutoUploadModel model = new AutoUploadModel
-                            {
-                                Id = TblRow.UniqueId,
-                                FileName = file.Name,
-                                CreationDate = file.CreationTime.ToString(),
-                                row = TblRow,
-                                Shift = Shift,
-                                UserName = UserName,
-                                TableName = TableName,
-                                Type = Type,
-                                Station = "FabricCut"
-                            };
-
-                            await _repository.AutoUploads.InsertOneAsync(model);
+                            Data.Rows.Add(TblRow);
                         }
 
 
@@ -948,25 +937,6 @@ namespace WindowBlind.Api.Controllers
 
                 }
 
-                /// getting Data from db 
-
-                var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type && res.Station == "FabricCut").Result.ToListAsync();
-                var FirstFileName = "";
-                var FirstFileCreationTime = "";
-
-                foreach (var item in AutoUploadsModels)
-                {
-                    if (FirstFileName == "")
-                    {
-                        FirstFileName = item.FileName;
-                        FirstFileCreationTime = item.CreationDate;
-                    }
-                    if (FirstFileName != item.FileName || FirstFileCreationTime != item.CreationDate) break;
-
-                    Data.Rows.Add(item.row);
-                }
-
-                ///
                 Dictionary<string, string> FabricRollwidth = new Dictionary<string, string>();
                 Dictionary<string, int> ControlTypevalues = new Dictionary<string, int>();
                 Dictionary<string, List<string>> LatheType = new Dictionary<string, List<string>>();
@@ -1129,6 +1099,50 @@ namespace WindowBlind.Api.Controllers
                 }
 
                 #endregion
+
+                #region adding & reading data from autouploads db
+
+                foreach (var item in Data.Rows)
+                {
+                    AutoUploadModel model = new AutoUploadModel
+                    {
+                        Id = item.UniqueId,
+                        FileName = item.FileName,
+                        CreationDate = item.CreationDate,
+                        row = item,
+                        Shift = Shift,
+                        UserName = UserName,
+                        TableName = TableName,
+                        Type = Type,
+                        Station = "FabricCut"
+                    };
+
+                    await _repository.AutoUploads.InsertOneAsync(model);
+                }
+
+
+                /// getting Data from db 
+
+                var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type && res.Station == "FabricCut").Result.ToListAsync();
+                var FirstFileName = "";
+                var FirstFileCreationTime = "";
+
+                foreach (var item in AutoUploadsModels)
+                {
+                    if (FirstFileName == "")
+                    {
+                        FirstFileName = item.FileName;
+                        FirstFileCreationTime = item.CreationDate;
+                    }
+                    if (FirstFileName != item.FileName || FirstFileCreationTime != item.CreationDate) break;
+
+                    Data.Rows.Add(item.row);
+                }
+
+                ///
+
+                #endregion
+
 
                 #region getting Held Orders
 

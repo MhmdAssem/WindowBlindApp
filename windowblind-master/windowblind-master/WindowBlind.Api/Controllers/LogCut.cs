@@ -1074,6 +1074,7 @@ namespace WindowBlind.Api.Controllers
                 //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
 
                 int generalBlindNumber = 1;
+
                 foreach (var AutoUploadFile in files)
                 {
                     using (var package = new ExcelPackage(AutoUploadFile))
@@ -1137,21 +1138,10 @@ namespace WindowBlind.Api.Controllers
                             TblRow.Row = row;
                             TblRow.UniqueId = Guid.NewGuid().ToString();
                             TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
+                            TblRow.CreationDate = AutoUploadFile.CreationTime.ToString();
+                            TblRow.FileName = AutoUploadFile.Name;
 
-                            AutoUploadModel model = new AutoUploadModel
-                            {
-                                Id = TblRow.UniqueId,
-                                FileName = AutoUploadFile.Name,
-                                CreationDate = AutoUploadFile.CreationTime.ToString(),
-                                row = TblRow,
-                                Shift = Shift,
-                                UserName = UserName,
-                                TableName = TableName,
-                                Type = Type,
-                                Station = "LogCut"
-                            };
-
-                            await _repository.AutoUploads.InsertOneAsync(model);
+                            Data.Rows.Add(TblRow);
                         }
 
 
@@ -1171,25 +1161,6 @@ namespace WindowBlind.Api.Controllers
 
                 }
 
-                /// getting Data from db 
-
-                var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type && res.Station == "LogCut").Result.ToListAsync();
-                var FirstFileName = "";
-                var FirstFileCreationTime = "";
-
-                foreach (var item in AutoUploadsModels)
-                {
-                    if (FirstFileName == "")
-                    {
-                        FirstFileName = item.FileName;
-                        FirstFileCreationTime = item.CreationDate;
-                    }
-                    if (FirstFileName != item.FileName || FirstFileCreationTime != item.CreationDate) break;
-
-                    Data.Rows.Add(item.row);
-                }
-
-                ///
                 FabricRollwidth = new Dictionary<string, string>();
                 ControlTypevalues = new Dictionary<string, int>();
                 LatheType = new Dictionary<string, List<string>>();
@@ -1321,6 +1292,43 @@ namespace WindowBlind.Api.Controllers
 
                     if (!Finalized.ColumnNames.Contains(Headertext))
                         Finalized.ColumnNames.Add(Headertext);
+                }
+
+                #endregion
+
+                #region Adding Data into Auto Upload DB
+                foreach (var item in Finalized.Rows)
+                {
+                    AutoUploadModel model = new AutoUploadModel
+                    {
+                        Id = item.UniqueId,
+                        FileName = item.FileName,
+                        CreationDate = item.CreationDate,
+                        row = item,
+                        Shift = Shift,
+                        UserName = UserName,
+                        TableName = TableName,
+                        Type = Type,
+                        Station = "LogCut"
+                    };
+                    await _repository.AutoUploads.InsertOneAsync(model);
+                }
+                /// getting Data from db 
+
+                var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type && res.Station == "LogCut").Result.ToListAsync();
+                var FirstFileName = "";
+                var FirstFileCreationTime = "";
+
+                foreach (var item in AutoUploadsModels)
+                {
+                    if (FirstFileName == "")
+                    {
+                        FirstFileName = item.FileName;
+                        FirstFileCreationTime = item.CreationDate;
+                    }
+                    if (FirstFileName != item.FileName || FirstFileCreationTime != item.CreationDate) break;
+
+                    Finalized.Rows.Add(item.row);
                 }
 
                 #endregion

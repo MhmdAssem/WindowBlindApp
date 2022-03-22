@@ -9,6 +9,7 @@ namespace WindowBlind.Api.Models
     {
         public List<string> ColumnNames { get; set; }
         public List<FabricCutterCBDetailsModelTableRow> Rows { get; set; }
+
         public FabricCutterCBDetailsModel()
         {
             ColumnNames = new List<string>();
@@ -24,6 +25,8 @@ namespace WindowBlind.Api.Models
         public List<int> BlindNumbers { get; set; }
         public string PackingType { get; set; }
         public List<string> rows_AssociatedIds { get; set; }
+        public string FileName { get; set; }
+        public string CreationDate { get; set; }
 
         public FabricCutterCBDetailsModelTableRow()
         {
