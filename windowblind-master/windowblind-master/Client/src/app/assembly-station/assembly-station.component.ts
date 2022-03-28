@@ -1,4 +1,6 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { AuthService } from '../auth.service';
@@ -20,17 +22,12 @@ export class AssemblyStationComponent implements OnInit {
   LineLoading: boolean;
   HoldLoading: boolean = false;
   CBLoading: boolean;
-  FirstTimeOnly: boolean;
+
   constructor(private HoldingService: HoldingStationService, private assemblyService: AssemblyStationService, private settingService: SettingService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
-  @ViewChildren(DataTableDirective)
-  dtElements: QueryList<DataTableDirective>;
-  dtTrigger: Subject<any> = new Subject();
-  dtOptions: DataTables.Settings = {};
-  dtTriggerReview: Subject<any> = new Subject();
-  dtOptionsReview: DataTables.Settings = {};
+
 
   tableModelColNames: string[] = [];
   ReviewtableModelColNames: string[] = [];
@@ -44,28 +41,19 @@ export class AssemblyStationComponent implements OnInit {
 
 
   DataInTheTable = {};
+  SelectedRows = {};
+
+
+  //// for the normal table
+  @ViewChild('Datatable', { static: false }) Datatable: MatTable<any>;
+  DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
+  tableModelColNamesWithActions: string[] = [];
+  @ViewChild('paginator', { static: false }) paginator: MatPaginator;
+
+
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      lengthChange: false,
-      searching: false,
-      destroy: true,
-      ordering: true,
-      //pageLength: 10,
-      paging: false,
-      info: false
-    };
 
-    this.dtOptionsReview = {
-      pagingType: 'full_numbers',
-      lengthChange: false,
-      searching: false,
-      destroy: true,
-      ordering: true,
-      pageLength: 4,
-
-    };
-
+    this.InitAllVariables();
     this.settingService.getTableNumber('AssemblyStationTable').subscribe(data => {
       if ((data as string).indexOf("@@@@@") != -1) {
         let entries = (data as string).split("#####");
@@ -84,44 +72,26 @@ export class AssemblyStationComponent implements OnInit {
 
 
 
-    this.FirstTimeOnly = true;
 
 
   }
-
-  ngAfterViewInit(): void {
-
-  }
-
-  updateTable() {
-    try {
-      this.dtElements.forEach((dtElement: DataTableDirective) => {
-        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy(); // Will be ok on last dataTable, will fail on previous instances
-          dtElement.dtTrigger.next();
-          console.log("Try");
-        });
-      });
-    }
-    catch {
-      this.dtTrigger.next();
-      this.dtTriggerReview.next();
-
-      console.log("Catch");
-    }
-  }
-
 
   SelectThisRow(ind) {
 
     if ((document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent == "Select") {
       (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "UnSelect";
+      ind += this.paginator.pageIndex * this.paginator.pageSize;
 
       this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.ReviewData.length;
       this.ReviewData.push(this.Data[ind]);
+      this.SelectedRows[this.Data[ind].uniqueId] = 'Selected';
+
     }
     else {
+      ind += this.paginator.pageIndex * this.paginator.pageSize;
       this.UnSelectThisRow(ind);
+      this.SelectedRows[this.Data[ind].uniqueId] = 'UnSelected';
+
     }
   }
 
@@ -150,9 +120,7 @@ export class AssemblyStationComponent implements OnInit {
     }
     this.assemblyService.pushLinesNoToAssemblyStation(
       tableName, this.PrinterTableDictionary[tableName], UserName, Data).subscribe(() => {
-        this.SendLoading = false;
-
-        this.ReviewData = [];
+        
         let keys = Object.keys(this.ReviewDataWithBlindsNumbers);
 
         keys.forEach(key => {
@@ -162,21 +130,15 @@ export class AssemblyStationComponent implements OnInit {
             this.Data.splice(ind, 1);
           }
         });
-
+        
+        this.SendLoading = false;
         this.ReviewDataWithBlindsNumbers = {};
-        this.updateTable();
-
+        this.ReviewData = [];      
+        this.DataSource = new MatTableDataSource(this.Data);
         setTimeout(() => {
-          $("#Custom_Table_Pagination").html("");
-          $("#Custom_Table_Info").html("");
-          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 500);
-
+          this.DataSource.paginator = this.paginator;
+          this.UpdateMatTables();
+        }, 100);
 
       });
   }
@@ -189,12 +151,13 @@ export class AssemblyStationComponent implements OnInit {
     this.assemblyService.GetReadyToAssemble(input).subscribe(data => {
 
       if (data && data.rows.length != 0 && data.columnNames.length != 0) {
-        setTimeout(() => {
-          this.updateTable();
-        }, 50);
+        this.tableModelColNames = data.columnNames;
+        this.tableModelColNamesWithActions = [...data.columnNames];
+        this.ReviewtableModelColNames = [];
+        this.ReviewtableModelColNames.push("Blind Number");
+        this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
 
-        this.tableModelColNames = data.columnNames
-
+        this.tableModelColNamesWithActions.push('SelectColumn')
 
         data.rows.forEach(element => {
 
@@ -204,31 +167,13 @@ export class AssemblyStationComponent implements OnInit {
           }
         });
 
-
-        this.updateTable();
-
-        let cntr = 0;
+        this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
 
         setTimeout(() => {
-          this.Data.forEach(element => {
-            if (element.row['FromHoldingStation'] == 'YES') {
-              (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-            }
-            cntr++;
-          });
-        }, 40);
-
-
-        setTimeout(() => {
-          $("#Custom_Table_Pagination").html("");
-          $("#Custom_Table_Info").html("");
-          $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-          $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-          (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 500);
+          this.DataSource.paginator = this.paginator;
+          this.UpdateMatTables();
+        }, 100);
+       
       }
       if (this.Data.length == 0)
         alert("This CB or Line number is not found !");
@@ -265,9 +210,7 @@ export class AssemblyStationComponent implements OnInit {
 
 
     this.HoldingService.RejectThisRow(RejectionModels).subscribe(() => {
-      this.SendLoading = false;
 
-      this.ReviewData = [];
       let keys = Object.keys(this.ReviewDataWithBlindsNumbers);
 
       keys.forEach(key => {
@@ -277,49 +220,50 @@ export class AssemblyStationComponent implements OnInit {
           this.Data.splice(ind, 1);
         }
       });
-
+      
+      this.ReviewData = [];
+      this.SendLoading = false;
       this.ReviewDataWithBlindsNumbers = {};
-      this.updateTable();
-
+      this.DataSource = new MatTableDataSource(this.Data);
       setTimeout(() => {
-        $("#Custom_Table_Pagination").html("");
-        $("#Custom_Table_Info").html("");
-        $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-        $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-        (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }, 500);
-
+        this.DataSource.paginator = this.paginator;
+        this.UpdateMatTables();
+      }, 100);
 
     });
   }
 
   GetHeldBasedOnTable() {
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
-
+    if(tableName == "-")return;
+    
+    this.InitAllVariables();
     this.assemblyService.GetHeldObjects(tableName).subscribe(
       data => {
         if (data && data.columnNames.length != 0) {
 
-          this.tableModelColNames = data.columnNames
+          this.tableModelColNames = data.columnNames;
+          this.tableModelColNamesWithActions = [...data.columnNames];
+          this.ReviewtableModelColNames = [];
+          this.ReviewtableModelColNames.push("Blind Number");
+          this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
+  
+  
+          this.tableModelColNamesWithActions.push('SelectColumn');
+          
+          data.rows.forEach(element => {
+            if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {
+              this.DataInTheTable[element.uniqueId] = true;
+              this.Data.unshift(element);
+            }
+             
+          });
 
-          if (!this.FirstTimeOnly)
-            this.Data.concat(data.rows);
-          else
-            this.Data = data.rows;
-
-          this.FirstTimeOnly = false;
-          let cntr = 0;
+          this.DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);  
           setTimeout(() => {
-            this.Data.forEach(element => {
-              if (element.row['FromHoldingStation'] == 'YES') {
-                (document.getElementById("RowNumber_" + cntr) as HTMLElement).setAttribute("style", 'color: white !important;' + 'background-color: crimson !important');
-              }
-              cntr++;
-            });
-          }, 40);
+            this.DataSource.paginator = this.paginator;
+            this.UpdateMatTables();
+          }, 100);
 
         }
       }
@@ -348,8 +292,6 @@ export class AssemblyStationComponent implements OnInit {
 
   }
 
-
-
   Delete() {
 
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
@@ -375,21 +317,54 @@ export class AssemblyStationComponent implements OnInit {
     this.assemblyService.ClearOrdersFromAssembly(Model, UserName, tableName).subscribe(res => {
       this.ReviewData = [];
       this.ReviewDataWithBlindsNumbers = {};
-      //this.updateTable();
+      this.DataSource = new MatTableDataSource(this.Data);
       setTimeout(() => {
-
-        $("#Custom_Table_Pagination").html("");
-        $("#Custom_Table_Info").html("");
-
-        $("#dScenario-table_paginate").appendTo('#Custom_Table_Pagination');
-        $("#dScenario-table_info").appendTo('#Custom_Table_Info');
-        (document.getElementById('theSelectColumn') as HTMLElement).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        this.DataSource.paginator = this.paginator;
+        this.UpdateMatTables();
       }, 100);
 
     });
+
+  }
+
+  InitAllVariables() {
+    this.tableModelColNames = [];
+    this.ReviewtableModelColNames = [];
+    this.BlindNumbers = [];
+    this.Data = [];
+    this.ReviewData = [];
+    this.ReviewDataWithBlindsNumbers = {}
+    this.PrinterTableDictionary = {};
+    this.SelectedRows = {};
+
+  }
+
+  UpdateMatTables() {
+    try {
+      this.Datatable.renderRows();
+    }
+    catch (e) { }
+
+  }
+
+  PageChange() {
+    setTimeout(() => { /// to do the action after the table update as pagechange happens on clicking next or prev
+      let Buttons = document.getElementsByClassName("SelectAllTag") as unknown as HTMLButtonElement[];
+
+      for (let i = Buttons.length - 1; i >= 0; i--) {
+
+        let index = ((Buttons[i].id)?.indexOf('_'));
+        var ID = Buttons[i].id?.substring(index ? index + 1 : -1);
+        let ind: number = (ID != undefined) ? +ID : 0;
+        ind += this.paginator.pageIndex * this.paginator.pageSize;
+
+        if (this.SelectedRows[ind != undefined ? this.Data[ind].uniqueId : 'Default'] == 'Selected') Buttons[i].textContent = 'UnSelect';
+
+      }
+    }, 10);
+
+
+
 
   }
 

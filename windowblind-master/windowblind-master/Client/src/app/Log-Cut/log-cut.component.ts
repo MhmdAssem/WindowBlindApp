@@ -5,6 +5,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { DataTableDirective } from 'angular-datatables';
 import { Console, debug, table } from 'console';
 import { Subject } from 'rxjs';
+import { isJSDocThisTag } from 'typescript';
 import { AuthService } from '../auth.service';
 import { FabricCutterService } from '../fabric-cutter/fabric-cutter.service';
 import { FabricCutterCBDetailsModel, FabricCutterCBDetailsModelTableRow } from '../fabric-cutter/FabricCutterCBDetailsModel';
@@ -173,7 +174,6 @@ export class LogCutComponent implements OnInit {
         }, 100);
 
 
-
       }
 
       if (this.Data.length == 0)
@@ -273,11 +273,13 @@ export class LogCutComponent implements OnInit {
           this.ReviewData.forEach(element => {
             let ind = this.Data.findIndex(d => d.uniqueId == element.uniqueId);
             this.Data.splice(ind, 1);
-            setTimeout(() => {
-              this.DataSource.paginator = this.paginator;
-              this.UpdateMatTables();
-            }, 100);
+            
           });
+          this.DataSource = new MatTableDataSource(this.Data);
+           setTimeout(() => {
+            this.DataSource.paginator = this.paginator;
+            this.UpdateMatTables();
+          }, 100);
           this.logcutService.UpdateRows(this.AutoUploadedSelectedRows).subscribe();
           this.AutoUploadedSelectedRows = [];
           this.ReviewData = [];

@@ -33,7 +33,7 @@ namespace WindowBlind.Api.Controllers
         Dictionary<string, int> ColumnsIndex;
         string ctbsodumpPath, SheetNamePath, FBRPath, DeductionPath, LathePath, FabricPath, DropPath;
         int TotalQty;
-        List<string> SelectedColumnsPath;
+        List<string> SelectedColumnsNames;
 
         Dictionary<string, string> FabricRollwidth;
         Dictionary<string, int> ControlTypevalues;
@@ -92,9 +92,9 @@ namespace WindowBlind.Api.Controllers
             DropPath = DropSetting.FirstOrDefault().settingPath;
 
             var SelectedColumnsSetting = await _repository.Settings.FindAsync(e => e.settingName == "SelectedColumnsNames" && e.applicationSetting == "LogCut");
-            SelectedColumnsPath = SelectedColumnsSetting.FirstOrDefault().settingPath.Split("@@@").ToList();
+            SelectedColumnsNames = SelectedColumnsSetting.FirstOrDefault().settingPath.Split("@@@").ToList();
 
-            if (SelectedColumnsPath.Count == 1 && SelectedColumnsPath[0].Trim() == "") SelectedColumnsPath = new List<string>();
+            if (SelectedColumnsNames.Count == 1 && SelectedColumnsNames[0].Trim() == "") SelectedColumnsNames = new List<string>();
 
 
         }
@@ -314,7 +314,7 @@ namespace WindowBlind.Api.Controllers
                             RowQty = int.Parse(cell);
                             TotalQty += int.Parse(cell);
                         }
-                        if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
+                        if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsNames.Contains(worksheet.Cells[1, j].Text.Trim()))
                             Data.ColumnNames.Add(Headertext);
 
                         if (ColumnMapper.ContainsKey(Headertext))
@@ -503,11 +503,21 @@ namespace WindowBlind.Api.Controllers
                             item.Row["Qty"] = "1";
                             for (int j = 0; j < Quantity; j++)
                             {
-                                var FinalRow = new FabricCutterCBDetailsModelTableRow();
-                                FinalRow = item;
+                                var FinalRow = new FabricCutterCBDetailsModelTableRow
+                                {
+                                    FileName = item.FileName,
+                                    BlindNumbers = item.BlindNumbers,
+                                    CreationDate = item.CreationDate,
+                                    PackingType = item.PackingType,
+                                    Row = item.Row,
+                                    rows_AssociatedIds = new List<string>(),
+                                    UniqueId = ""
+                                };
+
                                 FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                 FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
                                 FinalRow.Row["FromHoldingStation"] = "NO";
+                                FinalRow.UniqueId = Guid.NewGuid().ToString();
 
                                 blindNumber++;
                                 a += 1;
@@ -524,11 +534,21 @@ namespace WindowBlind.Api.Controllers
                                 item.Row["Qty"] = "1";
                                 for (int j = 0; j < Quantity; j++)
                                 {
-                                    var FinalRow = new FabricCutterCBDetailsModelTableRow();
-                                    FinalRow = item;
+
+                                    var FinalRow = new FabricCutterCBDetailsModelTableRow
+                                    {
+                                        FileName = item.FileName,
+                                        BlindNumbers = item.BlindNumbers,
+                                        CreationDate = item.CreationDate,
+                                        PackingType = item.PackingType,
+                                        Row = item.Row,
+                                        rows_AssociatedIds = new List<string>(),
+                                        UniqueId = ""
+                                    };
                                     FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                     FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
                                     FinalRow.Row["FromHoldingStation"] = "NO";
+                                    FinalRow.UniqueId = Guid.NewGuid().ToString();
                                     FinalRow.rows_AssociatedIds.Add(FinalRow.UniqueId);
 
                                     blindNumber++;
@@ -541,18 +561,6 @@ namespace WindowBlind.Api.Controllers
                     }
                 }
             }
-
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "CB Number");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "item");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Fabric");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Colour");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Drop");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Tube");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Date-Time");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Width");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "CutWidth");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "B_RColour");
-            FinalizedData.ColumnNames = AddColumnIfNotExists(FinalizedData.ColumnNames, "Line No");
 
         }
 
@@ -579,6 +587,8 @@ namespace WindowBlind.Api.Controllers
                 FabricCutterCBDetailsModel FinalizedData = new FabricCutterCBDetailsModel();
 
                 LogCutProcess(ref FinalizedData, ref Data);
+
+                CustomizeTheColumns(ref FinalizedData);
 
                 return new JsonResult(FinalizedData);
 
@@ -1043,6 +1053,7 @@ namespace WindowBlind.Api.Controllers
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Init();
+                FabricCutterCBDetailsModel Finalized = new FabricCutterCBDetailsModel();
 
 
                 await ReadConfig();
@@ -1059,8 +1070,14 @@ namespace WindowBlind.Api.Controllers
                 if (AutoUploadFolder.Exists == false)
                     return new JsonResult(false);
 
+                var AutoUploadErrorsPath = ViewedUplaodsPath.Substring(0, ViewedUplaodsPath.LastIndexOf(Path.DirectorySeparatorChar.ToString())) + Path.DirectorySeparatorChar.ToString() + "AutoUploadErrorFolder";
+
+                var ErrorDirectory = new DirectoryInfo(AutoUploadErrorsPath);
+                if (!ErrorDirectory.Exists)
+                    ErrorDirectory.Create();
 
                 CBSearch = true;
+
                 #region Reading Data
 
                 /// first Get all Files that Starts with the TableName
@@ -1071,95 +1088,6 @@ namespace WindowBlind.Api.Controllers
 
                 FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
                 List<string> names = new List<string>();
-                //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
-
-                int generalBlindNumber = 1;
-
-                foreach (var AutoUploadFile in files)
-                {
-                    using (var package = new ExcelPackage(AutoUploadFile))
-                    {
-                        var workbook = package.Workbook;
-
-                        var worksheet = workbook.Worksheets.FirstOrDefault();
-                        if (worksheet == null) return null;
-                        var start = worksheet.Dimension.Start;
-                        var end = worksheet.Dimension.End;
-                        bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
-                        var last = end.Column;
-
-                        for (int i = start.Row + 1; i <= end.Row; i++)
-                        {
-                            Dictionary<string, string> row = new Dictionary<string, string>();
-
-                            row["Line No"] = "";
-                            row["Customer"] = "";
-                            row["Bind Type/# Panels/Rope/Operation"] = "";
-                            row["Description"] = "";
-                            row["Track Col/Roll Type/Batten Col"] = "";
-                            row["Cntrl Side"] = "";
-                            row["Control Type"] = "";
-                            row["Pull Colour/Bottom Weight/Wand Len"] = "";
-                            int RowQty = 0;
-                            for (int j = start.Column; j <= end.Column; j++)
-                            {
-                                var Headertext = worksheet.Cells[1, j].Text.Trim();
-                                if (String.IsNullOrEmpty(Headertext)) continue;
-                                if (Headertext.Contains("Qty"))
-                                {
-                                    if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
-                                        continue;
-
-                                    RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
-                                }
-
-                                Headertext = Headertext.Replace(".", "");
-
-
-
-                                var cell = worksheet.Cells[i, j].Text.Trim();
-
-                                if (ColumnMapper.ContainsKey(Headertext))
-                                {
-                                    row[Headertext] = cell;
-                                    Headertext = ColumnMapper[Headertext];
-                                }
-                                row[Headertext] = cell;
-
-
-                            }
-
-                            FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
-                            for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
-                            {
-                                TblRow.BlindNumbers.Add(cntr);
-                            }
-                            generalBlindNumber += RowQty;
-                            TblRow.Row = row;
-                            TblRow.UniqueId = Guid.NewGuid().ToString();
-                            TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
-                            TblRow.CreationDate = AutoUploadFile.CreationTime.ToString();
-                            TblRow.FileName = AutoUploadFile.Name;
-
-                            Data.Rows.Add(TblRow);
-                        }
-
-
-                        package.Dispose();
-                    }
-
-                    FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
-                    Console.WriteLine(Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
-                    Random rd = new Random();
-
-
-                    if (checking.Exists)
-                        CreateNewFile(AutoUploadFile.FullName, Path.Combine(ViewedUplaodsPath, rd.Next(1, 1000000).ToString() + "_" + AutoUploadFile.Name));
-                    else
-                        CreateNewFile(AutoUploadFile.FullName, Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
-                    System.IO.File.Delete(AutoUploadFile.FullName);
-
-                }
 
                 FabricRollwidth = new Dictionary<string, string>();
                 ControlTypevalues = new Dictionary<string, int>();
@@ -1275,45 +1203,153 @@ namespace WindowBlind.Api.Controllers
 
                 System.IO.File.Delete(TempDropPath);
 
-
                 #endregion
 
+                int generalBlindNumber = 1;
 
-                #region Customization of columns
-
-                FabricCutterCBDetailsModel Finalized = new FabricCutterCBDetailsModel();
-                LogCutProcess(ref Finalized, ref Data);
-
-                foreach (var header in SelectedColumnsPath)
+                foreach (var AutoUploadFile in files)
                 {
-                    var Headertext = header.Replace(".", "");
-
-                    if (ColumnMapper.ContainsKey(Headertext)) Headertext = ColumnMapper[Headertext];
-
-                    if (!Finalized.ColumnNames.Contains(Headertext))
-                        Finalized.ColumnNames.Add(Headertext);
-                }
-
-                #endregion
-
-                #region Adding Data into Auto Upload DB
-                foreach (var item in Finalized.Rows)
-                {
-                    AutoUploadModel model = new AutoUploadModel
+                    try /// so if there is error get data from db
                     {
-                        Id = item.UniqueId,
-                        FileName = item.FileName,
-                        CreationDate = item.CreationDate,
-                        row = item,
-                        Shift = Shift,
-                        UserName = UserName,
-                        TableName = TableName,
-                        Type = Type,
-                        Station = "LogCut"
-                    };
-                    await _repository.AutoUploads.InsertOneAsync(model);
+                        using (var package = new ExcelPackage(AutoUploadFile))
+                        {
+                            var workbook = package.Workbook;
+
+                            var worksheet = workbook.Worksheets.FirstOrDefault();
+                            if (worksheet == null) return null;
+                            var start = worksheet.Dimension.Start;
+                            var end = worksheet.Dimension.End;
+                            bool gotColumns = (SelectedColumnsNames.Count > 0) ? true : false;
+                            var last = end.Column;
+
+                            for (int i = start.Row + 1; i <= end.Row; i++)
+                            {
+                                Dictionary<string, string> row = new Dictionary<string, string>();
+
+                                row["Line No"] = "";
+                                row["Customer"] = "";
+                                row["Bind Type/# Panels/Rope/Operation"] = "";
+                                row["Description"] = "";
+                                row["Track Col/Roll Type/Batten Col"] = "";
+                                row["Cntrl Side"] = "";
+                                row["Control Type"] = "";
+                                row["Pull Colour/Bottom Weight/Wand Len"] = "";
+                                int RowQty = 0;
+                                for (int j = start.Column; j <= end.Column; j++)
+                                {
+                                    var Headertext = worksheet.Cells[1, j].Text.Trim();
+                                    if (String.IsNullOrEmpty(Headertext)) continue;
+                                    if (Headertext.Contains("Qty"))
+                                    {
+                                        if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
+                                            continue;
+
+                                        RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
+                                    }
+
+                                    Headertext = Headertext.Replace(".", "");
+
+
+
+                                    var cell = worksheet.Cells[i, j].Text.Trim();
+
+                                    if (ColumnMapper.ContainsKey(Headertext))
+                                    {
+                                        row[Headertext] = cell;
+                                        Headertext = ColumnMapper[Headertext];
+                                    }
+                                    row[Headertext] = cell;
+
+
+                                }
+
+                                FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
+                                for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
+                                {
+                                    TblRow.BlindNumbers.Add(cntr);
+                                }
+                                generalBlindNumber += RowQty;
+                                TblRow.Row = row;
+                                TblRow.UniqueId = Guid.NewGuid().ToString();
+                                TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
+                                TblRow.CreationDate = AutoUploadFile.CreationTime.ToString();
+                                TblRow.FileName = AutoUploadFile.Name;
+
+                                Data.Rows.Add(TblRow);
+                            }
+
+
+                            package.Dispose();
+                        }
+
+                        #region Customization of Data
+
+                        LogCutProcess(ref Finalized, ref Data);
+
+                        #endregion
+
+                        #region Moving Already Finished Files to ViewedAutoUpload 
+
+                        FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
+                        Random rd = new Random();
+
+
+                        if (checking.Exists)
+                            CreateNewFile(AutoUploadFile.FullName, Path.Combine(ViewedUplaodsPath, rd.Next(1, 1000000).ToString() + "_" + AutoUploadFile.Name));
+                        else
+                            CreateNewFile(AutoUploadFile.FullName, Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
+                        System.IO.File.Delete(AutoUploadFile.FullName);
+
+                        #endregion
+
+                        #region Adding the Processed Data to the DB
+
+                        foreach (var item in Finalized.Rows)
+                        {
+                            AutoUploadModel model = new AutoUploadModel
+                            {
+                                Id = item.UniqueId,
+                                FileName = item.FileName,
+                                CreationDate = item.CreationDate,
+                                row = item,
+                                Shift = Shift,
+                                UserName = UserName,
+                                TableName = TableName,
+                                Type = Type,
+                                Station = "LogCut"
+                            };
+                            await _repository.AutoUploads.InsertOneAsync(model);
+                        }
+
+                        #endregion
+
+                        Finalized.Rows.Clear();
+                        Data.Rows.Clear();
+                    }
+                    catch (Exception e)
+                    {
+
+                        #region Moving Files with Errors to the error specified Folder
+
+                        FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
+                        Random rd = new Random();
+
+
+                        if (checking.Exists)
+                            CreateNewFile(AutoUploadFile.FullName, Path.Combine(AutoUploadErrorsPath, rd.Next(1, 1000000).ToString() + "_" + AutoUploadFile.Name));
+                        else
+                            CreateNewFile(AutoUploadFile.FullName, Path.Combine(AutoUploadErrorsPath, AutoUploadFile.Name));
+                        System.IO.File.Delete(AutoUploadFile.FullName);
+
+
+                        #endregion
+
+
+                    }
                 }
-                /// getting Data from db 
+
+
+                #region Reading Data from Auto Upload DB
 
                 var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type && res.Station == "LogCut").Result.ToListAsync();
                 var FirstFileName = "";
@@ -1329,6 +1365,7 @@ namespace WindowBlind.Api.Controllers
                     if (FirstFileName != item.FileName || FirstFileCreationTime != item.CreationDate) break;
 
                     Finalized.Rows.Add(item.row);
+
                 }
 
                 #endregion
@@ -1349,7 +1386,11 @@ namespace WindowBlind.Api.Controllers
                 }
                 #endregion
 
+                #region Customization of Columns
 
+                CustomizeTheColumns(ref Finalized);
+
+                #endregion
 
 
                 return new JsonResult(Finalized);
@@ -1385,5 +1426,31 @@ namespace WindowBlind.Api.Controllers
 
         }
 
+
+
+        private void CustomizeTheColumns(ref FabricCutterCBDetailsModel Finalized)
+        {
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "CB Number");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "item");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "Fabric");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "Colour");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "Drop");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "Tube");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "Date-Time");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "Width");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "CutWidth");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "B_RColour");
+            Finalized.ColumnNames = AddColumnIfNotExists(Finalized.ColumnNames, "Line No");
+
+            foreach (var header in SelectedColumnsNames)
+            {
+                var Headertext = header.Replace(".", "");
+
+                if (ColumnMapper.ContainsKey(Headertext)) Headertext = ColumnMapper[Headertext];
+
+                if (!Finalized.ColumnNames.Contains(Headertext))
+                    Finalized.ColumnNames.Add(Headertext);
+            }
+        }
     }
 }

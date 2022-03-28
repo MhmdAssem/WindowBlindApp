@@ -114,13 +114,13 @@ namespace WindowBlind.Api
             {
                 seedTables();
             }
-            if(AutoUploads ==0)
+            if (AutoUploads == 0)
             {
                 seedAutoUploads();
 
             }
 
-            if(EzStopData == 0)
+            if (EzStopData == 0)
             {
                 seedEzStopData();
             }
@@ -136,13 +136,15 @@ namespace WindowBlind.Api
 
         private void seedAutoUploads()
         {
-            var table = new AutoUploadModel();
-            table.Id = Guid.NewGuid().ToString();
-            table.Shift = "None";
-            table.TableName = "";
-            table.CreationDate = "";
-            table.UserName = "Admin";
-            table.Station = "Test";
+            var table = new AutoUploadModel
+            {
+                Id = "___STARTID",
+                Shift = "None",
+                TableName = "",
+                CreationDate = "",
+                UserName = "Admin",
+                Station = "Test"
+            };
 
             _mongoDb.GetCollection<AutoUploadModel>("AutoUploads").InsertOne(table);
         }

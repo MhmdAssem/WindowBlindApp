@@ -4,7 +4,7 @@
     <div class="col-md-6" *ngIf="SearchType == false">
       <form class="form-inline">
         <label> Select a Shift</label>
-        <select class="form-control ml-4" name="ShiftTable" id="ShiftTable" style="width: 50%;text-align-last:center;">
+        <select class="form-control ml-4" name="ShiftTable" id="ShiftTable" style="width: 50%;text-align-last:center;" (change) ="InitAllVariables()">
           <option selected value="Morning">Morning Shift</option>
           <option value="Afternoon">Afternoon Shift</option>
         </select>

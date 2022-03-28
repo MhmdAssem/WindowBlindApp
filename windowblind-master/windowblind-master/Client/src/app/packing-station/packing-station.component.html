@@ -63,47 +63,36 @@
 <div class="container-fluid mt-3" *ngIf="Data.length!=0">
 
   <div class="table-responsive mt-3" id="TableViewSelect">
-    <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
-      [dtTrigger]="dtTrigger">
-      <thead class="bg-light">
-        <tr id="DataTableHeader">
-          <th class="align-baseline  mw-200" *ngFor="let col of tableModelColNames; let i=index"
-            id="UniqueDataTableHeader_{{col}}">
+    
+    <table mat-table #Datatable class="table table-bordered w-100" id="dScenario-table" [dataSource]="DataSource">
+
+      <div *ngFor="let col of tableModelColNames; let i=index">
+        <ng-container matColumnDef="{{col}}" *ngIf="col != 'SelectColumn'">
+          <th mat-header-cell *matHeaderCellDef> {{col}} </th>
+          <td mat-cell *matCellDef="let element" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':'white'"> {{element.row[col]}} </td>
+        </ng-container>
+
+      </div>
+
+      <ng-container matColumnDef="SelectColumn">
+        <th mat-header-cell *matHeaderCellDef> SelectColumn </th>
+        <td mat-cell *matCellDef="let element;let i = index" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':'white'">
+          <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+        </td>
+      </ng-container>
 
 
-            <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">{{col}}</span>
+      <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}">
+      </tr>
 
-            </div>
-
-
-          </th>
-          <th id="theSelectColumn" *ngIf="tableModelColNames.length !=0">
-            <div class="d-flex align-items-center justify-content-between">
-              <span class="text-black-50">Select</span>
-
-            </div>
-          </th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let row of Data;let i = index" id="RowNumber_{{i}}">
-          <td *ngFor="let col of tableModelColNames" style="background-color: '{{row.row['DropColour']}}'">
-            {{row.row[col]}}</td>
-          <td>
-            <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
-          </td>
-        </tr>
-      </tbody>
     </table>
-
-
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="PageChange()"
+      aria-label="Select page of periodic elements">
+    </mat-paginator>
+    
   </div>
 
-  <div id="Custom_Table_Holder" class="custom-dtable-holder" style="cursor: pointer;">
-    <div id="Custom_Table_Info" class="custom-dtable-info"></div>
-    <div id="Custom_Table_Pagination" class="custom-dtable-pagination"></div>
-  </div>
+  
 
 </div>

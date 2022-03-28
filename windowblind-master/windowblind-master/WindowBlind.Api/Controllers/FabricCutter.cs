@@ -823,6 +823,7 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Init();
 
+                FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
 
                 await ReadConfig();
                 var check = CheckingPaths();
@@ -838,6 +839,11 @@ namespace WindowBlind.Api.Controllers
                 if (AutoUploadFolder.Exists == false)
                     return new JsonResult(false);
 
+                var AutoUploadErrorsPath = ViewedUplaodsPath.Substring(0, ViewedUplaodsPath.LastIndexOf(Path.DirectorySeparatorChar.ToString())) + Path.DirectorySeparatorChar.ToString() + "AutoUploadErrorFolder";
+
+                var ErrorDirectory = new DirectoryInfo(AutoUploadErrorsPath);
+                if (!ErrorDirectory.Exists)
+                    ErrorDirectory.Create();
 
 
                 #region Reading Data
@@ -848,94 +854,7 @@ namespace WindowBlind.Api.Controllers
                 if (Type == "Urgent")
                     files = AutoUploadFolder.GetFiles().Where(file => file.Name.Contains("Urgent_" + TableName + "_" + Shift)).ToList();
 
-                FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
                 List<string> names = new List<string>();
-                //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
-
-                generalBlindNumber = 1;
-                foreach (var file in files)
-                {
-                    using (var package = new ExcelPackage(file))
-                    {
-                        var workbook = package.Workbook;
-
-                        var worksheet = workbook.Worksheets.FirstOrDefault();
-                        if (worksheet == null) return null;
-                        var start = worksheet.Dimension.Start;
-                        var end = worksheet.Dimension.End;
-                        bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
-                        var last = end.Column;
-                         
-                        for (int i = start.Row + 1; i <= end.Row; i++)
-                        {
-                            Dictionary<string, string> row = new Dictionary<string, string>();
-
-                            row["Line No"] = "";
-                            row["Customer"] = "";
-                            row["Bind Type/# Panels/Rope/Operation"] = "";
-                            row["Description"] = "";
-                            row["Track Col/Roll Type/Batten Col"] = "";
-                            row["Cntrl Side"] = "";
-                            row["Control Type"] = "";
-                            row["Pull Colour/Bottom Weight/Wand Len"] = "";
-                            row["BlueSleeve"] = "";
-                            int RowQty = 0;
-                            for (int j = start.Column; j <= end.Column; j++)
-                            {
-                                var Headertext = worksheet.Cells[1, j].Text.Trim();
-                                if (String.IsNullOrEmpty(Headertext)) continue;
-                                if (Headertext.Contains("Qty"))
-                                {
-                                    if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
-                                        continue;
-
-                                    RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
-                                }
-
-                                Headertext = Headertext.Replace(".", "");
-
-
-
-                                var cell = worksheet.Cells[i, j].Text.Trim();
-
-                                if (ColumnMapper.ContainsKey(Headertext)) 
-                                    Headertext = ColumnMapper[Headertext];
-                                row[Headertext] = cell;
-
-
-                            }
-                            
-                            FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
-                            for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
-                            {
-                                TblRow.BlindNumbers.Add(cntr);
-                            }
-                            generalBlindNumber += RowQty;
-                            TblRow.Row = row;
-                            TblRow.UniqueId = Guid.NewGuid().ToString();
-                            TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
-                            TblRow.FileName = file.Name;
-                            TblRow.CreationDate = file.CreationTime.ToString();
-
-                            Data.Rows.Add(TblRow);
-                        }
-
-
-                        package.Dispose();
-                    }
-
-                    FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, file.Name));
-                    Console.WriteLine(Path.Combine(ViewedUplaodsPath, file.Name));
-                    Random rd = new Random();
-
-
-                    if (checking.Exists)
-                        CreateNewFile(file.FullName, Path.Combine(ViewedUplaodsPath, rd.Next(1, 1000000).ToString() + "_" + file.Name));
-                    else
-                        CreateNewFile(file.FullName, Path.Combine(ViewedUplaodsPath, file.Name));
-                    System.IO.File.Delete(file.FullName);
-
-                }
 
                 Dictionary<string, string> FabricRollwidth = new Dictionary<string, string>();
                 Dictionary<string, int> ControlTypevalues = new Dictionary<string, int>();
@@ -1004,89 +923,224 @@ namespace WindowBlind.Api.Controllers
 
                 #endregion
 
-
-                #region Customization of columns
-
-                var Bindcntr = -1;
-                foreach (var item in Data.Rows)
+                generalBlindNumber = 1;
+                foreach (var file in files)
                 {
-                    Bindcntr++;
-                    item.Row["Total Blinds"] = (generalBlindNumber - 1).ToString();
-                    if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd() != "")
+                    try
                     {
-                        if (ControlTypevalues.ContainsKey(item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()))
+                        using (var package = new ExcelPackage(file))
                         {
-                            item.Row["Cut Width"] = (int.Parse(item.Row["Measured Width"]) + ControlTypevalues[item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()]).ToString();
+                            var workbook = package.Workbook;
+
+                            var worksheet = workbook.Worksheets.FirstOrDefault();
+                            if (worksheet == null) return null;
+                            var start = worksheet.Dimension.Start;
+                            var end = worksheet.Dimension.End;
+                            bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
+                            var last = end.Column;
+
+                            for (int i = start.Row + 1; i <= end.Row; i++)
+                            {
+                                Dictionary<string, string> row = new Dictionary<string, string>();
+
+                                row["Line No"] = "";
+                                row["Customer"] = "";
+                                row["Bind Type/# Panels/Rope/Operation"] = "";
+                                row["Description"] = "";
+                                row["Track Col/Roll Type/Batten Col"] = "";
+                                row["Cntrl Side"] = "";
+                                row["Control Type"] = "";
+                                row["Pull Colour/Bottom Weight/Wand Len"] = "";
+                                row["BlueSleeve"] = "";
+                                int RowQty = 0;
+                                for (int j = start.Column; j <= end.Column; j++)
+                                {
+                                    var Headertext = worksheet.Cells[1, j].Text.Trim();
+                                    if (String.IsNullOrEmpty(Headertext)) continue;
+                                    if (Headertext.Contains("Qty"))
+                                    {
+                                        if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
+                                            continue;
+
+                                        RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
+                                    }
+
+                                    Headertext = Headertext.Replace(".", "");
+
+
+
+                                    var cell = worksheet.Cells[i, j].Text.Trim();
+
+                                    if (ColumnMapper.ContainsKey(Headertext))
+                                        Headertext = ColumnMapper[Headertext];
+                                    row[Headertext] = cell;
+
+
+                                }
+
+                                FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
+                                for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
+                                {
+                                    TblRow.BlindNumbers.Add(cntr);
+                                }
+                                generalBlindNumber += RowQty;
+                                TblRow.Row = row;
+                                TblRow.UniqueId = Guid.NewGuid().ToString();
+                                TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
+                                TblRow.FileName = file.Name;
+                                TblRow.CreationDate = file.CreationTime.ToString();
+
+                                Data.Rows.Add(TblRow);
+                            }
+
+
+                            package.Dispose();
                         }
-                    }
-                    else
-                    {
-                        var val = item.Row["Measured Width"] == "" ? "0" : item.Row["Measured Width"];
-                        item.Row["Cut Width"] = (Convert.ToInt32(val) - 30).ToString();
-                    }
 
 
-                    if (item.Row["Description"].TrimEnd().EndsWith("FIN 36") && item.Row["Bind Type/# Panels/Rope/Operation"] == "Motorised")
-                    {
-                        item.Row["Measured Width"] = (Convert.ToInt32(item.Row["Measured Width"]) - 5).ToString();
-                    }
-                  
+                        #region Customization of Data
 
-                    if (item.Row["Fabric Type"] != "")
-                    {
-                        var fab = item.Row["Fabric Type"].TrimEnd();
-                        if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.LastIndexOf(' ') == -1 ? fab.Length : fab.LastIndexOf(' ')).TrimEnd()))
+                        var Bindcntr = -1;
+                        foreach (var item in Data.Rows)
                         {
-                            item.Row["Roll Width"] = FabricRollwidth[fab.Substring(0, fab.LastIndexOf(' ') == -1 ? fab.Length : fab.LastIndexOf(' ')).TrimEnd()].ToLower().Replace("mm", "");
+                            Bindcntr++;
+                            item.Row["Total Blinds"] = (generalBlindNumber - 1).ToString();
+                            if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd() != "")
+                            {
+                                if (ControlTypevalues.ContainsKey(item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()))
+                                {
+                                    item.Row["Cut Width"] = (int.Parse(item.Row["Measured Width"]) + ControlTypevalues[item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()]).ToString();
+                                }
+                            }
+                            else
+                            {
+                                var val = item.Row["Measured Width"] == "" ? "0" : item.Row["Measured Width"];
+                                item.Row["Cut Width"] = (Convert.ToInt32(val) - 30).ToString();
+                            }
+
+
+                            if (item.Row["Description"].TrimEnd().EndsWith("FIN 36") && item.Row["Bind Type/# Panels/Rope/Operation"] == "Motorised")
+                            {
+                                item.Row["Measured Width"] = (Convert.ToInt32(item.Row["Measured Width"]) - 5).ToString();
+                            }
+
+
+                            if (item.Row["Fabric Type"] != "")
+                            {
+                                var fab = item.Row["Fabric Type"].TrimEnd();
+                                if (FabricRollwidth.ContainsKey(fab.Substring(0, fab.LastIndexOf(' ') == -1 ? fab.Length : fab.LastIndexOf(' ')).TrimEnd()))
+                                {
+                                    item.Row["Roll Width"] = FabricRollwidth[fab.Substring(0, fab.LastIndexOf(' ') == -1 ? fab.Length : fab.LastIndexOf(' ')).TrimEnd()].ToLower().Replace("mm", "");
+                                }
+                                else
+                                {
+                                    item.Row["Roll Width"] = fab.Substring(fab.LastIndexOf(' ') + 1).Trim().ToLower().Replace("mm", "");
+                                }
+
+                            }
+
+
+                            item.Row["Trim Type"] = "";
+                            if (!string.IsNullOrEmpty(item.Row["Description"].ToString().Trim()))
+                                item.Row["Trim Type"] = item.Row["Description"].Substring(item.Row["Description"].ToString().Trim().Length - 6);
+
+
+
+                            item.Row["Track Colour"] = item.Row["Track Col/Roll Type/Batten Col"].ToString().TrimEnd();
+
+
+
+                            if (item.Row["Pull Colour/Bottom Weight/Wand Len"].ToString().TrimEnd() != "")
+                                item.Row["Pull Colour"] = item.Row["Pull Colour/Bottom Weight/Wand Len"].ToString().TrimEnd();
+                            else
+                            {
+                                string LookupKey = item.Row["Fabric Type"].ToString().TrimEnd();
+
+                                if (LatheType.ContainsKey(LookupKey) && LatheType[LookupKey].Contains(item.Row["Fabric Colour"].ToString().TrimEnd()))
+                                {
+                                    item.Row["Pull Colour"] = "PVC Lathe";
+                                }
+                                else
+                                {
+                                    item.Row["Pull Colour"] = "Lathe";
+                                }
+                            }
+                            item.Row["Barcode"] = item.Row["Line No"].ToString().TrimEnd();
+
+
+                            if (item.Row["Cntrl Side"].ToString().TrimEnd() != "")
+                            {
+                                item.Row["Control Side"] = item.Row["Cntrl Side"].ToString().TrimEnd().ToCharArray()[0].ToString();// Added on 8-10-2016
+                            }
+                            else
+                            {
+                                item.Row["Control Side"] = "N";
+
+                            }
+
+                            item.Row["FromHoldingStation"] = "NO";
                         }
+
+                        #endregion
+
+
+                        #region Removing The file
+
+                        FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, file.Name));
+                        Random rd = new Random();
+
+
+                        if (checking.Exists)
+                            CreateNewFile(file.FullName, Path.Combine(ViewedUplaodsPath, rd.Next(1, 1000000).ToString() + "_" + file.Name));
                         else
+                            CreateNewFile(file.FullName, Path.Combine(ViewedUplaodsPath, file.Name));
+                        System.IO.File.Delete(file.FullName);
+
+                        #endregion
+
+                        #region Adding the processed Data to the DB
+
+                        foreach (var item in Data.Rows)
                         {
-                            item.Row["Roll Width"] = fab.Substring(fab.LastIndexOf(' ') + 1).Trim().ToLower().Replace("mm", "");
+                            AutoUploadModel model = new AutoUploadModel
+                            {
+                                Id = item.UniqueId,
+                                FileName = item.FileName,
+                                CreationDate = item.CreationDate,
+                                row = item,
+                                Shift = Shift,
+                                UserName = UserName,
+                                TableName = TableName,
+                                Type = Type,
+                                Station = "FabricCut"
+                            };
+
+                            await _repository.AutoUploads.InsertOneAsync(model);
                         }
+
+                        #endregion
+
+                        Data.Rows.Clear();
 
                     }
-
-
-                    item.Row["Trim Type"] = "";
-                    if (!string.IsNullOrEmpty(item.Row["Description"].ToString().Trim()))
-                        item.Row["Trim Type"] = item.Row["Description"].Substring(item.Row["Description"].ToString().Trim().Length - 6);
-
-
-
-                    item.Row["Track Colour"] = item.Row["Track Col/Roll Type/Batten Col"].ToString().TrimEnd();
-
-
-
-                    if (item.Row["Pull Colour/Bottom Weight/Wand Len"].ToString().TrimEnd() != "")
-                        item.Row["Pull Colour"] = item.Row["Pull Colour/Bottom Weight/Wand Len"].ToString().TrimEnd();
-                    else
+                    catch (Exception)
                     {
-                        string LookupKey = item.Row["Fabric Type"].ToString().TrimEnd();
 
-                        if (LatheType.ContainsKey(LookupKey) && LatheType[LookupKey].Contains(item.Row["Fabric Colour"].ToString().TrimEnd()))
-                        {
-                            item.Row["Pull Colour"] = "PVC Lathe";
-                        }
+                        FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, file.Name));
+                        Random rd = new Random();
+
+
+                        if (checking.Exists)
+                            CreateNewFile(file.FullName, Path.Combine(AutoUploadErrorsPath, rd.Next(1, 1000000).ToString() + "_" + file.Name));
                         else
-                        {
-                            item.Row["Pull Colour"] = "Lathe";
-                        }
+                            CreateNewFile(file.FullName, Path.Combine(AutoUploadErrorsPath, file.Name));
+                        System.IO.File.Delete(file.FullName);
                     }
-                    item.Row["Barcode"] = item.Row["Line No"].ToString().TrimEnd();
-
-
-                    if (item.Row["Cntrl Side"].ToString().TrimEnd() != "")
-                    {
-                        item.Row["Control Side"] = item.Row["Cntrl Side"].ToString().TrimEnd().ToCharArray()[0].ToString();// Added on 8-10-2016
-                    }
-                    else
-                    {
-                        item.Row["Control Side"] = "N";
-
-                    }
-
-                    item.Row["FromHoldingStation"] = "NO";
                 }
+
+
+
+
 
                 foreach (var header in SelectedColumnsPath)
                 {
@@ -1098,30 +1152,8 @@ namespace WindowBlind.Api.Controllers
                         Data.ColumnNames.Add(Headertext);
                 }
 
-                #endregion
 
-                #region adding & reading data from autouploads db
-
-                foreach (var item in Data.Rows)
-                {
-                    AutoUploadModel model = new AutoUploadModel
-                    {
-                        Id = item.UniqueId,
-                        FileName = item.FileName,
-                        CreationDate = item.CreationDate,
-                        row = item,
-                        Shift = Shift,
-                        UserName = UserName,
-                        TableName = TableName,
-                        Type = Type,
-                        Station = "FabricCut"
-                    };
-
-                    await _repository.AutoUploads.InsertOneAsync(model);
-                }
-
-
-                /// getting Data from db 
+                #region reading data from autouploads db
 
                 var AutoUploadsModels = await _repository.AutoUploads.FindAsync(res => res.TableName == TableName && res.Shift == Shift && res.Type == Type && res.Station == "FabricCut").Result.ToListAsync();
                 var FirstFileName = "";
@@ -1139,7 +1171,6 @@ namespace WindowBlind.Api.Controllers
                     Data.Rows.Add(item.row);
                 }
 
-                ///
 
                 #endregion
 
