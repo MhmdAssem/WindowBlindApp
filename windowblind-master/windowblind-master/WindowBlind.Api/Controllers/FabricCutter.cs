@@ -867,95 +867,7 @@ namespace WindowBlind.Api.Controllers
                     files = AutoUploadFolder.GetFiles().Where(file => file.Name.Contains("Urgent_" + TableName + "_" + Shift)).ToList();
 
                 List<string> names = new List<string>();
-<<<<<<< HEAD
-=======
-                //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
 
-                generalBlindNumber = 1;
-                foreach (var file in files)
-                {
-                    using (var package = new ExcelPackage(file))
-                    {
-                        var workbook = package.Workbook;
-
-                        var worksheet = workbook.Worksheets.FirstOrDefault();
-                        if (worksheet == null) return null;
-                        var start = worksheet.Dimension.Start;
-                        var end = worksheet.Dimension.End;
-                        bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
-                        var last = end.Column;
-
-                        for (int i = start.Row + 1; i <= end.Row; i++)
-                        {
-                            Dictionary<string, string> row = new Dictionary<string, string>();
-
-                            row["Line No"] = "";
-                            row["Customer"] = "";
-                            row["Bind Type/# Panels/Rope/Operation"] = "";
-                            row["Description"] = "";
-                            row["Track Col/Roll Type/Batten Col"] = "";
-                            row["Cntrl Side"] = "";
-                            row["Control Type"] = "";
-                            row["Pull Colour/Bottom Weight/Wand Len"] = "";
-                            row["BlueSleeve"] = "";
-                            int RowQty = 0;
-                            for (int j = start.Column; j <= end.Column; j++)
-                            {
-                                var Headertext = worksheet.Cells[1, j].Text.Trim();
-                                if (String.IsNullOrEmpty(Headertext)) continue;
-                                if (Headertext.Contains("Qty"))
-                                {
-                                    if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
-                                        continue;
-
-                                    RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
-                                }
-
-                                Headertext = Headertext.Replace(".", "");
-
-
-
-                                var cell = worksheet.Cells[i, j].Text.Trim();
-
-                                if (ColumnMapper.ContainsKey(Headertext))
-                                    Headertext = ColumnMapper[Headertext];
-                                row[Headertext] = cell;
-
-
-                            }
-
-                            FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
-                            for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
-                            {
-                                TblRow.BlindNumbers.Add(cntr);
-                            }
-                            generalBlindNumber += RowQty;
-                            TblRow.Row = row;
-                            TblRow.UniqueId = Guid.NewGuid().ToString();
-                            TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
-                            TblRow.FileName = file.Name;
-                            TblRow.CreationDate = file.CreationTime.ToString();
-
-                            Data.Rows.Add(TblRow);
-                        }
-
-
-                        package.Dispose();
-                    }
-
-                    FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, file.Name));
-                    Console.WriteLine(Path.Combine(ViewedUplaodsPath, file.Name));
-                    Random rd = new Random();
-
-
-                    if (checking.Exists)
-                        CreateNewFile(file.FullName, Path.Combine(ViewedUplaodsPath, rd.Next(1, 1000000).ToString() + "_" + file.Name));
-                    else
-                        CreateNewFile(file.FullName, Path.Combine(ViewedUplaodsPath, file.Name));
-                    System.IO.File.Delete(file.FullName);
-
-                }
->>>>>>> 01c8d73380cb1d1bb43b8b3f15c1e5739653a79d
 
                 Dictionary<string, string> FabricRollwidth = new Dictionary<string, string>();
                 Dictionary<string, int> ControlTypevalues = new Dictionary<string, int>();
@@ -1040,8 +952,7 @@ namespace WindowBlind.Api.Controllers
                             bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
                             var last = end.Column;
 
-<<<<<<< HEAD
-                            for (int i = start.Row + 1; i <= end.Row; i++)
+                             for (int i = start.Row + 1; i <= end.Row; i++)
                             {
                                 Dictionary<string, string> row = new Dictionary<string, string>();
 
@@ -1063,13 +974,6 @@ namespace WindowBlind.Api.Controllers
                                     {
                                         if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
                                             continue;
-=======
-                    if (item.Row["Description"].TrimEnd().EndsWith("FIN 36") && item.Row["Bind Type/# Panels/Rope/Operation"] == "Motorised")
-                    {
-                        item.Row["Measured Width"] = (Convert.ToInt32(item.Row["Measured Width"]) - 5).ToString();
-                    }
-
->>>>>>> 01c8d73380cb1d1bb43b8b3f15c1e5739653a79d
 
                                         RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
                                     }
