@@ -419,14 +419,14 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
-        public void PrintReport(string strPrinterName, string[] strParameterArray)
+        public string PrintReport(string strPrinterName, string[] strParameterArray)
         {
 
             try
             {
                 string mimtype = "";
                 int extension = 1;
-                var path = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutter.rdlc");
+                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutter.rdlc");
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
@@ -465,7 +465,7 @@ namespace WindowBlind.Api.Controllers
 
                 byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
 
-                var outputPath = Path.Combine(_env.ContentRootPath, "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".png");
+                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
@@ -512,13 +512,14 @@ namespace WindowBlind.Api.Controllers
                 {
                     printErrorMessage = "Printing Error: " + ex.ToString();
                     printedOK = false;
+                    return ex.StackTrace;
                 }
 
-                return;
+                return "";
             }
             catch (Exception ex)
             {
-                return;
+                return ex.StackTrace;
             }
         }
 
@@ -528,37 +529,48 @@ namespace WindowBlind.Api.Controllers
 
         }
 
-        public void PrintLabels(string strParameter)
+        public string PrintLabels(string strParameter)
         {
-            string[] strpara = null;
-            strpara = strParameter.Replace("|@", "|").Split('|');
-
-            if (strpara.GetUpperBound(0) == 0)
+            try
             {
-                System.Environment.Exit(0);
-            }
-            else
-            {
+                string[] strpara = null;
+                strpara = strParameter.Replace("|@", "|").Split('|');
+                var Error = "";
 
-                string strPrinterName = null;
-                strPrinterName = strpara[0];
-
-                for (int x = 1; x <= strpara.Length - 1; x++)
+                if (strpara.GetUpperBound(0) == 0)
+                {
+                    System.Environment.Exit(0);
+                }
+                else
                 {
 
-                    string[] strParameterArray = strpara[x].Split('@');
+                    string strPrinterName = null;
+                    strPrinterName = strpara[0];
 
-                    if (strParameterArray.GetUpperBound(0) == 0)
+                    for (int x = 1; x <= strpara.Length - 1; x++)
                     {
-                        System.Environment.Exit(0);
+
+                        string[] strParameterArray = strpara[x].Split('@');
+
+                        if (strParameterArray.GetUpperBound(0) == 0)
+                        {
+                            System.Environment.Exit(0);
+                        }
+                        else
+                        {
+                            Error = PrintReport(strPrinterName, strParameterArray);
+                        }
                     }
-                    else
-                    {
-                        PrintReport(strPrinterName, strParameterArray);
-                    }
+
                 }
-
+                return Error;
             }
+            catch (Exception e)
+            {
+
+                return e.StackTrace;
+            }
+
 
         }
 
@@ -798,8 +810,8 @@ namespace WindowBlind.Api.Controllers
 
                 string labeldata = labels.ToString().TrimEnd('|');
 
-                PrintLabels(PrinterName + "|" + labeldata);
-                return new JsonResult(true);
+                var error = PrintLabels(PrinterName + "|" + labeldata);
+                return new JsonResult(error.Trim() == "" ? true : error);
             }
             catch (Exception e)
             {
@@ -855,6 +867,95 @@ namespace WindowBlind.Api.Controllers
                     files = AutoUploadFolder.GetFiles().Where(file => file.Name.Contains("Urgent_" + TableName + "_" + Shift)).ToList();
 
                 List<string> names = new List<string>();
+<<<<<<< HEAD
+=======
+                //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
+
+                generalBlindNumber = 1;
+                foreach (var file in files)
+                {
+                    using (var package = new ExcelPackage(file))
+                    {
+                        var workbook = package.Workbook;
+
+                        var worksheet = workbook.Worksheets.FirstOrDefault();
+                        if (worksheet == null) return null;
+                        var start = worksheet.Dimension.Start;
+                        var end = worksheet.Dimension.End;
+                        bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
+                        var last = end.Column;
+
+                        for (int i = start.Row + 1; i <= end.Row; i++)
+                        {
+                            Dictionary<string, string> row = new Dictionary<string, string>();
+
+                            row["Line No"] = "";
+                            row["Customer"] = "";
+                            row["Bind Type/# Panels/Rope/Operation"] = "";
+                            row["Description"] = "";
+                            row["Track Col/Roll Type/Batten Col"] = "";
+                            row["Cntrl Side"] = "";
+                            row["Control Type"] = "";
+                            row["Pull Colour/Bottom Weight/Wand Len"] = "";
+                            row["BlueSleeve"] = "";
+                            int RowQty = 0;
+                            for (int j = start.Column; j <= end.Column; j++)
+                            {
+                                var Headertext = worksheet.Cells[1, j].Text.Trim();
+                                if (String.IsNullOrEmpty(Headertext)) continue;
+                                if (Headertext.Contains("Qty"))
+                                {
+                                    if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
+                                        continue;
+
+                                    RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
+                                }
+
+                                Headertext = Headertext.Replace(".", "");
+
+
+
+                                var cell = worksheet.Cells[i, j].Text.Trim();
+
+                                if (ColumnMapper.ContainsKey(Headertext))
+                                    Headertext = ColumnMapper[Headertext];
+                                row[Headertext] = cell;
+
+
+                            }
+
+                            FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
+                            for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
+                            {
+                                TblRow.BlindNumbers.Add(cntr);
+                            }
+                            generalBlindNumber += RowQty;
+                            TblRow.Row = row;
+                            TblRow.UniqueId = Guid.NewGuid().ToString();
+                            TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
+                            TblRow.FileName = file.Name;
+                            TblRow.CreationDate = file.CreationTime.ToString();
+
+                            Data.Rows.Add(TblRow);
+                        }
+
+
+                        package.Dispose();
+                    }
+
+                    FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, file.Name));
+                    Console.WriteLine(Path.Combine(ViewedUplaodsPath, file.Name));
+                    Random rd = new Random();
+
+
+                    if (checking.Exists)
+                        CreateNewFile(file.FullName, Path.Combine(ViewedUplaodsPath, rd.Next(1, 1000000).ToString() + "_" + file.Name));
+                    else
+                        CreateNewFile(file.FullName, Path.Combine(ViewedUplaodsPath, file.Name));
+                    System.IO.File.Delete(file.FullName);
+
+                }
+>>>>>>> 01c8d73380cb1d1bb43b8b3f15c1e5739653a79d
 
                 Dictionary<string, string> FabricRollwidth = new Dictionary<string, string>();
                 Dictionary<string, int> ControlTypevalues = new Dictionary<string, int>();
@@ -939,6 +1040,7 @@ namespace WindowBlind.Api.Controllers
                             bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
                             var last = end.Column;
 
+<<<<<<< HEAD
                             for (int i = start.Row + 1; i <= end.Row; i++)
                             {
                                 Dictionary<string, string> row = new Dictionary<string, string>();
@@ -961,6 +1063,13 @@ namespace WindowBlind.Api.Controllers
                                     {
                                         if (String.IsNullOrEmpty(worksheet.Cells[i, j].Text.Trim()))
                                             continue;
+=======
+                    if (item.Row["Description"].TrimEnd().EndsWith("FIN 36") && item.Row["Bind Type/# Panels/Rope/Operation"] == "Motorised")
+                    {
+                        item.Row["Measured Width"] = (Convert.ToInt32(item.Row["Measured Width"]) - 5).ToString();
+                    }
+
+>>>>>>> 01c8d73380cb1d1bb43b8b3f15c1e5739653a79d
 
                                         RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
                                     }
