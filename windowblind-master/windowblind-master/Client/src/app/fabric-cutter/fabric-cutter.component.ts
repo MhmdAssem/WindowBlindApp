@@ -862,6 +862,11 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     this.OrignalDataIndexArray = {};
   }
 
+  ResetTables()
+  {
+    (document.getElementById("TableNames") as HTMLSelectElement).value = '-'; 
+  }
+  
   UpdateMatTables() {
     try {
       this.Datatable.renderRows();

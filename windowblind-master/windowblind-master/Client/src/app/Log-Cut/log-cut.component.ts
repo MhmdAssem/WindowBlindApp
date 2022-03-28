@@ -631,6 +631,7 @@ export class LogCutComponent implements OnInit {
 
 
   InitAllVariables() {
+
     this.tableModelColNames = [];
     this.ReviewtableModelColNames = [];
     this.BlindNumbers = [];
@@ -644,6 +645,11 @@ export class LogCutComponent implements OnInit {
     this.AutoUploadedSelectedRows = [];
   }
 
+  ResetTables()
+  {
+    (document.getElementById("TableNames") as HTMLSelectElement).value = '-'; 
+  }
+  
   UpdateMatTables() {
     try {
       this.Datatable.renderRows();
