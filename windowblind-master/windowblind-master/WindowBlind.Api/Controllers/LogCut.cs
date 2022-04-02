@@ -346,10 +346,19 @@ namespace WindowBlind.Api.Controllers
             var a = 0;
             var Fbindex = 0;
             var blindNumber = 1;
-            var rowCntr = -1;
+
+            var CurrentCBNumber = "";
             foreach (var item in Data.Rows)
             {
-                rowCntr++;
+                if (item.Row["CB Number"] != CurrentCBNumber)
+                {
+                    CurrentCBNumber = item.Row["CB Number"];
+                    f = 0;
+                    a = 0;
+                    Fbindex = 0;
+                    blindNumber = 1;
+
+                }
                 Fbindex = 0;
 
                 if (item.Row.ContainsKey("Fabric") && item.Row["Fabric"] != "")
@@ -1268,16 +1277,18 @@ namespace WindowBlind.Api.Controllers
                                 {
                                     TblRow.BlindNumbers.Add(cntr);
                                 }
-                                generalBlindNumber += RowQty;
-                                TblRow.Row = row;
-                                TblRow.UniqueId = Guid.NewGuid().ToString();
-                                TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
-                                TblRow.CreationDate = AutoUploadFile.CreationTime.ToString();
-                                TblRow.FileName = AutoUploadFile.Name;
+                                if (RowQty > 0)
+                                {
+                                    generalBlindNumber += RowQty;
+                                    TblRow.Row = row;
+                                    TblRow.UniqueId = Guid.NewGuid().ToString();
+                                    TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
+                                    TblRow.CreationDate = AutoUploadFile.CreationTime.ToString();
+                                    TblRow.FileName = AutoUploadFile.Name;
 
-                                Data.Rows.Add(TblRow);
+                                    Data.Rows.Add(TblRow);
+                                }
                             }
-
 
                             package.Dispose();
                         }
@@ -1425,8 +1436,6 @@ namespace WindowBlind.Api.Controllers
 
 
         }
-
-
 
         private void CustomizeTheColumns(ref FabricCutterCBDetailsModel Finalized)
         {

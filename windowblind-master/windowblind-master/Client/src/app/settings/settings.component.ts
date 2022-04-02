@@ -670,9 +670,9 @@ export class SettingsComponent implements OnInit {
       newList.push(ViewedUploadsDirEntry);
 
     }
-    
-    
-    
+
+
+
     let LogCutSearchTypeIndex = this.ListOfFiles.findIndex(file => file.applicationSetting == '_LogCut' && file.settingName == 'SearchType');
     let LogCutSearchTypeValue = (this.LogCutAutoUpload) ? 'AutoUpload' : 'LogCut_CB_Line_Number_Search';
     this.ListOfFiles[LogCutSearchTypeIndex].settingPath = LogCutSearchTypeValue;
@@ -695,10 +695,10 @@ export class SettingsComponent implements OnInit {
       newList.push(ViewedUploadsDirEntry);
 
     }
-    
-    
-    
-    
+
+
+
+
     newList.push(SearchTypeEntry);
     newList.push(LogCutSearchTypeEntry);
 
