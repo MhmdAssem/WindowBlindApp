@@ -502,7 +502,7 @@ namespace WindowBlind.Api.Controllers
                         pd.DefaultPageSettings.Landscape = m.Height > m.Width;
 
                         // Putting image in center of page.
-                        m.Y = (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Height - m.Height) / 2);
+                        m.Y = 0;// (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Height - m.Height) / 2);
                         m.X = (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Width - m.Width) / 2);
                         args.Graphics.DrawImage(i, m);
                     };
