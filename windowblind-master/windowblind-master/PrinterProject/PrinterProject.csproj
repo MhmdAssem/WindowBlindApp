@@ -68,6 +68,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="LogCut2.rdlc" />
+    <EmbeddedResource Include="TempLogCut2.rdlc" />
     <EmbeddedResource Include="LogCut1.rdlc" />
     <EmbeddedResource Include="FabricCutter.rdlc" />
     <EmbeddedResource Include="Properties\Resources.resx">

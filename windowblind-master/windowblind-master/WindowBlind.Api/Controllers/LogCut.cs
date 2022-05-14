@@ -1,7 +1,9 @@
-﻿using AspNetCore.Reporting;
-using AspNetCore.Reporting.ReportExecutionService;
+﻿
+using AspNetCore.Reporting;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.NETCore;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -12,12 +14,13 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WindowBlind.Api.Models;
 
 namespace WindowBlind.Api.Controllers
 {
-    [Route("[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("[controller]")]
     [ApiController]
     public class LogCut : ControllerBase
     {
@@ -752,12 +755,9 @@ namespace WindowBlind.Api.Controllers
                 for (int k = 0; k < labels.Count; k++)
                 {
                     var strParameterArray = labels[k].ToString().Split("@");
-                    var strpara = strParameterArray;
 
-
-
-                    var ret1 = PrintReport(printerName, strParameterArray.ToList(), "LogCut1.rdlc", "Width");
-                    var ret2 = PrintReport(printerName, strParameterArray.ToList(), "LogCut2.rdlc", "");
+                    PrintReport(printerName, strParameterArray.ToList(), "LogCut1.rdlc", "Width");
+                    //PrintReport(printerName, strParameterArray.ToList(), "LogCut2.rdlc", "");
 
 
                 }
@@ -834,9 +834,11 @@ namespace WindowBlind.Api.Controllers
                 int extension = 1;
 
                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
+                //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
                 var parametersList = new Dictionary<string, string>();
+                //var parametersList = new List<ReportParameter>();
 
 
                 for (int i = 0; i < strParameterArray.Count; i++)
@@ -847,23 +849,22 @@ namespace WindowBlind.Api.Controllers
                         strParameterArray[i] = " ";
                 }
 
-
-                parametersList.Add("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString());
-                parametersList.Add("lathe", strParameterArray[9].ToString());
-                parametersList.Add("controltype", strParameterArray[8].ToString());
-                parametersList.Add("color", strParameterArray[7].ToString());
-                parametersList.Add("fabric", strParameterArray[6].ToString());
-                parametersList.Add("type", strParameterArray[5].ToString());
-                parametersList.Add("department", strParameterArray[4].ToString());
-                parametersList.Add("customer", strParameterArray[3].ToString());
-                parametersList.Add("drop", strParameterArray[2].ToString());
                 parametersList.Add("width", strParameterArray[1].ToString());
+                parametersList.Add("drop", strParameterArray[2].ToString());
+                parametersList.Add("customer", strParameterArray[3].ToString());
+                parametersList.Add("department", strParameterArray[4].ToString());
+                parametersList.Add("type", strParameterArray[5].ToString());
+                parametersList.Add("fabric", strParameterArray[6].ToString());
+                parametersList.Add("color", strParameterArray[7].ToString());
+                parametersList.Add("controltype", strParameterArray[8].ToString());
+                parametersList.Add("lathe", strParameterArray[9].ToString());
+                parametersList.Add("char", strParameterArray[10]);
                 parametersList.Add("cbNumber", strParameterArray[0].ToString());
+                parametersList.Add("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString());
 
 
                 if (StrType != "")
                 {
-                    parametersList.Add("char", strParameterArray[10]);
                     parametersList.Add("cutwidth", strParameterArray[14]);
                     parametersList.Add("lineNumber", strParameterArray[15]);
                     parametersList.Add("cntrside", strParameterArray[16]);
@@ -871,13 +872,21 @@ namespace WindowBlind.Api.Controllers
 
 
 
-
-                LocalReport report = new LocalReport(path);
+                AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
 
 
                 byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
 
+                /*LocalReport report = new LocalReport();
+                report.ReportPath = path;
+                report.SetParameters(parametersList);
+                report.Refresh();
+                byte[] result = report.Render("IMAGE");
+                report.Dispose();
+                */
+
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".png");
+                //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
@@ -918,6 +927,7 @@ namespace WindowBlind.Api.Controllers
                     };
                     pd.Print();
                     pd.Dispose();
+                    
                 }
                 catch (Exception ex)
                 {

@@ -22,10 +22,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>drop</rd:DefaultName>
-            <Top>0.14458in</Top>
-            <Left>1.23487in</Left>
+            <Top>0.01958in</Top>
+            <Left>0.89111in</Left>
             <Height>0.25in</Height>
-            <Width>0.86458in</Width>
+            <Width>0.64583in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -53,10 +53,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>width</rd:DefaultName>
-            <Top>0.14458in</Top>
-            <Left>0.32167in</Left>
+            <Top>0.01958in</Top>
+            <Left>0.05556in</Left>
             <Height>0.25in</Height>
-            <Width>0.88542in</Width>
+            <Width>0.70833in</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -76,17 +76,19 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!fabric.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>9pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>fabric</rd:DefaultName>
-            <Top>0.73833in</Top>
-            <Left>0.32167in</Left>
+            <Top>0.36333in</Top>
+            <Left>0.05in</Left>
             <Height>0.25in</Height>
-            <Width>1.01042in</Width>
+            <Width>1.48694in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -112,11 +114,41 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>0.4293in</Top>
-            <Left>0.32167in</Left>
+            <Top>0.1793in</Top>
+            <Left>0.05in</Left>
             <Height>0.25in</Height>
-            <Width>1.38541in</Width>
+            <Width>1.21874in</Width>
             <ZIndex>3</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="char">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Parameters!char.Value</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>char</rd:DefaultName>
+            <Top>0.55083in</Top>
+            <Left>0.05in</Left>
+            <Height>0.25in</Height>
+            <Width>0.20833in</Width>
+            <ZIndex>4</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -142,11 +174,11 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>department</rd:DefaultName>
-            <Top>0.4293in</Top>
-            <Left>1.74875in</Left>
+            <Top>0.1793in</Top>
+            <Left>1.1307in</Left>
             <Height>0.25in</Height>
-            <Width>1.19792in</Width>
-            <ZIndex>4</ZIndex>
+            <Width>1.18402in</Width>
+            <ZIndex>5</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -168,22 +200,23 @@
                     <Style />
                   </TextRun>
                 </TextRuns>
-                <Style>
-                  <TextAlign>Left</TextAlign>
-                </Style>
+                <Style />
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>type</rd:DefaultName>
-            <Top>0.4293in</Top>
-            <Left>3.00223in</Left>
+            <Top>0.1793in</Top>
+            <Left>2.23139in</Left>
             <Height>0.25in</Height>
-            <Width>0.91319in</Width>
-            <ZIndex>5</ZIndex>
+            <Width>0.88541in</Width>
+            <ZIndex>6</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
-              <VerticalAlign>Middle</VerticalAlign>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
           <Textbox Name="color">
@@ -201,11 +234,11 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>color</rd:DefaultName>
-            <Top>0.73833in</Top>
-            <Left>1.38765in</Left>
+            <Top>0.36333in</Top>
+            <Left>1.38541in</Left>
             <Height>0.25in</Height>
-            <Width>0.85417in</Width>
-            <ZIndex>6</ZIndex>
+            <Width>0.61459in</Width>
+            <ZIndex>7</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -231,11 +264,11 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>controltype</rd:DefaultName>
-            <Top>0.73833in</Top>
-            <Left>2.31472in</Left>
+            <Top>0.36889in</Top>
+            <Left>1.8986in</Left>
             <Height>0.25in</Height>
-            <Width>0.75in</Width>
-            <ZIndex>7</ZIndex>
+            <Width>0.52084in</Width>
+            <ZIndex>8</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -261,51 +294,15 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
-            <Top>0.73833in</Top>
-            <Left>3.0925in</Left>
+            <Top>0.36333in</Top>
+            <Left>2.38626in</Left>
             <Height>0.25in</Height>
-            <Width>0.6875in</Width>
-            <ZIndex>8</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="cbNumber">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Parameters!cbNumber.Value</Value>
-                    <Style>
-                      <FontSize>20pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>cbNumber</rd:DefaultName>
-            <Top>1.04042in</Top>
-            <Left>0.58208in</Left>
-            <Height>0.4375in</Height>
-            <Width>2.15625in</Width>
+            <Width>0.55554in</Width>
             <ZIndex>9</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
-              <VerticalAlign>Middle</VerticalAlign>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -327,10 +324,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>someoftotal</rd:DefaultName>
-            <Top>1.04042in</Top>
-            <Left>2.87723in</Left>
-            <Height>0.4375in</Height>
-            <Width>0.69792in</Width>
+            <Top>0.55083in</Top>
+            <Left>2.18972in</Left>
+            <Height>0.25in</Height>
+            <Width>0.78125in</Width>
             <ZIndex>10</ZIndex>
             <Style>
               <Border>
@@ -342,14 +339,47 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="cbNumber">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Parameters!cbNumber.Value</Value>
+                    <Style>
+                      <FontSize>16pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>cbNumber</rd:DefaultName>
+            <Top>0.55083in</Top>
+            <Left>0.64028in</Left>
+            <Height>0.39583in</Height>
+            <Width>1.37027in</Width>
+            <ZIndex>11</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>2in</Height>
+        <Height>1.21875in</Height>
         <Style />
       </Body>
-      <Width>6.5in</Width>
+      <Width>3.59597in</Width>
       <Page>
-        <PageHeight>1.8in</PageHeight>
-        <PageWidth>4in</PageWidth>
+        <PageHeight>1in</PageHeight>
+        <PageWidth>3in</PageWidth>
         <Style />
       </Page>
     </ReportSection>
@@ -363,10 +393,6 @@
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
-    <ReportParameter Name="fabric">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
     <ReportParameter Name="customer">
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
@@ -375,19 +401,11 @@
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
-    <ReportParameter Name="lathe">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="cbNumber">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="someoftotal">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
     <ReportParameter Name="type">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="fabric">
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
@@ -396,6 +414,22 @@
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
     <ReportParameter Name="controltype">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="lathe">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="char">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="cbNumber">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="someoftotal">
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
@@ -418,47 +452,52 @@
         <CellDefinition>
           <ColumnIndex>2</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>fabric</ParameterName>
+          <ParameterName>customer</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>3</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>customer</ParameterName>
+          <ParameterName>department</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>1</RowIndex>
-          <ParameterName>department</ParameterName>
+          <ParameterName>type</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>1</ColumnIndex>
           <RowIndex>1</RowIndex>
-          <ParameterName>lathe</ParameterName>
+          <ParameterName>fabric</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>2</ColumnIndex>
           <RowIndex>1</RowIndex>
-          <ParameterName>cbNumber</ParameterName>
+          <ParameterName>color</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>3</ColumnIndex>
           <RowIndex>1</RowIndex>
-          <ParameterName>someoftotal</ParameterName>
+          <ParameterName>controltype</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>lathe</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>char</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>cbNumber</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>3</ColumnIndex>
           <RowIndex>2</RowIndex>
-          <ParameterName>type</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>3</RowIndex>
-          <ParameterName>color</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>3</RowIndex>
-          <ParameterName>controltype</ParameterName>
+          <ParameterName>someoftotal</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
