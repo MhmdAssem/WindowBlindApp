@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WindowBlind.Api.Models;
+using PrstringerProject;
+
 
 namespace WindowBlind.Api.Controllers
 {
@@ -757,7 +759,7 @@ namespace WindowBlind.Api.Controllers
                     var strParameterArray = labels[k].ToString().Split("@");
 
                     PrintReport(printerName, strParameterArray.ToList(), "LogCut1.rdlc", "Width");
-                    //PrintReport(printerName, strParameterArray.ToList(), "LogCut2.rdlc", "");
+                    PrintReport(printerName, strParameterArray.ToList(), "LogCut2.rdlc", "");
 
 
                 }
@@ -873,6 +875,32 @@ namespace WindowBlind.Api.Controllers
 
 
                 AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
+
+                if (StrReportPath == "LogCut2.rdlc")
+                {
+                    LogCut2 obj = new LogCut2();
+                    obj.width = strParameterArray[1].ToString();
+                    obj.drop = strParameterArray[2].ToString();
+                    obj.customer = strParameterArray[3].ToString();
+                    obj.department = strParameterArray[4].ToString();
+                    obj.type = strParameterArray[5].ToString();
+                    obj.fabric = strParameterArray[6].ToString();
+                    obj.color = strParameterArray[7].ToString();
+                    obj.controltype = strParameterArray[8].ToString();
+                    obj.lathe = strParameterArray[9].ToString();
+                    obj.c = strParameterArray[10].ToString();
+                    obj.cbNumber = strParameterArray[0].ToString();
+                    obj.someoftotal = strParameterArray[12] + " of " + strParameterArray[13].ToString();
+
+                    List<LogCut2> ls = new List<LogCut2> {
+                    obj
+                    };
+                    report.AddDataSource("LogCut2", ls);
+                    parametersList = null;
+
+                }
+                   
+
 
 
                 byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;

@@ -1,19 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="PrstringerProject">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>e8705df4-cd9b-489f-b8c7-34c75d799345</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="LogCut2">
+      <Query>
+        <DataSourceName>PrstringerProject</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="c">
+          <DataField>c</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cbNumber">
+          <DataField>cbNumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="color">
+          <DataField>color</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="controltype">
+          <DataField>controltype</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="customer">
+          <DataField>customer</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="department">
+          <DataField>department</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="drop">
+          <DataField>drop</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="fabric">
+          <DataField>fabric</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="lathe">
+          <DataField>lathe</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="someoftotal">
+          <DataField>someoftotal</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="type">
+          <DataField>type</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="width">
+          <DataField>width</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>PrstringerProject</rd:DataSetName>
+        <rd:TableName>LogCut2</rd:TableName>
+        <rd:ObjectDataSourceType>PrstringerProject.LogCut2, PrinterProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
         <ReportItems>
-          <Textbox Name="drop">
+          <Textbox Name="width1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!drop.Value</Value>
+                    <Value>=First(Fields!width.Value, "LogCut2")</Value>
                     <Style>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -21,11 +94,11 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>drop</rd:DefaultName>
+            <rd:DefaultName>width1</rd:DefaultName>
             <Top>0.01958in</Top>
-            <Left>0.89111in</Left>
+            <Left>0.05in</Left>
             <Height>0.25in</Height>
-            <Width>0.64583in</Width>
+            <Width>0.92708in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -36,15 +109,16 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="width">
+          <Textbox Name="drop1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!width.Value</Value>
+                    <Value>=First(Fields!drop.Value, "LogCut2")</Value>
                     <Style>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -52,11 +126,11 @@
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>width</rd:DefaultName>
+            <rd:DefaultName>drop1</rd:DefaultName>
             <Top>0.01958in</Top>
-            <Left>0.05556in</Left>
+            <Left>1.31472in</Left>
             <Height>0.25in</Height>
-            <Width>0.70833in</Width>
+            <Width>1in</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -68,27 +142,25 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="fabric">
+          <Textbox Name="customer1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!fabric.Value</Value>
-                    <Style>
-                      <FontSize>9pt</FontSize>
-                    </Style>
+                    <Value>=First(Fields!customer.Value, "LogCut2")</Value>
+                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>fabric</rd:DefaultName>
-            <Top>0.36333in</Top>
+            <rd:DefaultName>customer1</rd:DefaultName>
+            <Top>0.2043in</Top>
             <Left>0.05in</Left>
             <Height>0.25in</Height>
-            <Width>1.48694in</Width>
+            <Width>1.07292in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -100,24 +172,25 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="customer">
+          <Textbox Name="department1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!customer.Value</Value>
+                    <Value>=First(Fields!department.Value, "LogCut2")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <Top>0.1793in</Top>
-            <Left>0.05in</Left>
+            <rd:DefaultName>department1</rd:DefaultName>
+            <Top>0.2043in</Top>
+            <Left>1.05222in</Left>
             <Height>0.25in</Height>
-            <Width>1.21874in</Width>
+            <Width>1.2in</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -129,25 +202,25 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="char">
+          <Textbox Name="type1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!char.Value</Value>
+                    <Value>=First(Fields!type.Value, "LogCut2")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>char</rd:DefaultName>
-            <Top>0.55083in</Top>
-            <Left>0.05in</Left>
+            <rd:DefaultName>type1</rd:DefaultName>
+            <Top>0.2043in</Top>
+            <Left>1.93278in</Left>
             <Height>0.25in</Height>
-            <Width>0.20833in</Width>
+            <Width>1in</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
@@ -159,55 +232,55 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="department">
+          <Textbox Name="fabric1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!department.Value</Value>
+                    <Value>=First(Fields!fabric.Value, "LogCut2")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>department</rd:DefaultName>
-            <Top>0.1793in</Top>
-            <Left>1.1307in</Left>
+            <rd:DefaultName>fabric1</rd:DefaultName>
+            <Top>0.3793in</Top>
+            <Left>0.06042in</Left>
             <Height>0.25in</Height>
-            <Width>1.18402in</Width>
+            <Width>1.65972in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
               <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
+              <PaddingRight>0.1pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="type">
+          <Textbox Name="color1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!type.Value</Value>
+                    <Value>=First(Fields!color.Value, "LogCut2")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>type</rd:DefaultName>
-            <Top>0.1793in</Top>
-            <Left>2.23139in</Left>
+            <rd:DefaultName>color1</rd:DefaultName>
+            <Top>0.3793in</Top>
+            <Left>1.40833in</Left>
             <Height>0.25in</Height>
-            <Width>0.88541in</Width>
+            <Width>0.72917in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>
@@ -219,56 +292,26 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="color">
+          <Textbox Name="controltype1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!color.Value</Value>
+                    <Value>=First(Fields!controltype.Value, "LogCut2")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>color</rd:DefaultName>
-            <Top>0.36333in</Top>
-            <Left>1.38541in</Left>
+            <rd:DefaultName>controltype1</rd:DefaultName>
+            <Top>0.3793in</Top>
+            <Left>1.87708in</Left>
             <Height>0.25in</Height>
-            <Width>0.61459in</Width>
+            <Width>0.64583in</Width>
             <ZIndex>7</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="controltype">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Parameters!controltype.Value</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>controltype</rd:DefaultName>
-            <Top>0.36889in</Top>
-            <Left>1.8986in</Left>
-            <Height>0.25in</Height>
-            <Width>0.52084in</Width>
-            <ZIndex>8</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -286,7 +329,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!lathe.Value</Value>
+                    <Value>=First(Fields!lathe.Value, "LogCut2")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -294,10 +337,40 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
-            <Top>0.36333in</Top>
-            <Left>2.38626in</Left>
+            <Top>0.3793in</Top>
+            <Left>2.36042in</Left>
             <Height>0.25in</Height>
-            <Width>0.55554in</Width>
+            <Width>0.63542in</Width>
+            <ZIndex>8</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="c">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!c.Value, "LogCut2")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>c</rd:DefaultName>
+            <Top>0.58208in</Top>
+            <Left>0.05in</Left>
+            <Height>0.25in</Height>
+            <Width>0.52083in</Width>
             <ZIndex>9</ZIndex>
             <Style>
               <Border>
@@ -309,25 +382,28 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="someoftotal">
+          <Textbox Name="cbNumber1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!someoftotal.Value</Value>
-                    <Style />
+                    <Value>=First(Fields!cbNumber.Value, "LogCut2")</Value>
+                    <Style>
+                      <FontSize>16pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>someoftotal</rd:DefaultName>
-            <Top>0.55083in</Top>
-            <Left>2.18972in</Left>
-            <Height>0.25in</Height>
-            <Width>0.78125in</Width>
+            <rd:DefaultName>cbNumber1</rd:DefaultName>
+            <Top>0.56819in</Top>
+            <Left>0.50278in</Left>
+            <Height>0.39583in</Height>
+            <Width>1.32292in</Width>
             <ZIndex>10</ZIndex>
             <Style>
               <Border>
@@ -339,28 +415,25 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="cbNumber">
+          <Textbox Name="someoftotal1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!cbNumber.Value</Value>
-                    <Style>
-                      <FontSize>16pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
+                    <Value>=First(Fields!someoftotal.Value, "LogCut2")</Value>
+                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>cbNumber</rd:DefaultName>
-            <Top>0.55083in</Top>
-            <Left>0.64028in</Left>
-            <Height>0.39583in</Height>
-            <Width>1.37027in</Width>
+            <rd:DefaultName>someoftotal1</rd:DefaultName>
+            <Top>0.58208in</Top>
+            <Left>1.83125in</Left>
+            <Height>0.25in</Height>
+            <Width>1in</Width>
             <ZIndex>11</ZIndex>
             <Style>
               <Border>
@@ -373,10 +446,10 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>1.21875in</Height>
+        <Height>1.31125in</Height>
         <Style />
       </Body>
-      <Width>3.59597in</Width>
+      <Width>5.32167in</Width>
       <Page>
         <PageHeight>1in</PageHeight>
         <PageWidth>3in</PageWidth>
@@ -384,122 +457,10 @@
       </Page>
     </ReportSection>
   </ReportSections>
-  <ReportParameters>
-    <ReportParameter Name="width">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="drop">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="customer">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="department">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="type">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="fabric">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="color">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="controltype">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="lathe">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="char">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="cbNumber">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="someoftotal">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-  </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
       <NumberOfColumns>4</NumberOfColumns>
       <NumberOfRows>4</NumberOfRows>
-      <CellDefinitions>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>width</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>drop</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>customer</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>department</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>type</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>fabric</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>color</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>controltype</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>2</RowIndex>
-          <ParameterName>lathe</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>2</RowIndex>
-          <ParameterName>char</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>2</RowIndex>
-          <ParameterName>cbNumber</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>2</RowIndex>
-          <ParameterName>someoftotal</ParameterName>
-        </CellDefinition>
-      </CellDefinitions>
     </GridLayoutDefinition>
   </ReportParametersLayout>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSet1" targetNamespace="http://tempuri.org/DataSet1.xsd" xmlns:mstns="http://tempuri.org/DataSet1.xsd" xmlns="http://tempuri.org/DataSet1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSet1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="DataSet1" msprop:Generator_DataSetName="DataSet1">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="LogCut1Data" msprop:Generator_RowEvHandlerName="LogCut1DataRowChangeEventHandler" msprop:Generator_RowDeletedName="LogCut1DataRowDeleted" msprop:Generator_RowDeletingName="LogCut1DataRowDeleting" msprop:Generator_RowEvArgName="LogCut1DataRowChangeEvent" msprop:Generator_TablePropName="LogCut1Data" msprop:Generator_RowChangedName="LogCut1DataRowChanged" msprop:Generator_RowChangingName="LogCut1DataRowChanging" msprop:Generator_TableClassName="LogCut1DataDataTable" msprop:Generator_RowClassName="LogCut1DataRow" msprop:Generator_TableVarName="tableLogCut1Data" msprop:Generator_UserTableName="LogCut1Data">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="width" msprop:Generator_ColumnPropNameInRow="width" msprop:Generator_ColumnPropNameInTable="widthColumn" msprop:Generator_ColumnVarNameInTable="columnwidth" msprop:Generator_UserColumnName="width" type="xs:string" minOccurs="0" />
+              <xs:element name="drop" msprop:Generator_ColumnPropNameInRow="drop" msprop:Generator_ColumnPropNameInTable="dropColumn" msprop:Generator_ColumnVarNameInTable="columndrop" msprop:Generator_UserColumnName="drop" type="xs:string" minOccurs="0" />
+              <xs:element name="customer" msprop:Generator_ColumnPropNameInRow="customer" msprop:Generator_ColumnPropNameInTable="customerColumn" msprop:Generator_ColumnVarNameInTable="columncustomer" msprop:Generator_UserColumnName="customer" type="xs:string" minOccurs="0" />
+              <xs:element name="department" msprop:Generator_ColumnPropNameInRow="department" msprop:Generator_ColumnPropNameInTable="departmentColumn" msprop:Generator_ColumnVarNameInTable="columndepartment" msprop:Generator_UserColumnName="department" type="xs:string" minOccurs="0" />
+              <xs:element name="type" msprop:Generator_ColumnPropNameInRow="type" msprop:Generator_ColumnPropNameInTable="typeColumn" msprop:Generator_ColumnVarNameInTable="columntype" msprop:Generator_UserColumnName="type" type="xs:string" minOccurs="0" />
+              <xs:element name="fabric" msprop:Generator_ColumnPropNameInRow="fabric" msprop:Generator_ColumnPropNameInTable="fabricColumn" msprop:Generator_ColumnVarNameInTable="columnfabric" msprop:Generator_UserColumnName="fabric" type="xs:string" minOccurs="0" />
+              <xs:element name="color" msprop:Generator_ColumnPropNameInRow="color" msprop:Generator_ColumnPropNameInTable="colorColumn" msprop:Generator_ColumnVarNameInTable="columncolor" msprop:Generator_UserColumnName="color" type="xs:string" minOccurs="0" />
+              <xs:element name="controltype" msprop:Generator_ColumnPropNameInRow="controltype" msprop:Generator_ColumnPropNameInTable="controltypeColumn" msprop:Generator_ColumnVarNameInTable="columncontroltype" msprop:Generator_UserColumnName="controltype" type="xs:string" minOccurs="0" />
+              <xs:element name="lathe" msprop:Generator_ColumnPropNameInRow="lathe" msprop:Generator_ColumnPropNameInTable="latheColumn" msprop:Generator_ColumnVarNameInTable="columnlathe" msprop:Generator_UserColumnName="lathe" type="xs:string" minOccurs="0" />
+              <xs:element name="char" msprop:Generator_ColumnPropNameInRow="_char" msprop:Generator_ColumnPropNameInTable="charColumn" msprop:Generator_ColumnVarNameInTable="columnchar" msprop:Generator_UserColumnName="char" type="xs:string" minOccurs="0" />
+              <xs:element name="cbNumber" msprop:Generator_ColumnPropNameInRow="cbNumber" msprop:Generator_ColumnPropNameInTable="cbNumberColumn" msprop:Generator_ColumnVarNameInTable="columncbNumber" msprop:Generator_UserColumnName="cbNumber" type="xs:string" minOccurs="0" />
+              <xs:element name="someoftotal" msprop:Generator_ColumnPropNameInRow="someoftotal" msprop:Generator_ColumnPropNameInTable="someoftotalColumn" msprop:Generator_ColumnVarNameInTable="columnsomeoftotal" msprop:Generator_UserColumnName="someoftotal" type="xs:string" minOccurs="0" />
+              <xs:element name="cutwidth" msprop:Generator_ColumnPropNameInRow="cutwidth" msprop:Generator_ColumnPropNameInTable="cutwidthColumn" msprop:Generator_ColumnVarNameInTable="columncutwidth" msprop:Generator_UserColumnName="cutwidth" type="xs:string" minOccurs="0" />
+              <xs:element name="lineNumber" msprop:Generator_ColumnPropNameInRow="lineNumber" msprop:Generator_ColumnPropNameInTable="lineNumberColumn" msprop:Generator_ColumnVarNameInTable="columnlineNumber" msprop:Generator_UserColumnName="lineNumber" type="xs:string" minOccurs="0" />
+              <xs:element name="cntrside" msprop:Generator_ColumnPropNameInRow="cntrside" msprop:Generator_ColumnPropNameInTable="cntrsideColumn" msprop:Generator_ColumnVarNameInTable="columncntrside" msprop:Generator_UserColumnName="cntrside" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

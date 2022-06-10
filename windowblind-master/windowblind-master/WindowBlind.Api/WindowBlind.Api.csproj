@@ -51,5 +51,9 @@
     <Folder Include="Printer Driver\EzStopPrintFiles\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PrinterProject\PrinterProject.csproj" />
+  </ItemGroup>
+
 
 </Project>
