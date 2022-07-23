@@ -14,6 +14,7 @@
                   <TextRun>
                     <Value>=Parameters!drop.Value</Value>
                     <Style>
+                      <FontSize>8pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -27,9 +28,7 @@
             <Height>0.25in</Height>
             <Width>0.88542in</Width>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -45,6 +44,7 @@
                   <TextRun>
                     <Value>=Parameters!width.Value</Value>
                     <Style>
+                      <FontSize>8pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -59,9 +59,7 @@
             <Width>0.875in</Width>
             <ZIndex>1</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -76,7 +74,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!fabric.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -89,9 +89,7 @@
             <Width>1.125in</Width>
             <ZIndex>2</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -106,7 +104,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!customer.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -119,9 +119,7 @@
             <Width>1.25694in</Width>
             <ZIndex>3</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -136,7 +134,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!department.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -149,9 +149,7 @@
             <Width>1.25in</Width>
             <ZIndex>4</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -166,7 +164,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!color.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -176,12 +176,10 @@
             <Top>0.42583in</Top>
             <Left>1.15362in</Left>
             <Height>0.25in</Height>
-            <Width>1in</Width>
+            <Width>0.64792in</Width>
             <ZIndex>5</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -196,7 +194,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!controltype.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -204,14 +204,12 @@
             </Paragraphs>
             <rd:DefaultName>controltype</rd:DefaultName>
             <Top>0.42583in</Top>
-            <Left>2.11056in</Left>
+            <Left>1.73556in</Left>
             <Height>0.25in</Height>
             <Width>0.67708in</Width>
             <ZIndex>6</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -226,7 +224,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!lathe.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -234,14 +234,12 @@
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
             <Top>0.42583in</Top>
-            <Left>2.7182in</Left>
+            <Left>2.3432in</Left>
             <Height>0.25in</Height>
-            <Width>0.80208in</Width>
+            <Width>0.59375in</Width>
             <ZIndex>7</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -256,7 +254,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!char.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
@@ -269,9 +269,7 @@
             <Width>0.32292in</Width>
             <ZIndex>8</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -287,7 +285,7 @@
                   <TextRun>
                     <Value>=Parameters!cbNumber.Value</Value>
                     <Style>
-                      <FontSize>16pt</FontSize>
+                      <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -298,13 +296,11 @@
             <rd:DefaultName>cbNumber</rd:DefaultName>
             <Top>0.62027in</Top>
             <Left>0.32931in</Left>
-            <Height>0.375in</Height>
-            <Width>2.45833in</Width>
+            <Height>0.25in</Height>
+            <Width>1.94445in</Width>
             <ZIndex>9</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -319,7 +315,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=Parameters!someoftotal.Value</Value>
-                    <Style />
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style>
@@ -329,14 +327,12 @@
             </Paragraphs>
             <rd:DefaultName>someoftotal</rd:DefaultName>
             <Top>0.65777in</Top>
-            <Left>2.73209in</Left>
+            <Left>2.23209in</Left>
             <Height>0.25in</Height>
             <Width>0.57986in</Width>
             <ZIndex>10</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
               <VerticalAlign>Middle</VerticalAlign>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
@@ -345,10 +341,10 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>1.3125in</Height>
+        <Height>1.11458in</Height>
         <Style />
       </Body>
-      <Width>3.81125in</Width>
+      <Width>3.0925in</Width>
       <Page>
         <PageHeight>1in</PageHeight>
         <PageWidth>3in</PageWidth>

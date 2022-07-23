@@ -300,6 +300,7 @@ namespace WindowBlind.Api.Controllers
             {
                 Bindcntr++;
                 item.Row["Total Blinds"] = (generalBlindNumber - 1).ToString();
+                item.Row["Cut Width"] = "0";
                 if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd() != "")
                 {
                     if (ControlTypevalues.ContainsKey(item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd().ToUpper()))
@@ -467,7 +468,7 @@ namespace WindowBlind.Api.Controllers
                 byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
 
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".png");
-                //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
+                //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".jpg");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
