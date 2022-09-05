@@ -42,6 +42,7 @@ namespace WindowBlind.Api.Controllers
         Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
 
 
+
         [HttpGet("GetReadyToAssemble")]
         public async Task<IActionResult> GetReadyToAssemble([FromHeader] string CbOrLineNumber)
         {
@@ -60,7 +61,8 @@ namespace WindowBlind.Api.Controllers
                 var AssemblyColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "AssemblyStation").Result.FirstOrDefaultAsync();
                 var AssemblyColumns = AssemblyColumnsSetting.settingPath.Split("@@@").ToList();
                 if (AssemblyColumns[AssemblyColumns.Count - 1] == "") AssemblyColumns.RemoveAt(AssemblyColumns.Count - 1);
-
+                int Total = 0;
+                string cbNumber = "";
                 for (var i = 0; i < AssemblyColumns.Count; i++)
                 {
 
@@ -87,6 +89,8 @@ namespace WindowBlind.Api.Controllers
                     FabricCutterIndex[row.LineNumber] = cntr++;
 
                     FabricCutterDic[row.LineNumber] = row;
+                    Total = int.Parse(row.row.Row["Total"]);
+                    cbNumber = row.row.Row["CB Number"];
                 }
 
                 Dictionary<string, int> TakenFromLogCut = new Dictionary<string, int>();
@@ -99,11 +103,13 @@ namespace WindowBlind.Api.Controllers
                     row.row.Row["FromHoldingStation"] = "NO";
                     row.row.UniqueId = row.Id;
                     row.row.rows_AssociatedIds.Add(row.Id);
-                   
+                    Total = int.Parse(row.row.Row["Total"]);
                     data.Rows.Add(row.row);
+                    cbNumber = row.row.Row["CB Number"];
                 }
 
                 cntr = 0;
+
 
                 foreach (var row in EzStopOflogListModels)
                 {
@@ -113,16 +119,23 @@ namespace WindowBlind.Api.Controllers
 
                     if (ProcessCounter[row.LineNumber] >= 2)
                     {
+                        Total = int.Parse(row.row.Row["Total"]);
                         ProcessCounter[row.LineNumber] = -100000000;
                         row.row.Row["FromHoldingStation"] = "NO";
                         row.row.UniqueId = row.Id;
                         row.row.rows_AssociatedIds.Add(row.Id);
-                        //row.row.rows_AssociatedIds.Add(LogCutterDic[row.LineNumber].Id);
                         row.row.rows_AssociatedIds.Add(FabricCutterDic[row.LineNumber].Id);
                         data.Rows.Add(row.row);
+                        cbNumber = row.row.Row["CB Number"];
                     }
                 }
 
+                /// check if we have all data get the rows without the dep columns
+
+                if (data.Rows.Count == Total && Total != 0)
+                {
+                    await AddRowsWithoutDepartment(data, cbNumber,Total);
+                }
 
                 data.ColumnNames = AssemblyColumns;
                 return new JsonResult(data);
@@ -153,14 +166,14 @@ namespace WindowBlind.Api.Controllers
                     log.UserName = model.userName;
                     log.LineNumber = row.Row["Line No"];
                     log.CBNumber = row.Row["CB Number"];
-                    log.Item = row.Row["item"];
+                    log.Item =row.Row.ContainsKey("item")? row.Row["item"]:"NONE";
                     log.dateTime = DateTime.Now.ToString();
                     log.status = "Assembly";
                     log.ProcessType = "Assembly";
                     log.TableName = model.tableName;
                     log.Message = "This Line No.: " + log.LineNumber + ", has been assembled at " + log.dateTime;
                     await _repository.AssemblyStation.InsertOneAsync(log);
-
+                    
                     foreach (var id in row.rows_AssociatedIds)
                     {
                         await _repository.Logs.UpdateOneAsync(log => log.Id == id,
@@ -201,7 +214,7 @@ namespace WindowBlind.Api.Controllers
                 var AssemblyColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "AssemblyStation").Result.FirstOrDefaultAsync();
                 var AssemblyColumns = AssemblyColumnsSetting.settingPath.Split("@@@").ToList();
                 if (AssemblyColumns[AssemblyColumns.Count - 1] == "") AssemblyColumns.RemoveAt(AssemblyColumns.Count - 1);
-                
+
                 for (var i = 0; i < AssemblyColumns.Count; i++)
                 {
 
@@ -250,5 +263,84 @@ namespace WindowBlind.Api.Controllers
             }
 
         }
+
+        private async Task AddRowsWithoutDepartment(FabricCutterCBDetailsModel data, string cbNumber,int Total)
+        {
+            /// get the dumb file Path
+            var ctbsodumpSetting = await _repository.Settings.FindAsync(e => e.settingName == "ctbsodump");
+            var ctbsodumpPath = ctbsodumpSetting.FirstOrDefault().settingPath;
+
+            /// get the sheet name
+            var SheetNameSetting = await _repository.Settings.FindAsync(e => e.settingName == "SheetName");
+            var SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
+
+            ctbsodumpPath = Repository.CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
+
+            FileInfo file = new FileInfo(ctbsodumpPath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+                var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
+                if (worksheet == null) new JsonResult(false);
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                int index = -1;
+                for (int i = start.Column; i <= end.Column && index == -1; i++)
+                {
+                    var Headertext = worksheet.Cells[1, i].Text.Trim();
+                    if (Headertext == "W/Order NO")
+                        for (int j = start.Row + 1; j <= end.Row && index == -1; j++)
+                        {
+                            var text = worksheet.Cells[j, i].Text.Trim();
+
+                            if (text == cbNumber)
+                                index = j;
+                        }
+                }
+
+                for (int j = index; j <= end.Row; j++)
+                {
+                    FabricCutterCBDetailsModelTableRow NewRow = new FabricCutterCBDetailsModelTableRow();
+                    bool found = false;
+                    for (int i = start.Column; i <= end.Column; i++)
+                    {
+                        var Headertext = worksheet.Cells[1, i].Text.Trim();
+                        Headertext = Headertext.Replace(".", "");
+                        var cell = worksheet.Cells[j, i].Text.Trim();
+                        if (cell != "" && Headertext == "Department") break;
+
+                        if (Headertext == "W/Order NO" && cell != cbNumber)
+                        {
+                            System.IO.File.Delete(ctbsodumpPath);
+                            return; 
+                        }
+                        if (Headertext == "Name-key" && cell == "")
+                        {
+                            found = false; /// skip this row with no Name-Key
+                            break;
+                        }
+
+                        if (ColumnMapper.ContainsKey(Headertext))
+                        {
+                            NewRow.Row[Headertext] = cell;
+                            Headertext = ColumnMapper[Headertext];
+                        }
+                        NewRow.Row[Headertext] = cell;
+                        found = true;
+                    }
+                    if (found)
+                    {
+                        NewRow.Row["FromHoldingStation"] = "";
+                        NewRow.Row["Total"] = Total.ToString();
+                        NewRow.UniqueId = Guid.NewGuid().ToString(); 
+                        data.Rows.Add(NewRow);
+                    }
+                }
+            }
+            System.IO.File.Delete(ctbsodumpPath);
+
+
+        }
+
     }
 }

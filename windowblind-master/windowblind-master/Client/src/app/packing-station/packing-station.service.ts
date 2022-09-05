@@ -11,6 +11,29 @@ import { FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetai
 })
 export class PackingStationService {
   
+  PackingSend(tableName: string, printer: string, printer2nd: string, UserName: any, Data: FabricCutterCBDetailsModel): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let model: any = {
+      data: Data,
+      tableName: tableName,
+      userName: UserName,
+      printer: printer,
+      printer2nd:printer2nd
+    }
+    
+    return this.httpClient
+      .post<any>(environment.apiUrl + 'PackingStation/PackingSend', model, { headers }).pipe(
+        tap(
+          data => {
+            if (!data) {
+              alert("Sorry Configuration is not done , please contact your admin !");
+            }
+          }
+        )
+
+      );
+  }
+  
   ClearOrdersFromPacking(Model: FabricCutterCBDetailsModel, UserName: any, tableName: string) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     let model: CreateFileAndLabelModel = {

@@ -77,7 +77,10 @@ export class SettingsComponent implements OnInit {
 
   FabricCBSearch: boolean;
   LogCutCBSearch: boolean;
-
+  PackingStationSelected:boolean;
+  
+  SelectFirstPrinter = "";
+  SelectSecondPrinter = ""
 
   ApplicationMap = {
     "Fabric Cutter": "FabricCutterTable",
@@ -91,6 +94,7 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.FabricCBSearch = true;
     this.LogCutCBSearch = true;
+    this.PackingStationSelected = false;
     this.FabricSelectedColumnNames = [];
     this.LogCutSelectedColumnNames = [];
     this.EzStopSelectedColumnNames = [];
@@ -99,6 +103,8 @@ export class SettingsComponent implements OnInit {
     this.PackingStationSelectedColumnNames = [];
     this.LogCutAutoUpload = true;
     this.AutoUpload = true;
+    this.SelectFirstPrinter = "Select A Printer";
+    this.SelectSecondPrinter = "Select Large Label printer"
     this.dtOptions = {
       pagingType: 'full_numbers',
       lengthChange: false,
@@ -218,7 +224,8 @@ export class SettingsComponent implements OnInit {
             applicationName: "Fabric Cutter",
             printerName: entry[0],
             tableName: entry[1],
-            OutputPath: entry[2]
+            OutputPath: entry[2],
+            printerName2nd:entry.length>3?entry[3]:'-'
           };
           this.PrinterTableArray.push(model);
         });
@@ -233,7 +240,8 @@ export class SettingsComponent implements OnInit {
             applicationName: "Log Cut",
             printerName: entry[0],
             tableName: entry[1],
-            OutputPath: entry[2]
+            OutputPath: entry[2],
+            printerName2nd:entry.length>3?entry[3]:'-'
           };
           this.PrinterTableArray.push(model);
         });
@@ -248,7 +256,8 @@ export class SettingsComponent implements OnInit {
             applicationName: "EzStop",
             printerName: entry[0],
             tableName: entry[1],
-            OutputPath: entry[2]
+            OutputPath: entry[2],
+            printerName2nd:entry.length>3?entry[3]:'-'
           };
           this.PrinterTableArray.push(model);
         });
@@ -263,7 +272,8 @@ export class SettingsComponent implements OnInit {
             applicationName: "AssemblyStation",
             printerName: entry[0],
             tableName: entry[1],
-            OutputPath: entry[2]
+            OutputPath: entry[2],
+            printerName2nd:entry.length>3?entry[3]:'-'
           };
           this.PrinterTableArray.push(model);
         });
@@ -278,7 +288,8 @@ export class SettingsComponent implements OnInit {
             applicationName: "HoistStation",
             printerName: entry[0],
             tableName: entry[1],
-            OutputPath: entry[2]
+            OutputPath: entry[2],
+            printerName2nd:entry.length>3?entry[3]:'-'
           };
           this.PrinterTableArray.push(model);
         });
@@ -293,7 +304,8 @@ export class SettingsComponent implements OnInit {
             applicationName: "PackingStation",
             printerName: entry[0],
             tableName: entry[1],
-            OutputPath: entry[2]
+            OutputPath: entry[2],
+            printerName2nd:entry.length>3?entry[3]:'-'
           };
           this.PrinterTableArray.push(model);
         });
@@ -301,6 +313,7 @@ export class SettingsComponent implements OnInit {
 
       this.Columns.push('Application Name');
       this.Columns.push('Printer Name');
+      this.Columns.push('2nd Printer Name');
       this.Columns.push('Table Name');
       this.Columns.push('Output Path');
 
@@ -581,52 +594,52 @@ export class SettingsComponent implements OnInit {
     this.PrinterTableArray.forEach(element => {
       if (element.applicationName == 'Fabric Cutter') {
         if (FabricCutterEntry.settingPath != "") {
-          FabricCutterEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          FabricCutterEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;
         }
         else {
-          FabricCutterEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          FabricCutterEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
 
         }
       }
       else if (element.applicationName == 'Log Cut') {
         if (LogCutEntry.settingPath != "") {
-          LogCutEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          LogCutEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
         else {
-          LogCutEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          LogCutEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
 
         }
       }
       else if (element.applicationName == 'EzStop') {
         if (EzStopEntry.settingPath != "") {
-          EzStopEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          EzStopEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
         else {
-          EzStopEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          EzStopEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
       }
       else if (element.applicationName == 'AssemblyStation') {
         if (AssemblyEntry.settingPath != "") {
-          AssemblyEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          AssemblyEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
         else {
-          AssemblyEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          AssemblyEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
       }
       else if (element.applicationName == 'HoistStation') {
         if (HoistEntry.settingPath != "") {
-          HoistEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          HoistEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
         else {
-          HoistEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          HoistEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
       }
       else if (element.applicationName == 'PackingStation') {
         if (PackingEntry.settingPath != "") {
-          PackingEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          PackingEntry.settingPath += "#####" + element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
         else {
-          PackingEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath;
+          PackingEntry.settingPath = element.printerName + "@@@@@" + element.tableName + "@@@@@" + element.OutputPath + "@@@@@" + element.printerName2nd;;
         }
       }
 
@@ -770,6 +783,7 @@ export class SettingsComponent implements OnInit {
 
   AddToTheTable() {
     let selectedPrinter = (document.getElementById("Printers") as HTMLSelectElement).value;
+    let selectedPrinter2nd = this.PackingStationSelected == true?(document.getElementById("Printers") as HTMLSelectElement).value:'-';
     let selectedApp = (document.getElementById("Application") as HTMLSelectElement).value;
     let TableName = (document.getElementById("TableName") as HTMLInputElement).value;
     let OutputPath = (document.getElementById("OutputPath") as HTMLInputElement).value;
@@ -791,7 +805,8 @@ export class SettingsComponent implements OnInit {
           applicationName: selectedApp,
           printerName: selectedPrinter,
           tableName: TableName,
-          OutputPath: OutputPath
+          OutputPath: OutputPath,
+          printerName2nd:selectedPrinter2nd
 
         };
         this.PrinterTableArray.push(model);
@@ -835,6 +850,15 @@ export class SettingsComponent implements OnInit {
 
     this.CommentsTableArray.splice(i, 1);
     this.updateTable();
+  }
+  
+  
+  ApplicationSelected()
+  {
+    let selectedApp = (document.getElementById("Application") as HTMLSelectElement).value;
+    
+    this.PackingStationSelected = (selectedApp == "PackingStation");
+    this.SelectFirstPrinter = (selectedApp == "PackingStation")? "Select Pink Label Printer":"Select A Printer";
   }
 
 }

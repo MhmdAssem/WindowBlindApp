@@ -68,7 +68,9 @@
     <EmbeddedResource Include="EzStop.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="LargeLabel.rdlc" />
     <EmbeddedResource Include="LogCut2.rdlc" />
+    <EmbeddedResource Include="PinkLabel.rdlc" />
     <EmbeddedResource Include="TempLogCut2.rdlc" />
     <EmbeddedResource Include="LogCut1.rdlc" />
     <EmbeddedResource Include="FabricCutter.rdlc" />

@@ -107,7 +107,7 @@ namespace WindowBlind.Api.Controllers
                     log.TableName = model.tableName;
                     log.LineNumber = row.Row["Line No"];
                     log.CBNumber = row.Row["CB Number"];
-                    log.Item = row.Row["item"];
+                    log.Item =row.Row.ContainsKey("item")? row.Row["item"]:"NONE";
                     log.dateTime = DateTime.Now.ToString();
                     log.status = "Qualified";
                     log.ProcessType = "Qualified";

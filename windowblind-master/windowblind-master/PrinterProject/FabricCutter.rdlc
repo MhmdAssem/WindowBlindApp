@@ -350,13 +350,11 @@
                     <Value>="*" + Parameters!lineNumber.Value +"*"</Value>
                     <Style>
                       <FontFamily>3 of 9 Barcode</FontFamily>
-                      <FontSize>20pt</FontSize>
+                      <FontSize>21pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
+                <Style />
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lineNumber</rd:DefaultName>
@@ -366,7 +364,9 @@
             <Width>1.75349in</Width>
             <ZIndex>12</ZIndex>
             <Style>
-              <Border />
+              <Border>
+                <Style>None</Style>
+              </Border>
             </Style>
           </Textbox>
           <Textbox Name="someoftotal">

@@ -38,6 +38,7 @@ namespace WindowBlind.Api.Controllers
         Dictionary<string, int> ControlTypevalues;
         Dictionary<string, List<string>> LatheType;
         Dictionary<string, int> ColumnsIndex;
+        Dictionary<string, int> Color;
         bool CBSearchOrLineNumberSearch;
         string LineNumber;
         int generalBlindNumber;
@@ -46,6 +47,7 @@ namespace WindowBlind.Api.Controllers
             if (ColumnMapper.Count > 0) return;
             ColumnMapper.Add("Customer Name 1", "Customer");
             ColumnMapper.Add("W/Order NO", "CB Number");
+            ColumnMapper.Add("Customer Name 2", "Supplier");
             ColumnMapper.Add("Qty", "Quantity");
             ColumnMapper.Add("Width", "Measured Width");
             ColumnMapper.Add("Drop", "Measured Drop");
@@ -53,6 +55,7 @@ namespace WindowBlind.Api.Controllers
             ColumnMapper.Add("Colour", "Fabric Colour");
             ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
             ColumnsIndex = new Dictionary<string, int>();
+            Color = new Dictionary<string, int>();
         }
         private async Task ReadConfig()
         {
@@ -167,6 +170,15 @@ namespace WindowBlind.Api.Controllers
                         Dictionary<string, string> row = new Dictionary<string, string>();
                         row["Line No"] = "";
                         row["Customer"] = "";
+                        row["Supplier"] = "";
+                        row["Address1"] = "";
+                        row["Address2"] = "";
+                        row["Address3"] = "";
+                        row["PostCode"] = "";
+                        row["Carrier"] = "";
+                        row["Location"] = "";
+                        row["Debtor Order Number"] = "";
+                        row["Order Department"] = "";
                         row["Bind Type/# Panels/Rope/Operation"] = "";
                         row["Description"] = "";
                         row["Track Col/Roll Type/Batten Col"] = "";
@@ -192,10 +204,20 @@ namespace WindowBlind.Api.Controllers
 
                             var cell = worksheet.Cells[i, j].Text.Trim();
 
+                            if (Headertext == ("Colour"))
+                            {
+                                /// Adding Counting Color Logic 
+                                var RowColor = (worksheet.Cells[i, j].Text.Trim());
+                                if (RowColor != "")
+                                {
+                                    if (!Color.ContainsKey(RowColor)) Color[RowColor] = 0;
+                                    Color[RowColor]++;
+                                }
+                            }
+
                             if (ColumnMapper.ContainsKey(Headertext))
                                 Headertext = ColumnMapper[Headertext];
                             row[Headertext] = cell;
-
 
                         }
                         if (RowQty == 0) continue;
@@ -299,7 +321,13 @@ namespace WindowBlind.Api.Controllers
             foreach (var item in Data.Rows)
             {
                 Bindcntr++;
+                item.Row["RowColorCount"] = "0";
+                var RowColor = item.Row["Fabric Colour"].Trim();
+                if (RowColor != "")
+                    item.Row["RowColorCount"] = Color[RowColor].ToString();
+
                 item.Row["Total Blinds"] = (generalBlindNumber - 1).ToString();
+                item.Row["Total"] = (generalBlindNumber - 1).ToString();
                 item.Row["Cut Width"] = "0";
                 if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd() != "")
                 {
@@ -526,12 +554,6 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
-        private void PrintPage(object o, PrintPageEventArgs e)
-        {
-
-
-        }
-
         public string PrintLabels(string strParameter)
         {
             try
@@ -699,7 +721,8 @@ namespace WindowBlind.Api.Controllers
 
                     labels.Append("@" + item.Row["Measured Drop"].ToString().TrimEnd());
                     labels.Append("@" + item.Row["Customer"].ToString().TrimEnd());
-                    labels.Append("@" + item.Row["Department"].ToString().TrimEnd());
+                   // labels.Append("@" + item.Row["Department"].ToString().TrimEnd());
+                    labels.Append("@" + item.Row["RowColorCount"].ToString().TrimEnd());
 
 
                     if (item.Row["Track Colour"].ToString().TrimEnd() == "OVEROLL")
@@ -712,6 +735,7 @@ namespace WindowBlind.Api.Controllers
                     }
 
                     item.Row["Alpha Number"] = CalculateAlphabeticFromNumber(int.Parse(item.Row["Blind Number"]));
+                    item.Row["SomeOfTotal"] = item.Row["Blind Number"].ToString().Trim() + " of " + item.Row["Total Blinds"].ToString().Trim();
                     if (item.Row["Fabric Type"] != "")
                     {
                         labels.Append("@" + item.Row["Fabric Type"].ToString().TrimEnd().Substring(0, item.Row["Fabric Type"].ToString().TrimEnd().Length - 6).TrimEnd());
@@ -955,7 +979,7 @@ namespace WindowBlind.Api.Controllers
                             bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
                             var last = end.Column;
 
-                             for (int i = start.Row + 1; i <= end.Row; i++)
+                            for (int i = start.Row + 1; i <= end.Row; i++)
                             {
                                 Dictionary<string, string> row = new Dictionary<string, string>();
 
@@ -983,14 +1007,23 @@ namespace WindowBlind.Api.Controllers
 
                                     Headertext = Headertext.Replace(".", "");
 
-
-
                                     var cell = worksheet.Cells[i, j].Text.Trim();
+
+
+                                    if (Headertext == ("Colour"))
+                                    {
+                                        /// Adding Counting Color Logic 
+                                        var RowColor = (worksheet.Cells[i, j].Text.Trim());
+                                        if (RowColor != "")
+                                        {
+                                            if (!Color.ContainsKey(RowColor)) Color[RowColor] = 0;
+                                            Color[RowColor]++;
+                                        }
+                                    }
 
                                     if (ColumnMapper.ContainsKey(Headertext))
                                         Headertext = ColumnMapper[Headertext];
                                     row[Headertext] = cell;
-
 
                                 }
 
@@ -1020,6 +1053,13 @@ namespace WindowBlind.Api.Controllers
                         foreach (var item in Data.Rows)
                         {
                             Bindcntr++;
+
+                            /// Adding Counting Color Logic 
+                            item.Row["RowColorCount"] = "0";
+                            var RowColor = item.Row["Fabric Colour"].Trim();
+                            if (RowColor != "")
+                                item.Row["RowColorCount"] = Color[RowColor].ToString();
+
                             item.Row["Total Blinds"] = (generalBlindNumber - 1).ToString();
                             if (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd() != "")
                             {

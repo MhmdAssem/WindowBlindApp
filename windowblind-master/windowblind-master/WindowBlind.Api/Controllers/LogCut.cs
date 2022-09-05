@@ -49,6 +49,7 @@ namespace WindowBlind.Api.Controllers
         string CB;
         string LineNumber;
         Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
+        Dictionary<string, int> RowColor ;
 
 
         public void Init()
@@ -57,12 +58,14 @@ namespace WindowBlind.Api.Controllers
             ColumnMapper.Add("Customer Name 1", "Customer");
             ColumnMapper.Add("W/Order NO", "CB Number");
             ColumnMapper.Add("Qty", "Quantity");
+            ColumnMapper.Add("Customer Name 2", "Supplier");
             ColumnMapper.Add("Width", "Measured Width");
             ColumnMapper.Add("Drop", "Measured Drop");
             ColumnMapper.Add("Fabric", "Fabric Type");
             ColumnMapper.Add("Colour", "Fabric Colour");
             ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
             ColumnsIndex = new Dictionary<string, int>();
+            RowColor = new Dictionary<string, int>();
         }
         private async Task ReadConfig()
         {
@@ -322,6 +325,17 @@ namespace WindowBlind.Api.Controllers
                         if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsNames.Contains(worksheet.Cells[1, j].Text.Trim()))
                             Data.ColumnNames.Add(Headertext);
 
+                        if (Headertext == ("Colour"))
+                        {
+                            /// Adding Counting Color Logic 
+                            var CurrentRowColor = (worksheet.Cells[i, j].Text.Trim());
+                            if (CurrentRowColor != "")
+                            {
+                                if (!RowColor.ContainsKey(CurrentRowColor)) RowColor[CurrentRowColor] = 0;
+                                RowColor[CurrentRowColor]++;
+                            }
+                        }
+
                         if (ColumnMapper.ContainsKey(Headertext))
                         {
                             row[Headertext] = cell;
@@ -365,6 +379,11 @@ namespace WindowBlind.Api.Controllers
 
                 }
                 Fbindex = 0;
+
+                item.Row["RowColorCount"] = "0";
+                var CurrentRowColor = item.Row["Fabric Colour"].Trim();
+                if (CurrentRowColor != "")
+                    item.Row["RowColorCount"] = RowColor[CurrentRowColor].ToString();
 
                 if (item.Row.ContainsKey("Fabric") && item.Row["Fabric"] != "")
                 {
@@ -530,6 +549,7 @@ namespace WindowBlind.Api.Controllers
 
                                 FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                 FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
+                                FinalRow.Row["SomeOfTotal"] = blindNumber.ToString() + " of " + TotalQty.ToString();
                                 FinalRow.Row["FromHoldingStation"] = "NO";
                                 FinalRow.UniqueId = Guid.NewGuid().ToString();
 
@@ -642,7 +662,7 @@ namespace WindowBlind.Api.Controllers
                                             Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
 
                     strconcat = item.Row["CB Number"] + "@" + item.Row["Width"];
-                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["Department"];
+                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["RowColorCount"];//item.Row["Department"];
                     strconcat += "@" + item.Row["Type"] + "@" + item.Row["Fabric"] + "@" + item.Row["Colour"];
                     strconcat += "@" + item.Row["Control Type"] + "@" + item.Row["Lathe"];
                     strconcat += "@" + item.Row["Alpha"] + "@" + item.Row["CB Number"] + "@" + item.Row["SRLineNumber"];
@@ -835,8 +855,8 @@ namespace WindowBlind.Api.Controllers
                 string mimtype = "";
                 int extension = 1;
 
-                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
-                //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+                //var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
+                var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
                 var parametersList = new Dictionary<string, string>();
@@ -913,8 +933,8 @@ namespace WindowBlind.Api.Controllers
                 report.Dispose();
                 */
 
-                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".jpg");
-                //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
+                //var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".jpg");
+                var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
@@ -1299,6 +1319,16 @@ namespace WindowBlind.Api.Controllers
 
 
                                     var cell = worksheet.Cells[i, j].Text.Trim();
+                                    if (Headertext == ("Colour"))
+                                    {
+                                        /// Adding Counting Color Logic 
+                                        var CurrentRowColor = (worksheet.Cells[i, j].Text.Trim());
+                                        if (CurrentRowColor != "")
+                                        {
+                                            if (!RowColor.ContainsKey(CurrentRowColor)) RowColor[CurrentRowColor] = 0;
+                                            RowColor[CurrentRowColor]++;
+                                        }
+                                    }
 
                                     if (ColumnMapper.ContainsKey(Headertext))
                                     {
@@ -1307,7 +1337,7 @@ namespace WindowBlind.Api.Controllers
                                     }
                                     row[Headertext] = cell;
 
-
+                                    
                                 }
 
                                 FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();

@@ -378,5 +378,14 @@ namespace WindowBlind.Api
             _mongoDb.DropCollection("EzStopData");
             _mongoDb.DropCollection("AutoUploads");
         }
+
+        public static string CreateNewFile(string source, string destination)
+        {
+            System.IO.File.Copy(source, destination);
+            return destination;
+
+        }
+
+
     }
 }

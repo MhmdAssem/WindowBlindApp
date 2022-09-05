@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AspNetCore.Reporting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -7,6 +8,7 @@ using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,10 +21,10 @@ namespace WindowBlind.Api.Controllers
     public class PackingStation : ControllerBase
     {
 
-       
+
         private IRepository _repository;
         private IWebHostEnvironment _env;
-        private static Dictionary<string, int> CBNumberCounter;
+        public static Dictionary<string, CCNumberRowCount> CBNumberCounter;
 
         Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
 
@@ -45,8 +47,7 @@ namespace WindowBlind.Api.Controllers
 
         public async Task CheckCBNumber()
         {
-            if (CBNumberCounter == null)
-                CBNumberCounter = await GetCbNumberCountFromFile();
+            CBNumberCounter = await GetCbNumberCountFromFile();
         }
 
         [HttpGet("GetReadyToPack")]
@@ -54,7 +55,7 @@ namespace WindowBlind.Api.Controllers
         {
             try
             {
-                await CheckCBNumber();
+                //await CheckCBNumber();
 
                 var PackingColumnsSetting = await _repository.Settings.FindAsync(setting => setting.settingName == "SelectedColumnsNames" && setting.applicationSetting == "PackingStation").Result.FirstOrDefaultAsync();
                 var PackingColumns = PackingColumnsSetting.settingPath.Split("@@@").ToList();
@@ -87,7 +88,7 @@ namespace WindowBlind.Api.Controllers
                     row.row.rows_AssociatedIds.Clear();
                     row.row.Row["FromHoldingStation"] = "NO";
 
-                    row.row.Row["Total"] = CBNumberCounter[row.CBNumber].ToString();
+                    // row.row.Row["Total"] = CBNumberCounter[row.CBNumber].ToString();
                     row.row.UniqueId = row.Id;
                     row.row.rows_AssociatedIds.Add(row.Id);
 
@@ -99,7 +100,7 @@ namespace WindowBlind.Api.Controllers
                     }
                     else
                     {
-                        row.row.Row["Packed"] = RowsWithTheSameCBNumber.Count.ToString() ;
+                        row.row.Row["Packed"] = RowsWithTheSameCBNumber.Count.ToString();
                     }
 
                     data.Rows.Add(row.row);
@@ -157,7 +158,7 @@ namespace WindowBlind.Api.Controllers
                 if (cbNumbersRowsInPackingDB != null)
                 {
                     var count = cbNumbersRowsInPackingDB.Count;
-                    if (count == CBNumberCounter[cbNumbersRowsInPackingDB[0].CBNumber])
+                    if (count == int.Parse(cbNumbersRowsInPackingDB[0].row.Row["Total"]))
                     {
                         await _repository.PackingStation.UpdateManyAsync(log => log.CBNumber == cbNumbersRowsInPackingDB[0].CBNumber,
                       Builders<LogModel>.Update.Set(p => p.status, model.data.Rows[0].Row["Status"]), new UpdateOptions { IsUpsert = false });
@@ -174,15 +175,9 @@ namespace WindowBlind.Api.Controllers
             }
         }
 
-        public string CreateNewFile(string source, string destination)
+        private async Task<Dictionary<string, CCNumberRowCount>> GetCbNumberCountFromFile()
         {
-            System.IO.File.Copy(source, destination);
-            return destination;
-
-        }
-        private async Task<Dictionary<string, int>> GetCbNumberCountFromFile()
-        {
-            Dictionary<string, int> CBNumberCounter = new Dictionary<string, int>();
+            Dictionary<string, CCNumberRowCount> CBNumberCounter = new Dictionary<string, CCNumberRowCount>();
 
             /// get the dumb file Path
             var ctbsodumpSetting = await _repository.Settings.FindAsync(e => e.settingName == "ctbsodump");
@@ -192,7 +187,7 @@ namespace WindowBlind.Api.Controllers
             var SheetNameSetting = await _repository.Settings.FindAsync(e => e.settingName == "SheetName");
             var SheetNamePath = SheetNameSetting.FirstOrDefault().settingPath;
 
-            ctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
+            ctbsodumpPath = Repository.CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
 
             FileInfo file = new FileInfo(ctbsodumpPath);
             using (var package = new ExcelPackage(file))
@@ -210,9 +205,13 @@ namespace WindowBlind.Api.Controllers
                         {
                             var text = worksheet.Cells[j, i].Text.Trim();
 
-                            if (!CBNumberCounter.ContainsKey(text)) CBNumberCounter[text] = 0;
+                            if (!CBNumberCounter.ContainsKey(text)) CBNumberCounter[text] = new CCNumberRowCount
+                            {
+                                Count = 0,
+                                rows = new List<FabricCutterCBDetailsModelTableRow>()
+                            };
 
-                            CBNumberCounter[text]++;
+                            CBNumberCounter[text].Count++;
 
                         }
                 }
@@ -293,5 +292,251 @@ namespace WindowBlind.Api.Controllers
             }
 
         }
+
+        [HttpPost("PackingSend")]
+        public async Task<IActionResult> PackingSend(CreateFileAndLabelModel model)
+        {
+            try
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                var LogCutOutputSettings = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
+                var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().OutputPath;
+                if (LogCutOutputPath == "") return new JsonResult(false);
+                DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
+
+                if (!f.Exists) return new JsonResult(false);
+
+                if (model.printer == null || model.printer == "" || model.printer2nd == null || model.printer2nd == "-") return new JsonResult(false);
+
+                var data = model.data;
+                var printerName = model.printer;
+                var printerName2nd = model.printer2nd;
+                var tableName = model.tableName;
+                var strconcat = "";
+                List<string> labels = new List<string>();
+                var strRS232Width = "";
+                foreach (var item in data.Rows)
+                {
+                    if (item.Row["FromHoldingStation"] == "YES")
+                        await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
+                                            Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
+                    if (item.Row["Department"] == "") continue;
+                    strconcat = item.Row["Debtor Order Number"] + "@" + item.Row["CB Number"];
+                    strconcat += "@" + item.Row["Debtor Order Number"].Substring(0, item.Row["Debtor Order Number"].IndexOf(' ')) + "@" + item.Row["Order Department"] + "@" + item.Row["Supplier"];
+                    strconcat += "@" + item.Row["Department"] + "@" + item.Row["Location"] + "@" + item.Row["Width"];
+                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Line No"] + "@" + item.Row["SomeOfTotal"];
+                    strconcat += "@" + item.Row["Customer"] + "@" + item.Row["Carrier"];
+                    strconcat += "@" + item.Row["Address 1"];
+                    strconcat += "@" + item.Row["Address 2"];
+                    strconcat += "@" + item.Row["Address 3"];
+                    strconcat += "@" + item.Row["Postcode"];
+                    strconcat += "@" + item.Row["Description"];
+                    var status = item.Row["Status"];
+                    strconcat += status == "Dispatch" ? "@D" : status == "Holding bay" ? "@H" : "@D-H";
+
+                    labels.Add(strconcat);
+                    strRS232Width += item.Row["CutWidth"].ToString().Replace("mm", "");
+
+                    bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToString(), item.Row["Alpha"], "LogCut", item);
+
+                }
+
+                // the printing
+
+                for (int k = 0; k < labels.Count; k++)
+                {
+                    var strParameterArray = labels[k].ToString().Split("@");
+
+                    if (strParameterArray[11] == "Spotlight Sandown")
+                        PrintReport(printerName, strParameterArray, "PinkLabel.rdlc");
+
+                    else
+                        PrintReport(printerName2nd, strParameterArray, "LargeLabel.rdlc");
+
+
+                }
+                return new JsonResult(true);
+            }
+            catch (Exception e)
+            {
+                return new JsonResult(false);
+            }
+
+
+        }
+
+        public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime, string item, string ProcessType, FabricCutterCBDetailsModelTableRow row)
+        {
+            try
+            {
+                LogModel log = new LogModel();
+                log.UserName = uName;
+                log.CBNumber = cbNumber;
+                log.status = "IDLE";
+                log.Id = row.UniqueId;
+                foreach (var key in row.Row.Keys.ToList())
+                {
+                    if (key == "")
+                    {
+                        row.Row.Remove(key); continue;
+                    }
+                    var ind = key.IndexOf(".");
+                    if (ind == -1) continue;
+
+                    var newKey = key.Replace(".", "");
+                    var value = row.Row[key];
+
+                    row.Row[newKey] = value;
+                    row.Row.Remove(key);
+                }
+                log.row = row;
+                log.LineNumber = barCode;
+                log.Item = item;
+                log.dateTime = datetime;
+                log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+                log.ProcessType = ProcessType;
+                log.TableName = tableNo;
+                await _repository.Logs.InsertOneAsync(log);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+
+        }
+
+        public string PrintReport(string strPrinterName, string[] strParameterArray, string StrReportPath)
+        {
+
+            try
+            {
+                string mimtype = "";
+                int extension = 1;
+                //var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
+                var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                Encoding.GetEncoding("windows-1252");
+                var parametersList = new Dictionary<string, string>();
+
+
+                for (int i = 0; i < strParameterArray.Length; i++)
+                {
+                    while (strParameterArray[i].IndexOf("  ") != -1)
+                        strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                    if (String.IsNullOrEmpty(strParameterArray[i]))
+                        strParameterArray[i] = " ";
+                }
+
+                if (StrReportPath == "PinkLabel.rdlc")
+                {
+                    parametersList.Add("PO", strParameterArray[0].ToString());
+                    parametersList.Add("CCNumber", strParameterArray[1].ToString());
+                    parametersList.Add("Cust", "Cust: " + strParameterArray[2].ToString());
+                    parametersList.Add("CustRef", "Cust Ref: " + strParameterArray[3].ToString());
+                    parametersList.Add("Supplier", "Supplier: " + strParameterArray[4].ToString());
+                    parametersList.Add("Department", strParameterArray[5].ToString());
+                    parametersList.Add("Location", "Location: " + strParameterArray[6].ToString());
+                    parametersList.Add("Width", "W: " + strParameterArray[7].ToString());
+                    parametersList.Add("Drop", "D: " + strParameterArray[8].ToString());
+                    parametersList.Add("LineNumber", strParameterArray[9].ToString());
+                    parametersList.Add("SomeOfTotal", strParameterArray[10].ToString());
+                    parametersList.Add("Customer", "Ship To: " + strParameterArray[11].ToString());
+                    parametersList.Add("Carrier", strParameterArray[12].ToString());
+                    parametersList.Add("Address1", strParameterArray[13].ToString());
+                    parametersList.Add("Address2", strParameterArray[14].ToString());
+                    parametersList.Add("Address3", strParameterArray[15].ToString());
+                    parametersList.Add("PostCode", strParameterArray[16].ToString());
+                    parametersList.Add("Status", strParameterArray[18].ToString());
+
+                }
+                else
+                {
+                    parametersList.Add("CBNumber", strParameterArray[1].ToString());
+                    parametersList.Add("Carrier", strParameterArray[12].ToString());
+                    parametersList.Add("Customer", strParameterArray[11].ToString());
+                    parametersList.Add("PO", strParameterArray[0].ToString());
+                    parametersList.Add("Description", strParameterArray[17].ToString());
+                    parametersList.Add("Location", "Location: " + strParameterArray[6].ToString());
+                    parametersList.Add("Width", "Width: " + strParameterArray[7].ToString() + "");
+                    parametersList.Add("Drop", "Drop: " + strParameterArray[8].ToString() + "");
+                    parametersList.Add("SomeOfTotal", "Quantity " + strParameterArray[10].ToString());
+                    parametersList.Add("FittingAddress", strParameterArray[13].ToString());
+                    parametersList.Add("Department", strParameterArray[5].ToString());
+                    parametersList.Add("Status", strParameterArray[18].ToString());
+
+                }
+
+
+
+
+
+                LocalReport report = new LocalReport(path);
+
+
+                byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
+
+                //var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".jpg");
+                var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".jpg");
+                using (FileStream stream = new FileStream(outputPath, FileMode.Create))
+                {
+                    stream.Write(result, 0, result.Length);
+                }
+
+
+
+                bool printedOK = true;
+                string printErrorMessage = "";
+                try
+                {
+                    PrintDocument pd = new PrintDocument();
+                    PrintController printController = new StandardPrintController();
+                    pd.PrintController = printController;
+                    pd.PrinterSettings.PrinterName = strPrinterName;
+                    pd.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
+                    pd.PrinterSettings.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
+                    pd.PrintPage += (sndr, args) =>
+                    {
+                        System.Drawing.Image i = System.Drawing.Image.FromFile(outputPath);
+                        System.Drawing.Rectangle m = args.MarginBounds;
+
+                        //Logic below maintains Aspect Ratio 
+                        if ((double)i.Width / (double)i.Height > (double)m.Width / (double)m.Height) // image is wider
+                        {
+                            m.Height = (int)((double)i.Height / (double)i.Width * (double)m.Width);
+                        }
+                        else
+                        {
+                            m.Width = (int)((double)i.Width / (double)i.Height * (double)m.Height);
+                        }
+
+                        //Calculating optimal orientation.
+                        pd.DefaultPageSettings.Landscape = m.Height > m.Width;
+
+                        // Putting image in center of page.
+                        m.Y = 0;// (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Height - m.Height) / 2);
+                        m.X = 0;// (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Width - m.Width) / 2);
+                        args.Graphics.DrawImage(i, m);
+                    };
+                    pd.Print();
+                }
+                catch (Exception ex)
+                {
+                    printErrorMessage = "Printing Error: " + ex.ToString();
+                    printedOK = false;
+                    return ex.StackTrace;
+                }
+
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return ex.StackTrace;
+            }
+        }
+
+
     }
 }

@@ -11,6 +11,8 @@ namespace WindowBlind.Api.Models
         public string userName { get; set; }
         public string printer { get; set; }
 
+        public string printer2nd { get; set; }
+
         public FabricCutterCBDetailsModel data { get; set; }
     }
 }

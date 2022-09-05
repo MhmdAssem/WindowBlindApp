@@ -22,14 +22,15 @@ import { PackingStationService } from './packing-station.service';
 })
 export class PackingStationComponent implements OnInit {
   LineLoading: boolean;
+  PrintLoading: boolean;
   HoldLoading: boolean = false;
   CBLoading: boolean;
   DataInTheTable: any = {};
-   constructor(private HoldingService: HoldingStationService, private PackingService: PackingStationService, private settingService: SettingService, private authService: AuthService) { }
+  constructor(private HoldingService: HoldingStationService, private PackingService: PackingStationService, private settingService: SettingService, private authService: AuthService) { }
 
   NumberOfTables: number = 0;
   TableNames: string[] = [];
- 
+
   tableModelColNames: string[] = [];
   ReviewtableModelColNames: string[] = [];
   BlindNumbers: number[] = [];
@@ -39,7 +40,8 @@ export class PackingStationComponent implements OnInit {
   SendLoading: boolean = false;
   ReviewDataWithBlindsNumbers: { [Key: string]: number } = {}
   PrinterTableDictionary = {};
-  
+  PrinterTableDictionary2nd = {};
+
   SelectedRows = {};
 
 
@@ -48,11 +50,12 @@ export class PackingStationComponent implements OnInit {
   DataSource = new MatTableDataSource<FabricCutterCBDetailsModelTableRow>(this.Data);
   tableModelColNamesWithActions: string[] = [];
   @ViewChild('paginator', { static: false }) paginator: MatPaginator;
-  
-  
-  ngOnInit(): void {
-   
 
+
+  ngOnInit(): void {
+
+    this.PrinterTableDictionary = {};
+    this.PrinterTableDictionary2nd = {};
 
     this.settingService.getTableNumber('PackingStationTable').subscribe(data => {
       if ((data as string).indexOf("@@@@@") != -1) {
@@ -61,16 +64,19 @@ export class PackingStationComponent implements OnInit {
         entries.forEach(element => {
 
           let data = element.split("@@@@@");
+
           this.TableNames.push(data[1]);
           this.PrinterTableDictionary[data[1]] = data[0];
+          this.PrinterTableDictionary2nd[data[1]] = data[3];
 
         });
+        console.log(this.PrinterTableDictionary2nd);
       }
 
 
     });
 
- 
+
 
   }
 
@@ -84,7 +90,7 @@ export class PackingStationComponent implements OnInit {
       this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = this.ReviewData.length;
       this.ReviewData.push(this.Data[ind]);
       this.SelectedRows[this.Data[ind].uniqueId] = 'Selected';
-    
+
     }
     else {
       ind += this.paginator.pageIndex * this.paginator.pageSize;
@@ -134,7 +140,7 @@ export class PackingStationComponent implements OnInit {
         setTimeout(() => {
           this.DataSource.paginator = this.paginator;
           this.UpdateMatTables();
-        }, 100);   
+        }, 100);
 
       });
   }
@@ -146,7 +152,7 @@ export class PackingStationComponent implements OnInit {
     this.PackingService.GetReadyToPack(input).subscribe(data => {
 
       if (data && data.rows.length != 0 && data.columnNames.length != 0) {
-       
+
         this.tableModelColNames = data.columnNames;
         this.tableModelColNamesWithActions = [...data.columnNames];
         this.ReviewtableModelColNames = [];
@@ -154,7 +160,7 @@ export class PackingStationComponent implements OnInit {
         this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
 
         this.tableModelColNamesWithActions.push('SelectColumn')
-        
+
         let OrdersByCBNumbers = {};
         let PackedOrdersByCBNumbers = {};
         let CountOfOrdersByCBNumber = {};
@@ -172,15 +178,17 @@ export class PackingStationComponent implements OnInit {
         });
         /// know each Total and packed orders for the same CB number
         this.Data.forEach(element => {
-          OrdersByCBNumbers[element.row['CB Number']] = element.row['Total'];
+          if (element.row['Department'] != '') {
+            OrdersByCBNumbers[element.row['CB Number']] = element.row['Total'];
 
 
-          PackedOrdersByCBNumbers[element.row['CB Number']] = element.row['Packed'];
+            PackedOrdersByCBNumbers[element.row['CB Number']] = element.row['Packed'];
 
-          if (CountOfOrdersByCBNumber[element.row['CB Number']] == null)
-            CountOfOrdersByCBNumber[element.row['CB Number']] = 0;
+            if (CountOfOrdersByCBNumber[element.row['CB Number']] == null)
+              CountOfOrdersByCBNumber[element.row['CB Number']] = 0;
 
-          CountOfOrdersByCBNumber[element.row['CB Number']]++;
+            CountOfOrdersByCBNumber[element.row['CB Number']]++;
+          }
         });
 
         this.Data.forEach(element => {
@@ -192,7 +200,8 @@ export class PackingStationComponent implements OnInit {
           console.log("Total: " + Total.toString());
           console.log("Packed: " + Packed.toString());
           console.log("Count: " + Count.toString());
-          if (Count >= Total) element.row['Status'] = 'Dispatch';
+          if (element.row['Department'] == '') element.row['status'] = 'NONE';
+          else if (Count >= Total) element.row['Status'] = 'Dispatch';
           else if (Count + Packed >= Total) element.row['Status'] = 'Dispatch via holding bay';
           else element.row['Status'] = 'Holding bay';
 
@@ -203,7 +212,7 @@ export class PackingStationComponent implements OnInit {
           this.DataSource.paginator = this.paginator;
           this.UpdateMatTables();
         }, 100);
-  
+
       }
       if (this.Data.length == 0)
         alert("This CB or Line number is not found !");
@@ -248,15 +257,15 @@ export class PackingStationComponent implements OnInit {
           this.Data.splice(ind, 1);
         }
       });
-      
+
       this.SendLoading = false;
       this.ReviewData = [];
       this.ReviewDataWithBlindsNumbers = {};
       this.DataSource = new MatTableDataSource(this.Data);
-        setTimeout(() => {
-          this.DataSource.paginator = this.paginator;
-          this.UpdateMatTables();
-        }, 100);   
+      setTimeout(() => {
+        this.DataSource.paginator = this.paginator;
+        this.UpdateMatTables();
+      }, 100);
 
 
     });
@@ -264,7 +273,7 @@ export class PackingStationComponent implements OnInit {
 
   GetHeldBasedOnTable() {
     this.InitAllVariables();
-    
+
     let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
     this.PackingService.GetHeldObjects(tableName).subscribe(
       data => {
@@ -275,10 +284,10 @@ export class PackingStationComponent implements OnInit {
           this.ReviewtableModelColNames = [];
           this.ReviewtableModelColNames.push("Blind Number");
           this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
-  
+
           this.tableModelColNamesWithActions.push('SelectColumn')
           data.rows.forEach(element => {
-  
+
             if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {
               this.DataInTheTable[element.uniqueId] = true;
               this.Data.unshift(element);
@@ -317,7 +326,7 @@ export class PackingStationComponent implements OnInit {
     }
 
   }
-  
+
   Delete() {
 
     let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
@@ -355,7 +364,7 @@ export class PackingStationComponent implements OnInit {
 
   }
 
-  
+
   InitAllVariables() {
     this.tableModelColNames = [];
     this.ReviewtableModelColNames = [];
@@ -363,7 +372,7 @@ export class PackingStationComponent implements OnInit {
     this.Data = [];
     this.ReviewData = [];
     this.ReviewDataWithBlindsNumbers = {}
-    this.PrinterTableDictionary = {};
+
     this.SelectedRows = {};
 
   }
@@ -396,6 +405,32 @@ export class PackingStationComponent implements OnInit {
 
 
   }
-  
-  
+
+  Print() {
+    this.PrintLoading = true;
+    let UserName: any = localStorage.getItem('UserName') != null ? localStorage.getItem('UserName')?.toString() : "";
+
+
+    let Data: FabricCutterCBDetailsModel = {
+      columnNames: this.tableModelColNames,
+      rows: this.ReviewData
+    };
+    let tableName = (document.getElementById("TableNames") as HTMLSelectElement).value.toString();
+    this.PackingService.PackingSend(
+      tableName, this.PrinterTableDictionary[tableName], this.PrinterTableDictionary2nd[tableName], UserName, Data).subscribe(() => {
+        this.PrintLoading = false;
+
+
+        this.DataSource = new MatTableDataSource(this.Data);
+        setTimeout(() => {
+          this.DataSource.paginator = this.paginator;
+          this.UpdateMatTables();
+        }, 100);
+        //this.ReviewData = [];
+        //this.ReviewDataWithBlindsNumbers = {};
+      });
+
+
+  }
+
 }

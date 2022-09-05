@@ -9,6 +9,7 @@ namespace WindowBlind.Api.Models
     {
         public List<string> ColumnNames { get; set; }
         public List<FabricCutterCBDetailsModelTableRow> Rows { get; set; }
+        
 
         public FabricCutterCBDetailsModel()
         {

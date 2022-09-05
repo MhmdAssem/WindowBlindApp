@@ -32,6 +32,7 @@ namespace WindowBlind.Api.Controllers
         private IWebHostEnvironment _env;
         private FabricCutterCBDetailsModel FinalData;
         Dictionary<string, int> ColumnsIndex;
+        private Dictionary<string, int> RowColor;
         string ctbsodumpPath, SheetNamePath, FBRPath, DeductionPath, LathePath, FabricPath, DropPath;
 
         int TotalQty;
@@ -54,12 +55,14 @@ namespace WindowBlind.Api.Controllers
             ColumnMapper.Add("Customer Name 1", "Customer");
             ColumnMapper.Add("W/Order NO", "CB Number");
             ColumnMapper.Add("Qty", "Quantity");
+            ColumnMapper.Add("Customer Name 2", "Supplier");
             ColumnMapper.Add("Width", "Measured Width");
             ColumnMapper.Add("Drop", "Measured Drop");
             ColumnMapper.Add("Fabric", "Fabric Type");
             ColumnMapper.Add("Colour", "Fabric Colour");
             ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
             ColumnsIndex = new Dictionary<string, int>();
+            RowColor = new Dictionary<string, int>();
         }
 
         private async Task ReadConfig()
@@ -318,6 +321,16 @@ namespace WindowBlind.Api.Controllers
                         if (!Data.ColumnNames.Contains(Headertext) && SelectedColumnsPath.Contains(worksheet.Cells[1, j].Text.Trim()))
                             Data.ColumnNames.Add(Headertext);
 
+                        if (Headertext == ("Colour"))
+                        {
+                            /// Adding Counting Color Logic 
+                            var CurrentRowColor = (worksheet.Cells[i, j].Text.Trim());
+                            if (CurrentRowColor != "")
+                            {
+                                if (!RowColor.ContainsKey(CurrentRowColor)) RowColor[CurrentRowColor] = 0;
+                                RowColor[CurrentRowColor]++;
+                            }
+                        }
 
                         if (ColumnMapper.ContainsKey(Headertext))
                         {
@@ -354,6 +367,10 @@ namespace WindowBlind.Api.Controllers
             {
                 rowCntr++;
 
+                item.Row["RowColorCount"] = "0";
+                var CurrentRowColor = item.Row["Fabric Colour"].Trim();
+                if (CurrentRowColor != "")
+                    item.Row["RowColorCount"] = RowColor[CurrentRowColor].ToString();
 
                 // WILL ADD CHAR ABCD FOR ITEM NUMBER
 
@@ -430,6 +447,7 @@ namespace WindowBlind.Api.Controllers
                 }
                 //Data for Label
                 item.Row["SRLineNumber"] = a.ToString();
+                item.Row["SomeOfTotal"] = a.ToString() + " of " + TotalQty.ToString();
                 if (item.Row["Drop"] != string.Empty)
                 {
                     if (item.Row["Width"].ToString() != string.Empty)
