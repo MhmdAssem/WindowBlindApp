@@ -411,6 +411,7 @@ export class SettingsComponent implements OnInit {
       setTimeout(() => {
 
         (document.getElementById('Printers') as HTMLSelectElement).value = this.SelectedPrinter;
+        (document.getElementById('Printers2') as HTMLSelectElement).value = this.SelectedPrinter;
       }, 50);
     });
 
@@ -783,7 +784,7 @@ export class SettingsComponent implements OnInit {
 
   AddToTheTable() {
     let selectedPrinter = (document.getElementById("Printers") as HTMLSelectElement).value;
-    let selectedPrinter2nd = this.PackingStationSelected == true?(document.getElementById("Printers") as HTMLSelectElement).value:'-';
+    let selectedPrinter2nd = this.PackingStationSelected == true?(document.getElementById("Printers2") as HTMLSelectElement).value:'-';
     let selectedApp = (document.getElementById("Application") as HTMLSelectElement).value;
     let TableName = (document.getElementById("TableName") as HTMLInputElement).value;
     let OutputPath = (document.getElementById("OutputPath") as HTMLInputElement).value;
@@ -811,6 +812,11 @@ export class SettingsComponent implements OnInit {
         };
         this.PrinterTableArray.push(model);
         this.updateTable();
+        $('#Printers').val('');
+        $('#Application').val('');
+        $('#TableName').val('');
+        $('#OutputPath').val('');
+        $('#Printers2').val('');
       }
       else {
         alert("Table Name already exists, please enter another one!!"); return;
