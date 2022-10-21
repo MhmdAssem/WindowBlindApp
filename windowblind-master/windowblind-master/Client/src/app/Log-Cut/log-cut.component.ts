@@ -200,8 +200,8 @@ export class LogCutComponent implements OnInit {
 
       }
       else {
-        ind += this.paginator.pageIndex * this.paginator.pageSize;
         this.UnSelectThisRow(ind);
+        ind += this.paginator.pageIndex * this.paginator.pageSize;
         this.SelectedRows[this.Data[ind].uniqueId] = 'UnSelected';
       }
     }
@@ -216,9 +216,8 @@ export class LogCutComponent implements OnInit {
         this.UrgentAutoUploadedSelectedRows.push(this.UrgentData[ind].uniqueId);
       }
       else {
-        ind += this.Urgentpaginator.pageIndex * this.Urgentpaginator.pageSize;
-
         this.UnSelectThisRow(ind);
+        ind += this.Urgentpaginator.pageIndex * this.Urgentpaginator.pageSize;
         this.SelectedRows[this.UrgentData[ind].uniqueId] = 'UnSelected';
 
       }
@@ -228,6 +227,7 @@ export class LogCutComponent implements OnInit {
   UnSelectThisRow(ind) {
     if (this.CurrentTab <= 0) {
       (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
+      ind += this.Urgentpaginator.pageIndex * this.Urgentpaginator.pageSize;
       let id = this.ReviewData[ind].uniqueId;
       if (!this.SearchType) {
         let indOfAutoUploadSelected = this.AutoUploadedSelectedRows.findIndex(e => e == id);
@@ -243,6 +243,7 @@ export class LogCutComponent implements OnInit {
     }
     else {
       (document.getElementById('UrgentSelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
+      ind += this.Urgentpaginator.pageIndex * this.Urgentpaginator.pageSize;
       let id = this.UrgentReviewData[ind].uniqueId;
       if (!this.SearchType) {
         let indOfAutoUploadSelected = this.UrgentAutoUploadedSelectedRows.findIndex(e => e == id);

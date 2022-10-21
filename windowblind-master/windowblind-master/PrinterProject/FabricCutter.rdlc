@@ -14,6 +14,7 @@
                   <TextRun>
                     <Value>=Parameters!cbNumber.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -27,9 +28,7 @@
             <Height>0.19444in</Height>
             <Width>0.93749in</Width>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="width">
@@ -41,6 +40,7 @@
                   <TextRun>
                     <Value>=Parameters!width.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -55,9 +55,7 @@
             <Width>1.06944in</Width>
             <ZIndex>1</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="drop">
@@ -68,6 +66,7 @@
                   <TextRun>
                     <Value>=Parameters!drop.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -82,9 +81,7 @@
             <Width>1.02361in</Width>
             <ZIndex>2</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="customer">
@@ -95,6 +92,7 @@
                   <TextRun>
                     <Value>=Parameters!customer.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -109,9 +107,7 @@
             <Width>1.34027in</Width>
             <ZIndex>3</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="department">
@@ -122,6 +118,7 @@
                   <TextRun>
                     <Value>=Parameters!department.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -138,9 +135,7 @@
             <Width>1in</Width>
             <ZIndex>4</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="type">
@@ -151,6 +146,7 @@
                   <TextRun>
                     <Value>=Parameters!type.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -167,9 +163,7 @@
             <Width>0.625in</Width>
             <ZIndex>5</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="fabric">
@@ -180,6 +174,7 @@
                   <TextRun>
                     <Value>=Parameters!fabric.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -196,9 +191,7 @@
             <Width>1.09721in</Width>
             <ZIndex>6</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="color">
@@ -209,6 +202,7 @@
                   <TextRun>
                     <Value>=Parameters!color.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -225,9 +219,7 @@
             <Width>0.73263in</Width>
             <ZIndex>7</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="controltype">
@@ -238,6 +230,7 @@
                   <TextRun>
                     <Value>=Parameters!controltype.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -254,9 +247,7 @@
             <Width>0.74029in</Width>
             <ZIndex>8</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="lathe">
@@ -267,6 +258,7 @@
                   <TextRun>
                     <Value>=Parameters!lathe.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -283,9 +275,7 @@
             <Width>0.49305in</Width>
             <ZIndex>9</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="char">
@@ -296,6 +286,7 @@
                   <TextRun>
                     <Value>=Parameters!char.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -321,6 +312,7 @@
                   <TextRun>
                     <Value>=Parameters!cutwidth.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -335,9 +327,7 @@
             <Width>0.45833in</Width>
             <ZIndex>11</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
           <Textbox Name="lineNumber">
@@ -350,7 +340,7 @@
                     <Value>="*" + Parameters!lineNumber.Value +"*"</Value>
                     <Style>
                       <FontFamily>3 of 9 Barcode</FontFamily>
-                      <FontSize>21pt</FontSize>
+                      <FontSize>24pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -378,6 +368,7 @@
                   <TextRun>
                     <Value>=Parameters!someoftotal.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -405,6 +396,7 @@
                   <TextRun>
                     <Value>=Parameters!controlside.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -421,9 +413,7 @@
             <Width>0.39931in</Width>
             <ZIndex>14</ZIndex>
             <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
+              <Border />
             </Style>
           </Textbox>
         </ReportItems>

@@ -106,6 +106,7 @@ namespace WindowBlind.Api.Controllers
                     Total = int.Parse(row.row.Row["Total"]);
                     data.Rows.Add(row.row);
                     cbNumber = row.row.Row["CB Number"];
+                    LogCutterDic[row.LineNumber] = row;
                 }
 
                 cntr = 0;
@@ -119,12 +120,12 @@ namespace WindowBlind.Api.Controllers
 
                     if (ProcessCounter[row.LineNumber] >= 2)
                     {
-                        Total = int.Parse(row.row.Row["Total"]);
+                        //Total = int.Parse(row.row.Row["Total"]);
                         ProcessCounter[row.LineNumber] = -100000000;
                         row.row.Row["FromHoldingStation"] = "NO";
                         row.row.UniqueId = row.Id;
                         row.row.rows_AssociatedIds.Add(row.Id);
-                        row.row.rows_AssociatedIds.Add(FabricCutterDic[row.LineNumber].Id);
+                        row.row.rows_AssociatedIds.Add(FabricCutterDic.ContainsKey(row.LineNumber)?FabricCutterDic[row.LineNumber].Id: LogCutterDic[row.LineNumber].Id);
                         data.Rows.Add(row.row);
                         cbNumber = row.row.Row["CB Number"];
                     }
@@ -306,6 +307,8 @@ namespace WindowBlind.Api.Controllers
                     {
                         var Headertext = worksheet.Cells[1, i].Text.Trim();
                         Headertext = Headertext.Replace(".", "");
+                        if (String.IsNullOrEmpty(Headertext)) continue;
+
                         var cell = worksheet.Cells[j, i].Text.Trim();
                         if (cell != "" && Headertext == "Department") break;
 

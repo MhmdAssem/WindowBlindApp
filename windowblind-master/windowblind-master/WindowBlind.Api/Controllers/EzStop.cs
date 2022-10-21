@@ -793,7 +793,7 @@ namespace WindowBlind.Api.Controllers
 
                 string mimtype = "";
                 int extension = 1;
-                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
+                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
                 //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -818,7 +818,7 @@ namespace WindowBlind.Api.Controllers
 
                 byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
 
-                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".jpg");
+                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".jpg");
                 //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {

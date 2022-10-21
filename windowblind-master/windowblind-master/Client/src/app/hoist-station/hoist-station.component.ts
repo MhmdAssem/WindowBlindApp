@@ -84,8 +84,8 @@ export class HoistStationComponent implements OnInit {
       this.SelectedRows[this.Data[ind].uniqueId] = 'Selected';
     }
     else {
-      ind += this.paginator.pageIndex * this.paginator.pageSize;
       this.UnSelectThisRow(ind);
+      ind += this.paginator.pageIndex * this.paginator.pageSize;
       this.SelectedRows[this.Data[ind].uniqueId] = 'UnSelected';
     }
   }
@@ -93,7 +93,7 @@ export class HoistStationComponent implements OnInit {
   UnSelectThisRow(ind) {
 
     (document.getElementById('SelectCol_' + ind) as HTMLButtonElement).textContent = "Select";
-
+    ind += this.paginator.pageIndex * this.paginator.pageSize;
     this.ReviewData.splice(this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId], 1);
     this.ReviewDataWithBlindsNumbers[this.Data[ind].uniqueId] = -1;
 

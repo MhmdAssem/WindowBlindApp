@@ -14,6 +14,7 @@
                   <TextRun>
                     <Value>=Parameters!drop.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -24,7 +25,7 @@
             </Paragraphs>
             <rd:DefaultName>drop</rd:DefaultName>
             <Top>0.01958in</Top>
-            <Left>0.91612in</Left>
+            <Left>1.91612in</Left>
             <Height>0.25in</Height>
             <Width>0.88542in</Width>
             <Style>
@@ -44,6 +45,7 @@
                   <TextRun>
                     <Value>=Parameters!width.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -75,6 +77,7 @@
                   <TextRun>
                     <Value>=Parameters!fabric.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -105,6 +108,7 @@
                   <TextRun>
                     <Value>=Parameters!customer.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -135,6 +139,7 @@
                   <TextRun>
                     <Value>=Parameters!department.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -144,7 +149,7 @@
             </Paragraphs>
             <rd:DefaultName>department</rd:DefaultName>
             <Top>0.2175in</Top>
-            <Left>1.17931in</Left>
+            <Left>1.67931in</Left>
             <Height>0.25in</Height>
             <Width>1.25in</Width>
             <ZIndex>4</ZIndex>
@@ -165,6 +170,7 @@
                   <TextRun>
                     <Value>=Parameters!color.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -195,6 +201,7 @@
                   <TextRun>
                     <Value>=Parameters!controltype.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -225,6 +232,7 @@
                   <TextRun>
                     <Value>=Parameters!lathe.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -255,6 +263,7 @@
                   <TextRun>
                     <Value>=Parameters!char.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -285,12 +294,15 @@
                   <TextRun>
                     <Value>=Parameters!cbNumber.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>cbNumber</rd:DefaultName>
@@ -316,6 +328,7 @@
                   <TextRun>
                     <Value>=Parameters!someoftotal.Value</Value>
                     <Style>
+                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
