@@ -858,7 +858,7 @@ namespace WindowBlind.Api.Controllers
                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
                 //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Encoding.GetEncoding("windows-1252");
+                Encoding.GetEncoding("us-ascii");
                 var parametersList = new Dictionary<string, string>();
                 //var parametersList = new List<ReportParameter>();
 

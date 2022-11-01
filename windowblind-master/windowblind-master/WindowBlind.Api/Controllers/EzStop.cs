@@ -253,7 +253,7 @@ namespace WindowBlind.Api.Controllers
 
             System.IO.File.Delete(TempDropPath);
 
-            var TotalQty = 0;
+            TotalQty = 0;
             var TempctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
 
             file = new FileInfo(TempctbsodumpPath);
@@ -797,7 +797,7 @@ namespace WindowBlind.Api.Controllers
                 //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Encoding.GetEncoding("windows-1252");
+                Encoding.GetEncoding("us-ascii");
                 var parametersList = new Dictionary<string, string>();
 
                 parametersList.Add("someoftotal", strParameterArray[11] + " of " + strParameterArray[12].ToString());
