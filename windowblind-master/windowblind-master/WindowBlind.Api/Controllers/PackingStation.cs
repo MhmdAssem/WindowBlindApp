@@ -485,6 +485,21 @@ namespace WindowBlind.Api.Controllers
                     stream.Write(result, 0, result.Length);
                 }
 
+                #region Converting Byte Array to Asci Encodeed Byte array
+                Encoding ascii = Encoding.ASCII;
+
+                using (StreamReader sr = new StreamReader(path, true))
+                {
+                    Encoding encoding = sr.CurrentEncoding;
+                    byte[] asciiBytes = Encoding.Convert(encoding, ascii, result);
+                    outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "PackingStationPrintFiles", "Encoded_" + Guid.NewGuid().ToString() + ".jpg");
+
+                    using (FileStream stream = new FileStream(outputPath, FileMode.Create))
+                    {
+                        stream.Write(asciiBytes, 0, asciiBytes.Length);
+                    }
+                }
+                #endregion
 
 
                 bool printedOK = true;

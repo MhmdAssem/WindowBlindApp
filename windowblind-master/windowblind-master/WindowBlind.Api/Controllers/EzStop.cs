@@ -798,6 +798,7 @@ namespace WindowBlind.Api.Controllers
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("us-ascii");
+
                 var parametersList = new Dictionary<string, string>();
 
                 parametersList.Add("someoftotal", strParameterArray[11] + " of " + strParameterArray[12].ToString());
@@ -818,14 +819,30 @@ namespace WindowBlind.Api.Controllers
 
                 byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
 
-                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles", Guid.NewGuid().ToString() + ".jpg");
+                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles","Normal_" + Guid.NewGuid().ToString() + ".jpg");
                 //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
+
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
                 }
 
 
+                #region Converting Byte Array to Asci Encodeed Byte array
+                Encoding ascii = Encoding.ASCII;
+                
+                using (StreamReader sr = new StreamReader(path, true))
+                {
+                    Encoding encoding = sr.CurrentEncoding;
+                    byte[] asciiBytes = Encoding.Convert(encoding, ascii, result);
+                    outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles", "Encoded_" + Guid.NewGuid().ToString() + ".jpg");
+
+                    using (FileStream stream = new FileStream(outputPath, FileMode.Create))
+                    {
+                        stream.Write(asciiBytes, 0, asciiBytes.Length);
+                    }
+                }
+                #endregion
 
                 bool printedOK = true;
                 string printErrorMessage = "";
