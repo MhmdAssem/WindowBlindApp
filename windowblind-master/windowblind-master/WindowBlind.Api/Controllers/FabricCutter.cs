@@ -458,7 +458,7 @@ namespace WindowBlind.Api.Controllers
                 string mimtype = "";
                 int extension = 1;
                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutter.rdlc");
-                path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", "FabricCutter.rdlc");
+                //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", "FabricCutter.rdlc");
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("us-ascii");
@@ -498,7 +498,7 @@ namespace WindowBlind.Api.Controllers
                 byte[] result = report.Execute(RenderType.Pdf, extension, parametersList, mimtype).MainStream;
 
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".pdf");
-                outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
+                //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
