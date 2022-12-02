@@ -14,7 +14,6 @@
                   <TextRun>
                     <Value>=Parameters!CBNumber.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -44,7 +43,6 @@
                   <TextRun>
                     <Value>=Parameters!Carrier.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -75,7 +73,6 @@
                   <TextRun>
                     <Value>=Parameters!Customer.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -106,7 +103,6 @@
                   <TextRun>
                     <Value>=Parameters!PO.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -137,7 +133,6 @@
                   <TextRun>
                     <Value>=Parameters!Description.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -168,7 +163,6 @@
                   <TextRun>
                     <Value>=Parameters!Location.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -199,7 +193,6 @@
                   <TextRun>
                     <Value>=Parameters!Width.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -230,7 +223,6 @@
                   <TextRun>
                     <Value>=Parameters!Drop.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -261,7 +253,6 @@
                   <TextRun>
                     <Value>=Parameters!SomeOfTotal.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -292,7 +283,6 @@
                   <TextRun>
                     <Value>=Parameters!FittingAddress.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -323,7 +313,6 @@
                   <TextRun>
                     <Value>=Parameters!Department.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
@@ -354,7 +343,6 @@
                   <TextRun>
                     <Value>=Parameters!Status.Value</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>12pt</FontSize>
                     </Style>
                   </TextRun>

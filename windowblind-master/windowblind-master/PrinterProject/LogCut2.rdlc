@@ -86,7 +86,6 @@
                   <TextRun>
                     <Value>=First(Fields!width.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -116,7 +115,6 @@
                   <TextRun>
                     <Value>=First(Fields!drop.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -147,7 +145,6 @@
                   <TextRun>
                     <Value>=First(Fields!customer.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -178,7 +175,6 @@
                   <TextRun>
                     <Value>=First(Fields!department.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -209,7 +205,6 @@
                   <TextRun>
                     <Value>=First(Fields!type.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -240,7 +235,6 @@
                   <TextRun>
                     <Value>=First(Fields!fabric.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -271,7 +265,6 @@
                   <TextRun>
                     <Value>=First(Fields!color.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -281,9 +274,9 @@
             </Paragraphs>
             <rd:DefaultName>color1</rd:DefaultName>
             <Top>0.3793in</Top>
-            <Left>1.40833in</Left>
+            <Left>1.12292in</Left>
             <Height>0.25in</Height>
-            <Width>0.72917in</Width>
+            <Width>1.01458in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border />
@@ -302,7 +295,6 @@
                   <TextRun>
                     <Value>=First(Fields!controltype.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -312,9 +304,9 @@
             </Paragraphs>
             <rd:DefaultName>controltype1</rd:DefaultName>
             <Top>0.3793in</Top>
-            <Left>1.87708in</Left>
+            <Left>1.8257in</Left>
             <Height>0.25in</Height>
-            <Width>0.64583in</Width>
+            <Width>0.69721in</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border />
@@ -333,7 +325,6 @@
                   <TextRun>
                     <Value>=First(Fields!lathe.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -364,7 +355,6 @@
                   <TextRun>
                     <Value>=First(Fields!c.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>
@@ -395,7 +385,6 @@
                   <TextRun>
                     <Value>=First(Fields!cbNumber.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>13pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -427,7 +416,6 @@
                   <TextRun>
                     <Value>=First(Fields!someoftotal.Value, "LogCut2")</Value>
                     <Style>
-                      <FontFamily>times New Roman</FontFamily>
                       <FontSize>8pt</FontSize>
                     </Style>
                   </TextRun>

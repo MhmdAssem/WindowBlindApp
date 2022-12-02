@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -817,9 +818,9 @@ namespace WindowBlind.Api.Controllers
                 LocalReport report = new LocalReport(path);
 
 
-                byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
+                byte[] result = report.Execute(RenderType.Pdf, extension, parametersList, mimtype).MainStream;
 
-                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles","Normal_" + Guid.NewGuid().ToString() + ".jpg");
+                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles","Normal_" + Guid.NewGuid().ToString() + ".pdf");
                 //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
 
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
@@ -828,56 +829,27 @@ namespace WindowBlind.Api.Controllers
                 }
 
 
-                #region Converting Byte Array to Asci Encodeed Byte array
-                Encoding ascii = Encoding.ASCII;
-                
-                using (StreamReader sr = new StreamReader(path, true))
-                {
-                    Encoding encoding = sr.CurrentEncoding;
-                    byte[] asciiBytes = Encoding.Convert(encoding, ascii, result);
-                    outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles", "Encoded_" + Guid.NewGuid().ToString() + ".jpg");
-
-                    using (FileStream stream = new FileStream(outputPath, FileMode.Create))
-                    {
-                        stream.Write(asciiBytes, 0, asciiBytes.Length);
-                    }
-                }
-                #endregion
+            
 
                 bool printedOK = true;
                 string printErrorMessage = "";
                 try
                 {
-                    PrintDocument pd = new PrintDocument();
-                    PrintController printController = new StandardPrintController();
-                    pd.PrintController = printController;
-                    pd.PrinterSettings.PrinterName = strPrinterName;
-                    pd.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
-                    pd.PrinterSettings.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
-                    pd.PrintPage += (sndr, args) =>
-                    {
-                        System.Drawing.Image i = System.Drawing.Image.FromFile(outputPath);
-                        System.Drawing.Rectangle m = args.MarginBounds;
+                    PdfDocument doc = new PdfDocument();
 
-                        //Logic below maintains Aspect Ratio 
-                        if ((double)i.Width / (double)i.Height > (double)m.Width / (double)m.Height) // image is wider
-                        {
-                            m.Height = (int)((double)i.Height / (double)i.Width * (double)m.Width);
-                        }
-                        else
-                        {
-                            m.Width = (int)((double)i.Width / (double)i.Height * (double)m.Height);
-                        }
+                    doc.LoadFromFile(outputPath);
+                    doc.PrintSettings.PrinterName = strPrinterName;
+                    //SizeF size = doc.Pages[0].ActualSize;
+                    //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
+                    //paper.RawKind = (int)PaperKind.Custom;
+                    //doc.PrintSettings.PaperSize = paper;
+                    //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
+                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
+                    doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
+                    doc.PrintSettings.SelectPageRange(1, 1);
 
-                        //Calculating optimal orientation.
-                        pd.DefaultPageSettings.Landscape = m.Height > m.Width;
-
-                        // Putting image in center of page.
-                        m.Y = 0;// (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Height - m.Height) / 2);
-                        m.X = (int)((((System.Drawing.Printing.PrintDocument)(sndr)).DefaultPageSettings.PaperSize.Width - m.Width) / 2);
-                        args.Graphics.DrawImage(i, m);
-                    };
-                    pd.Print();
+                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
+                    doc.Print();
 
                 }
                 catch (Exception ex)
