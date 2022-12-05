@@ -521,7 +521,8 @@ namespace WindowBlind.Api.Controllers
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
                     doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
                     doc.PrintSettings.SelectPageRange(1, 1);
-                    
+                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
+                    doc.PrintSettings.Landscape = true;
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
                     doc.Print();
 

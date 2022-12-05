@@ -49,7 +49,7 @@ namespace WindowBlind.Api.Controllers
         string CB;
         string LineNumber;
         Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
-        Dictionary<string, int> RowColor ;
+        Dictionary<string, int> RowColor;
 
 
         public void Init()
@@ -856,7 +856,7 @@ namespace WindowBlind.Api.Controllers
                 int extension = 1;
 
                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
-                //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+                //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("us-ascii");
                 var parametersList = new Dictionary<string, string>();
@@ -919,7 +919,7 @@ namespace WindowBlind.Api.Controllers
                     parametersList = null;
 
                 }
-                   
+
 
 
 
@@ -934,13 +934,13 @@ namespace WindowBlind.Api.Controllers
                 */
 
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".pdf");
-                //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
+                //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
                 }
 
- 
+
                 bool printedOK = true;
                 string printErrorMessage = "";
                 try
@@ -955,6 +955,8 @@ namespace WindowBlind.Api.Controllers
                     //doc.PrintSettings.PaperSize = paper;
                     //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
+                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
+                    doc.PrintSettings.Landscape = true;
                     doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
                     doc.PrintSettings.SelectPageRange(1, 1);
 
@@ -1322,7 +1324,7 @@ namespace WindowBlind.Api.Controllers
                                     }
                                     row[Headertext] = cell;
 
-                                    
+
                                 }
 
                                 FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();

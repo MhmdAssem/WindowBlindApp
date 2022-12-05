@@ -795,7 +795,7 @@ namespace WindowBlind.Api.Controllers
                 string mimtype = "";
                 int extension = 1;
                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
-                //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+                // path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("us-ascii");
@@ -821,7 +821,7 @@ namespace WindowBlind.Api.Controllers
                 byte[] result = report.Execute(RenderType.Pdf, extension, parametersList, mimtype).MainStream;
 
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles","Normal_" + Guid.NewGuid().ToString() + ".pdf");
-                //var outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".png");
+                 //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
 
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
@@ -845,6 +845,7 @@ namespace WindowBlind.Api.Controllers
                     //doc.PrintSettings.PaperSize = paper;
                     //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
+                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
                     doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
                     doc.PrintSettings.SelectPageRange(1, 1);
 

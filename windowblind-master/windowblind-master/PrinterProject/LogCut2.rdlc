@@ -145,7 +145,7 @@
                   <TextRun>
                     <Value>=First(Fields!customer.Value, "LogCut2")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>7pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -156,7 +156,7 @@
             <Top>0.2043in</Top>
             <Left>0.05in</Left>
             <Height>0.25in</Height>
-            <Width>1.07292in</Width>
+            <Width>1.46472in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border />
@@ -184,9 +184,9 @@
             </Paragraphs>
             <rd:DefaultName>department1</rd:DefaultName>
             <Top>0.2043in</Top>
-            <Left>1.05222in</Left>
+            <Left>1.51472in</Left>
             <Height>0.25in</Height>
-            <Width>1.2in</Width>
+            <Width>0.39931in</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border />
@@ -205,7 +205,7 @@
                   <TextRun>
                     <Value>=First(Fields!type.Value, "LogCut2")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>7pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -235,7 +235,7 @@
                   <TextRun>
                     <Value>=First(Fields!fabric.Value, "LogCut2")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>7pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -246,7 +246,7 @@
             <Top>0.3793in</Top>
             <Left>0.06042in</Left>
             <Height>0.25in</Height>
-            <Width>1.65972in</Width>
+            <Width>1.0625in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border />
@@ -265,7 +265,7 @@
                   <TextRun>
                     <Value>=First(Fields!color.Value, "LogCut2")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>7pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -274,9 +274,9 @@
             </Paragraphs>
             <rd:DefaultName>color1</rd:DefaultName>
             <Top>0.3793in</Top>
-            <Left>1.12292in</Left>
+            <Left>0.99792in</Left>
             <Height>0.25in</Height>
-            <Width>1.01458in</Width>
+            <Width>0.79166in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border />
@@ -295,7 +295,7 @@
                   <TextRun>
                     <Value>=First(Fields!controltype.Value, "LogCut2")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>7pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -304,9 +304,9 @@
             </Paragraphs>
             <rd:DefaultName>controltype1</rd:DefaultName>
             <Top>0.3793in</Top>
-            <Left>1.8257in</Left>
+            <Left>1.7007in</Left>
             <Height>0.25in</Height>
-            <Width>0.69721in</Width>
+            <Width>0.90554in</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border />
@@ -325,7 +325,7 @@
                   <TextRun>
                     <Value>=First(Fields!lathe.Value, "LogCut2")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>7pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -334,9 +334,9 @@
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
             <Top>0.3793in</Top>
-            <Left>2.36042in</Left>
+            <Left>2.52291in</Left>
             <Height>0.25in</Height>
-            <Width>0.63542in</Width>
+            <Width>0.47293in</Width>
             <ZIndex>8</ZIndex>
             <Style>
               <Border />
@@ -385,7 +385,7 @@
                   <TextRun>
                     <Value>=First(Fields!cbNumber.Value, "LogCut2")</Value>
                     <Style>
-                      <FontSize>13pt</FontSize>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -396,7 +396,7 @@
             <rd:DefaultName>cbNumber1</rd:DefaultName>
             <Top>0.56819in</Top>
             <Left>0.50278in</Left>
-            <Height>0.39583in</Height>
+            <Height>0.26389in</Height>
             <Width>1.32292in</Width>
             <ZIndex>10</ZIndex>
             <Style>
@@ -438,7 +438,7 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>1.11333in</Height>
+        <Height>1.03in</Height>
         <Style />
       </Body>
       <Width>3.10001in</Width>

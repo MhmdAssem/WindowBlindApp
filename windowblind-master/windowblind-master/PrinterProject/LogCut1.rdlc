@@ -22,7 +22,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>cbNumber</rd:DefaultName>
-            <Top>0.36601cm</Top>
+            <Top>0.17551cm</Top>
             <Left>0.08653in</Left>
             <Height>0.19444in</Height>
             <Width>0.93749in</Width>
@@ -47,7 +47,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>width</rd:DefaultName>
-            <Top>0.36601cm</Top>
+            <Top>0.17551cm</Top>
             <Left>0.99624in</Left>
             <Height>0.19444in</Height>
             <Width>1.06944in</Width>
@@ -72,7 +72,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>drop</rd:DefaultName>
-            <Top>0.36601cm</Top>
+            <Top>0.17551cm</Top>
             <Left>1.88514in</Left>
             <Height>0.19444in</Height>
             <Width>1.02361in</Width>
@@ -89,7 +89,7 @@
                   <TextRun>
                     <Value>=Parameters!customer.Value</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>7pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -97,7 +97,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>customer</rd:DefaultName>
-            <Top>0.33854in</Top>
+            <Top>0.26354in</Top>
             <Left>0.10042in</Left>
             <Height>0.18056in</Height>
             <Width>1.34027in</Width>
@@ -124,10 +124,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>department</rd:DefaultName>
-            <Top>0.33854in</Top>
-            <Left>1.44069in</Left>
+            <Top>0.26354in</Top>
+            <Left>1.55944in</Left>
             <Height>0.18056in</Height>
-            <Width>1in</Width>
+            <Width>0.38265in</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border />
@@ -141,7 +141,7 @@
                   <TextRun>
                     <Value>=Parameters!type.Value</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>6pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -151,10 +151,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>type</rd:DefaultName>
-            <Top>0.33854in</Top>
-            <Left>2.37124in</Left>
+            <Top>0.26354in</Top>
+            <Left>2.10111in</Left>
             <Height>0.18056in</Height>
-            <Width>0.625in</Width>
+            <Width>0.89513in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border />
@@ -168,7 +168,7 @@
                   <TextRun>
                     <Value>=Parameters!fabric.Value</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>6pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -178,7 +178,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>fabric</rd:DefaultName>
-            <Top>0.53299in</Top>
+            <Top>0.45799in</Top>
             <Left>0.10181in</Left>
             <Height>0.16319in</Height>
             <Width>1.09721in</Width>
@@ -195,7 +195,7 @@
                   <TextRun>
                     <Value>=Parameters!color.Value</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>6pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -205,10 +205,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>color</rd:DefaultName>
-            <Top>0.53299in</Top>
-            <Left>0.88861in</Left>
+            <Top>0.45799in</Top>
+            <Left>0.86361in</Left>
             <Height>0.16319in</Height>
-            <Width>0.82638in</Width>
+            <Width>0.69096in</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border />
@@ -222,7 +222,7 @@
                   <TextRun>
                     <Value>=Parameters!controltype.Value</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>6pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -232,10 +232,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>controltype</rd:DefaultName>
-            <Top>0.53299in</Top>
-            <Left>1.72888in</Left>
+            <Top>0.45799in</Top>
+            <Left>1.60388in</Left>
             <Height>0.16319in</Height>
-            <Width>0.74029in</Width>
+            <Width>0.56321in</Width>
             <ZIndex>8</ZIndex>
             <Style>
               <Border />
@@ -249,7 +249,7 @@
                   <TextRun>
                     <Value>=Parameters!lathe.Value</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>6pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -259,10 +259,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
-            <Top>0.53299in</Top>
-            <Left>2.52473in</Left>
+            <Top>0.45799in</Top>
+            <Left>2.27473in</Left>
             <Height>0.16319in</Height>
-            <Width>0.49305in</Width>
+            <Width>0.72151in</Width>
             <ZIndex>9</ZIndex>
             <Style>
               <Border />
@@ -284,7 +284,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>char</rd:DefaultName>
-            <Top>0.71007in</Top>
+            <Top>0.63507in</Top>
             <Left>0.10181in</Left>
             <Height>0.25in</Height>
             <Width>0.25693in</Width>
@@ -309,7 +309,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>cutwidth</rd:DefaultName>
-            <Top>0.71007in</Top>
+            <Top>0.63507in</Top>
             <Left>0.23931in</Left>
             <Height>0.25in</Height>
             <Width>0.45833in</Width>
@@ -328,7 +328,7 @@
                     <Value>="*" + Parameters!lineNumber.Value +"*"</Value>
                     <Style>
                       <FontFamily>3 of 9 Barcode</FontFamily>
-                      <FontSize>24pt</FontSize>
+                      <FontSize>18pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -336,7 +336,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lineNumber</rd:DefaultName>
-            <Top>0.71007in</Top>
+            <Top>0.63507in</Top>
             <Left>0.59207in</Left>
             <Height>0.25in</Height>
             <Width>1.75349in</Width>
@@ -356,7 +356,7 @@
                   <TextRun>
                     <Value>=Parameters!someoftotal.Value</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>6pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -366,10 +366,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>someoftotal</rd:DefaultName>
-            <Top>0.71007in</Top>
+            <Top>0.63507in</Top>
             <Left>2.47126in</Left>
             <Height>0.25in</Height>
-            <Width>0.55902in</Width>
+            <Width>0.52498in</Width>
             <ZIndex>13</ZIndex>
             <Style>
               <Border />
@@ -393,17 +393,17 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>controlside</rd:DefaultName>
-            <Top>0.71007in</Top>
+            <Top>0.63507in</Top>
             <Left>2.22056in</Left>
             <Height>0.25in</Height>
-            <Width>0.39931in</Width>
+            <Width>0.2507in</Width>
             <ZIndex>14</ZIndex>
             <Style>
               <Border />
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>1.10417in</Height>
+        <Height>1.05209in</Height>
         <Style />
       </Body>
       <Width>3.1168in</Width>
