@@ -86,6 +86,9 @@
     <None Include="fre3of9x.ttf" />
     <None Include="free3of9.ttf" />
     <None Include="packages.config" />
+    <None Include="PrinterProject.Properties.Resources.datasource" />
+    <None Include="PrinterProject.Properties.Settings.datasource" />
+    <None Include="Program.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -95,8 +98,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="PrstringerProject.EzStop.datasource" />
+    <None Include="PrstringerProject.FabricCut.datasource" />
     <None Include="PrstringerProject.LogCut1.datasource" />
     <None Include="PrstringerProject.LogCut2.datasource" />
+    <None Include="SqlServerTypes.Utilities.datasource" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

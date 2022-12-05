@@ -181,6 +181,8 @@ E:\Work\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\De
 E:\Work\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Debug\PrinterProject.csproj.CopyComplete
 E:\Work\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Debug\PrinterProject.exe
 E:\Work\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Debug\PrinterProject.pdb
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\de\Microsoft.ReportViewer.Design.resources.dll
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\fr\Microsoft.ReportViewer.Common.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\SqlServerTypes\x64\msvcr120.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\SqlServerTypes\x64\SqlServerSpatial140.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\SqlServerTypes\x86\msvcr120.dll
@@ -201,7 +203,6 @@ F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\b
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\Microsoft.ReportViewer.ProcessingObjectModel.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\Microsoft.ReportViewer.DataVisualization.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\System.Drawing.Common.xml
-F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\de\Microsoft.ReportViewer.Design.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\es\Microsoft.ReportViewer.Design.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\fr\Microsoft.ReportViewer.Design.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\it\Microsoft.ReportViewer.Design.resources.dll
@@ -243,7 +244,6 @@ F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\b
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\zh-CHT\Microsoft.ReportViewer.WinForms.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\de\Microsoft.ReportViewer.Common.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\es\Microsoft.ReportViewer.Common.resources.dll
-F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\fr\Microsoft.ReportViewer.Common.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\it\Microsoft.ReportViewer.Common.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\ja\Microsoft.ReportViewer.Common.resources.dll
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\ko\Microsoft.ReportViewer.Common.resources.dll

@@ -859,42 +859,11 @@ namespace WindowBlind.Api.Controllers
                 //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("us-ascii");
-                var parametersList = new Dictionary<string, string>();
-                //var parametersList = new List<ReportParameter>();
-
-
-                for (int i = 0; i < strParameterArray.Count; i++)
-                {
-                    while (strParameterArray[i].IndexOf("  ") != -1)
-                        strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
-                    if (String.IsNullOrEmpty(strParameterArray[i]))
-                        strParameterArray[i] = " ";
-                }
-
-                parametersList.Add("width", strParameterArray[1].ToString());
-                parametersList.Add("drop", strParameterArray[2].ToString());
-                parametersList.Add("customer", strParameterArray[3].ToString());
-                parametersList.Add("department", strParameterArray[4].ToString());
-                parametersList.Add("type", strParameterArray[5].ToString());
-                parametersList.Add("fabric", strParameterArray[6].ToString());
-                parametersList.Add("color", strParameterArray[7].ToString());
-                parametersList.Add("controltype", strParameterArray[8].ToString());
-                parametersList.Add("lathe", strParameterArray[9].ToString());
-                parametersList.Add("char", strParameterArray[10]);
-                parametersList.Add("cbNumber", strParameterArray[0].ToString());
-                parametersList.Add("someoftotal", strParameterArray[12] + " of " + strParameterArray[13].ToString());
-
-
-                if (StrType != "")
-                {
-                    parametersList.Add("cutwidth", strParameterArray[14]);
-                    parametersList.Add("lineNumber", strParameterArray[15]);
-                    parametersList.Add("cntrside", strParameterArray[16]);
-                }
-
-
-
                 AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
+
+
+
+                
 
                 if (StrReportPath == "LogCut2.rdlc")
                 {
@@ -916,14 +885,35 @@ namespace WindowBlind.Api.Controllers
                     obj
                     };
                     report.AddDataSource("LogCut2", ls);
-                    parametersList = null;
+                    
 
+                }
+                else
+                {
+                    LogCut1 obj = new LogCut1();
+                    obj.width = strParameterArray[1].ToString();
+                    obj.drop = strParameterArray[2].ToString();
+                    obj.customer = strParameterArray[3].ToString();
+                    obj.department = strParameterArray[4].ToString();
+                    obj.type = strParameterArray[5].ToString();
+                    obj.fabric = strParameterArray[6].ToString();
+                    obj.color = strParameterArray[7].ToString();
+                    obj.controltype = strParameterArray[8].ToString();
+                    obj.lathe = strParameterArray[9].ToString();
+                    obj.c = strParameterArray[10].ToString();
+                    obj.cbNumber = strParameterArray[0].ToString();
+                    obj.someoftotal = strParameterArray[12] + " of " + strParameterArray[13].ToString();
+                    obj.cutwidth = strParameterArray[14];
+                    obj.lineNumber = strParameterArray[15];
+                    obj.cntrside = strParameterArray[16];
+                    List<LogCut1> ls = new List<LogCut1> {
+                    obj
+                    };
+                    report.AddDataSource("LogCut1", ls);
                 }
 
 
-
-
-                byte[] result = report.Execute(RenderType.Pdf, extension, parametersList, mimtype).MainStream;
+                byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
 
                 /*LocalReport report = new LocalReport();
                 report.ReportPath = path;
@@ -934,7 +924,7 @@ namespace WindowBlind.Api.Controllers
                 */
 
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".pdf");
-                //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
+                ////outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
                     stream.Write(result, 0, result.Length);
@@ -956,7 +946,7 @@ namespace WindowBlind.Api.Controllers
                     //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
                     doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
-                    doc.PrintSettings.Landscape = true;
+                                        doc.PrintSettings.Landscape = false;
                     doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
                     doc.PrintSettings.SelectPageRange(1, 1);
 

@@ -784,6 +784,16 @@ namespace WindowBlind.Api.Controllers
         {
             try
             {
+                string mimtype = "";
+                int extension = 1;
+                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
+               // path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+                AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
+                PrstringerProject.EzStop obj = new PrstringerProject.EzStop();
+
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                Encoding.GetEncoding("us-ascii");
+
                 for (int i = 0; i < strParameterArray.Count; i++)
                 {
                     while (strParameterArray[i].IndexOf("  ") != -1)
@@ -791,34 +801,25 @@ namespace WindowBlind.Api.Controllers
                     if (String.IsNullOrEmpty(strParameterArray[i]))
                         strParameterArray[i] = " ";
                 }
+                
+                obj.someoftotal= strParameterArray[11] + " of " + strParameterArray[12].ToString();
+                obj.c = strParameterArray[9].ToString();
+                obj.lathe = strParameterArray[8].ToString();
+                obj.controltype = strParameterArray[6].ToString();
+                obj.color = strParameterArray[7].ToString();
+                obj.fabric = strParameterArray[5].ToString();
+                obj.department = strParameterArray[4].ToString();
+                obj.customer = strParameterArray[3].ToString();
+                obj.drop = strParameterArray[2].ToString();
+                obj.width = strParameterArray[1].ToString();
+                obj.cbNumber = strParameterArray[0].ToString();
 
-                string mimtype = "";
-                int extension = 1;
-                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
-                // path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+                List<PrstringerProject.EzStop> ls = new List<PrstringerProject.EzStop> {
+                    obj
+                    };
+                report.AddDataSource("EzStop", ls);
 
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Encoding.GetEncoding("us-ascii");
-
-                var parametersList = new Dictionary<string, string>();
-
-                parametersList.Add("someoftotal", strParameterArray[11] + " of " + strParameterArray[12].ToString());
-                parametersList.Add("char", strParameterArray[9].ToString());
-                parametersList.Add("lathe", strParameterArray[8].ToString());
-                parametersList.Add("controltype", strParameterArray[6].ToString());
-                parametersList.Add("color", strParameterArray[7].ToString());
-                parametersList.Add("fabric", strParameterArray[5].ToString());
-                parametersList.Add("department", strParameterArray[4].ToString());
-                parametersList.Add("customer", strParameterArray[3].ToString());
-                parametersList.Add("drop", strParameterArray[2].ToString());
-                parametersList.Add("width", strParameterArray[1].ToString());
-                parametersList.Add("cbNumber", strParameterArray[0].ToString());
-
-
-                LocalReport report = new LocalReport(path);
-
-
-                byte[] result = report.Execute(RenderType.Pdf, extension, parametersList, mimtype).MainStream;
+                byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
 
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles","Normal_" + Guid.NewGuid().ToString() + ".pdf");
                  //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
@@ -828,8 +829,6 @@ namespace WindowBlind.Api.Controllers
                     stream.Write(result, 0, result.Length);
                 }
 
-
-            
 
                 bool printedOK = true;
                 string printErrorMessage = "";
@@ -848,7 +847,7 @@ namespace WindowBlind.Api.Controllers
                     doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
                     doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
                     doc.PrintSettings.SelectPageRange(1, 1);
-
+                    doc.PrintSettings.Landscape = false;
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
                     doc.Print();
 

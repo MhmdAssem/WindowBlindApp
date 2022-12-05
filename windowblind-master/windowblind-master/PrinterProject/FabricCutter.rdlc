@@ -1,6 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="PrstringerProject">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>e09c0119-33bd-4c89-846d-d747f23c9a20</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="FabricCut">
+      <Query>
+        <DataSourceName>PrstringerProject</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="c">
+          <DataField>c</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cbNumber">
+          <DataField>cbNumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cntrside">
+          <DataField>cntrside</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="color">
+          <DataField>color</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="controltype">
+          <DataField>controltype</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="customer">
+          <DataField>customer</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cutwidth">
+          <DataField>cutwidth</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="department">
+          <DataField>department</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="drop">
+          <DataField>drop</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="fabric">
+          <DataField>fabric</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="lathe">
+          <DataField>lathe</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="lineNumber">
+          <DataField>lineNumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="someoftotal">
+          <DataField>someoftotal</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="type">
+          <DataField>type</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="width">
+          <DataField>width</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>PrstringerProject</rd:DataSetName>
+        <rd:TableName>FabricCut</rd:TableName>
+        <rd:ObjectDataSourceType>PrstringerProject.FabricCut, PrinterProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -12,7 +96,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!cbNumber.Value</Value>
+                    <Value>=First(Fields!cbNumber.Value, "FabricCut")</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -37,7 +121,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!width.Value</Value>
+                    <Value>=First(Fields!width.Value, "FabricCut")</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -62,7 +146,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!drop.Value</Value>
+                    <Value>=First(Fields!drop.Value, "FabricCut")</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -87,7 +171,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!customer.Value</Value>
+                    <Value>=First(Fields!customer.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -100,7 +184,7 @@
             <Top>0.25in</Top>
             <Left>0.05626in</Left>
             <Height>0.18056in</Height>
-            <Width>1.34027in</Width>
+            <Width>1.40971in</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border />
@@ -112,7 +196,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!department.Value</Value>
+                    <Value>=First(Fields!department.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -125,9 +209,9 @@
             </Paragraphs>
             <rd:DefaultName>department</rd:DefaultName>
             <Top>0.25in</Top>
-            <Left>1.39653in</Left>
+            <Left>1.52153in</Left>
             <Height>0.18056in</Height>
-            <Width>1in</Width>
+            <Width>0.625in</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border />
@@ -139,7 +223,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!type.Value</Value>
+                    <Value>=First(Fields!type.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -152,9 +236,9 @@
             </Paragraphs>
             <rd:DefaultName>type</rd:DefaultName>
             <Top>0.25in</Top>
-            <Left>2.32709in</Left>
+            <Left>2.1764in</Left>
             <Height>0.18056in</Height>
-            <Width>0.625in</Width>
+            <Width>0.77569in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border />
@@ -166,7 +250,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!fabric.Value</Value>
+                    <Value>=First(Fields!fabric.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -193,7 +277,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!color.Value</Value>
+                    <Value>=First(Fields!color.Value, "FabricCut")</Value>
                     <Style>
                       <FontFamily>arial</FontFamily>
                       <FontSize>8pt</FontSize>
@@ -221,7 +305,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!controltype.Value</Value>
+                    <Value>=First(Fields!controltype.Value, "FabricCut")</Value>
                     <Style>
                       <FontFamily>arial</FontFamily>
                       <FontSize>8pt</FontSize>
@@ -237,7 +321,7 @@
             <Top>0.44445in</Top>
             <Left>1.68472in</Left>
             <Height>0.16319in</Height>
-            <Width>0.46252in</Width>
+            <Width>0.51807in</Width>
             <ZIndex>8</ZIndex>
             <Style>
               <Border />
@@ -249,7 +333,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!lathe.Value</Value>
+                    <Value>=First(Fields!lathe.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -276,7 +360,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!char.Value</Value>
+                    <Value>=First(Fields!c.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -301,7 +385,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!cutwidth.Value</Value>
+                    <Value>=First(Fields!cutwidth.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -327,7 +411,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="*" + Parameters!lineNumber.Value +"*"</Value>
+                    <Value>="*" +First(Fields!lineNumber.Value, "FabricCut")+"*"</Value>
                     <Style>
                       <FontFamily>3 of 9 Barcode</FontFamily>
                       <FontSize>20pt</FontSize>
@@ -356,7 +440,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!someoftotal.Value</Value>
+                    <Value>=First(Fields!someoftotal.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -383,7 +467,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!controlside.Value</Value>
+                    <Value>=First(Fields!cntrside.Value, "FabricCut")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -416,149 +500,10 @@
       </Page>
     </ReportSection>
   </ReportSections>
-  <ReportParameters>
-    <ReportParameter Name="width">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="drop">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="fabric">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="char">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="lineNumber">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="cutwidth">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="controltype">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="lathe">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="cbNumber">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="customer">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="department">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="type">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="color">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="someoftotal">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="controlside">
-      <DataType>String</DataType>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-  </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
       <NumberOfColumns>4</NumberOfColumns>
       <NumberOfRows>6</NumberOfRows>
-      <CellDefinitions>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>width</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>drop</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>fabric</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>2</RowIndex>
-          <ParameterName>char</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>2</RowIndex>
-          <ParameterName>lineNumber</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>2</RowIndex>
-          <ParameterName>cutwidth</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>3</RowIndex>
-          <ParameterName>controltype</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>3</RowIndex>
-          <ParameterName>lathe</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>3</RowIndex>
-          <ParameterName>cbNumber</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>3</RowIndex>
-          <ParameterName>customer</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>4</RowIndex>
-          <ParameterName>department</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>4</RowIndex>
-          <ParameterName>type</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>4</RowIndex>
-          <ParameterName>color</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>4</RowIndex>
-          <ParameterName>someoftotal</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>5</RowIndex>
-          <ParameterName>controlside</ParameterName>
-        </CellDefinition>
-      </CellDefinitions>
     </GridLayoutDefinition>
   </ReportParametersLayout>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>

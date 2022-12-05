@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using PrstringerProject;
 using SautinSoft;
 using Spire.Pdf;
 using System;
@@ -458,13 +459,13 @@ namespace WindowBlind.Api.Controllers
                 string mimtype = "";
                 int extension = 1;
                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutter.rdlc");
-                //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", "FabricCutter.rdlc");
+                path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", "FabricCutter.rdlc");
+                AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("us-ascii");
-                var parametersList = new Dictionary<string, string>();
 
-
+                FabricCut obj = new FabricCut();
                 for (int i = 0; i < strParameterArray.Length; i++)
                 {
                     while (strParameterArray[i].IndexOf("  ") != -1)
@@ -473,29 +474,28 @@ namespace WindowBlind.Api.Controllers
                         strParameterArray[i] = " ";
                 }
 
+                obj.someoftotal = strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString();
+                obj.cutwidth = strParameterArray[10].Split(" ")[1].ToString();
+                obj.cntrside = strParameterArray[12].Split(" ")[0].ToString();
+                obj.lineNumber = strParameterArray[11].ToString();
+                obj.c = strParameterArray[10].Split(" ")[0].ToString();
+                obj.lathe = strParameterArray[9].ToString();
+                obj.controltype = strParameterArray[8].ToString();
+                obj.color = strParameterArray[7].ToString();
+                obj.fabric = strParameterArray[6].ToString();
+                obj.type = strParameterArray[5].ToString();
+                obj.department = strParameterArray[4].ToString();
+                obj.customer = strParameterArray[3].ToString();
+                obj.drop = strParameterArray[2].ToString() + " mm";
+                obj.width = strParameterArray[1].ToString() + " mm";
+                obj.cbNumber = strParameterArray[0].ToString();
 
-                parametersList.Add("someoftotal", strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString());
-                parametersList.Add("cutwidth", strParameterArray[10].Split(" ")[1].ToString());
-                parametersList.Add("controlside", strParameterArray[12].Split(" ")[0].ToString());
-                parametersList.Add("lineNumber", strParameterArray[11].ToString());
-                parametersList.Add("char", strParameterArray[10].Split(" ")[0].ToString());
-                parametersList.Add("lathe", strParameterArray[9].ToString());
-                parametersList.Add("controltype", strParameterArray[8].ToString());
-                parametersList.Add("color", strParameterArray[7].ToString());
-                parametersList.Add("fabric", strParameterArray[6].ToString());
-                parametersList.Add("type", strParameterArray[5].ToString());
-                parametersList.Add("department", strParameterArray[4].ToString());
-                parametersList.Add("customer", strParameterArray[3].ToString());
-                parametersList.Add("drop", strParameterArray[2].ToString() + " mm");
-                parametersList.Add("width", strParameterArray[1].ToString() + " mm");
-                parametersList.Add("cbNumber", strParameterArray[0].ToString());
+                List<FabricCut> ls = new List<FabricCut> {
+                    obj
+                    };
+                report.AddDataSource("FabricCut", ls);
 
-
-
-                LocalReport report = new LocalReport(path);
-
-
-                byte[] result = report.Execute(RenderType.Pdf, extension, parametersList, mimtype).MainStream;
+                byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
 
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".pdf");
                 //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
@@ -510,7 +510,7 @@ namespace WindowBlind.Api.Controllers
                 try
                 {
                     PdfDocument doc = new PdfDocument();
-                    
+
                     doc.LoadFromFile(outputPath);
                     doc.PrintSettings.PrinterName = strPrinterName;
                     //SizeF size = doc.Pages[0].ActualSize;
@@ -522,7 +522,7 @@ namespace WindowBlind.Api.Controllers
                     doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
                     doc.PrintSettings.SelectPageRange(1, 1);
                     doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
-                    doc.PrintSettings.Landscape = true;
+                    doc.PrintSettings.Landscape = false;
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
                     doc.Print();
 
