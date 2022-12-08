@@ -477,9 +477,9 @@ namespace WindowBlind.Api.Controllers
                 LocalReport report = new LocalReport(path);
 
 
-                byte[] result = report.Execute(RenderType.Image, extension, parametersList, mimtype).MainStream;
+                byte[] result = report.Execute(RenderType.Pdf, extension, parametersList, mimtype).MainStream;
 
-                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "PackingStationPrintFiles", Guid.NewGuid().ToString() + ".jpg");
+                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "PackingStationPrintFiles", Guid.NewGuid().ToString() + ".pdf");
                 //var //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".jpg");
                 using (FileStream stream = new FileStream(outputPath, FileMode.Create))
                 {
@@ -502,10 +502,10 @@ namespace WindowBlind.Api.Controllers
                     //doc.PrintSettings.PaperSize = paper;
                     //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
+                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
                     doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
                     doc.PrintSettings.SelectPageRange(1, 1);
-                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
-                                        doc.PrintSettings.Landscape = false;
+                    doc.PrintSettings.Landscape = false;
                     //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
                     doc.Print();
                 }

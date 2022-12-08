@@ -787,7 +787,7 @@ namespace WindowBlind.Api.Controllers
                 string mimtype = "";
                 int extension = 1;
                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
-               // path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+               //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
                 AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
                 PrstringerProject.EzStop obj = new PrstringerProject.EzStop();
 

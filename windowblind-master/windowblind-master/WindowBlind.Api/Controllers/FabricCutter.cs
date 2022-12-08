@@ -459,7 +459,7 @@ namespace WindowBlind.Api.Controllers
                 string mimtype = "";
                 int extension = 1;
                 var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutter.rdlc");
-                path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", "FabricCutter.rdlc");
+                //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", "FabricCutter.rdlc");
                 AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
