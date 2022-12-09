@@ -76,4 +76,40 @@ namespace PrstringerProject
         public string someoftotal { get; set; }
     }
 
+    public class PinkLabel
+    {
+        public string PO { get; set; }
+        public string CCNumber { get; set; }
+        public string Cust { get; set; }
+        public string CustRef { get; set; }
+        public string Supplier { get; set; }
+        public string Department { get; set; }
+        public string Location { get; set; }
+        public string Width { get; set; }
+        public string Drop { get; set; }
+        public string LineNumber { get; set; }
+        public string SomeOfTotal { get; set; }
+        public string Customer { get; set; }
+        public string Carrier { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Address3 { get; set; }
+        public string PostCode { get; set; }
+        public string Status { get; set; }
+    }
+    public class BigLabel
+    {
+        public string CBNumber { get; set; }
+        public string Carrier { get; set; }
+        public string Customer { get; set; }
+        public string PO { get; set; }
+        public string Description { get; set; }
+        public string Location { get; set; }
+        public string Width { get; set; }
+        public string Drop { get; set; }
+        public string SomeOfTotal { get; set; }
+        public string FittingAddress { get; set; }
+        public string Department { get; set; }
+        public string Status { get; set; }
+    }
 }

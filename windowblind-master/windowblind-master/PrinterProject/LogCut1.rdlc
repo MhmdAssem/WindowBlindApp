@@ -412,7 +412,7 @@
                     <Value>="*" +First(Fields!lineNumber.Value, "LogCut1") +"*"</Value>
                     <Style>
                       <FontFamily>3 of 9 Barcode</FontFamily>
-                      <FontSize>18pt</FontSize>
+                      <FontSize>20pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>

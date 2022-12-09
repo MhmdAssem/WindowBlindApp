@@ -164,7 +164,7 @@ export class PackingStationComponent implements OnInit {
         let OrdersByCBNumbers = {};
         let PackedOrdersByCBNumbers = {};
         let CountOfOrdersByCBNumber = {};
-
+        this.Data = [];
         data.rows.forEach(element => {
           /// getting the data without any duplicates
           if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {

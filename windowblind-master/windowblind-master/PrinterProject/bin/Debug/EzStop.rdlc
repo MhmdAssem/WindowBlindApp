@@ -328,7 +328,7 @@
                   <TextRun>
                     <Value>=First(Fields!cbNumber.Value, "EzStop")</Value>
                     <Style>
-                      <FontSize>16pt</FontSize>
+                      <FontSize>20pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>

@@ -98,10 +98,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="PrstringerProject.BigLabel.datasource" />
     <None Include="PrstringerProject.EzStop.datasource" />
     <None Include="PrstringerProject.FabricCut.datasource" />
     <None Include="PrstringerProject.LogCut1.datasource" />
     <None Include="PrstringerProject.LogCut2.datasource" />
+    <None Include="PrstringerProject.PinkLabel.datasource" />
     <None Include="SqlServerTypes.Utilities.datasource" />
   </ItemGroup>
   <ItemGroup>

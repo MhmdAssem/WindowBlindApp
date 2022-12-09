@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using PrstringerProject;
 using Spire.Pdf;
 using System;
 using System.Collections.Generic;
@@ -348,7 +349,7 @@ namespace WindowBlind.Api.Controllers
                 {
                     var strParameterArray = labels[k].ToString().Split("@");
 
-                    if (strParameterArray[11] == "Spotlight Sandown")
+                    if (strParameterArray[11] .Contains("Spotlight",StringComparison.OrdinalIgnoreCase))
                         PrintReport(printerName, strParameterArray, "PinkLabel.rdlc");
 
                     else
@@ -420,8 +421,8 @@ namespace WindowBlind.Api.Controllers
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("us-ascii");
-                var parametersList = new Dictionary<string, string>();
 
+                LocalReport report = new LocalReport(path);
 
                 for (int i = 0; i < strParameterArray.Length; i++)
                 {
@@ -433,51 +434,55 @@ namespace WindowBlind.Api.Controllers
 
                 if (StrReportPath == "PinkLabel.rdlc")
                 {
-                    parametersList.Add("PO", strParameterArray[0].ToString());
-                    parametersList.Add("CCNumber", strParameterArray[1].ToString());
-                    parametersList.Add("Cust", "Cust: " + strParameterArray[2].ToString());
-                    parametersList.Add("CustRef", "Cust Ref: " + strParameterArray[3].ToString());
-                    parametersList.Add("Supplier", "Supplier: " + strParameterArray[4].ToString());
-                    parametersList.Add("Department", strParameterArray[5].ToString());
-                    parametersList.Add("Location", "Location: " + strParameterArray[6].ToString());
-                    parametersList.Add("Width", "W: " + strParameterArray[7].ToString());
-                    parametersList.Add("Drop", "D: " + strParameterArray[8].ToString());
-                    parametersList.Add("LineNumber", strParameterArray[9].ToString());
-                    parametersList.Add("SomeOfTotal", strParameterArray[10].ToString());
-                    parametersList.Add("Customer", "Ship To: " + strParameterArray[11].ToString());
-                    parametersList.Add("Carrier", strParameterArray[12].ToString());
-                    parametersList.Add("Address1", strParameterArray[13].ToString());
-                    parametersList.Add("Address2", strParameterArray[14].ToString());
-                    parametersList.Add("Address3", strParameterArray[15].ToString());
-                    parametersList.Add("PostCode", strParameterArray[16].ToString());
-                    parametersList.Add("Status", strParameterArray[18].ToString());
+                    PinkLabel obj = new PinkLabel();
+                    obj.PO = strParameterArray[0].ToString();
+                    obj.CCNumber = strParameterArray[1].ToString();
+                    obj.Cust = "Cust: " + strParameterArray[2].ToString();
+                    obj.CustRef = "Cust Ref: " + strParameterArray[3].ToString();
+                    obj.Supplier = "Supplier: " + strParameterArray[4].ToString();
+                    obj.Department = strParameterArray[5].ToString();
+                    obj.Location = "Location: " + strParameterArray[6].ToString();
+                    obj.Width = "W: " + strParameterArray[7].ToString();
+                    obj.Drop = "D: " + strParameterArray[8].ToString();
+                    obj.LineNumber = strParameterArray[9].ToString();
+                    obj.SomeOfTotal = strParameterArray[10].ToString();
+                    obj.Customer = "Ship To: " + strParameterArray[11].ToString();
+                    obj.Carrier = strParameterArray[12].ToString();
+                    obj.Address1 = strParameterArray[13].ToString();
+                    obj.Address2 = strParameterArray[14].ToString();
+                    obj.Address3 = strParameterArray[15].ToString();
+                    obj.PostCode = strParameterArray[16].ToString();
+                    obj.Status = strParameterArray[18].ToString();
+                    List<PinkLabel> ls = new List<PinkLabel> {
+                    obj
+                    };
+                    report.AddDataSource("PinkLabel", ls);
 
                 }
                 else
                 {
-                    parametersList.Add("CBNumber", strParameterArray[1].ToString());
-                    parametersList.Add("Carrier", strParameterArray[12].ToString());
-                    parametersList.Add("Customer", strParameterArray[11].ToString());
-                    parametersList.Add("PO", strParameterArray[0].ToString());
-                    parametersList.Add("Description", strParameterArray[17].ToString());
-                    parametersList.Add("Location", "Location: " + strParameterArray[6].ToString());
-                    parametersList.Add("Width", "Width: " + strParameterArray[7].ToString() + "");
-                    parametersList.Add("Drop", "Drop: " + strParameterArray[8].ToString() + "");
-                    parametersList.Add("SomeOfTotal", "Quantity " + strParameterArray[10].ToString());
-                    parametersList.Add("FittingAddress", strParameterArray[13].ToString());
-                    parametersList.Add("Department", strParameterArray[5].ToString());
-                    parametersList.Add("Status", strParameterArray[18].ToString());
+                    BigLabel obj = new BigLabel();
+                    obj.CBNumber = strParameterArray[1].ToString();
+                    obj.Carrier = strParameterArray[12].ToString();
+                    obj.Customer = strParameterArray[11].ToString();
+                    obj.PO = strParameterArray[0].ToString();
+                    obj.Description = strParameterArray[17].ToString();
+                    obj.Location = "Location: " + strParameterArray[6].ToString();
+                    obj.Width = "Width: " + strParameterArray[7].ToString() + "";
+                    obj.Drop = "Drop: " + strParameterArray[8].ToString() + "";
+                    obj.SomeOfTotal = "Quantity " + strParameterArray[10].ToString();
+                    obj.FittingAddress = strParameterArray[13].ToString();
+                    obj.Department = strParameterArray[5].ToString();
+                    obj.Status = strParameterArray[18].ToString();
 
+                    List<BigLabel> ls = new List<BigLabel> {
+                    obj
+                    };
+                    report.AddDataSource("BigLabel", ls);
                 }
 
 
-
-
-
-                LocalReport report = new LocalReport(path);
-
-
-                byte[] result = report.Execute(RenderType.Pdf, extension, parametersList, mimtype).MainStream;
+                byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
 
                 var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "PackingStationPrintFiles", Guid.NewGuid().ToString() + ".pdf");
                 //var //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".jpg");
