@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="PrstringerProject">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>c9f5bbbf-7cd5-46c2-9514-9f3dd54457fb</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="PinklLabel">
+      <Query>
+        <DataSourceName>PrstringerProject</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Address1">
+          <DataField>Address1</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Carrier">
+          <DataField>Carrier</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CCNumber">
+          <DataField>CCNumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Cust">
+          <DataField>Cust</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Customer">
+          <DataField>Customer</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CustRef">
+          <DataField>CustRef</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Department">
+          <DataField>Department</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Drop">
+          <DataField>Drop</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="LineNumber">
+          <DataField>LineNumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Location">
+          <DataField>Location</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PO">
+          <DataField>PO</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PostCode">
+          <DataField>PostCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="SomeOfTotal">
+          <DataField>SomeOfTotal</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Status">
+          <DataField>Status</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Supplier">
+          <DataField>Supplier</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Width">
+          <DataField>Width</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>PrstringerProject</rd:DataSetName>
+        <rd:TableName>PinkLabel</rd:TableName>
+        <rd:ObjectDataSourceType>PrstringerProject.PinkLabel, PrinterProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="PO">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!PO.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>PO</rd:DefaultName>
+            <Top>0.03175cm</Top>
+            <Left>0.0762cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.16688cm</Width>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="CCNumber">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!CCNumber.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>CCNumber</rd:DefaultName>
+            <Top>0.03175cm</Top>
+            <Left>5.14033cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.14275cm</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Cust">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Cust.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Cust</rd:DefaultName>
+            <Top>0.51541cm</Top>
+            <Left>0.0762cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.16688cm</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="CustRef">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!CustRef.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>CustRef</rd:DefaultName>
+            <Top>0.51541cm</Top>
+            <Left>5.14266cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.14042cm</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Supplier">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Supplier.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Supplier</rd:DefaultName>
+            <Top>1.00605cm</Top>
+            <Left>0.0762cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.16688cm</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Department">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Department.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Department</rd:DefaultName>
+            <Top>0.9743cm</Top>
+            <Left>5.14266cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.14042cm</Width>
+            <ZIndex>5</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Location">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Location.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Location</rd:DefaultName>
+            <Top>1.59194cm</Top>
+            <Left>0.0762cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.16688cm</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Width">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Width.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Width</rd:DefaultName>
+            <Top>1.65544cm</Top>
+            <Left>5.14266cm</Left>
+            <Height>0.6cm</Height>
+            <Width>2.16253cm</Width>
+            <ZIndex>7</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Drop">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Drop.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Drop</rd:DefaultName>
+            <Top>1.65544cm</Top>
+            <Left>7.48158cm</Left>
+            <Height>0.6cm</Height>
+            <Width>2.20896cm</Width>
+            <ZIndex>8</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="LineNumber">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="*" + First(Fields!LineNumber.Value, "PinklLabel") + "*"</Value>
+                    <Style>
+                      <FontFamily>3 of 9 Barcode</FontFamily>
+                      <FontSize>20pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>LineNumber</rd:DefaultName>
+            <Top>2.32599cm</Top>
+            <Left>0.34078cm</Left>
+            <Height>0.64475cm</Height>
+            <Width>7.23195cm</Width>
+            <ZIndex>9</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Textbox>
+          <Textbox Name="SomeOfTotal">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!SomeOfTotal.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>SomeOfTotal</rd:DefaultName>
+            <Top>2.32599cm</Top>
+            <Left>7.88141cm</Left>
+            <Height>0.6cm</Height>
+            <Width>2.06692cm</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Customer">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Customer.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Customer</rd:DefaultName>
+            <Top>2.97074cm</Top>
+            <Left>0.0762cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.16688cm</Width>
+            <ZIndex>11</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Carrier">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Carrier.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Carrier</rd:DefaultName>
+            <Top>2.97074cm</Top>
+            <Left>6.6402cm</Left>
+            <Height>0.6cm</Height>
+            <Width>2.5cm</Width>
+            <ZIndex>12</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Address1">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Address1.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>7pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Address1</rd:DefaultName>
+            <Top>3.40995cm</Top>
+            <Left>0.0762cm</Left>
+            <Height>0.6cm</Height>
+            <Width>9.87213cm</Width>
+            <ZIndex>13</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="PostCode">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!PostCode.Value, "PinklLabel")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>PostCode</rd:DefaultName>
+            <Top>3.87033cm</Top>
+            <Left>0.0762cm</Left>
+            <Height>0.6cm</Height>
+            <Width>2.57938cm</Width>
+            <ZIndex>14</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="Status">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Status.Value, "PinklLabel")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Status</rd:DefaultName>
+            <Top>3.87033cm</Top>
+            <Left>6.66609cm</Left>
+            <Height>0.6cm</Height>
+            <Width>2.5cm</Width>
+            <ZIndex>15</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+        </ReportItems>
+        <Height>4.47033cm</Height>
+        <Style />
+      </Body>
+      <Width>10.26583cm</Width>
+      <Page>
+        <PageHeight>4.5cm</PageHeight>
+        <PageWidth>10cm</PageWidth>
+        <LeftMargin>0cm</LeftMargin>
+        <RightMargin>0cm</RightMargin>
+        <TopMargin>0cm</TopMargin>
+        <BottomMargin>0cm</BottomMargin>
+        <ColumnSpacing>1.27cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>5</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>0e2663e8-60f0-419d-905f-d773c010a7c9</rd:ReportID>
+</Report>

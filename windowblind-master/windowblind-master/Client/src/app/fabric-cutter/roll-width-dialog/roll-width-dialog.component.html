@@ -1,0 +1,11 @@
+<h2 mat-dialog-title> Enter New Roll Width Value</h2>
+<mat-form-field appearance="fill">
+  <mat-label>Roll Width Value</mat-label>
+  <input matInput [(ngModel)]="newValue">
+</mat-form-field>
+
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close > Cancel</button>
+  <button mat-button [mat-dialog-close]="newValue" mat-raised-button (click)="UpdateRollWidth();"> Submit</button>
+  
+</div>

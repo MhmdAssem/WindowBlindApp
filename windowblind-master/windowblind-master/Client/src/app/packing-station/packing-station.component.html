@@ -1,0 +1,102 @@
+<div class="container-fluid">
+  <div class="row mt-3">
+    <div class="col-lg-5" style="margin-top: 5px;margin-left: 30px;">
+
+      <form class="form-inline">
+        <label> Select a Table</label>
+        <select class="form-control" name="TableNames" id="TableNames" (change)="GetHeldBasedOnTable()" style="display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        text-align: center;
+        min-width:300px;
+        margin-left: 4px;">
+          <option value="-" id="table_Default">-</option>
+          <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
+        </select>
+      </form>
+    </div>
+
+
+    <div class="col-lg-6">
+      <form class="form-inline flex-nowrap" style="margin-left: 75px;">
+
+        <label> Enter CB/Line Number:</label>
+        <input class="form-control" type="text" name="CBNumber" id="CBNumber" required style="display: inline-block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: center;
+          min-width: 250px; ">
+        <button style="margin-left: 7px;font-size: 11px;" class="btn btn-primary btn-sm p-2" (click)="GetCBDetails();">
+          <span *ngIf="CBLoading" class="spinner-border spinner-border-sm mr-1"></span>
+          Get CB Details</button>
+      </form>
+    </div>
+
+
+
+
+  </div>
+
+
+  <div class="row my-4 justify-content-end" *ngIf="Data.length!=0">
+
+    <button class="btn btn-primary mr-2" (click)="SelectAll();" id="AllButton"><span *ngIf="HoldLoading"
+      class="spinner-border spinner-border-sm mr-1"></span>
+    Select All </button>
+    
+    <button class="btn btn-primary mr-2" (click)="Print();"><span *ngIf="PrintLoading"
+      class="spinner-border spinner-border-sm mr-1"></span>
+    Print </button>
+    
+    <button class="btn btn-primary mr-2" (click)="Hold();"><span *ngIf="HoldLoading"
+        class="spinner-border spinner-border-sm mr-1"></span>
+      Hold </button>
+
+    <button class="btn btn-primary mr-2" (click)="Send();"><span *ngIf="SendLoading"
+        class="spinner-border spinner-border-sm mr-1"></span>
+      Update </button>
+      
+      <button class="btn btn-primary" (click)="Delete();">
+        Delete</button>
+  </div>
+
+</div>
+
+<div class="container-fluid mt-3" *ngIf="Data.length!=0">
+
+  <div class="table-responsive mt-3" id="TableViewSelect">
+    
+    <table mat-table #Datatable class="table table-bordered w-100" id="dScenario-table" [dataSource]="DataSource">
+
+      <div *ngFor="let col of tableModelColNames; let i=index">
+        <ng-container matColumnDef="{{col}}" *ngIf="col != 'SelectColumn'">
+          <th mat-header-cell *matHeaderCellDef> {{col}} </th>
+          <td mat-cell *matCellDef="let element" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':'white'"> {{element.row[col]}} </td>
+        </ng-container>
+
+      </div>
+
+      <ng-container matColumnDef="SelectColumn">
+        <th mat-header-cell *matHeaderCellDef> SelectColumn </th>
+        <td mat-cell *matCellDef="let element;let i = index" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':'white'">
+          <button class="btn btn-sm SelectAllTag" id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button>
+        </td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}">
+      </tr>
+
+    </table>
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="PageChange()"
+      aria-label="Select page of periodic elements">
+    </mat-paginator>
+    
+  </div>
+
+  
+
+</div>

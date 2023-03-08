@@ -1,0 +1,171 @@
+﻿Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Service POS_Serivce has been successfully installed.
+Creating EventLog source POS_Serivce in log Application...
+Committing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Creating EventLog source POS_Serivce in log Application...
+Rolling back assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Restoring event log to previous state for source POS_Serivce.
+Uninstalling assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Removing EventLog source POS_Serivce.
+Service POS_Serivce is being removed from the system...
+Service POS_Serivce was successfully removed from the system.
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Service POS_Serivce has been successfully installed.
+Creating EventLog source POS_Serivce in log Application...
+Committing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Uninstalling assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Removing EventLog source POS_Serivce.
+Service POS_Serivce is being removed from the system...
+Service POS_Serivce was successfully removed from the system.
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Service POS_Serivce has been successfully installed.
+Creating EventLog source POS_Serivce in log Application...
+Committing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Uninstalling assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Removing EventLog source POS_Serivce.
+Service POS_Serivce is being removed from the system...
+Service POS_Serivce was successfully removed from the system.
+Attempt to stop service POS_Serivce.
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Service POS_Serivce has been successfully installed.
+Creating EventLog source POS_Serivce in log Application...
+Committing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Creating EventLog source POS_Serivce in log Application...
+Rolling back assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Restoring event log to previous state for source POS_Serivce.
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Creating EventLog source POS_Serivce in log Application...
+Rolling back assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Restoring event log to previous state for source POS_Serivce.
+Uninstalling assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Removing EventLog source POS_Serivce.
+Service POS_Serivce is being removed from the system...
+Service POS_Serivce was successfully removed from the system.
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Service POS_Serivce has been successfully installed.
+Creating EventLog source POS_Serivce in log Application...
+Committing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Creating EventLog source POS_Serivce in log Application...
+Rolling back assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Restoring event log to previous state for source POS_Serivce.
+Uninstalling assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Removing EventLog source POS_Serivce.
+Service POS_Serivce is being removed from the system...
+Service POS_Serivce was successfully removed from the system.
+Installing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe
+Installing service POS_Serivce...
+Service POS_Serivce has been successfully installed.
+Creating EventLog source POS_Serivce in log Application...
+Committing assembly 'c:\service\POS_Service.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\service\POS_Service.InstallLog
+   assemblypath = c:\service\POS_Service.exe

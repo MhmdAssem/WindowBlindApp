@@ -1,0 +1,35 @@
+.settings {
+  padding: 20px;
+}
+mat-card{
+  width: 100%;
+  height: 100%;
+  mat-card-content{
+    overflow-y: auto;
+    max-height: 21em;
+  
+  }
+}
+
+.Special
+{
+  margin-left: 7px !important;
+}
+
+input, label {
+  display: block;
+  margin-left: 45px;
+}
+select{
+  margin-left: 45px;
+}
+button{
+  max-height: fit-content;
+  max-width: fit-content;
+  margin-left: 7px;
+  float: right;
+}
+
+td{
+  text-align: center;
+}

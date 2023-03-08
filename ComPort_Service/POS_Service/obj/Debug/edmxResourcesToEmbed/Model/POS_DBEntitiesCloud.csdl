@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="POS_DBEntitiesCloud" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="POS_EntitiesCloud" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="SitesClouds" EntityType="POS_DBEntitiesCloud.SitesCloud" />
+    <EntitySet Name="CategoriesClouds" EntityType="POS_DBEntitiesCloud.CategoriesCloud" />
+    <EntitySet Name="MenuClouds" EntityType="POS_DBEntitiesCloud.MenuCloud" />
+  </EntityContainer>
+  <EntityType Name="SitesCloud">
+    <Key>
+      <PropertyRef Name="SiteId" />
+    </Key>
+    <Property Name="SiteId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SiteName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="CategoriesCloud">
+    <Key>
+      <PropertyRef Name="CatIDCloud" />
+    </Key>
+    <Property Name="CatIDCloud" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CatIDLocal" Type="Int32" />
+    <Property Name="CatTitle" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="SiteID" Type="Int32" />
+    <Property Name="IsEdited" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="MenuCloud">
+    <Key>
+      <PropertyRef Name="MenuIDCloud" />
+    </Key>
+    <Property Name="MenuIDCloud" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MenuIDLocal" Type="Int32" />
+    <Property Name="CatID" Type="Int32" Nullable="false" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Price" Type="Double" />
+    <Property Name="Status" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="IsEdited" Type="Boolean" />
+  </EntityType>
+</Schema>

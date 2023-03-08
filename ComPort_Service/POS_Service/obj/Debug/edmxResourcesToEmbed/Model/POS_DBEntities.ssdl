@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SyncTestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Categories">
+    <Key>
+      <PropertyRef Name="CatIDLocal" />
+    </Key>
+    <Property Name="CatIDLocal" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CatIDCloud" Type="int" />
+    <Property Name="CatTitle" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Status" Type="nchar" MaxLength="10" />
+    <Property Name="SiteID" Type="int" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="Menu">
+    <Key>
+      <PropertyRef Name="MenuIDLocal" />
+    </Key>
+    <Property Name="MenuIDLocal" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MenuIDCloud" Type="int" />
+    <Property Name="CatID" Type="int" Nullable="false" />
+    <Property Name="Title" Type="nvarchar" MaxLength="50" />
+    <Property Name="Price" Type="float" />
+    <Property Name="Status" Type="nchar" MaxLength="10" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'SyncTest.dbo.Sites' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="Sites">
+    <Key>
+      <PropertyRef Name="SiteId" />
+    </Key>
+    <Property Name="SiteId" Type="int" Nullable="false" />
+    <Property Name="SiteName" Type="nvarchar" MaxLength="150" />
+  </EntityType>
+  <EntityContainer Name="SyncTestModelStoreContainer">
+    <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Sites" EntityType="Self.Sites" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [Sites].[SiteId] AS [SiteId], 
+    [Sites].[SiteName] AS [SiteName]
+    FROM [dbo].[Sites] AS [Sites]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

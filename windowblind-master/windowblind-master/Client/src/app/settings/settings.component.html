@@ -1,0 +1,386 @@
+<div class="container-fluid mt-3">
+
+  <div class="row" style="padding-bottom: 7px;">
+    <div >
+      <label class="Special"> Select application</label>
+      <select class="Special" name="Application" id="Application"  (change)="ApplicationSelected()">
+        <option value="Fabric Cutter">Fabric Cutter</option>
+        <option value="Log Cut">Log Cut</option>
+        <option value="EzStop">EzStop</option>
+        <option value="AssemblyStation">Assembly Station</option>
+        <option value="HoistStation">Hoist Station</option>
+        <option value="PackingStation">Packing Station</option>
+      </select>
+    </div>
+    <div >
+      <label > {{SelectFirstPrinter}}</label>
+      <select class="" name="Printers" id="Printers" >
+        <option *ngFor="let printer of PrinterNames" value="{{printer}}" id="PrinterName_{{printer}}">{{printer}}
+        </option>
+      </select>
+    </div>
+
+    <div  *ngIf = "PackingStationSelected">
+      <label > {{SelectSecondPrinter}}</label>
+      <select class="" name="Printers2" id="Printers2" >
+        <option *ngFor="let printer of PrinterNames" value="{{printer}}" id="PrinterName2_{{printer}}">{{printer}}
+        </option>
+      </select>
+    </div>
+    <div >
+      <label >Enter Table Name:</label>
+      <input type="text" id="TableName" >
+    </div>
+   
+
+    <div >
+      <label >Output Path:</label>
+      <input type="text" id="OutputPath">
+     
+    </div>
+    <button class="btn btn-primary" style="margin-left: 2px;margin-top: 13px;" (click)="AddToTheTable()">Add</button>
+  </div>
+
+
+  <div class="table-responsive mt-3" id="TablePrintersTable">
+    <table datatable [dtOptions]="dtOptions" class="table table-bordered" id="DScenario-table" [dtTrigger]="dtTrigger">
+      <thead class="bg-light">
+        <tr id="DataTableHeader2">
+          <th class="align-baseline  mw-200" *ngFor="let col of Columns; let i=index"
+            id="UniqueDataTableHeader2_{{col}}">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">{{col}}</span>
+
+            </div>
+
+          </th>
+          <th id="theSelectColumn2" *ngIf="Columns.length !=0">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Delete Column</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of PrinterTableArray;let i = index" id="RowNumber_i">
+          <td>{{row.applicationName}}</td>
+          <td>{{row.printerName}}</td>
+          <td>{{row.printerName2nd}}</td>
+          <td>{{row.tableName}}</td>
+          <td>{{row.OutputPath}}</td>
+
+          <td>
+            <button class="btn btn-sm" id="SelectCol_{{i}}" (click)="Delete(i);">Delete</button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+
+
+  <div class="row" style="padding-bottom: 7px;margin-left: 1px;margin-top: 30px;">
+    <div>
+      <label> Add Reason for Holding</label>
+      <input type="text" id="NewComment" style="margin-left: 2px;width: 500px;">
+      <button class="btn btn-primary" style="margin-left: 2px;" (click)="AddNewComment()">Add</button>
+    </div>
+
+  </div>
+
+
+  <div class="table-responsive mt-3" id="CommentsTable">
+    <table datatable [dtOptions]="dtOptionsComments" class="table table-bordered" id="CommentsTable"
+      [dtTrigger]="dtTriggerComments">
+      <thead class="bg-light">
+        <tr id="DataTableHeader2">
+          <th class="align-baseline  mw-200" *ngFor="let col of CommentColumns; let i=index"
+            id="UniqueDataTableHeader2_{{col}}">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">{{col}}</span>
+
+            </div>
+
+          </th>
+          <th id="theSelectColumn2" *ngIf="Columns.length !=0">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Delete Comment</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of CommentsTableArray;let i = index" id="RowNumber_i">
+          <td>{{row}}</td>
+          <td>
+            <button class="btn btn-sm" id="DeleteSelectCol_{{i}}" (click)="DeleteComment(i);">Delete</button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+
+  <div class="row" style="margin-top: 50px;">
+    <div class="col-md-12">
+      <div class="General Settings">
+        <h2 style="margin-left: 400px;"> General Settings</h2>
+
+        <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+          <div class="col-3" *ngIf="FileSetting.applicationSetting=='General Setting'">
+            <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+              FileSetting.settingName}}:</Label>
+          </div>
+          <div class="col-9" *ngIf="FileSetting.applicationSetting=='General Setting'" style="margin-top: -10px;">
+            <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+              value="{{FileSetting.settingPath}}">
+          </div>
+
+        </div>
+      </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="FabricCutter settings">
+        <h2 style="margin-left: 400px;"> FabricCutter Settings</h2>
+
+        <mat-radio-group>
+            <mat-radio-button id="CB_Line_Number_Search" value="CB_Line_Number_Search" checked="{{FabricCBSearch}}"
+            (click)="RadioOn('CB_Line_Number_Search','FabricCut')">CB/Line Number Search</mat-radio-button>
+            
+            <mat-radio-button id="AutoUpload" value="AutoUpload" (click)="RadioOn('AutoUpload','FabricCut')" checked="{{!FabricCBSearch}}">Auto Upload
+          </mat-radio-button>
+          <br>
+        </mat-radio-group>
+
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;">
+            <div class="row " *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='FabricCutter'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='FabricCutter'" style="margin-top: -10px;">
+                <input class="form-control" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+            </div>
+            <div class="row" *ngIf="AutoUpload">
+
+              <div class="col-3"><Label id="AutoUploadDir"> Upload Folder:</Label></div>
+              <div class="col-9" style="margin-top: -10px;"><input class="form-control" type="text"
+                  id="ID_AutoUploadDir" value="{{AutoUploadPath}}"></div>
+
+              <div class="col-3"><Label id="ViewedUploadDir"> Viewed Folder:</Label></div>
+              <div class="col-9" style="margin-top: -10px;"><input class="form-control" type="text"
+                  id="ID_ViewedUploadDir" value="{{ViewedUploadsPath}}"></div>
+            </div>
+          </div>
+
+          <div class="col-md-4 ml-auto">
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input Fabric-custom-control-input"
+                  id="FabricCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="FabricCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="LogCut settings">
+        <h2 style="margin-left: 400px;"> LogCut Settings</h2>
+
+        
+        <mat-radio-group>
+            <mat-radio-button id="LogCut_CB_Line_Number_Search" value="LogCut_CB_Line_Number_Search" checked="{{LogCutCBSearch}}"
+            (click)="RadioOn('LogCut_CB_Line_Number_Search','LogCut')">CB/Line Number Search</mat-radio-button>
+            
+            <mat-radio-button id="LogCutAutoUpload" value="LogCutAutoUpload" (click)="RadioOn('AutoUpload','LogCut')" checked="{{!LogCutCBSearch}}">Auto Upload
+          </mat-radio-button>
+          <br>
+        </mat-radio-group>
+        
+        
+       
+
+
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;">
+            <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='LogCut'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='LogCut'" style="margin-top: -10px;">
+                <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+
+            </div>
+
+            <div class="row" *ngIf="LogCutAutoUpload">
+
+              <div class="col-3"><Label id="LogCutAutoUploadDir"> Upload Folder:</Label></div>
+              <div class="col-9" style="margin-top: -10px;"><input class="form-control" type="text"
+                  id="ID_LogCutAutoUploadDir" value="{{LogCutAutoUploadPath}}"></div>
+
+              <div class="col-3"><Label id="LogCutViewedUploadDir"> Viewed Folder:</Label></div>
+              <div class="col-9" style="margin-top: -10px;"><input class="form-control" type="text"
+                  id="ID_LogCutViewedUploadDir" value="{{LogCutViewedUploadsPath}}"></div>
+            </div>
+          </div>
+
+          <div class="col-md-4 ml-auto">
+
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input LogCut-custom-control-input"
+                  id="LogCutCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="LogCutCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="EzStop Settings">
+        <h2 style="margin-left: 400px;"> EzyStop Settings</h2>
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;">
+            <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='EzStop'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='EzStop'" style="margin-top: -10px;">
+                <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-4 ml-auto">
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input EzStop-custom-control-input"
+                  id="EzStopCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="EzStopCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="AssemblyStation Settings">
+        <h2 style="margin-left: 400px;"> AssemblyStation Settings</h2>
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;">
+            <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='AssemblyStation'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='AssemblyStation'" style="margin-top: -10px;">
+                <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-4 ml-auto">
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input AssemblyStation-custom-control-input"
+                  id="AssemblyStationCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="AssemblyStationCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="HoistStation Settings">
+        <h2 style="margin-left: 400px;"> HoistStation Settings</h2>
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;">
+            <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='HoistStation'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='HoistStation'" style="margin-top: -10px;">
+                <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-4 ml-auto">
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input HoistStation-custom-control-input"
+                  id="HoistStationCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="HoistStationCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <hr style="border-bottom:5px solid black;min-width:100%">
+      <div class="PackingStation Settings">
+        <h2 style="margin-left: 400px;"> PackingStation Settings</h2>
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 70px;">
+            <div class="row" *ngFor="let FileSetting of ListOfFiles" style="margin-top: 2px;">
+              <div class="col-3" *ngIf="FileSetting.applicationSetting=='PackingStation'">
+                <Label id="SettingNameLabel_{{FileSetting.settingName}}">{{
+                  FileSetting.settingName}}:</Label>
+              </div>
+              <div class="col-9" *ngIf="FileSetting.applicationSetting=='PackingStation'" style="margin-top: -10px;">
+                <input class="form-control" id="SettingPathInput" type="text" id="ID_{{FileSetting.settingName}}"
+                  value="{{FileSetting.settingPath}}">
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-4 ml-auto">
+            <div class="data-scroll">
+              <div class="custom-control custom-checkbox" *ngFor="let col of ColumnNames">
+                <input type="checkbox" class="custom-control-input PackingStation-custom-control-input"
+                  id="PackingStationCheckBox_{{col}}" title="{{col}}">
+                <label class="custom-control-label" for="PackingStationCheckBox_{{col}}">{{col}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary mr-3" style="position: fixed;right:0;bottom:0;float: right;z-index: 2;"
+    (click)="SaveSettings()">
+    <span *ngIf="Saving" class="spinner-border spinner-border-sm mr-1"></span>
+    Save Settings</button>

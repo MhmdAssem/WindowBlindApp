@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ExchangeDB2020ModelStoreContainer" CdmEntityContainer="ExchangeDB2020Entities">
+    <EntitySetMapping Name="Invs">
+      <EntityTypeMapping TypeName="ExchangeDB2020Model.Inv">
+        <MappingFragment StoreEntitySet="Inv">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="proc_type" ColumnName="proc_type" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="inv_type" ColumnName="inv_type" />
+          <ScalarProperty Name="safe" ColumnName="safe" />
+          <ScalarProperty Name="stock" ColumnName="stock" />
+          <ScalarProperty Name="cust_id" ColumnName="cust_id" />
+          <ScalarProperty Name="sales_emp" ColumnName="sales_emp" />
+          <ScalarProperty Name="tot_purch" ColumnName="tot_purch" />
+          <ScalarProperty Name="tot_sale" ColumnName="tot_sale" />
+          <ScalarProperty Name="tot_net" ColumnName="tot_net" />
+          <ScalarProperty Name="IDRestrictions" ColumnName="IDRestrictions" />
+          <ScalarProperty Name="InvId_Return" ColumnName="InvId_Return" />
+          <ScalarProperty Name="branch" ColumnName="branch" />
+          <ScalarProperty Name="paid" ColumnName="paid" />
+          <ScalarProperty Name="date_Update" ColumnName="date_Update" />
+          <ScalarProperty Name="date_Deleted" ColumnName="date_Deleted" />
+          <ScalarProperty Name="emp_Update" ColumnName="emp_Update" />
+          <ScalarProperty Name="edit" ColumnName="edit" />
+          <ScalarProperty Name="BillNo" ColumnName="BillNo" />
+          <ScalarProperty Name="CheckInv" ColumnName="CheckInv" />
+          <ScalarProperty Name="ValuDate" ColumnName="ValuDate" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="Weight" ColumnName="Weight" />
+          <ScalarProperty Name="PACKGES" ColumnName="PACKGES" />
+          <ScalarProperty Name="CFR" ColumnName="CFR" />
+          <ScalarProperty Name="IS_Deleted" ColumnName="IS_Deleted" />
+          <ScalarProperty Name="cloud_Id" ColumnName="cloud_Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Inv_Sub">
+      <EntityTypeMapping TypeName="ExchangeDB2020Model.Inv_Sub">
+        <MappingFragment StoreEntitySet="Inv_Sub">
+          <ScalarProperty Name="local_id" ColumnName="local_id" />
+          <ScalarProperty Name="cloud_id" ColumnName="cloud_id" />
+          <ScalarProperty Name="exchange_price" ColumnName="exchange_price" />
+          <ScalarProperty Name="exchange_priceUsd" ColumnName="exchange_priceUsd" />
+          <ScalarProperty Name="val" ColumnName="val" />
+          <ScalarProperty Name="currency_from" ColumnName="currency_from" />
+          <ScalarProperty Name="proc_type" ColumnName="proc_type" />
+          <ScalarProperty Name="Inv_id" ColumnName="Inv_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

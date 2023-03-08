@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="PrstringerProject">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>08c932f8-324a-4950-9e78-8e269c850c57</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="EzStop">
+      <Query>
+        <DataSourceName>PrstringerProject</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="c">
+          <DataField>c</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cbNumber">
+          <DataField>cbNumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="color">
+          <DataField>color</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="controltype">
+          <DataField>controltype</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="customer">
+          <DataField>customer</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="department">
+          <DataField>department</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="drop">
+          <DataField>drop</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="fabric">
+          <DataField>fabric</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="lathe">
+          <DataField>lathe</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="someoftotal">
+          <DataField>someoftotal</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="width">
+          <DataField>width</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>PrstringerProject</rd:DataSetName>
+        <rd:TableName>EzStop</rd:TableName>
+        <rd:ObjectDataSourceType>PrstringerProject.EzStop, PrinterProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="drop">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!drop.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>drop</rd:DefaultName>
+            <Top>0.01958in</Top>
+            <Left>1.96612in</Left>
+            <Height>0.25in</Height>
+            <Width>0.88542in</Width>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="width">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!width.Value, "EzStop")</Value>
+                    <Style>
+                      <FontFamily>arial</FontFamily>
+                      <FontSize>8pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>width</rd:DefaultName>
+            <Top>0.01958in</Top>
+            <Left>0.075in</Left>
+            <Height>0.25in</Height>
+            <Width>0.875in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="fabric">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!fabric.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>fabric</rd:DefaultName>
+            <Top>0.42583in</Top>
+            <Left>0.075in</Left>
+            <Height>0.25in</Height>
+            <Width>1.125in</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="customer">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!customer.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>7pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>customer</rd:DefaultName>
+            <Top>0.2175in</Top>
+            <Left>0.075in</Left>
+            <Height>0.25in</Height>
+            <Width>1.58487in</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="department">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!department.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>7pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>department</rd:DefaultName>
+            <Top>0.2175in</Top>
+            <Left>1.72931in</Left>
+            <Height>0.25in</Height>
+            <Width>1.25in</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="color">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!color.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>color</rd:DefaultName>
+            <Top>0.42583in</Top>
+            <Left>1.08904in</Left>
+            <Height>0.25in</Height>
+            <Width>0.7625in</Width>
+            <ZIndex>5</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="controltype">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!controltype.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>controltype</rd:DefaultName>
+            <Top>0.42583in</Top>
+            <Left>1.72931in</Left>
+            <Height>0.25in</Height>
+            <Width>0.73333in</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="lathe">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!lathe.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>9pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>lathe</rd:DefaultName>
+            <Top>0.42583in</Top>
+            <Left>2.3932in</Left>
+            <Height>0.25in</Height>
+            <Width>0.59375in</Width>
+            <ZIndex>7</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="char">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!c.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>char</rd:DefaultName>
+            <Top>0.62027in</Top>
+            <Left>0.075in</Left>
+            <Height>0.25in</Height>
+            <Width>0.32292in</Width>
+            <ZIndex>8</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="cbNumber">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!cbNumber.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>20pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>cbNumber</rd:DefaultName>
+            <Top>0.62027in</Top>
+            <Left>0.37931in</Left>
+            <Height>0.25in</Height>
+            <Width>1.94445in</Width>
+            <ZIndex>9</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="someoftotal">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!someoftotal.Value, "EzStop")</Value>
+                    <Style>
+                      <FontSize>9pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>someoftotal</rd:DefaultName>
+            <Top>0.60777in</Top>
+            <Left>2.28209in</Left>
+            <Height>0.25in</Height>
+            <Width>0.57986in</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border />
+              <VerticalAlign>Middle</VerticalAlign>
+            </Style>
+          </Textbox>
+        </ReportItems>
+        <Height>1.11458in</Height>
+        <Style />
+      </Body>
+      <Width>3.07167in</Width>
+      <Page>
+        <PageHeight>1in</PageHeight>
+        <PageWidth>3in</PageWidth>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>4</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>47966972-94b6-417e-bfc5-b4240ad6621b</rd:ReportID>
+</Report>

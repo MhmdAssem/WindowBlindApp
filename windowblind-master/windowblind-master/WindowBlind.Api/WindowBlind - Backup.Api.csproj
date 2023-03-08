@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+    <UserSecretsId>a1962806-41b6-434f-b5dc-7c7fefda8824</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Printer Driver\EzStop.rdlc" />
+    <None Remove="Printer Driver\FabricCutter.rdlc" />
+    <None Remove="Printer Driver\LogCut.rdlc" />
+    <None Remove="Printer Driver\LogCut1.rdlc" />
+    <None Remove="Printer Driver\LogCut2.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Printer Driver\FabricCutter.rdlc" />
+    <EmbeddedResource Include="Printer Driver\LogCut.rdlc" />
+    <EmbeddedResource Include="Printer Driver\EzStop.rdlc" />
+    <EmbeddedResource Include="Printer Driver\LogCut1.rdlc" />
+    <EmbeddedResource Include="Printer Driver\LogCut2.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
+    <PackageReference Include="EPPlus" Version="5.7.0" />
+    <PackageReference Include="FreeSpire.PDF" Version="5.4.0" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.7" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" />
+    <PackageReference Include="Microsoft.ReportingServices.ReportViewerControl.WebForms" Version="150.1484.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.12.2" />
+    <PackageReference Include="RDLCPrinter" Version="1.2.0" />
+    <PackageReference Include="RDLCReportRunner" Version="1.0.0" />
+    <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.14" />
+    <PackageReference Include="Swashbuckle" Version="5.6.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.4" />
+    <PackageReference Include="System.CodeDom" Version="6.0.0-preview.5.21301.5" />
+    <PackageReference Include="System.Data.OleDb" Version="5.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="System.Reactive.Windows.Forms" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-preview.5.21301.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+    <Folder Include="wwwroot\" />
+    <Folder Include="Printer Driver\EzStopPrintFiles\" />
+  </ItemGroup>
+
+
+</Project>

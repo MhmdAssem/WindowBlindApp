@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="PrstringerProject">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>16b60b53-e749-4180-b278-f04d6015edfa</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="LogCut1">
+      <Query>
+        <DataSourceName>PrstringerProject</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="c">
+          <DataField>c</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cbNumber">
+          <DataField>cbNumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cntrside">
+          <DataField>cntrside</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="color">
+          <DataField>color</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="controltype">
+          <DataField>controltype</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="customer">
+          <DataField>customer</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cutwidth">
+          <DataField>cutwidth</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="department">
+          <DataField>department</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="drop">
+          <DataField>drop</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="fabric">
+          <DataField>fabric</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="lathe">
+          <DataField>lathe</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="lineNumber">
+          <DataField>lineNumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="someoftotal">
+          <DataField>someoftotal</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="type">
+          <DataField>type</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="width">
+          <DataField>width</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>PrstringerProject</rd:DataSetName>
+        <rd:TableName>LogCut1</rd:TableName>
+        <rd:ObjectDataSourceType>PrstringerProject.LogCut1, PrinterProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="cbNumber">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!cbNumber.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>cbNumber</rd:DefaultName>
+            <Top>0.17551cm</Top>
+            <Left>0.08653in</Left>
+            <Height>0.19444in</Height>
+            <Width>0.93749in</Width>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="width">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!width.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>width</rd:DefaultName>
+            <Top>0.17551cm</Top>
+            <Left>0.99624in</Left>
+            <Height>0.19444in</Height>
+            <Width>1.06944in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="drop">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!drop.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>drop</rd:DefaultName>
+            <Top>0.17551cm</Top>
+            <Left>1.88514in</Left>
+            <Height>0.19444in</Height>
+            <Width>1.02361in</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="customer">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!customer.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>7pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>customer</rd:DefaultName>
+            <Top>0.26354in</Top>
+            <Left>0.10042in</Left>
+            <Height>0.18056in</Height>
+            <Width>1.34027in</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="department">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!department.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>department</rd:DefaultName>
+            <Top>0.26354in</Top>
+            <Left>1.55944in</Left>
+            <Height>0.18056in</Height>
+            <Width>0.38265in</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="type">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!type.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>type</rd:DefaultName>
+            <Top>0.26354in</Top>
+            <Left>2.10111in</Left>
+            <Height>0.18056in</Height>
+            <Width>0.89513in</Width>
+            <ZIndex>5</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="fabric">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!fabric.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>fabric</rd:DefaultName>
+            <Top>0.45799in</Top>
+            <Left>0.10181in</Left>
+            <Height>0.16319in</Height>
+            <Width>1.09721in</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="color">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!color.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>color</rd:DefaultName>
+            <Top>0.45799in</Top>
+            <Left>0.86361in</Left>
+            <Height>0.16319in</Height>
+            <Width>0.69096in</Width>
+            <ZIndex>7</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="controltype">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!controltype.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>controltype</rd:DefaultName>
+            <Top>0.45799in</Top>
+            <Left>1.60388in</Left>
+            <Height>0.16319in</Height>
+            <Width>0.56321in</Width>
+            <ZIndex>8</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="lathe">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!lathe.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>lathe</rd:DefaultName>
+            <Top>0.45799in</Top>
+            <Left>2.27473in</Left>
+            <Height>0.16319in</Height>
+            <Width>0.72151in</Width>
+            <ZIndex>9</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="char">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!c.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>char</rd:DefaultName>
+            <Top>0.63507in</Top>
+            <Left>0.10181in</Left>
+            <Height>0.25in</Height>
+            <Width>0.25693in</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="cutwidth">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!cutwidth.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>cutwidth</rd:DefaultName>
+            <Top>0.63507in</Top>
+            <Left>0.23931in</Left>
+            <Height>0.25in</Height>
+            <Width>0.45833in</Width>
+            <ZIndex>11</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="lineNumber">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="*" +First(Fields!lineNumber.Value, "LogCut1") +"*"</Value>
+                    <Style>
+                      <FontFamily>3 of 9 Barcode</FontFamily>
+                      <FontSize>20pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>lineNumber</rd:DefaultName>
+            <Top>0.63507in</Top>
+            <Left>0.59207in</Left>
+            <Height>0.25in</Height>
+            <Width>1.62849in</Width>
+            <ZIndex>12</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Textbox>
+          <Textbox Name="someoftotal">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!someoftotal.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>6pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>someoftotal</rd:DefaultName>
+            <Top>0.63507in</Top>
+            <Left>2.47126in</Left>
+            <Height>0.25in</Height>
+            <Width>0.52498in</Width>
+            <ZIndex>13</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+          <Textbox Name="controlside">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!cntrside.Value, "LogCut1")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>controlside</rd:DefaultName>
+            <Top>0.63507in</Top>
+            <Left>2.22056in</Left>
+            <Height>0.25in</Height>
+            <Width>0.2507in</Width>
+            <ZIndex>14</ZIndex>
+            <Style>
+              <Border />
+            </Style>
+          </Textbox>
+        </ReportItems>
+        <Height>1.05209in</Height>
+        <Style />
+      </Body>
+      <Width>3.1168in</Width>
+      <Page>
+        <PageHeight>1in</PageHeight>
+        <PageWidth>3in</PageWidth>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>4</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>47966972-94b6-417e-bfc5-b4240ad6621b</rd:ReportID>
+</Report>

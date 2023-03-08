@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ExchangeDBServerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Inv">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" Nullable="false" />
+    <Property Name="proc_type" Type="int" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="inv_type" Type="int" />
+    <Property Name="safe" Type="int" />
+    <Property Name="stock" Type="int" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="sales_emp" Type="int" />
+    <Property Name="tot_purch" Type="float" />
+    <Property Name="tot_sale" Type="float" />
+    <Property Name="tot_net" Type="float" />
+    <Property Name="IDRestrictions" Type="int" />
+    <Property Name="InvId_Return" Type="int" />
+    <Property Name="branch" Type="int" />
+    <Property Name="paid" Type="float" />
+    <Property Name="date_Update" Type="datetime" />
+    <Property Name="date_Deleted" Type="datetime" />
+    <Property Name="emp_Update" Type="int" />
+    <Property Name="edit" Type="int" />
+    <Property Name="BillNo" Type="int" />
+    <Property Name="CheckInv" Type="bit" />
+    <Property Name="ValuDate" Type="date" />
+    <Property Name="Notes" Type="nvarchar(max)" />
+    <Property Name="Weight" Type="nvarchar" MaxLength="50" />
+    <Property Name="PACKGES" Type="nvarchar" MaxLength="50" />
+    <Property Name="CFR" Type="nvarchar(max)" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="local_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Inv_Sub">
+    <Key>
+      <PropertyRef Name="cloud_id" />
+    </Key>
+    <Property Name="Inv_id" Type="bigint" />
+    <Property Name="proc_type" Type="int" />
+    <Property Name="currency_from" Type="int" />
+    <Property Name="val" Type="float" />
+    <Property Name="exchange_priceUsd" Type="float" />
+    <Property Name="exchange_price" Type="float" />
+    <Property Name="local_id" Type="bigint" />
+    <Property Name="cloud_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="ExchangeDBServerModelStoreContainer">
+    <EntitySet Name="Inv" EntityType="Self.Inv" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Inv_Sub" EntityType="Self.Inv_Sub" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

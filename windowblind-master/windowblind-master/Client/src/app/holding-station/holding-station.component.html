@@ -1,0 +1,247 @@
+<div class="container-fluid">
+
+  <div class="row mt-4">
+    <div class="col-lg-4" style="margin-top: 5px;margin-left: 30px;">
+
+      <form class="form-inline">
+        <label> Select a station</label>
+        <select class="form-control" name="StationName" id="ForwardStation" style="display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        text-align: center;
+        min-width:300px;
+        margin-left: 4px;
+        text-align-last: center;
+        font-size: 16px;cursor: pointer;" (change)="GetTablesBasedOnStation()">
+          <option value="..." id="station_default" selected>...</option>
+          <option *ngFor="let table of StationName" value="{{table}}" id="station_{{table}}">{{table}}</option>
+        </select>
+      </form>
+    </div>
+    <div class="col-lg-4" style="margin-top: 5px;margin-left: 30px;">
+
+      <form class="form-inline">
+        <label> Select a Table</label>
+        <select class="form-control" name="TableNames" id="ForwardTable" style="display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        text-align: center;
+        min-width:300px;
+        margin-left: 4px;
+        text-align-last: center;
+        font-size: 16px;cursor: pointer;">
+          <option value="..." id="table_default" selected>...</option>
+          <option *ngFor="let table of TableNames" value="{{table}}" id="table_{{table}}">{{table}}</option>
+        </select>
+      </form>
+    </div>
+
+
+
+
+  </div>
+
+  <div class="row my-4 justify-content-end" style="margin-right:20px ;" *ngIf="Data.length!=0">
+
+    <button class="btn btn-primary mr-2" (click)="Send();" style="margin-left: 50%;min-width: 35px;"><span
+        *ngIf="SendLoading" class="spinner-border spinner-border-sm mr-1"></span>
+      Send </button>
+
+    <button class="btn btn-primary" (click)="Delete();">
+      Delete</button>
+  </div>
+
+</div>
+
+<div class="container-fluid mt-3">
+  <div id="ReasonFilter" class="dropdown-check-list" style="margin-left: 15px;">
+    <span class="anchor" id="ReasonFilteranchor_ReasonFilter" style="width: 100%;">Filter</span>
+    <ul class="items" id="ReasonFilteritems_ReasonFilter"
+      style="z-index: 1;position: absolute;display: none;background-color: #eee;">
+      <li *ngFor="let Reason of ReasonsList;let j = index" [value]="Reason"><input type="checkbox"
+          id="{{Reason}}__ReasonFilter" (click)="FilterTableBasedOnReasons(Reason)" />{{Reason}} </li>
+
+    </ul>
+  </div>
+
+</div>
+<div class="container-fluid mt-5">
+
+  <div class="table-responsive mt-3" id="TableViewSelect">
+    <!-- <table datatable [dtOptions]="dtOptions" class="table table-bordered w-100" id="dScenario-table"
+      [dtTrigger]="dtTrigger">
+      <thead class="bg-light">
+        <tr id="DataTableHeader">
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">CB Number</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Line No.</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Username</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Table name</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Date</span>
+            </div>
+          </th>
+
+          <th class="align-baseline  mw-200">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Original station</span>
+            </div>
+          </th>
+
+          <th id="theSelectColumn">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Select</span>
+
+            </div>
+          </th>
+          <th id="ReasonForHoldColumn">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="text-black-50">Reason</span>
+
+            </div>
+          </th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of Data;let i = index" id="RowNumber_i" [style.display]="!hideRows[i] ? '' : 'none'">
+          <td>
+            {{row.row.row['CB Number']}}
+          </td>
+
+          <td>
+            {{row.row.row['Line No']}}
+          </td>
+
+          <td>
+            {{row.userName}}
+          </td>
+
+          <td>
+            {{row.tableName}}
+          </td>
+          <td>
+            {{row.dateTime}}
+          </td>
+          <td>
+            {{row.stationName}}
+          </td>
+          <td>
+            <button class="btn btn-sm" id="SelectoCl_{{i}}" (click)="SelectThisRow(i);">Select</button>
+          </td>
+          <td>
+            <div id="ReasonSelectNumber_{{i}}" class="dropdown-check-list nonFilter" style="word-wrap: break-word;">
+              <span class="anchor" id="anchor_{{i}}" style="width: 100%;word-wrap: break-word;">Select Reasons</span>
+              <ul class="items" id="items_{{i}}" style="display: none;width: 100%;">
+                <li *ngFor="let Reason of ReasonsList;let j = index" [value]="Reason"><input type="checkbox"
+                    id="{{Reason}}__{{i}}" (click)="UpdateReasons(Reason,row.row.uniqueId)" />{{Reason}} </li>
+
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table> -->
+
+
+
+
+    <table mat-table #Datatable class="table table-bordered w-100" id="dScenario-table" [dataSource]="DataSource">
+
+
+      <ng-container matColumnDef='CB Number'>
+        <th mat-header-cell *matHeaderCellDef>CB Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.row.row['CB Number']}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef='Line No'>
+        <th mat-header-cell *matHeaderCellDef>Line No</th>
+        <td mat-cell *matCellDef="let element"> {{element.row.row['Line No']}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef='UserName'>
+        <th mat-header-cell *matHeaderCellDef>UserName</th>
+        <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef='TableName'>
+        <th mat-header-cell *matHeaderCellDef>TableName</th>
+        <td mat-cell *matCellDef="let element"> {{element.tableName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef='DateTime'>
+        <th mat-header-cell *matHeaderCellDef>DateTime</th>
+        <td mat-cell *matCellDef="let element"> {{element.dateTime}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef='StationName'>
+        <th mat-header-cell *matHeaderCellDef>StationName</th>
+        <td mat-cell *matCellDef="let element"> {{element.stationName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Select Reasons">
+        <th mat-header-cell *matHeaderCellDef>Select Reasons</th>
+        <td mat-cell *matCellDef="let element;let i = index">
+
+          <div id="ReasonSelectNumber_{{i}}" class="dropdown-check-list nonFilter" style="word-wrap: break-word;">
+            <span class="anchor" id="anchor_{{i}}" style="width: 100%;word-wrap: break-word;">Select Reasons</span>
+            <ul class="items" id="items_{{i}}" style="display: none;width: 100%;">
+              <li *ngFor="let Reason of ReasonsList;let j = index" [value]="Reason"><input type="checkbox"
+                  id="{{Reason}}__{{i}}" (click)="UpdateReasons(Reason,element.row.uniqueId)" />{{Reason}} </li>
+            </ul>
+          </div>
+
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Admin Notes">
+        <th mat-header-cell *matHeaderCellDef>Admin Notes</th>
+        <td mat-cell *matCellDef="let element;let i = index">
+          <textarea cols="30" rows="3" style="overflow-y: scroll;" id="Admin_Notes_{{i}}" (keydown) = 'AppendOnly(i)' (change)="SaveAdminNotes(i)">{{element.row.row['Admin_Notes']}}</textarea>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="SelectColumn">
+        <th mat-header-cell *matHeaderCellDef>SelectColumn</th>
+        <td mat-cell *matCellDef="let element;let i = index"><button class="btn btn-sm SelectAllTag"
+            id="SelectCol_{{i}}" (click)="SelectThisRow(i);">Select</button></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="tableModelColNamesWithActions"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableModelColNamesWithActions;let i = index" id="RowNumber_{{i}}">
+      </tr>
+
+    </table>
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="PageChange()"
+      aria-label="Select page of periodic elements">
+    </mat-paginator>
+
+  </div>
+
+
+
+</div>

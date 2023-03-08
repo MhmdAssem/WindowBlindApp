@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="EzystopApp">
+</Property><Property Name="Solution File" Value="Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\EzystopApp.sln">
+</Property><Property Name="User Options File" Value="Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\EzystopApp.suo">
+</Property><Property Name="Date" Value="Wednesday, 30 December 2020">
+</Property><Property Name="Time" Value="9:30 a.m.">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="EzystopApp.sln" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\EzystopApp.sln">
+</Event><Event ErrorLevel="0" Project="" Source="EzystopApp.suo" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\EzystopApp.suo">
+</Event><Event ErrorLevel="4" Project="EzystopApp" Source="http://go.microsoft.com/fwlink/?LinkId=159919" Description="Warning: this project requires Crystal Reports, which is no longer included with Visual Studio. Please click here for more information.">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="EzystopApp.vbproj" Description="Project file successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\EzystopApp.vbproj">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="EzystopApp.vbproj.user" Description="Project user file successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\EzystopApp.vbproj.user">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="Class\CRs232.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\Class\CRs232.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="ImportData.Designer.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\ImportData.Designer.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="ImportData.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\ImportData.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="Module1.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\Module1.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="ReportViewer.designer.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\ReportViewer.designer.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="ReportViewer.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\ReportViewer.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="JobSheet.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\JobSheet.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="JobSheet.Designer.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\JobSheet.Designer.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="My Project\AssemblyInfo.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\My Project\AssemblyInfo.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="My Project\Application.Designer.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\My Project\Application.Designer.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="My Project\Resources.Designer.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\My Project\Resources.Designer.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="My Project\Settings.Designer.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\My Project\Settings.Designer.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="SplashScreen.Designer.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\SplashScreen.Designer.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="SplashScreen.vb" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\SplashScreen.vb">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="My Project\app.manifest" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\My Project\app.manifest">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="My Project\Application.myapp" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\My Project\Application.myapp">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="My Project\Settings.settings" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\My Project\Settings.settings">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="app.config" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\app.config">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="Resources\cancel.png" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\Resources\cancel.png">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="Resources\Close.png" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\Resources\Close.png">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="Resources\import.png" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\Resources\import.png">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="Connected.ico" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\Connected.ico">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="monitor.ico" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\monitor.ico">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="ImportData.resx" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\ImportData.resx">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="ReportViewer.resx" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\ReportViewer.resx">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="JobSheet.resx" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\JobSheet.resx">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="My Project\Resources.resx" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\My Project\Resources.resx">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="SplashScreen.resx" Description="File successfully backed up as Z:\cyberdhaval\Dropbox\Contract Blinds\EzystopApp-27-02-2014 Updated 2.0\EzystopApp\Backup\SplashScreen.resx">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="EzystopApp.vbproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="EzystopApp" Source="EzystopApp.vbproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="EzystopApp.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="EzystopApp.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="EzystopApp" Source="EzystopApp.vbproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

@@ -1,0 +1,38 @@
+<mat-toolbar color="primary" class="app-header">
+    <a mat-icon-button href="Home" class="home" ><mat-icon [inline]="true"></mat-icon></a>
+    <a mat-button href="users" *ngIf="isAdministrator">Users</a>
+    <a mat-button href="settings" *ngIf="isAdministrator">Settings</a>
+    <a mat-button href="fabric-cutter" *ngIf="isAdministrator || isFactoryStaff">Fabric Cutter</a>
+    <a mat-button href="log-cut" *ngIf="isAdministrator || isFactoryStaff">Log Cut</a>
+    <a mat-button href="Pre-EzStop" *ngIf="isAdministrator || isFactoryStaff">Pre EzStop</a>
+    <a mat-button href="Ez-Stop" *ngIf="isAdministrator || isFactoryStaff">Ezystop</a>
+    
+    <a mat-button href="Assembly-Station" *ngIf="isAdministrator || isFactoryStaff">Assembly</a>
+    <a mat-button href="Hoist-Station" *ngIf="isAdministrator || isFactoryStaff">Hoist</a>
+    <a mat-button href="Packing-Station" *ngIf="isAdministrator || isFactoryStaff">Packing</a>
+    <a mat-button href="Holding-Station" *ngIf="isAdministrator">On Hold</a>
+
+    <a mat-button href="Report-Station" *ngIf="isCustomerService || isAdministrator">Customer Service</a>
+    
+    <span class="spacer"></span>
+    <span class="current-station">{{currentStation }}</span>
+    <span class="current-table">{{currentTable }}</span>
+    <app-logout></app-logout>
+    
+</mat-toolbar>
+<router-outlet>
+  
+  <div id="LoadingDiv"  style="display: none; min-width: 100%;min-height: 100%;position: fixed;background-color: white; z-index: 1;opacity: 75%;">
+  
+    <img style="position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 300px;
+    margin-top: -150px; 
+    margin-left: -200px;" 
+    title="orbit-400px.gif" src="https://cdn.dribbble.com/users/421466/screenshots/2390664/media/edb52be742472b74d734499a508a93d6.gif" alt="Edb52be742472b74d734499a508a93d6">
+  
+  </div>
+  
+</router-outlet>

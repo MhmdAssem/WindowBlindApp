@@ -1,0 +1,628 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="GoldDB2020Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Accounts_Index">
+    <Key>
+      <PropertyRef Name="Code" />
+    </Key>
+    <Property Name="Code" Type="int" Nullable="false" />
+    <Property Name="AName" Type="nvarchar" MaxLength="50" />
+    <Property Name="AName1" Type="nvarchar" MaxLength="50" />
+    <Property Name="Nature" Type="int" />
+    <Property Name="Type" Type="int" />
+    <Property Name="ParentCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="Date" Type="smalldatetime" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="50" />
+    <Property Name="IValue" Type="float" />
+    <Property Name="FinalAcc" Type="int" />
+    <Property Name="Total_Debts" Type="float" />
+    <Property Name="Total_Credits" Type="float" />
+    <Property Name="Account_Value" Type="float" />
+    <Property Name="Acc_branch" Type="int" />
+    <Property Name="cloud_id" Type="bigint" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="Cash_Payment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="TypeID" Type="int" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="val" Type="float" />
+    <Property Name="PriceMG" Type="float" />
+    <Property Name="WeightD" Type="float" />
+    <Property Name="type" Type="int" />
+    <Property Name="safe_bank_id" Type="int" />
+    <Property Name="sales_emp" Type="int" />
+    <Property Name="check_no" Type="nvarchar" MaxLength="50" />
+    <Property Name="check_date" Type="datetime" />
+    <Property Name="checkbank" Type="nvarchar" MaxLength="100" />
+    <Property Name="check_state" Type="int" />
+    <Property Name="notes" Type="nvarchar" MaxLength="500" />
+    <Property Name="rest_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Closing_Gold">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="date" Type="date" />
+    <Property Name="type" Type="int" />
+    <Property Name="sales_emp" Type="int" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="WeightD" Type="float" />
+    <Property Name="Caliber" Type="int" />
+    <Property Name="WeightdMain" Type="float" />
+    <Property Name="PriceMG" Type="float" />
+    <Property Name="val" Type="float" />
+    <Property Name="rest_id" Type="int" />
+    <Property Name="branch" Type="int" />
+    <Property Name="notes" Type="nvarchar(max)" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Customers">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="150" />
+    <Property Name="national_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="Delegate" Type="nvarchar(max)" />
+    <Property Name="cmbJob" Type="int" />
+    <Property Name="city" Type="int" />
+    <Property Name="mobile" Type="nvarchar(max)" />
+    <Property Name="Address2" Type="nvarchar(max)" />
+    <Property Name="Address" Type="nvarchar(max)" />
+    <Property Name="notes" Type="nvarchar(max)" />
+    <Property Name="daate" Type="date" />
+    <Property Name="HijDay" Type="nvarchar(max)" />
+    <Property Name="act" Type="int" />
+    <Property Name="limit" Type="float" />
+    <Property Name="Balance" Type="float" />
+    <Property Name="AccountCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="status" Type="bit" />
+    <Property Name="TAXNO" Type="nvarchar(max)" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="EmpBranches">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="emp" Type="int" />
+    <Property Name="branch" Type="int" />
+    <Property Name="local_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Employees">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="50" />
+    <Property Name="manag" Type="int" />
+    <Property Name="dep" Type="int" />
+    <Property Name="state" Type="int" />
+    <Property Name="job" Type="int" />
+    <Property Name="branch" Type="int" />
+    <Property Name="birth_date" Type="datetime" />
+    <Property Name="insurance_no" Type="int" />
+    <Property Name="work_date" Type="datetime" />
+    <Property Name="marital_state" Type="int" />
+    <Property Name="nationality" Type="int" />
+    <Property Name="sex" Type="char" MaxLength="1" />
+    <Property Name="tel" Type="nvarchar" MaxLength="50" />
+    <Property Name="mobile" Type="nvarchar" MaxLength="50" />
+    <Property Name="email" Type="nvarchar" MaxLength="50" />
+    <Property Name="address" Type="nvarchar" MaxLength="500" />
+    <Property Name="notes" Type="nvarchar" MaxLength="500" />
+    <Property Name="image" Type="image" />
+    <Property Name="FINGERPRINT" Type="image" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="Vac_Balance" Type="int" />
+    <Property Name="dentificationNo" Type="nvarchar" MaxLength="15" />
+    <Property Name="Expiration_Date" Type="datetime" />
+    <Property Name="Education" Type="nvarchar" MaxLength="300" />
+    <Property Name="Work_Experience" Type="nvarchar" MaxLength="300" />
+    <Property Name="Tasks" Type="nvarchar(max)" />
+    <Property Name="Passport" Type="nvarchar(max)" />
+    <Property Name="DatePassport" Type="nvarchar(max)" />
+    <Property Name="salary_basic" Type="float" />
+    <Property Name="salary_add" Type="float" />
+    <Property Name="SalaryTransport" Type="float" />
+    <Property Name="SalaryVictuals" Type="float" />
+    <Property Name="salary_other" Type="float" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="First_balance">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="depot" Type="int" />
+    <Property Name="Product_id" Type="int" />
+    <Property Name="val" Type="float" />
+    <Property Name="Number" Type="int" />
+    <Property Name="Caliber" Type="int" />
+    <Property Name="Branch" Type="int" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Gold_Payment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="TypeID" Type="int" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="ProCode" Type="int" />
+    <Property Name="Number" Type="int" />
+    <Property Name="valWeight" Type="float" />
+    <Property Name="Caliber" Type="int" />
+    <Property Name="valWeightD" Type="float" />
+    <Property Name="sales_emp" Type="int" />
+    <Property Name="rest_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="status" Type="int" />
+    <Property Name="notes" Type="nvarchar(max)" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Gold_Prices">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="date" Type="date" />
+    <Property Name="Prices24" Type="float" />
+    <Property Name="Prices22" Type="float" />
+    <Property Name="Prices21" Type="float" />
+    <Property Name="Prices18" Type="float" />
+    <Property Name="cloud_id" Type="bigint" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="Gold_Repair">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" Nullable="false" />
+    <Property Name="No" Type="nvarchar" MaxLength="50" />
+    <Property Name="emp_id" Type="int" />
+    <Property Name="idCost" Type="nvarchar" MaxLength="150" />
+    <Property Name="Fone" Type="nvarchar" MaxLength="50" />
+    <Property Name="Date" Type="datetime" />
+    <Property Name="DateDelivery" Type="datetime" />
+    <Property Name="GoldType" Type="nvarchar" MaxLength="150" />
+    <Property Name="MaintenanceType" Type="nvarchar" MaxLength="150" />
+    <Property Name="Caliber" Type="int" />
+    <Property Name="Val" Type="float" />
+    <Property Name="FeeRepairs" Type="float" />
+    <Property Name="AmountPaid" Type="float" />
+    <Property Name="RemainingAmount" Type="float" />
+    <Property Name="rest_id" Type="bigint" />
+    <Property Name="Chk1" Type="bit" />
+    <Property Name="Chk2" Type="bit" />
+    <Property Name="Notes" Type="nvarchar(max)" />
+    <Property Name="branch" Type="int" />
+    <Property Name="CmbCost" Type="int" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Group_cust">
+    <Key>
+      <PropertyRef Name="Groupid" />
+    </Key>
+    <Property Name="Groupid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="GroupName" Type="nvarchar(max)" />
+    <Property Name="GroupCaliber" Type="int" />
+    <Property Name="GroupUnits" Type="int" />
+    <Property Name="GroupCode" Type="int" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Inv">
+    <Key>
+      <PropertyRef Name="Inv_Code" />
+    </Key>
+    <Property Name="Inv_Code" Type="bigint" Nullable="false" />
+    <Property Name="Inv_Date" Type="datetime" />
+    <Property Name="Inv_InvProcTypeID" Type="int" />
+    <Property Name="Inv_InvType_ID" Type="int" />
+    <Property Name="DetailsNo" Type="int" />
+    <Property Name="Inv_IDRestrictions" Type="int" />
+    <Property Name="Inv_StocksID" Type="int" />
+    <Property Name="Inv_SafesId" Type="int" />
+    <Property Name="Inv_CustID" Type="int" />
+    <Property Name="Inv_EMPID" Type="int" />
+    <Property Name="Inv_TotalWeightBased" Type="float" />
+    <Property Name="Inv_TotalMainWeight" Type="float" />
+    <Property Name="Inv_TotalTax" Type="float" />
+    <Property Name="Inv_Cash" Type="float" />
+    <Property Name="Inv_Mada" Type="float" />
+    <Property Name="Inv_Vish" Type="float" />
+    <Property Name="Inv_Discount" Type="float" />
+    <Property Name="Inv_TotalNet" Type="float" />
+    <Property Name="Inv_IS_Deleted" Type="bit" />
+    <Property Name="inv_date_Deleted" Type="nvarchar(max)" />
+    <Property Name="inv_date_Update" Type="datetime" />
+    <Property Name="Inv_emp_Update" Type="int" />
+    <Property Name="InvId_Return" Type="nvarchar(max)" />
+    <Property Name="Inv_BillNo" Type="int" />
+    <Property Name="Inv_Notes" Type="nvarchar(max)" />
+    <Property Name="Inv_branch" Type="int" />
+    <Property Name="cloud_Id" Type="bigint" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="Inv_Sub">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="Inv_ID" Type="bigint" />
+    <Property Name="Inv_ProCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="InvSub_Unit" Type="int" />
+    <Property Name="InvSub_Number" Type="int" />
+    <Property Name="InvSub_Weight" Type="float" />
+    <Property Name="InvSub_Caliber" Type="float" />
+    <Property Name="InvSub_WeightD" Type="float" />
+    <Property Name="InvSub_PriceG" Type="float" />
+    <Property Name="InvSub_Tax" Type="float" />
+    <Property Name="InvSub_TotTax" Type="float" />
+    <Property Name="InvSub_Diff" Type="float" />
+    <Property Name="local_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Products">
+    <Key>
+      <PropertyRef Name="Pro_id" />
+    </Key>
+    <Property Name="Pro_id" Type="int" Nullable="false" />
+    <Property Name="Groups" Type="int" />
+    <Property Name="code" Type="bigint" />
+    <Property Name="Units" Type="int" />
+    <Property Name="Pro_name" Type="nvarchar(max)" />
+    <Property Name="Caliber" Type="int" />
+    <Property Name="DefaultWeight" Type="float" />
+    <Property Name="PricePRGM" Type="float" />
+    <Property Name="BuyPrice" Type="float" />
+    <Property Name="SalePrice" Type="float" />
+    <Property Name="WorkManship" Type="float" />
+    <Property Name="Profit" Type="float" />
+    <Property Name="Discount" Type="float" />
+    <Property Name="LowestPrice" Type="float" />
+    <Property Name="Status" Type="bit" />
+    <Property Name="Tax" Type="float" />
+    <Property Name="ChKPurch" Type="bit" />
+    <Property Name="ChkSales" Type="bit" />
+    <Property Name="ChkNoShow" Type="bit" />
+    <Property Name="CheckTax" Type="bit" />
+    <Property Name="image" Type="image" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Restrictions">
+    <Key>
+      <PropertyRef Name="IDRestrictions" />
+    </Key>
+    <Property Name="IDRestrictions" Type="int" Nullable="false" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="doc_no" Type="int" />
+    <Property Name="type" Type="int" />
+    <Property Name="state" Type="int" />
+    <Property Name="notes" Type="nvarchar(max)" />
+    <Property Name="branch" Type="int" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="edit" Type="int" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Restrictions_Sub">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="res_id" Type="int" />
+    <Property Name="deptgold" Type="float" />
+    <Property Name="credItgold" Type="float" />
+    <Property Name="dept" Type="float" />
+    <Property Name="credit" Type="float" />
+    <Property Name="acc_no" Type="int" />
+    <Property Name="notes" Type="nvarchar(max)" />
+    <Property Name="branch" Type="int" />
+    <Property Name="local_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Safe_Emps">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="safe_id" Type="int" />
+    <Property Name="emp_id" Type="int" />
+    <Property Name="local_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Safes">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="status" Type="int" />
+    <Property Name="IS_Default" Type="bit" />
+    <Property Name="notes" Type="nvarchar" MaxLength="500" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="SafesTransferBranch">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" Nullable="false" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="safe_from" Type="int" />
+    <Property Name="safe_to" Type="int" />
+    <Property Name="frombranch" Type="int" />
+    <Property Name="tobranch" Type="int" />
+    <Property Name="Note" Type="nvarchar(max)" />
+    <Property Name="ok" Type="bit" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="SafesTransferBranch_Sub">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="transfer_id" Type="bigint" />
+    <Property Name="currency" Type="int" />
+    <Property Name="value" Type="float" />
+    <Property Name="Number" Type="float" />
+    <Property Name="Caliber" Type="int" />
+    <Property Name="avg" Type="float" />
+    <Property Name="totl" Type="float" />
+    <Property Name="user_emp" Type="int" />
+    <Property Name="local_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="SandD">
+    <Key>
+      <PropertyRef Name="Sand_Code" />
+    </Key>
+    <Property Name="Sand_Code" Type="bigint" Nullable="false" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="emp_id" Type="int" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="val" Type="float" />
+    <Property Name="type" Type="int" />
+    <Property Name="safe_bank_id" Type="int" />
+    <Property Name="sales_emp" Type="int" />
+    <Property Name="check_no" Type="nvarchar" MaxLength="50" />
+    <Property Name="check_date" Type="datetime" />
+    <Property Name="checkbank" Type="nvarchar" MaxLength="100" />
+    <Property Name="check_state" Type="int" />
+    <Property Name="notes" Type="nvarchar" MaxLength="500" />
+    <Property Name="rest_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="edit" Type="int" />
+    <Property Name="image" Type="image" />
+    <Property Name="cloud_id" Type="bigint" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="SandQ">
+    <Key>
+      <PropertyRef Name="Sand_Code" />
+    </Key>
+    <Property Name="Sand_Code" Type="bigint" Nullable="false" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="val" Type="float" />
+    <Property Name="type" Type="int" />
+    <Property Name="safe_bank_id" Type="int" />
+    <Property Name="sales_emp" Type="int" />
+    <Property Name="check_no" Type="nvarchar" MaxLength="50" />
+    <Property Name="check_date" Type="datetime" />
+    <Property Name="checkbank" Type="nvarchar" MaxLength="100" />
+    <Property Name="check_state" Type="int" />
+    <Property Name="notes" Type="nvarchar" MaxLength="500" />
+    <Property Name="rest_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="edit" Type="int" />
+    <Property Name="image" Type="image" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="SandQD">
+    <Key>
+      <PropertyRef Name="Sand_Code" />
+    </Key>
+    <Property Name="Sand_Code" Type="bigint" Nullable="false" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="emp_person" Type="int" />
+    <Property Name="cust_id" Type="int" />
+    <Property Name="acc_code" Type="int" />
+    <Property Name="val" Type="float" />
+    <Property Name="type" Type="int" />
+    <Property Name="safe_bank_id" Type="int" />
+    <Property Name="sales_emp" Type="int" />
+    <Property Name="check_no" Type="nvarchar" MaxLength="50" />
+    <Property Name="check_date" Type="datetime" />
+    <Property Name="checkbank" Type="nvarchar" MaxLength="100" />
+    <Property Name="check_state" Type="int" />
+    <Property Name="notes" Type="nvarchar" MaxLength="500" />
+    <Property Name="rest_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="edit" Type="int" />
+    <Property Name="image" Type="image" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="SandSD">
+    <Key>
+      <PropertyRef Name="Sand_Code" />
+    </Key>
+    <Property Name="Sand_Code" Type="bigint" Nullable="false" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="emp_person" Type="int" />
+    <Property Name="emp_id" Type="int" />
+    <Property Name="acc_code" Type="int" />
+    <Property Name="val" Type="float" />
+    <Property Name="type" Type="int" />
+    <Property Name="safe_bank_id" Type="int" />
+    <Property Name="sales_emp" Type="int" />
+    <Property Name="check_no" Type="nvarchar" MaxLength="50" />
+    <Property Name="check_date" Type="datetime" />
+    <Property Name="checkbank" Type="nvarchar" MaxLength="100" />
+    <Property Name="check_state" Type="int" />
+    <Property Name="notes" Type="nvarchar" MaxLength="500" />
+    <Property Name="rest_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="edit" Type="int" />
+    <Property Name="image" Type="image" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Stock_Emps">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="stock_id" Type="int" />
+    <Property Name="emp_id" Type="int" />
+    <Property Name="local_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Stocks">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="50" />
+    <Property Name="branch" Type="int" />
+    <Property Name="status" Type="int" />
+    <Property Name="IS_Default" Type="bit" />
+    <Property Name="notes" Type="nvarchar" MaxLength="500" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="StockTransferBranch">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="bigint" Nullable="false" />
+    <Property Name="RestrictionsID" Type="bigint" />
+    <Property Name="FromStockID" Type="int" Nullable="false" />
+    <Property Name="ToStockID" Type="int" Nullable="false" />
+    <Property Name="TransferValue" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="TransferDate" Type="datetime" Nullable="false" />
+    <Property Name="EmpID" Type="int" Nullable="false" />
+    <Property Name="branchFrom" Type="int" />
+    <Property Name="branchTo" Type="int" />
+    <Property Name="Note" Type="nvarchar(max)" />
+    <Property Name="OK" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="TransferProducts">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" Nullable="false" />
+    <Property Name="date" Type="datetime" />
+    <Property Name="safe" Type="int" />
+    <Property Name="FromProductsCode" Type="bigint" />
+    <Property Name="ToProductsCode" Type="bigint" />
+    <Property Name="Val" Type="float" />
+    <Property Name="Number" Type="int" />
+    <Property Name="Caliber" Type="int" />
+    <Property Name="branch" Type="int" />
+    <Property Name="ok" Type="bit" />
+    <Property Name="emp" Type="int" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+    <Property Name="IsEdited" Type="bit" />
+  </EntityType>
+  <EntityType Name="User_Permissions">
+    <Key>
+      <PropertyRef Name="local_id" />
+    </Key>
+    <Property Name="user_id" Type="int" />
+    <Property Name="Form_id" Type="int" />
+    <Property Name="IS_New" Type="bit" />
+    <Property Name="IS_Save" Type="bit" />
+    <Property Name="IS_Update" Type="bit" />
+    <Property Name="IS_Delete" Type="bit" />
+    <Property Name="IS_Search" Type="bit" />
+    <Property Name="IS_Print" Type="bit" />
+    <Property Name="local_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="emp" Type="int" Nullable="false" />
+    <Property Name="username" Type="nvarchar" MaxLength="50" />
+    <Property Name="pwd" Type="nvarchar" MaxLength="50" />
+    <Property Name="date" Type="date" />
+    <Property Name="IS_Deleted" Type="bit" />
+    <Property Name="Connected" Type="bit" />
+    <Property Name="IsEdited" Type="bit" />
+    <Property Name="cloud_id" Type="bigint" />
+  </EntityType>
+  <EntityContainer Name="GoldDB2020ModelStoreContainer">
+    <EntitySet Name="Accounts_Index" EntityType="Self.Accounts_Index" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Cash_Payment" EntityType="Self.Cash_Payment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Closing_Gold" EntityType="Self.Closing_Gold" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EmpBranches" EntityType="Self.EmpBranches" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Employees" EntityType="Self.Employees" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="First_balance" EntityType="Self.First_balance" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Gold_Payment" EntityType="Self.Gold_Payment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Gold_Prices" EntityType="Self.Gold_Prices" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Gold_Repair" EntityType="Self.Gold_Repair" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Group_cust" EntityType="Self.Group_cust" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Inv" EntityType="Self.Inv" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Inv_Sub" EntityType="Self.Inv_Sub" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Restrictions" EntityType="Self.Restrictions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Restrictions_Sub" EntityType="Self.Restrictions_Sub" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Safe_Emps" EntityType="Self.Safe_Emps" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Safes" EntityType="Self.Safes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SafesTransferBranch" EntityType="Self.SafesTransferBranch" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SafesTransferBranch_Sub" EntityType="Self.SafesTransferBranch_Sub" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SandD" EntityType="Self.SandD" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SandQ" EntityType="Self.SandQ" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SandQD" EntityType="Self.SandQD" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SandSD" EntityType="Self.SandSD" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Stock_Emps" EntityType="Self.Stock_Emps" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockTransferBranch" EntityType="Self.StockTransferBranch" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TransferProducts" EntityType="Self.TransferProducts" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User_Permissions" EntityType="Self.User_Permissions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>
