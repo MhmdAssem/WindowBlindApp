@@ -21,14 +21,6 @@
           <DataField>Address1</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Address2">
-          <DataField>Address2</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Address3">
-          <DataField>Address3</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="Carrier">
           <DataField>Carrier</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -108,9 +100,9 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Fields!PO.Value, "DataSet1")</Value>
+                    <Value>=First(Fields!PO.Value, "PinklLabel")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -133,9 +125,9 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Fields!CCNumber.Value, "DataSet1")</Value>
+                    <Value>=First(Fields!CCNumber.Value, "PinklLabel")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -159,7 +151,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Fields!Cust.Value, "DataSet1")</Value>
+                    <Value>=First(Fields!Cust.Value, "PinklLabel")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -185,7 +177,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Fields!CustRef.Value, "DataSet1")</Value>
+                    <Value>=First(Fields!CustRef.Value, "PinklLabel")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
                     </Style>
@@ -335,27 +327,28 @@
             </Style>
           </Textbox>
           <Textbox Name="LineNumber">
-            <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="*" + First(Fields!LineNumber.Value, "PinklLabel") + "*'</Value>
+                    <Value>="*" + First(Fields!LineNumber.Value, "PinklLabel") + "*"</Value>
                     <Style>
                       <FontFamily>3 of 9 Barcode</FontFamily>
-                      <FontSize>22pt</FontSize>
+                      <FontSize>20pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>LineNumber</rd:DefaultName>
             <Top>2.32599cm</Top>
             <Left>0.34078cm</Left>
-            <Height>0.6cm</Height>
-            <Width>5.82966cm</Width>
+            <Height>0.64475cm</Height>
+            <Width>7.23195cm</Width>
             <ZIndex>9</ZIndex>
             <Style>
               <Border>
@@ -381,9 +374,9 @@
             </Paragraphs>
             <rd:DefaultName>SomeOfTotal</rd:DefaultName>
             <Top>2.32599cm</Top>
-            <Left>6.34683cm</Left>
+            <Left>7.88141cm</Left>
             <Height>0.6cm</Height>
-            <Width>3.26729cm</Width>
+            <Width>2.06692cm</Width>
             <ZIndex>10</ZIndex>
             <Style>
               <Border />
@@ -461,60 +454,8 @@
             <Top>3.40995cm</Top>
             <Left>0.0762cm</Left>
             <Height>0.6cm</Height>
-            <Width>3.28965cm</Width>
+            <Width>9.87213cm</Width>
             <ZIndex>13</ZIndex>
-            <Style>
-              <Border />
-            </Style>
-          </Textbox>
-          <Textbox Name="Address2">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=First(Fields!Address2.Value, "PinklLabel")</Value>
-                    <Style>
-                      <FontSize>7pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Address2</rd:DefaultName>
-            <Top>3.40995cm</Top>
-            <Left>3.24591cm</Left>
-            <Height>0.6cm</Height>
-            <Width>3.06268cm</Width>
-            <ZIndex>14</ZIndex>
-            <Style>
-              <Border />
-            </Style>
-          </Textbox>
-          <Textbox Name="Address3">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=First(Fields!Address3.Value, "PinklLabel")</Value>
-                    <Style>
-                      <FontSize>7pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Address3</rd:DefaultName>
-            <Top>3.40995cm</Top>
-            <Left>6.34739cm</Left>
-            <Height>0.6cm</Height>
-            <Width>3.7506cm</Width>
-            <ZIndex>15</ZIndex>
             <Style>
               <Border />
             </Style>
@@ -540,7 +481,7 @@
             <Left>0.0762cm</Left>
             <Height>0.6cm</Height>
             <Width>2.57938cm</Width>
-            <ZIndex>16</ZIndex>
+            <ZIndex>14</ZIndex>
             <Style>
               <Border />
             </Style>
@@ -564,7 +505,7 @@
             <Left>6.66609cm</Left>
             <Height>0.6cm</Height>
             <Width>2.5cm</Width>
-            <ZIndex>17</ZIndex>
+            <ZIndex>15</ZIndex>
             <Style>
               <Border />
             </Style>

@@ -323,14 +323,22 @@ namespace WindowBlind.Api.Controllers
                         await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
                                             Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
                     if (item.Row["Department"] == "") continue;
-                    strconcat = item.Row["Debtor Order Number"] + "@" + item.Row["CB Number"];
-                    strconcat += "@" + item.Row["Debtor Order Number"].Substring(0, item.Row["Debtor Order Number"].IndexOf(' ')) + "@" + item.Row["Order Department"] + "@" + item.Row["Supplier"];
+                    var someoftotalprefix = item.Row["SomeOfTotal"].Trim();
+                    someoftotalprefix = someoftotalprefix.Substring(0, someoftotalprefix.IndexOf(" "));
+                    someoftotalprefix = new string('0', 4 - someoftotalprefix.Length) + someoftotalprefix;
+
+                    var wordsOfAddress3 = item.Row["Address 3"].Split(" ");
+                    var LastwordOfAddress3 = wordsOfAddress3[wordsOfAddress3.Length - 1];
+
+
+                    strconcat = item.Row["Debtor Order Number"] + "/" + someoftotalprefix + "@" + item.Row["CB Number"];
+                    strconcat += "@" + item.Row["Debtor Order Number"].Substring(0, item.Row["Debtor Order Number"].IndexOf(' ')) + "@" + item.Row["Order Department"] + "@" + "Viewscape Pty.Ltd";//item.Row["Supplier"];
                     strconcat += "@" + item.Row["Department"] + "@" + item.Row["Location"] + "@" + item.Row["Width"];
-                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Line No"] + "@" + item.Row["SomeOfTotal"];
-                    strconcat += "@" + item.Row["Customer"] + "@" + item.Row["Carrier"];
+                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Line No"] + "@" + item.Row["SomeOfTotal"] ;
+                    strconcat += "@" + item.Row["Customer"] + "@" + item.Row["Carrier"] + " "  + LastwordOfAddress3;
                     strconcat += "@" + item.Row["Address 1"];
-                    strconcat += "@" + item.Row["Address 2"];
-                    strconcat += "@" + item.Row["Address 3"];
+                    strconcat += "@" + ((!String.IsNullOrEmpty(item.Row["Address 1"].Trim()))? ", ":"") + item.Row["Address 2"];
+                    strconcat += "@" + ((!String.IsNullOrEmpty(item.Row["Address 2"].Trim())) ? ", " : "")+item.Row["Address 3"];
                     strconcat += "@" + item.Row["Postcode"];
                     strconcat += "@" + item.Row["Description"];
                     var status = item.Row["Status"];
@@ -349,7 +357,7 @@ namespace WindowBlind.Api.Controllers
                 {
                     var strParameterArray = labels[k].ToString().Split("@");
 
-                    if (strParameterArray[11] .Contains("Spotlight",StringComparison.OrdinalIgnoreCase))
+                    if (strParameterArray[11].Contains("Spotlight", StringComparison.OrdinalIgnoreCase))
                         PrintReport(printerName, strParameterArray, "PinkLabel.rdlc");
 
                     else
@@ -435,7 +443,7 @@ namespace WindowBlind.Api.Controllers
                 if (StrReportPath == "PinkLabel.rdlc")
                 {
                     PinkLabel obj = new PinkLabel();
-                    obj.PO = strParameterArray[0].ToString();
+                    obj.PO = "PO#: " + strParameterArray[0].ToString().Split(" ").Last();
                     obj.CCNumber = strParameterArray[1].ToString();
                     obj.Cust = "Cust: " + strParameterArray[2].ToString();
                     obj.CustRef = "Cust Ref: " + strParameterArray[3].ToString();
@@ -444,19 +452,18 @@ namespace WindowBlind.Api.Controllers
                     obj.Location = "Location: " + strParameterArray[6].ToString();
                     obj.Width = "W: " + strParameterArray[7].ToString();
                     obj.Drop = "D: " + strParameterArray[8].ToString();
-                    obj.LineNumber = strParameterArray[9].ToString();
+                    obj.LineNumber = strParameterArray[0].ToString().Split(" ").Last(); // strParameterArray[9].ToString();
                     obj.SomeOfTotal = strParameterArray[10].ToString();
                     obj.Customer = "Ship To: " + strParameterArray[11].ToString();
                     obj.Carrier = strParameterArray[12].ToString();
                     obj.Address1 = strParameterArray[13].ToString();
-                    obj.Address2 = strParameterArray[14].ToString();
-                    obj.Address3 = strParameterArray[15].ToString();
+                    obj.Address1 += strParameterArray[14].ToString() + strParameterArray[15].ToString();
                     obj.PostCode = strParameterArray[16].ToString();
                     obj.Status = strParameterArray[18].ToString();
                     List<PinkLabel> ls = new List<PinkLabel> {
                     obj
                     };
-                    report.AddDataSource("PinkLabel", ls);
+                    report.AddDataSource("PinklLabel", ls);
 
                 }
                 else

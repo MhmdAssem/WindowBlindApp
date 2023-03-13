@@ -202,7 +202,8 @@ namespace WindowBlind.Api.Controllers
                                 RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
                             }
 
-                            if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") { RowQty = 0; break; }
+                            if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") 
+                            { RowQty = 0; break; }
 
 
                             var cell = worksheet.Cells[i, j].Text.Trim();
@@ -223,7 +224,8 @@ namespace WindowBlind.Api.Controllers
                             row[Headertext] = cell;
 
                         }
-                        if (RowQty == 0) continue;
+                        if (RowQty == 0)
+                            continue;
                         FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
                         for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
                         {

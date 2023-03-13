@@ -164,6 +164,7 @@ namespace WindowBlind.Api.Controllers
 
                     var log = new LogModel();
                     log.row = row;
+                    if (row.Row.ContainsKey("")) row.Row.Remove("");
                     log.UserName = model.userName;
                     log.LineNumber = row.Row["Line No"];
                     log.CBNumber = row.Row["CB Number"];
@@ -173,6 +174,7 @@ namespace WindowBlind.Api.Controllers
                     log.ProcessType = "Assembly";
                     log.TableName = model.tableName;
                     log.Message = "This Line No.: " + log.LineNumber + ", has been assembled at " + log.dateTime;
+                    
                     await _repository.AssemblyStation.InsertOneAsync(log);
                     
                     foreach (var id in row.rows_AssociatedIds)

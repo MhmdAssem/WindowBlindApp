@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.serviceProcessInstaller1 = new System.ServiceProcess.ServiceProcessInstaller();
-            this.POS_SerivceInstaller1 = new System.ServiceProcess.ServiceInstaller();
+            this.POS_ServiceInstaller1 = new System.ServiceProcess.ServiceInstaller();
             // 
             // serviceProcessInstaller1
             // 
@@ -37,22 +37,22 @@
             this.serviceProcessInstaller1.Password = null;
             this.serviceProcessInstaller1.Username = null;
             // 
-            // POS_SerivceInstaller1
+            // POS_ServiceInstaller1
             // 
-            this.POS_SerivceInstaller1.ServiceName = "POS_Serivce";
-            this.POS_SerivceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
+            this.POS_ServiceInstaller1.ServiceName = "POS_Service";
+            this.POS_ServiceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 
             this.Installers.AddRange(new System.Configuration.Install.Installer[] {
             this.serviceProcessInstaller1,
-            this.POS_SerivceInstaller1});
+            this.POS_ServiceInstaller1});
 
         }
 
         #endregion
 
         private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller1;
-        private System.ServiceProcess.ServiceInstaller POS_SerivceInstaller1;
+        private System.ServiceProcess.ServiceInstaller POS_ServiceInstaller1;
     }
 }

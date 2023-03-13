@@ -86,7 +86,8 @@
                   <TextRun>
                     <Value>=First(Fields!CBNumber.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>12pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -115,7 +116,8 @@
                   <TextRun>
                     <Value>=First(Fields!Carrier.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>12pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>

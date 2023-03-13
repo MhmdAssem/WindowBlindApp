@@ -654,7 +654,7 @@ namespace WindowBlind.Api.Controllers
 
                     await _repository.EzStopData.DeleteOneAsync(e => e.id == item.UniqueId);
                     strconcat = item.Row["CB Number"] + "@" + item.Row["Width"];
-                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["Department"];
+                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["Department"] + " "+ item.Row["Type"];
                     strconcat += "@" + item.Row["Fabric"] + "@" + item.Row["Control Type"] + "@" + item.Row["Colour"];
                     strconcat += "@" + item.Row["Lathe"];
                     strconcat += "@" + item.Row["Alpha"] + "@" + item.Row["CB Number"];

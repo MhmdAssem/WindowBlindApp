@@ -45,7 +45,7 @@ namespace POS_Service
 
             _timer = new Timer();
             _timer.Start();
-            _timer.Interval = 60000;
+            _timer.Interval = 5000;
             _timer.Enabled = true;
             _timer.Elapsed += new ElapsedEventHandler(Timer_tick);
 
