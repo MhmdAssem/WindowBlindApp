@@ -614,7 +614,7 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
                 var Checks = CheckPaths();
 
-                if (!Checks) return new JsonResult(false);
+                if (!Checks) return BadRequest(false);
 
                 var Data = ReadingData();
 
@@ -624,13 +624,13 @@ namespace WindowBlind.Api.Controllers
 
                 CustomizeTheColumns(ref FinalizedData);
 
-                return new JsonResult(FinalizedData);
+                return Ok(FinalizedData);
 
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -642,12 +642,12 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var LogCutOutputSettings = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().OutputPath;
-                if (LogCutOutputPath == "") return new JsonResult(false);
+                if (LogCutOutputPath == "") return BadRequest(false);
                 DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
 
-                if (!f.Exists) return new JsonResult(false);
+                if (!f.Exists) return BadRequest(false);
 
-                if (model.printer == null || model.printer == "") return new JsonResult(false);
+                if (model.printer == null || model.printer == "") return BadRequest("Printer Not Found");
 
                 var data = model.data;
                 var printerName = model.printer;
@@ -783,11 +783,11 @@ namespace WindowBlind.Api.Controllers
 
 
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
 
 
@@ -850,163 +850,144 @@ namespace WindowBlind.Api.Controllers
         //}
         public bool PrintReport(string strPrinterName, List<string> strParameterArray, string StrReportPath, string StrType)
         {
-            try
+
+            string mimtype = "";
+            int extension = 1;
+
+            var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
+            //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Encoding.GetEncoding("us-ascii");
+            AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
+
+
+
+
+
+            if (StrReportPath == "LogCut2.rdlc")
             {
-                string mimtype = "";
-                int extension = 1;
+                LogCut2 obj = new LogCut2();
+                obj.width = strParameterArray[1].ToString();
+                obj.drop = strParameterArray[2].ToString();
+                obj.customer = strParameterArray[3].ToString();
+                obj.department = strParameterArray[4].ToString();
+                obj.type = strParameterArray[5].ToString();
+                obj.fabric = strParameterArray[6].ToString();
+                obj.color = strParameterArray[7].ToString();
+                obj.controltype = strParameterArray[8].ToString();
+                obj.lathe = strParameterArray[9].ToString();
+                obj.c = strParameterArray[10].ToString();
+                obj.cbNumber = strParameterArray[0].ToString();
+                obj.someoftotal = strParameterArray[12] + " of " + strParameterArray[13].ToString();
 
-                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
-                //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Encoding.GetEncoding("us-ascii");
-                AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
-
-
-
-                
-
-                if (StrReportPath == "LogCut2.rdlc")
-                {
-                    LogCut2 obj = new LogCut2();
-                    obj.width = strParameterArray[1].ToString();
-                    obj.drop = strParameterArray[2].ToString();
-                    obj.customer = strParameterArray[3].ToString();
-                    obj.department = strParameterArray[4].ToString();
-                    obj.type = strParameterArray[5].ToString();
-                    obj.fabric = strParameterArray[6].ToString();
-                    obj.color = strParameterArray[7].ToString();
-                    obj.controltype = strParameterArray[8].ToString();
-                    obj.lathe = strParameterArray[9].ToString();
-                    obj.c = strParameterArray[10].ToString();
-                    obj.cbNumber = strParameterArray[0].ToString();
-                    obj.someoftotal = strParameterArray[12] + " of " + strParameterArray[13].ToString();
-
-                    List<LogCut2> ls = new List<LogCut2> {
+                List<LogCut2> ls = new List<LogCut2> {
                     obj
                     };
-                    report.AddDataSource("LogCut2", ls);
-                    
+                report.AddDataSource("LogCut2", ls);
 
-                }
-                else
-                {
-                    LogCut1 obj = new LogCut1();
-                    obj.width = strParameterArray[1].ToString();
-                    obj.drop = strParameterArray[2].ToString();
-                    obj.customer = strParameterArray[3].ToString();
-                    obj.department = strParameterArray[4].ToString();
-                    obj.type = strParameterArray[5].ToString();
-                    obj.fabric = strParameterArray[6].ToString();
-                    obj.color = strParameterArray[7].ToString();
-                    obj.controltype = strParameterArray[8].ToString();
-                    obj.lathe = strParameterArray[9].ToString();
-                    obj.c = strParameterArray[10].ToString();
-                    obj.cbNumber = strParameterArray[0].ToString();
-                    obj.someoftotal = strParameterArray[12] + " of " + strParameterArray[13].ToString();
-                    obj.cutwidth = strParameterArray[14];
-                    obj.lineNumber = strParameterArray[15];
-                    obj.cntrside = strParameterArray[16];
-                    List<LogCut1> ls = new List<LogCut1> {
+
+            }
+            else
+            {
+                LogCut1 obj = new LogCut1();
+                obj.width = strParameterArray[1].ToString();
+                obj.drop = strParameterArray[2].ToString();
+                obj.customer = strParameterArray[3].ToString();
+                obj.department = strParameterArray[4].ToString();
+                obj.type = strParameterArray[5].ToString();
+                obj.fabric = strParameterArray[6].ToString();
+                obj.color = strParameterArray[7].ToString();
+                obj.controltype = strParameterArray[8].ToString();
+                obj.lathe = strParameterArray[9].ToString();
+                obj.c = strParameterArray[10].ToString();
+                obj.cbNumber = strParameterArray[0].ToString();
+                obj.someoftotal = strParameterArray[12] + " of " + strParameterArray[13].ToString();
+                obj.cutwidth = strParameterArray[14];
+                obj.lineNumber = strParameterArray[15];
+                obj.cntrside = strParameterArray[16];
+                List<LogCut1> ls = new List<LogCut1> {
                     obj
                     };
-                    report.AddDataSource("LogCut1", ls);
-                }
-
-
-                byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
-
-                /*LocalReport report = new LocalReport();
-                report.ReportPath = path;
-                report.SetParameters(parametersList);
-                report.Refresh();
-                byte[] result = report.Render("IMAGE");
-                report.Dispose();
-                */
-
-                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".pdf");
-                ////outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
-                using (FileStream stream = new FileStream(outputPath, FileMode.Create))
-                {
-                    stream.Write(result, 0, result.Length);
-                }
-
-
-                bool printedOK = true;
-                string printErrorMessage = "";
-                try
-                {
-                    PdfDocument doc = new PdfDocument();
-
-                    doc.LoadFromFile(outputPath);
-                    doc.PrintSettings.PrinterName = strPrinterName;
-                    //SizeF size = doc.Pages[0].ActualSize;
-                    //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
-                    //paper.RawKind = (int)PaperKind.Custom;
-                    //doc.PrintSettings.PaperSize = paper;
-                    //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
-                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
-                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
-                                        doc.PrintSettings.Landscape = false;
-                    doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
-                    doc.PrintSettings.SelectPageRange(1, 1);
-
-                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
-                    doc.Print();
-
-                }
-                catch (Exception ex)
-                {
-                    printErrorMessage = "Printing Error: " + ex.ToString();
-                    printedOK = false;
-                }
-
-                return true;
+                report.AddDataSource("LogCut1", ls);
             }
-            catch (Exception e)
+
+
+            byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
+
+            /*LocalReport report = new LocalReport();
+            report.ReportPath = path;
+            report.SetParameters(parametersList);
+            report.Refresh();
+            byte[] result = report.Render("IMAGE");
+            report.Dispose();
+            */
+
+            var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "LogCutPrintFiles", Guid.NewGuid().ToString() + ".pdf");
+            ////outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
+            using (FileStream stream = new FileStream(outputPath, FileMode.Create))
             {
-                return false;
+                stream.Write(result, 0, result.Length);
             }
+
+
+            bool printedOK = true;
+            string printErrorMessage = "";
+
+            PdfDocument doc = new PdfDocument();
+
+            doc.LoadFromFile(outputPath);
+            doc.PrintSettings.PrinterName = strPrinterName;
+            //SizeF size = doc.Pages[0].ActualSize;
+            //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
+            //paper.RawKind = (int)PaperKind.Custom;
+            //doc.PrintSettings.PaperSize = paper;
+            //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
+            //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
+            doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
+            doc.PrintSettings.Landscape = false;
+            doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
+            doc.PrintSettings.SelectPageRange(1, 1);
+
+            //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
+            doc.Print();
+
+            return true;
+
         }
 
         public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime, string item, string ProcessType, FabricCutterCBDetailsModelTableRow row)
         {
-            try
+
+            LogModel log = new LogModel();
+            log.UserName = uName;
+            log.CBNumber = cbNumber;
+            log.status = "IDLE";
+            log.Id = row.UniqueId;
+            foreach (var key in row.Row.Keys.ToList())
             {
-                LogModel log = new LogModel();
-                log.UserName = uName;
-                log.CBNumber = cbNumber;
-                log.status = "IDLE";
-                log.Id = row.UniqueId;
-                foreach (var key in row.Row.Keys.ToList())
+                if (key == "")
                 {
-                    if (key == "")
-                    {
-                        row.Row.Remove(key); continue;
-                    }
-                    var ind = key.IndexOf(".");
-                    if (ind == -1) continue;
-
-                    var newKey = key.Replace(".", "");
-                    var value = row.Row[key];
-
-                    row.Row[newKey] = value;
-                    row.Row.Remove(key);
+                    row.Row.Remove(key); continue;
                 }
-                log.row = row;
-                log.LineNumber = barCode;
-                log.Item = item;
-                log.dateTime = datetime;
-                log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
-                log.ProcessType = ProcessType;
-                log.TableName = tableNo;
-                await _repository.Logs.InsertOneAsync(log);
-                return true;
-            }
-            catch (Exception)
-            {
+                var ind = key.IndexOf(".");
+                if (ind == -1) continue;
 
-                return false;
+                var newKey = key.Replace(".", "");
+                var value = row.Row[key];
+
+                row.Row[newKey] = value;
+                row.Row.Remove(key);
             }
+            log.row = row;
+            log.LineNumber = barCode;
+            log.Item = item;
+            log.dateTime = datetime;
+            log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+            log.ProcessType = ProcessType;
+            log.TableName = tableNo;
+            await _repository.Logs.InsertOneAsync(log);
+            return true;
+
 
         }
 
@@ -1038,7 +1019,7 @@ namespace WindowBlind.Api.Controllers
 
                 var check = CheckPaths();
 
-                if (!check) return new JsonResult(false);
+                if (!check) return BadRequest(false);
 
 
                 var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "LogCut" && rej.TableName == tableName).Result.ToListAsync();
@@ -1080,12 +1061,12 @@ namespace WindowBlind.Api.Controllers
                         await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
                                             Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(e.Message);
+                return Ok(e.Message);
             }
 
         }
@@ -1103,7 +1084,7 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
                 var check = CheckPaths();
 
-                if (!check) return new JsonResult(false);
+                if (!check) return BadRequest(false);
                 var AutoUploadDirSetting = await _repository.Settings.FindAsync(e => e.settingName == "AutoUploadDir" && e.applicationSetting == "_LogCut");
                 var AutoUploadDirPath = AutoUploadDirSetting.FirstOrDefault().settingPath;
 
@@ -1112,7 +1093,7 @@ namespace WindowBlind.Api.Controllers
 
                 var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
                 if (AutoUploadFolder.Exists == false)
-                    return new JsonResult(false);
+                    return BadRequest(false);
 
                 var AutoUploadErrorsPath = ViewedUplaodsPath.Substring(0, ViewedUplaodsPath.LastIndexOf(Path.DirectorySeparatorChar.ToString())) + Path.DirectorySeparatorChar.ToString() + "AutoUploadErrorFolder";
 
@@ -1449,14 +1430,14 @@ namespace WindowBlind.Api.Controllers
                 #endregion
 
 
-                return new JsonResult(Finalized);
+                return Ok(Finalized);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -1471,12 +1452,12 @@ namespace WindowBlind.Api.Controllers
                     await _repository.AutoUploads.DeleteOneAsync(entry => entry.Id == id);
                 }
 
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
 
 

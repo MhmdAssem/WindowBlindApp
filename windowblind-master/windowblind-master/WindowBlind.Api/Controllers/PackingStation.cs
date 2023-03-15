@@ -114,18 +114,18 @@ namespace WindowBlind.Api.Controllers
                 data.ColumnNames = PackingColumns;
                 data.ColumnNames.Add("Status");
 
-                return new JsonResult(data);
+                return Ok(data);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
 
         [HttpPost("pushLinesNoToPackingStation")]
-        public async Task<bool> pushLinesNoToPackingStation(CreateFileAndLabelModel model)
+        public async Task<IActionResult> pushLinesNoToPackingStation(CreateFileAndLabelModel model)
         {
 
             try
@@ -168,12 +168,12 @@ namespace WindowBlind.Api.Controllers
                 }
 
 
-                return true;
+                return Ok(true);
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                return false;
+                return BadRequest(e.Message);
             }
         }
 
@@ -259,13 +259,13 @@ namespace WindowBlind.Api.Controllers
                 if (Data.Rows.Count != 0)
                     Data.ColumnNames = PackingColumns;
 
-                return new JsonResult(Data);
+                return Ok(Data);
 
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -285,12 +285,12 @@ namespace WindowBlind.Api.Controllers
                                                                 Builders<LogModel>.Update.Set(p => p.status, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
                     }
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(e.Message);
+                return BadRequest(e.Message);
             }
 
         }
@@ -303,12 +303,12 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var LogCutOutputSettings = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().OutputPath;
-                if (LogCutOutputPath == "") return new JsonResult(false);
+                if (LogCutOutputPath == "") return Ok(false);
                 DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
 
-                if (!f.Exists) return new JsonResult(false);
+                if (!f.Exists) return Ok(false);
 
-                if (model.printer == null || model.printer == "" || model.printer2nd == null || model.printer2nd == "-") return new JsonResult(false);
+                if (model.printer == null || model.printer == "" || model.printer2nd == null || model.printer2nd == "-") return Ok(false);
 
                 var data = model.data;
                 var printerName = model.printer;
@@ -334,11 +334,11 @@ namespace WindowBlind.Api.Controllers
                     strconcat = item.Row["Debtor Order Number"] + "/" + someoftotalprefix + "@" + item.Row["CB Number"];
                     strconcat += "@" + item.Row["Debtor Order Number"].Substring(0, item.Row["Debtor Order Number"].IndexOf(' ')) + "@" + item.Row["Order Department"] + "@" + "Viewscape Pty.Ltd";//item.Row["Supplier"];
                     strconcat += "@" + item.Row["Department"] + "@" + item.Row["Location"] + "@" + item.Row["Width"];
-                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Line No"] + "@" + item.Row["SomeOfTotal"] ;
-                    strconcat += "@" + item.Row["Customer"] + "@" + item.Row["Carrier"] + " "  + LastwordOfAddress3;
+                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Line No"] + "@" + item.Row["SomeOfTotal"];
+                    strconcat += "@" + item.Row["Customer"] + "@" + item.Row["Carrier"] + " " + LastwordOfAddress3;
                     strconcat += "@" + item.Row["Address 1"];
-                    strconcat += "@" + ((!String.IsNullOrEmpty(item.Row["Address 1"].Trim()))? ", ":"") + item.Row["Address 2"];
-                    strconcat += "@" + ((!String.IsNullOrEmpty(item.Row["Address 2"].Trim())) ? ", " : "")+item.Row["Address 3"];
+                    strconcat += "@" + ((!String.IsNullOrEmpty(item.Row["Address 1"].Trim())) ? ", " : "") + item.Row["Address 2"];
+                    strconcat += "@" + ((!String.IsNullOrEmpty(item.Row["Address 2"].Trim())) ? ", " : "") + item.Row["Address 3"];
                     strconcat += "@" + item.Row["Postcode"];
                     strconcat += "@" + item.Row["Description"];
                     var status = item.Row["Status"];
@@ -365,11 +365,11 @@ namespace WindowBlind.Api.Controllers
 
 
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
-                return new JsonResult(false);
+                return Ok(e.Message);
             }
 
 
@@ -377,163 +377,142 @@ namespace WindowBlind.Api.Controllers
 
         public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime, string item, string ProcessType, FabricCutterCBDetailsModelTableRow row)
         {
-            try
+
+            LogModel log = new LogModel();
+            log.UserName = uName;
+            log.CBNumber = cbNumber;
+            log.status = "IDLE";
+            log.Id = row.UniqueId;
+            foreach (var key in row.Row.Keys.ToList())
             {
-                LogModel log = new LogModel();
-                log.UserName = uName;
-                log.CBNumber = cbNumber;
-                log.status = "IDLE";
-                log.Id = row.UniqueId;
-                foreach (var key in row.Row.Keys.ToList())
+                if (key == "")
                 {
-                    if (key == "")
-                    {
-                        row.Row.Remove(key); continue;
-                    }
-                    var ind = key.IndexOf(".");
-                    if (ind == -1) continue;
-
-                    var newKey = key.Replace(".", "");
-                    var value = row.Row[key];
-
-                    row.Row[newKey] = value;
-                    row.Row.Remove(key);
+                    row.Row.Remove(key); continue;
                 }
-                log.row = row;
-                log.LineNumber = barCode;
-                log.Item = item;
-                log.dateTime = datetime;
-                log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
-                log.ProcessType = ProcessType;
-                log.TableName = tableNo;
-                await _repository.Logs.InsertOneAsync(log);
-                return true;
-            }
-            catch (Exception)
-            {
+                var ind = key.IndexOf(".");
+                if (ind == -1) continue;
 
-                return false;
+                var newKey = key.Replace(".", "");
+                var value = row.Row[key];
+
+                row.Row[newKey] = value;
+                row.Row.Remove(key);
             }
+            log.row = row;
+            log.LineNumber = barCode;
+            log.Item = item;
+            log.dateTime = datetime;
+            log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+            log.ProcessType = ProcessType;
+            log.TableName = tableNo;
+            await _repository.Logs.InsertOneAsync(log);
+            return true;
 
         }
 
         public string PrintReport(string strPrinterName, string[] strParameterArray, string StrReportPath)
         {
 
-            try
+            string mimtype = "";
+            int extension = 1;
+            var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
+            //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Encoding.GetEncoding("us-ascii");
+
+            LocalReport report = new LocalReport(path);
+
+            for (int i = 0; i < strParameterArray.Length; i++)
             {
-                string mimtype = "";
-                int extension = 1;
-                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
-                //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+                while (strParameterArray[i].IndexOf("  ") != -1)
+                    strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                if (String.IsNullOrEmpty(strParameterArray[i]))
+                    strParameterArray[i] = " ";
+            }
 
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Encoding.GetEncoding("us-ascii");
-
-                LocalReport report = new LocalReport(path);
-
-                for (int i = 0; i < strParameterArray.Length; i++)
-                {
-                    while (strParameterArray[i].IndexOf("  ") != -1)
-                        strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
-                    if (String.IsNullOrEmpty(strParameterArray[i]))
-                        strParameterArray[i] = " ";
-                }
-
-                if (StrReportPath == "PinkLabel.rdlc")
-                {
-                    PinkLabel obj = new PinkLabel();
-                    obj.PO = "PO#: " + strParameterArray[0].ToString().Split(" ").Last();
-                    obj.CCNumber = strParameterArray[1].ToString();
-                    obj.Cust = "Cust: " + strParameterArray[2].ToString();
-                    obj.CustRef = "Cust Ref: " + strParameterArray[3].ToString();
-                    obj.Supplier = "Supplier: " + strParameterArray[4].ToString();
-                    obj.Department = strParameterArray[5].ToString();
-                    obj.Location = "Location: " + strParameterArray[6].ToString();
-                    obj.Width = "W: " + strParameterArray[7].ToString();
-                    obj.Drop = "D: " + strParameterArray[8].ToString();
-                    obj.LineNumber = strParameterArray[0].ToString().Split(" ").Last(); // strParameterArray[9].ToString();
-                    obj.SomeOfTotal = strParameterArray[10].ToString();
-                    obj.Customer = "Ship To: " + strParameterArray[11].ToString();
-                    obj.Carrier = strParameterArray[12].ToString();
-                    obj.Address1 = strParameterArray[13].ToString();
-                    obj.Address1 += strParameterArray[14].ToString() + strParameterArray[15].ToString();
-                    obj.PostCode = strParameterArray[16].ToString();
-                    obj.Status = strParameterArray[18].ToString();
-                    List<PinkLabel> ls = new List<PinkLabel> {
+            if (StrReportPath == "PinkLabel.rdlc")
+            {
+                PinkLabel obj = new PinkLabel();
+                obj.PO = "PO#: " + strParameterArray[0].ToString().Split(" ").Last();
+                obj.CCNumber = strParameterArray[1].ToString();
+                obj.Cust = "Cust: " + strParameterArray[2].ToString();
+                obj.CustRef = "Cust Ref: " + strParameterArray[3].ToString();
+                obj.Supplier = "Supplier: " + strParameterArray[4].ToString();
+                obj.Department = strParameterArray[5].ToString();
+                obj.Location = "Location: " + strParameterArray[6].ToString();
+                obj.Width = "W: " + strParameterArray[7].ToString();
+                obj.Drop = "D: " + strParameterArray[8].ToString();
+                obj.LineNumber = strParameterArray[0].ToString().Split(" ").Last(); // strParameterArray[9].ToString();
+                obj.SomeOfTotal = strParameterArray[10].ToString();
+                obj.Customer = "Ship To: " + strParameterArray[11].ToString();
+                obj.Carrier = strParameterArray[12].ToString();
+                obj.Address1 = strParameterArray[13].ToString();
+                obj.Address1 += strParameterArray[14].ToString() + strParameterArray[15].ToString();
+                obj.PostCode = strParameterArray[16].ToString();
+                obj.Status = strParameterArray[18].ToString();
+                List<PinkLabel> ls = new List<PinkLabel> {
                     obj
                     };
-                    report.AddDataSource("PinklLabel", ls);
+                report.AddDataSource("PinklLabel", ls);
 
-                }
-                else
-                {
-                    BigLabel obj = new BigLabel();
-                    obj.CBNumber = strParameterArray[1].ToString();
-                    obj.Carrier = strParameterArray[12].ToString();
-                    obj.Customer = strParameterArray[11].ToString();
-                    obj.PO = strParameterArray[0].ToString();
-                    obj.Description = strParameterArray[17].ToString();
-                    obj.Location = "Location: " + strParameterArray[6].ToString();
-                    obj.Width = "Width: " + strParameterArray[7].ToString() + "";
-                    obj.Drop = "Drop: " + strParameterArray[8].ToString() + "";
-                    obj.SomeOfTotal = "Quantity " + strParameterArray[10].ToString();
-                    obj.FittingAddress = strParameterArray[13].ToString();
-                    obj.Department = strParameterArray[5].ToString();
-                    obj.Status = strParameterArray[18].ToString();
+            }
+            else
+            {
+                BigLabel obj = new BigLabel();
+                obj.CBNumber = strParameterArray[1].ToString();
+                obj.Carrier = strParameterArray[12].ToString();
+                obj.Customer = strParameterArray[11].ToString();
+                obj.PO = strParameterArray[0].ToString();
+                obj.Description = strParameterArray[17].ToString();
+                obj.Location = "Location: " + strParameterArray[6].ToString();
+                obj.Width = "Width: " + strParameterArray[7].ToString() + "";
+                obj.Drop = "Drop: " + strParameterArray[8].ToString() + "";
+                obj.SomeOfTotal = "Quantity " + strParameterArray[10].ToString();
+                obj.FittingAddress = strParameterArray[13].ToString();
+                obj.Department = strParameterArray[5].ToString();
+                obj.Status = strParameterArray[18].ToString();
 
-                    List<BigLabel> ls = new List<BigLabel> {
+                List<BigLabel> ls = new List<BigLabel> {
                     obj
                     };
-                    report.AddDataSource("BigLabel", ls);
-                }
-
-
-                byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
-
-                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "PackingStationPrintFiles", Guid.NewGuid().ToString() + ".pdf");
-                //var //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".jpg");
-                using (FileStream stream = new FileStream(outputPath, FileMode.Create))
-                {
-                    stream.Write(result, 0, result.Length);
-                }
-
-
-
-                bool printedOK = true;
-                string printErrorMessage = "";
-                try
-                {
-                    PdfDocument doc = new PdfDocument();
-
-                    doc.LoadFromFile(outputPath);
-                    doc.PrintSettings.PrinterName = strPrinterName;
-                    //SizeF size = doc.Pages[0].ActualSize;
-                    //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
-                    //paper.RawKind = (int)PaperKind.Custom;
-                    //doc.PrintSettings.PaperSize = paper;
-                    //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
-                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
-                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
-                    doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
-                    doc.PrintSettings.SelectPageRange(1, 1);
-                    doc.PrintSettings.Landscape = false;
-                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
-                    doc.Print();
-                }
-                catch (Exception ex)
-                {
-                    printErrorMessage = "Printing Error: " + ex.ToString();
-                    printedOK = false;
-                    return ex.StackTrace;
-                }
-
-                return "";
+                report.AddDataSource("BigLabel", ls);
             }
-            catch (Exception ex)
+
+
+            byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
+
+            var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "PackingStationPrintFiles", Guid.NewGuid().ToString() + ".pdf");
+            //var //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".jpg");
+            using (FileStream stream = new FileStream(outputPath, FileMode.Create))
             {
-                return ex.StackTrace;
+                stream.Write(result, 0, result.Length);
             }
+
+
+
+            bool printedOK = true;
+            string printErrorMessage = "";
+
+            PdfDocument doc = new PdfDocument();
+
+            doc.LoadFromFile(outputPath);
+            doc.PrintSettings.PrinterName = strPrinterName;
+            //SizeF size = doc.Pages[0].ActualSize;
+            //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
+            //paper.RawKind = (int)PaperKind.Custom;
+            //doc.PrintSettings.PaperSize = paper;
+            //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
+            //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
+            doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
+            doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
+            doc.PrintSettings.SelectPageRange(1, 1);
+            doc.PrintSettings.Landscape = false;
+            //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
+            doc.Print();
+
+            return "";
+
         }
 
 

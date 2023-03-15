@@ -112,211 +112,205 @@ namespace WindowBlind.Api.Controllers
 
         private FabricCutterCBDetailsModel ReadingData(string CBNumber)
         {
-            try
+
+            FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
+            var TempctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
+            FileInfo file = new FileInfo(TempctbsodumpPath);
+            if (!file.Exists) return null;
+            List<string> names = new List<string>();
+            //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
+            generalBlindNumber = 1;
+
+
+            CBSearchOrLineNumberSearch = !char.IsDigit(CBNumber[0]);
+
+            using (var package = new ExcelPackage(file))
             {
-                FabricCutterCBDetailsModel Data = new FabricCutterCBDetailsModel();
-                var TempctbsodumpPath = CreateNewFile(ctbsodumpPath, ctbsodumpPath.Substring(0, ctbsodumpPath.IndexOf(".")) + Guid.NewGuid().ToString() + ctbsodumpPath.Substring(ctbsodumpPath.IndexOf(".")));
-                FileInfo file = new FileInfo(TempctbsodumpPath);
-                if (!file.Exists) return null;
-                List<string> names = new List<string>();
-                //List<Dictionary<string, string>> Data = new List<Dictionary<string, string>>();
-                generalBlindNumber = 1;
+                var workbook = package.Workbook;
+
+                var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
+                if (worksheet == null) return null;
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
+
+                Dictionary<int, int> indexToRemove = new Dictionary<int, int>();
 
 
-                CBSearchOrLineNumberSearch = !char.IsDigit(CBNumber[0]);
-
-                using (var package = new ExcelPackage(file))
+                if (!CBSearchOrLineNumberSearch)
                 {
-                    var workbook = package.Workbook;
-
-                    var worksheet = workbook.Worksheets.Where(e => e.Name == SheetNamePath).FirstOrDefault();
-                    if (worksheet == null) return null;
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    bool gotColumns = (SelectedColumnsPath.Count > 0) ? true : false;
-
-                    Dictionary<int, int> indexToRemove = new Dictionary<int, int>();
-
-
-                    if (!CBSearchOrLineNumberSearch)
-                    {
-                        var CBINdex = 0;
-                        LineNumber = CBNumber;
-                        for (int i = start.Column; i <= end.Column; i++)
-                        {
-                            var text = worksheet.Cells[1, i].Text.Trim();
-
-                            if (text.Equals("W/Order NO")) CBINdex = i;
-                            if (text.Equals("Line No."))
-                            {
-                                for (int j = start.Row + 1; j <= end.Row; j++)
-                                    if (worksheet.Cells[j, i].Text.Trim() == LineNumber) { CBNumber = worksheet.Cells[j, CBINdex].Text.Trim(); break; }
-                            }
-                        }
-                    }
-
+                    var CBINdex = 0;
+                    LineNumber = CBNumber;
                     for (int i = start.Column; i <= end.Column; i++)
                     {
-                        var Headertext = worksheet.Cells[1, i].Text.Trim();
-                        ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
+                        var text = worksheet.Cells[1, i].Text.Trim();
 
-                        if (Headertext.StartsWith("W/Order NO"))
+                        if (text.Equals("W/Order NO")) CBINdex = i;
+                        if (text.Equals("Line No."))
                         {
                             for (int j = start.Row + 1; j <= end.Row; j++)
-                                if (worksheet.Cells[j, i].Text.Trim() != CBNumber) indexToRemove[j] = 1;
+                                if (worksheet.Cells[j, i].Text.Trim() == LineNumber) { CBNumber = worksheet.Cells[j, CBINdex].Text.Trim(); break; }
                         }
                     }
+                }
 
-                    for (int i = start.Row + 1; i <= end.Row; i++)
+                for (int i = start.Column; i <= end.Column; i++)
+                {
+                    var Headertext = worksheet.Cells[1, i].Text.Trim();
+                    ColumnsIndex[worksheet.Cells[1, i].Text.Trim()] = i;
+
+                    if (Headertext.StartsWith("W/Order NO"))
                     {
-                        if (indexToRemove.ContainsKey(i)) continue;
-                        Dictionary<string, string> row = new Dictionary<string, string>();
-                        row["Line No"] = "";
-                        row["Customer"] = "";
-                        row["Supplier"] = "";
-                        row["Address1"] = "";
-                        row["Address2"] = "";
-                        row["Address3"] = "";
-                        row["PostCode"] = "";
-                        row["Carrier"] = "";
-                        row["Location"] = "";
-                        row["Debtor Order Number"] = "";
-                        row["Order Department"] = "";
-                        row["Bind Type/# Panels/Rope/Operation"] = "";
-                        row["Description"] = "";
-                        row["Track Col/Roll Type/Batten Col"] = "";
-                        row["Cntrl Side"] = "";
-                        row["Control Type"] = "";
-                        row["Pull Colour/Bottom Weight/Wand Len"] = "";
+                        for (int j = start.Row + 1; j <= end.Row; j++)
+                            if (worksheet.Cells[j, i].Text.Trim() != CBNumber) indexToRemove[j] = 1;
+                    }
+                }
+
+                for (int i = start.Row + 1; i <= end.Row; i++)
+                {
+                    if (indexToRemove.ContainsKey(i)) continue;
+                    Dictionary<string, string> row = new Dictionary<string, string>();
+                    row["Line No"] = "";
+                    row["Customer"] = "";
+                    row["Supplier"] = "";
+                    row["Address1"] = "";
+                    row["Address2"] = "";
+                    row["Address3"] = "";
+                    row["PostCode"] = "";
+                    row["Carrier"] = "";
+                    row["Location"] = "";
+                    row["Debtor Order Number"] = "";
+                    row["Order Department"] = "";
+                    row["Bind Type/# Panels/Rope/Operation"] = "";
+                    row["Description"] = "";
+                    row["Track Col/Roll Type/Batten Col"] = "";
+                    row["Cntrl Side"] = "";
+                    row["Control Type"] = "";
+                    row["Pull Colour/Bottom Weight/Wand Len"] = "";
 
 
-                        int RowQty = 0;
-                        for (int j = start.Column; j <= end.Column; j++)
+                    int RowQty = 0;
+                    for (int j = start.Column; j <= end.Column; j++)
+                    {
+                        var Headertext = worksheet.Cells[1, j].Text.Trim();
+                        if (String.IsNullOrEmpty(Headertext)) continue;
+                        Headertext = Headertext.Replace(".", "");
+
+                        if (Headertext.Contains("Qty"))
                         {
-                            var Headertext = worksheet.Cells[1, j].Text.Trim();
-                            if (String.IsNullOrEmpty(Headertext)) continue;
-                            Headertext = Headertext.Replace(".", "");
-
-                            if (Headertext.Contains("Qty"))
-                            {
-                                RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
-                            }
-
-                            if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "") 
-                            { RowQty = 0; break; }
-
-
-                            var cell = worksheet.Cells[i, j].Text.Trim();
-
-                            if (Headertext == ("Colour"))
-                            {
-                                /// Adding Counting Color Logic 
-                                var RowColor = (worksheet.Cells[i, j].Text.Trim());
-                                if (RowColor != "")
-                                {
-                                    if (!Color.ContainsKey(RowColor)) Color[RowColor] = 0;
-                                    Color[RowColor]++;
-                                }
-                            }
-
-                            if (ColumnMapper.ContainsKey(Headertext))
-                                Headertext = ColumnMapper[Headertext];
-                            row[Headertext] = cell;
-
+                            RowQty = int.Parse(worksheet.Cells[i, j].Text.Trim());
                         }
-                        if (RowQty == 0)
-                            continue;
-                        FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
-                        for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
+
+                        if (worksheet.Cells[i, ColumnsIndex["Department"]].Text.Trim() == "")
+                        { RowQty = 0; break; }
+
+
+                        var cell = worksheet.Cells[i, j].Text.Trim();
+
+                        if (Headertext == ("Colour"))
                         {
-                            TblRow.BlindNumbers.Add(cntr);
+                            /// Adding Counting Color Logic 
+                            var RowColor = (worksheet.Cells[i, j].Text.Trim());
+                            if (RowColor != "")
+                            {
+                                if (!Color.ContainsKey(RowColor)) Color[RowColor] = 0;
+                                Color[RowColor]++;
+                            }
                         }
-                        generalBlindNumber += RowQty;
-                        TblRow.Row = row;
-                        TblRow.UniqueId = Guid.NewGuid().ToString();
-                        TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
-                        Data.Rows.Add(TblRow);
+
+                        if (ColumnMapper.ContainsKey(Headertext))
+                            Headertext = ColumnMapper[Headertext];
+                        row[Headertext] = cell;
+
                     }
-
-
-                    package.Dispose();
-                }
-
-                System.IO.File.Delete(TempctbsodumpPath);
-
-                FabricRollwidth = new Dictionary<string, string>();
-                ControlTypevalues = new Dictionary<string, int>();
-                LatheType = new Dictionary<string, List<string>>();
-
-                var TempFBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
-                file = new FileInfo(FBRPath);
-                using (var package = new ExcelPackage(file))
-                {
-                    var workbook = package.Workbook;
-
-                    var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i <= end.Row; i++)
+                    if (RowQty == 0)
+                        continue;
+                    FabricCutterCBDetailsModelTableRow TblRow = new FabricCutterCBDetailsModelTableRow();
+                    for (int cntr = generalBlindNumber; cntr < RowQty + generalBlindNumber; cntr++)
                     {
-                        FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
+                        TblRow.BlindNumbers.Add(cntr);
                     }
+                    generalBlindNumber += RowQty;
+                    TblRow.Row = row;
+                    TblRow.UniqueId = Guid.NewGuid().ToString();
+                    TblRow.rows_AssociatedIds.Add(TblRow.UniqueId);
+                    Data.Rows.Add(TblRow);
                 }
 
-                System.IO.File.Delete(TempFBRPath);
 
-
-                var TempDeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
-
-                file = new FileInfo(TempDeductionPath);
-                using (var package = new ExcelPackage(file))
-                {
-                    var workbook = package.Workbook;
-
-                    var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i <= end.Row; i++)
-                    {
-                        ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
-                    }
-                }
-
-                System.IO.File.Delete(TempDeductionPath);
-
-                var TempLathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
-
-                file = new FileInfo(TempLathePath);
-                using (var package = new ExcelPackage(file))
-                {
-                    var workbook = package.Workbook;
-
-                    var worksheet = workbook.Worksheets.FirstOrDefault();
-
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-                    for (int i = start.Row + 1; i <= end.Row; i++)
-                    {
-                        if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
-                            LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
-
-                        LatheType[worksheet.Cells[i, 1].Text.Trim()].Add(worksheet.Cells[i, 2].Text.Trim());
-
-                    }
-                }
-
-                System.IO.File.Delete(TempLathePath);
-
-
-                return Data;
+                package.Dispose();
             }
-            catch (Exception e)
+
+            System.IO.File.Delete(TempctbsodumpPath);
+
+            FabricRollwidth = new Dictionary<string, string>();
+            ControlTypevalues = new Dictionary<string, int>();
+            LatheType = new Dictionary<string, List<string>>();
+
+            var TempFBRPath = CreateNewFile(FBRPath, FBRPath.Substring(0, FBRPath.IndexOf(".")) + Guid.NewGuid().ToString() + FBRPath.Substring(FBRPath.IndexOf(".")));
+            file = new FileInfo(FBRPath);
+            using (var package = new ExcelPackage(file))
             {
+                var workbook = package.Workbook;
 
-                return new FabricCutterCBDetailsModel();
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Row + 1; i <= end.Row; i++)
+                {
+                    FabricRollwidth[worksheet.Cells[i, 1].Text.Trim()] = worksheet.Cells[i, 2].Text.Trim();
+                }
             }
+
+            System.IO.File.Delete(TempFBRPath);
+
+
+            var TempDeductionPath = CreateNewFile(DeductionPath, DeductionPath.Substring(0, DeductionPath.IndexOf(".")) + Guid.NewGuid().ToString() + DeductionPath.Substring(DeductionPath.IndexOf(".")));
+
+            file = new FileInfo(TempDeductionPath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Row + 1; i <= end.Row; i++)
+                {
+                    ControlTypevalues[worksheet.Cells[i, 1].Text.Trim()] = int.Parse(worksheet.Cells[i, 2].Text.Trim());
+                }
+            }
+
+            System.IO.File.Delete(TempDeductionPath);
+
+            var TempLathePath = CreateNewFile(LathePath, LathePath.Substring(0, LathePath.IndexOf(".")) + Guid.NewGuid().ToString() + LathePath.Substring(LathePath.IndexOf(".")));
+
+            file = new FileInfo(TempLathePath);
+            using (var package = new ExcelPackage(file))
+            {
+                var workbook = package.Workbook;
+
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+                for (int i = start.Row + 1; i <= end.Row; i++)
+                {
+                    if (!LatheType.ContainsKey(worksheet.Cells[i, 1].Text.Trim()))
+                        LatheType[worksheet.Cells[i, 1].Text.Trim()] = new List<string>();
+
+                    LatheType[worksheet.Cells[i, 1].Text.Trim()].Add(worksheet.Cells[i, 2].Text.Trim());
+
+                }
+            }
+
+            System.IO.File.Delete(TempLathePath);
+
+
+            return Data;
+
 
         }
 
@@ -428,6 +422,7 @@ namespace WindowBlind.Api.Controllers
         {
             try
             {
+
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
                 Init();
@@ -444,190 +439,161 @@ namespace WindowBlind.Api.Controllers
                 if (!CBSearchOrLineNumberSearch)
                     Data.Rows = Data.Rows.Where(e => e.Row["Line No"] == CBNumber).ToList();
 
-                return new JsonResult(Data);
+                return Ok(Data);
 
             }
             catch (Exception e)
             {
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
         public string PrintReport(string strPrinterName, string[] strParameterArray)
         {
 
-            try
+
+            string mimtype = "";
+            int extension = 1;
+            var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutter.rdlc");
+            //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", "FabricCutter.rdlc");
+            AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Encoding.GetEncoding("us-ascii");
+
+            FabricCut obj = new FabricCut();
+            for (int i = 0; i < strParameterArray.Length; i++)
             {
-                string mimtype = "";
-                int extension = 1;
-                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutter.rdlc");
-                //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", "FabricCutter.rdlc");
-                AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
+                while (strParameterArray[i].IndexOf("  ") != -1)
+                    strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                if (String.IsNullOrEmpty(strParameterArray[i]))
+                    strParameterArray[i] = " ";
+            }
 
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Encoding.GetEncoding("us-ascii");
+            obj.someoftotal = strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString();
+            obj.cutwidth = strParameterArray[10].Split(" ")[1].ToString();
+            obj.cntrside = strParameterArray[12].Split(" ")[0].ToString();
+            obj.lineNumber = strParameterArray[11].ToString();
+            obj.c = strParameterArray[10].Split(" ")[0].ToString();
+            obj.lathe = strParameterArray[9].ToString();
+            obj.controltype = strParameterArray[8].ToString();
+            obj.color = strParameterArray[7].ToString();
+            obj.fabric = strParameterArray[6].ToString();
+            obj.type = strParameterArray[5].ToString();
+            obj.department = strParameterArray[4].ToString();
+            obj.customer = strParameterArray[3].ToString();
+            obj.drop = strParameterArray[2].ToString() + " mm";
+            obj.width = strParameterArray[1].ToString() + " mm";
+            obj.cbNumber = strParameterArray[0].ToString();
 
-                FabricCut obj = new FabricCut();
-                for (int i = 0; i < strParameterArray.Length; i++)
-                {
-                    while (strParameterArray[i].IndexOf("  ") != -1)
-                        strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
-                    if (String.IsNullOrEmpty(strParameterArray[i]))
-                        strParameterArray[i] = " ";
-                }
-
-                obj.someoftotal = strParameterArray[12].Split(" ")[1].ToString() + " of " + strParameterArray[13].ToString();
-                obj.cutwidth = strParameterArray[10].Split(" ")[1].ToString();
-                obj.cntrside = strParameterArray[12].Split(" ")[0].ToString();
-                obj.lineNumber = strParameterArray[11].ToString();
-                obj.c = strParameterArray[10].Split(" ")[0].ToString();
-                obj.lathe = strParameterArray[9].ToString();
-                obj.controltype = strParameterArray[8].ToString();
-                obj.color = strParameterArray[7].ToString();
-                obj.fabric = strParameterArray[6].ToString();
-                obj.type = strParameterArray[5].ToString();
-                obj.department = strParameterArray[4].ToString();
-                obj.customer = strParameterArray[3].ToString();
-                obj.drop = strParameterArray[2].ToString() + " mm";
-                obj.width = strParameterArray[1].ToString() + " mm";
-                obj.cbNumber = strParameterArray[0].ToString();
-
-                List<FabricCut> ls = new List<FabricCut> {
+            List<FabricCut> ls = new List<FabricCut> {
                     obj
                     };
-                report.AddDataSource("FabricCut", ls);
+            report.AddDataSource("FabricCut", ls);
 
-                byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
+            byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
 
-                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".pdf");
-                //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
-                using (FileStream stream = new FileStream(outputPath, FileMode.Create))
-                {
-                    stream.Write(result, 0, result.Length);
-                }
-
-
-                bool printedOK = true;
-                string printErrorMessage = "";
-                try
-                {
-                    PdfDocument doc = new PdfDocument();
-
-                    doc.LoadFromFile(outputPath);
-                    doc.PrintSettings.PrinterName = strPrinterName;
-                    //SizeF size = doc.Pages[0].ActualSize;
-                    //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
-                    //paper.RawKind = (int)PaperKind.Custom;
-                    //doc.PrintSettings.PaperSize = paper;
-                    //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
-                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
-                    doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
-                    doc.PrintSettings.SelectPageRange(1, 1);
-                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
-                    doc.PrintSettings.Landscape = false;
-                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
-                    doc.Print();
-
-                }
-                catch (Exception ex)
-                {
-                    printErrorMessage = "Printing Error: " + ex.ToString();
-                    printedOK = false;
-                    return ex.StackTrace;
-                }
-
-                return "";
-            }
-            catch (Exception ex)
+            var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "FabricCutterPrintFiles", Guid.NewGuid().ToString() + ".pdf");
+            //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
+            using (FileStream stream = new FileStream(outputPath, FileMode.Create))
             {
-                return ex.StackTrace;
+                stream.Write(result, 0, result.Length);
             }
+
+
+            bool printedOK = true;
+            string printErrorMessage = "";
+
+            PdfDocument doc = new PdfDocument();
+
+            doc.LoadFromFile(outputPath);
+            doc.PrintSettings.PrinterName = strPrinterName;
+            //SizeF size = doc.Pages[0].ActualSize;
+            //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
+            //paper.RawKind = (int)PaperKind.Custom;
+            //doc.PrintSettings.PaperSize = paper;
+            //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
+            //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
+            doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
+            doc.PrintSettings.SelectPageRange(1, 1);
+            doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
+            doc.PrintSettings.Landscape = false;
+            //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
+            doc.Print();
+
+            return "";
+
         }
 
         public string PrintLabels(string strParameter)
         {
-            try
+
+            string[] strpara = null;
+            strpara = strParameter.Replace("|@", "|").Split('|');
+            var Error = "";
+
+            if (strpara.GetUpperBound(0) == 0)
             {
-                string[] strpara = null;
-                strpara = strParameter.Replace("|@", "|").Split('|');
-                var Error = "";
+                System.Environment.Exit(0);
+            }
+            else
+            {
 
-                if (strpara.GetUpperBound(0) == 0)
+                string strPrinterName = null;
+                strPrinterName = strpara[0];
+
+                for (int x = 1; x <= strpara.Length - 1; x++)
                 {
-                    System.Environment.Exit(0);
-                }
-                else
-                {
 
-                    string strPrinterName = null;
-                    strPrinterName = strpara[0];
+                    string[] strParameterArray = strpara[x].Split('@');
 
-                    for (int x = 1; x <= strpara.Length - 1; x++)
+                    if (strParameterArray.GetUpperBound(0) == 0)
                     {
-
-                        string[] strParameterArray = strpara[x].Split('@');
-
-                        if (strParameterArray.GetUpperBound(0) == 0)
-                        {
-                            System.Environment.Exit(0);
-                        }
-                        else
-                        {
-                            Error = PrintReport(strPrinterName, strParameterArray);
-                        }
+                        System.Environment.Exit(0);
                     }
-
+                    else
+                    {
+                        Error = PrintReport(strPrinterName, strParameterArray);
+                    }
                 }
-                return Error;
+
             }
-            catch (Exception e)
-            {
-
-                return e.StackTrace;
-            }
-
-
+            return Error;
         }
 
         public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime, string item, string ProcessType, FabricCutterCBDetailsModelTableRow row)
         {
-            try
+
+            LogModel log = new LogModel();
+            log.UserName = uName;
+            log.CBNumber = cbNumber;
+            log.status = "IDLE";
+            log.Id = row.UniqueId;
+            foreach (var key in row.Row.Keys.ToList())
             {
-                LogModel log = new LogModel();
-                log.UserName = uName;
-                log.CBNumber = cbNumber;
-                log.status = "IDLE";
-                log.Id = row.UniqueId;
-                foreach (var key in row.Row.Keys.ToList())
+                if (key == "")
                 {
-                    if (key == "")
-                    {
-                        row.Row.Remove(key); continue;
-                    }
-                    var ind = key.IndexOf(".");
-                    if (ind == -1) continue;
-
-                    var newKey = key.Replace(".", "");
-                    var value = row.Row[key];
-
-                    row.Row[newKey] = value;
-                    row.Row.Remove(key);
+                    row.Row.Remove(key); continue;
                 }
-                log.row = row;
-                log.LineNumber = barCode;
-                log.Item = item;
-                log.dateTime = datetime;
-                log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
-                log.ProcessType = ProcessType;
-                log.TableName = tableNo;
-                await _repository.Logs.InsertOneAsync(log);
-                return true;
-            }
-            catch (Exception e)
-            {
+                var ind = key.IndexOf(".");
+                if (ind == -1) continue;
 
-                return false;
+                var newKey = key.Replace(".", "");
+                var value = row.Row[key];
+
+                row.Row[newKey] = value;
+                row.Row.Remove(key);
             }
+            log.row = row;
+            log.LineNumber = barCode;
+            log.Item = item;
+            log.dateTime = datetime;
+            log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+            log.ProcessType = ProcessType;
+            log.TableName = tableNo;
+            await _repository.Logs.InsertOneAsync(log);
+            return true;
+
 
         }
 
@@ -755,12 +721,12 @@ namespace WindowBlind.Api.Controllers
 
                 PrintLabels(PrinterName + "|" + labeldata);
 
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
 
         }
@@ -828,12 +794,11 @@ namespace WindowBlind.Api.Controllers
                 string labeldata = labels.ToString().TrimEnd('|');
 
                 var error = PrintLabels(PrinterName + "|" + labeldata);
-                return new JsonResult(error.Trim() == "" ? true : error);
+                return (error.Trim() == "" ? Ok(true) : BadRequest(error));
             }
             catch (Exception e)
             {
-
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -1241,14 +1206,14 @@ namespace WindowBlind.Api.Controllers
 
                 Data.ColumnNames.Add("Roll Width");
 
-                return new JsonResult(Data);
+                return Ok(Data);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -1263,12 +1228,12 @@ namespace WindowBlind.Api.Controllers
                     await _repository.AutoUploads.DeleteOneAsync(entry => entry.Id == id);
                 }
 
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(false);
             }
 
 
@@ -1312,13 +1277,13 @@ namespace WindowBlind.Api.Controllers
                      }
                  });
 
-                return Data;
+                return Ok(Data);
 
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(false);
             }
         }
 
@@ -1335,12 +1300,12 @@ namespace WindowBlind.Api.Controllers
 
                     await _repository.AutoUploads.DeleteOneAsync(entry => entry.Id == item.UniqueId);
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(e.Message);
+                return BadRequest(e.Message);
             }
 
         }

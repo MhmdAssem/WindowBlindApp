@@ -34,7 +34,7 @@ namespace WindowBlind.Api.Controllers
             ColumnMapper.Add("Drop", "Measured Drop");
             ColumnMapper.Add("Fabric", "Fabric Type");
             ColumnMapper.Add("Colour", "Fabric Colour");
-            ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
+            ColumnMapper.Add("Pull Type / Control Type /Draw Type", "B/rail");
 
         }
         private IRepository _repository;
@@ -139,18 +139,18 @@ namespace WindowBlind.Api.Controllers
                 }
 
                 data.ColumnNames = AssemblyColumns;
-                return new JsonResult(data);
+                return Ok(data);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
 
         [HttpPost("pushLinesNoToAssemblyStation")]
-        public async Task<bool> pushLinesNoToAssemblyStation(CreateFileAndLabelModel model)
+        public async Task<IActionResult> pushLinesNoToAssemblyStation(CreateFileAndLabelModel model)
         {
 
             try
@@ -186,12 +186,12 @@ namespace WindowBlind.Api.Controllers
 
                 }
 
-                return true;
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return false;
+                return BadRequest(e.Message);
             }
         }
 
@@ -231,13 +231,13 @@ namespace WindowBlind.Api.Controllers
                 if (Data.Rows.Count != 0)
                     Data.ColumnNames = AssemblyColumns;
 
-                return new JsonResult(Data);
+                return Ok(Data);
 
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -257,12 +257,12 @@ namespace WindowBlind.Api.Controllers
                                                                 Builders<LogModel>.Update.Set(p => p.status, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
                     }
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(e.Message);
+                return BadRequest(e.Message);
             }
 
         }

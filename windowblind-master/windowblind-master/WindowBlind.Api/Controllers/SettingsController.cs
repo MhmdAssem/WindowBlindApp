@@ -175,7 +175,7 @@ namespace WindowBlind.Api.Controllers
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return new JsonResult(e.Message);
             }
 
         }
@@ -203,7 +203,7 @@ namespace WindowBlind.Api.Controllers
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return new JsonResult(e.Message);
             }
 
         }
@@ -277,7 +277,7 @@ namespace WindowBlind.Api.Controllers
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return new JsonResult(e.Message);
             }
 
         }

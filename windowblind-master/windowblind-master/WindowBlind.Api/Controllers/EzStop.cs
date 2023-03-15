@@ -507,7 +507,7 @@ namespace WindowBlind.Api.Controllers
 
 
                 bool checks = CheckPaths();
-                if (!checks) return new JsonResult(false);
+                if (!checks) return Ok(false);
 
 
                 var Data = ReadData();
@@ -538,13 +538,12 @@ namespace WindowBlind.Api.Controllers
                 FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "Colour");
 
 
-                return new JsonResult(FinalData);
+                return Ok(FinalData);
 
             }
             catch (Exception e)
             {
-
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -613,13 +612,13 @@ namespace WindowBlind.Api.Controllers
                     FinalData.Rows.AddRange(EzStopData[i].data.Rows);
                 }
 
-                return new JsonResult(FinalData);
+                return Ok(FinalData);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
 
         }
@@ -633,12 +632,12 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var EzStopOutputSetting = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var EzStopFilePath = EzStopOutputSetting.FirstOrDefault().OutputPath;
-                if (EzStopFilePath == "") return new JsonResult(false);
+                if (EzStopFilePath == "") return Ok(false);
                 DirectoryInfo f = new DirectoryInfo(EzStopFilePath);
 
-                if (!f.Exists) return new JsonResult(false);
+                if (!f.Exists) return Ok(false);
 
-                if (model.printer == null || model.printer == "") return new JsonResult(false);
+                if (model.printer == null || model.printer == "") return Ok(false);
 
                 var data = model.data;
                 var printerName = model.printer;
@@ -654,7 +653,7 @@ namespace WindowBlind.Api.Controllers
 
                     await _repository.EzStopData.DeleteOneAsync(e => e.id == item.UniqueId);
                     strconcat = item.Row["CB Number"] + "@" + item.Row["Width"];
-                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["Department"] + " "+ item.Row["Type"];
+                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Customer"] + "@" + item.Row["Department"] + " " + item.Row["Type"];
                     strconcat += "@" + item.Row["Fabric"] + "@" + item.Row["Control Type"] + "@" + item.Row["Colour"];
                     strconcat += "@" + item.Row["Lathe"];
                     strconcat += "@" + item.Row["Alpha"] + "@" + item.Row["CB Number"];
@@ -772,139 +771,119 @@ namespace WindowBlind.Api.Controllers
                     var ret1 = PrintReport("EzStop.rdlc", printerName, strParameterArray.ToList());
 
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
         public bool PrintReport(string StrReportPath, string strPrinterName, List<string> strParameterArray)
         {
-            try
+
+            string mimtype = "";
+            int extension = 1;
+            var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
+            //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
+            AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
+            PrstringerProject.EzStop obj = new PrstringerProject.EzStop();
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Encoding.GetEncoding("us-ascii");
+
+            for (int i = 0; i < strParameterArray.Count; i++)
             {
-                string mimtype = "";
-                int extension = 1;
-                var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
-               //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
-                AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
-                PrstringerProject.EzStop obj = new PrstringerProject.EzStop();
+                while (strParameterArray[i].IndexOf("  ") != -1)
+                    strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
+                if (String.IsNullOrEmpty(strParameterArray[i]))
+                    strParameterArray[i] = " ";
+            }
 
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                Encoding.GetEncoding("us-ascii");
+            obj.someoftotal = strParameterArray[11] + " of " + strParameterArray[12].ToString();
+            obj.c = strParameterArray[9].ToString();
+            obj.lathe = strParameterArray[8].ToString();
+            obj.controltype = strParameterArray[6].ToString();
+            obj.color = strParameterArray[7].ToString();
+            obj.fabric = strParameterArray[5].ToString();
+            obj.department = strParameterArray[4].ToString();
+            obj.customer = strParameterArray[3].ToString();
+            obj.drop = strParameterArray[2].ToString();
+            obj.width = strParameterArray[1].ToString();
+            obj.cbNumber = strParameterArray[0].ToString();
 
-                for (int i = 0; i < strParameterArray.Count; i++)
-                {
-                    while (strParameterArray[i].IndexOf("  ") != -1)
-                        strParameterArray[i] = strParameterArray[i].Replace("  ", " ");
-                    if (String.IsNullOrEmpty(strParameterArray[i]))
-                        strParameterArray[i] = " ";
-                }
-                
-                obj.someoftotal= strParameterArray[11] + " of " + strParameterArray[12].ToString();
-                obj.c = strParameterArray[9].ToString();
-                obj.lathe = strParameterArray[8].ToString();
-                obj.controltype = strParameterArray[6].ToString();
-                obj.color = strParameterArray[7].ToString();
-                obj.fabric = strParameterArray[5].ToString();
-                obj.department = strParameterArray[4].ToString();
-                obj.customer = strParameterArray[3].ToString();
-                obj.drop = strParameterArray[2].ToString();
-                obj.width = strParameterArray[1].ToString();
-                obj.cbNumber = strParameterArray[0].ToString();
-
-                List<PrstringerProject.EzStop> ls = new List<PrstringerProject.EzStop> {
+            List<PrstringerProject.EzStop> ls = new List<PrstringerProject.EzStop> {
                     obj
                     };
-                report.AddDataSource("EzStop", ls);
+            report.AddDataSource("EzStop", ls);
 
-                byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
+            byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
 
-                var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles","Normal_" + Guid.NewGuid().ToString() + ".pdf");
-                 //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
+            var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "EzStopPrintFiles", "Normal_" + Guid.NewGuid().ToString() + ".pdf");
+            //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".pdf");
 
-                using (FileStream stream = new FileStream(outputPath, FileMode.Create))
-                {
-                    stream.Write(result, 0, result.Length);
-                }
-
-
-                bool printedOK = true;
-                string printErrorMessage = "";
-                try
-                {
-                    PdfDocument doc = new PdfDocument();
-
-                    doc.LoadFromFile(outputPath);
-                    doc.PrintSettings.PrinterName = strPrinterName;
-                    //SizeF size = doc.Pages[0].ActualSize;
-                    //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
-                    //paper.RawKind = (int)PaperKind.Custom;
-                    //doc.PrintSettings.PaperSize = paper;
-                    //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
-                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
-                    doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
-                    doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
-                    doc.PrintSettings.SelectPageRange(1, 1);
-                    doc.PrintSettings.Landscape = false;
-                    //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
-                    doc.Print();
-
-                }
-                catch (Exception ex)
-                {
-                    printErrorMessage = "Printing Error: " + ex.ToString();
-                    printedOK = false;
-                }
-
-                return true;
-            }
-            catch (Exception e)
+            using (FileStream stream = new FileStream(outputPath, FileMode.Create))
             {
-                return false;
+                stream.Write(result, 0, result.Length);
             }
+
+
+            bool printedOK = true;
+            string printErrorMessage = "";
+
+            PdfDocument doc = new PdfDocument();
+
+            doc.LoadFromFile(outputPath);
+            doc.PrintSettings.PrinterName = strPrinterName;
+            //SizeF size = doc.Pages[0].ActualSize;
+            //PaperSize paper = new("Custom", (int)size.Width, (int)size.Height);
+            //paper.RawKind = (int)PaperKind.Custom;
+            //doc.PrintSettings.PaperSize = paper;
+            //doc.SaveToFile(outputPath, 1, 1, FileFormat.SVG);
+            //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize);
+            doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.FitSize, false);
+            doc.PrintSettings.SetPaperMargins(0, 0, 0, 0);
+            doc.PrintSettings.SelectPageRange(1, 1);
+            doc.PrintSettings.Landscape = false;
+            //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
+            doc.Print();
+
+            return true;
+
         }
 
         public async Task<bool> insertLog(string cbNumber, string barCode, string tableNo, string uName, string datetime, string item, string ProcessType, FabricCutterCBDetailsModelTableRow row)
         {
-            try
+
+            LogModel log = new LogModel();
+            log.UserName = uName;
+            log.CBNumber = cbNumber;
+            log.status = "IDLE";
+            log.Id = row.UniqueId;
+            foreach (var key in row.Row.Keys.ToList())
             {
-                LogModel log = new LogModel();
-                log.UserName = uName;
-                log.CBNumber = cbNumber;
-                log.status = "IDLE";
-                log.Id = row.UniqueId;
-                foreach (var key in row.Row.Keys.ToList())
+                if (key == "")
                 {
-                    if (key == "")
-                    {
-                        row.Row.Remove(key); continue;
-                    }
-                    var ind = key.IndexOf(".");
-                    if (ind == -1) continue;
-
-                    var newKey = key.Replace(".", "");
-                    var value = row.Row[key];
-
-                    row.Row[newKey] = value;
-                    row.Row.Remove(key);
+                    row.Row.Remove(key); continue;
                 }
-                log.row = row;
-                log.LineNumber = barCode;
-                log.Item = item;
-                log.dateTime = datetime;
-                log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
-                log.ProcessType = ProcessType;
-                log.TableName = tableNo;
-                await _repository.Logs.InsertOneAsync(log);
-                return true;
-            }
-            catch (Exception)
-            {
+                var ind = key.IndexOf(".");
+                if (ind == -1) continue;
 
-                return false;
+                var newKey = key.Replace(".", "");
+                var value = row.Row[key];
+
+                row.Row[newKey] = value;
+                row.Row.Remove(key);
             }
+            log.row = row;
+            log.LineNumber = barCode;
+            log.Item = item;
+            log.dateTime = datetime;
+            log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
+            log.ProcessType = ProcessType;
+            log.TableName = tableNo;
+            await _repository.Logs.InsertOneAsync(log);
+            return true;
 
         }
 
@@ -955,13 +934,13 @@ namespace WindowBlind.Api.Controllers
 
 
 
-                return new JsonResult(Data);
+                return Ok(Data);
 
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -978,12 +957,12 @@ namespace WindowBlind.Api.Controllers
 
                     await _repository.EzStopData.DeleteOneAsync(e => e.id == item.UniqueId);
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(e.Message);
+                return BadRequest(e.Message);
             }
 
         }

@@ -79,18 +79,18 @@ namespace WindowBlind.Api.Controllers
                 }
 
                 data.ColumnNames = HoistColumns;
-                return new JsonResult(data);
+                return Ok(data);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
 
         [HttpPost("pushLinesNoToHoistStation")]
-        public async Task<bool> pushLinesNoToHoistStation(CreateFileAndLabelModel model)
+        public async Task<IActionResult> pushLinesNoToHoistStation(CreateFileAndLabelModel model)
         {
             try
             {
@@ -119,12 +119,12 @@ namespace WindowBlind.Api.Controllers
                        Builders<LogModel>.Update.Set(p => p.status, "Qualified"), new UpdateOptions { IsUpsert = false });
                 }
 
-                return true;
+                return Ok(true);
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                return false;
+                return BadRequest(e.Message);
             }
         }
 
@@ -166,13 +166,13 @@ namespace WindowBlind.Api.Controllers
                 if (Data.Rows.Count != 0)
                     Data.ColumnNames = HoistColumns;
 
-                return new JsonResult(Data);
+                return Ok(Data);
 
             }
             catch (Exception e)
             {
 
-                return new JsonResult(false);
+                return BadRequest(e.Message);
             }
         }
 
@@ -193,12 +193,12 @@ namespace WindowBlind.Api.Controllers
                                                                 Builders<LogModel>.Update.Set(p => p.status, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
                     }
                 }
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(e.Message);
+                return BadRequest(e.Message);
             }
 
         }

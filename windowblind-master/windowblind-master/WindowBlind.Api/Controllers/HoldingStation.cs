@@ -40,17 +40,17 @@ namespace WindowBlind.Api.Controllers
                 if (Rejected != null)
                     return new JsonResult(Rejected.ToList());
 
-                return null;
+                return Ok();
             }
             catch (Exception e)
             {
-                return null;
+                return BadRequest(e.Message);
             }
         }
 
         [HttpPost("RejectThisRow")]
 
-        public async Task<bool> RejectThisRow([FromBody] List<RejectionModel> model)
+        public async Task<IActionResult> RejectThisRow([FromBody] List<RejectionModel> model)
         {
 
             try
@@ -65,7 +65,7 @@ namespace WindowBlind.Api.Controllers
                     {
                         await _repository.Rejected.DeleteOneAsync(rej => rej.Id == oldId);
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
 
                     }
@@ -94,19 +94,19 @@ namespace WindowBlind.Api.Controllers
                 }
 
 
-                return true;
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return false;
+                return BadRequest(e.Message);
             }
         }
 
 
         [HttpPost("ApproveThisOrders")]
 
-        public async Task<bool> ApproveThisOrders([FromBody] OrdersApprovalModel model)
+        public async Task<IActionResult> ApproveThisOrders([FromBody] OrdersApprovalModel model)
         {
             try
             {
@@ -123,60 +123,54 @@ namespace WindowBlind.Api.Controllers
                 }
 
 
-                return true;
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return false;
+                return BadRequest(e.Message);
             }
         }
 
 
         public async Task InsertHeldObjectIntoLogs(RejectionModel model)
         {
-            try
+
+            LogModel log = new LogModel();
+            log.UserName = model.UserName;
+            log.CBNumber = model.Row.Row["CB Number"];
+            log.status = "Held";
+            foreach (var key in model.Row.Row.Keys.ToList())
             {
-                LogModel log = new LogModel();
-                log.UserName = model.UserName;
-                log.CBNumber = model.Row.Row["CB Number"];
-                log.status = "Held";
-                foreach (var key in model.Row.Row.Keys.ToList())
+                if (key == "")
                 {
-                    if (key == "")
-                    {
-                        model.Row.Row.Remove(key); continue;
-                    }
-                    var ind = key.IndexOf(".");
-                    if (ind == -1) continue;
-
-                    var newKey = key.Replace(".", "");
-                    var value = model.Row.Row[key];
-
-                    model.Row.Row[newKey] = value;
-                    model.Row.Row.Remove(key);
+                    model.Row.Row.Remove(key); continue;
                 }
-                log.row = model.Row;
-                log.LineNumber = model.Row.Row["Line No"];
-                log.Item = "";
-                log.dateTime = model.DateTime;
-                log.Message = (model.Row.Row["CB Number"] + " " + model.Row.Row["Line No"] + " " + model.TableName + " " + model.UserName + " " + model.DateTime);
-                log.ProcessType = "Held From " + model.StationName;
-                log.TableName = model.TableName;
-                log.Id = model.Id;
-                await _repository.Logs.InsertOneAsync(log);
+                var ind = key.IndexOf(".");
+                if (ind == -1) continue;
 
-            }
-            catch (Exception)
-            {
+                var newKey = key.Replace(".", "");
+                var value = model.Row.Row[key];
 
+                model.Row.Row[newKey] = value;
+                model.Row.Row.Remove(key);
             }
+            log.row = model.Row;
+            log.LineNumber = model.Row.Row["Line No"];
+            log.Item = "";
+            log.dateTime = model.DateTime;
+            log.Message = (model.Row.Row["CB Number"] + " " + model.Row.Row["Line No"] + " " + model.TableName + " " + model.UserName + " " + model.DateTime);
+            log.ProcessType = "Held From " + model.StationName;
+            log.TableName = model.TableName;
+            log.Id = model.Id;
+            await _repository.Logs.InsertOneAsync(log);
+
 
         }
 
 
         [HttpPost("UpdateReasonsForHeldObject")]
-        public bool UpdateReasonsForHeldObject([FromBody] ReasonModel model)
+        public IActionResult UpdateReasonsForHeldObject([FromBody] ReasonModel model)
         {
 
             try
@@ -198,12 +192,12 @@ namespace WindowBlind.Api.Controllers
                 row["Hold Reasons"] = row["Hold Reasons"].Trim();
                 _repository.Logs.UpdateOne(log => log.Id == model.orderid,
                   Builders<LogModel>.Update.Set(p => p.row.Row, row), new UpdateOptions { IsUpsert = false });
-                return true;
+                return Ok(true);
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                return false;
+                return BadRequest(e.Message);
             }
         }
 
@@ -244,16 +238,16 @@ namespace WindowBlind.Api.Controllers
 
                 var row = _repository.Logs.Find(log => log.Id == model.Id).FirstOrDefault().row.Row;
                 row["Admin_Notes"] = model.Row.Row["Admin_Notes"];
-                
+
                 _repository.Logs.UpdateOne(log => log.Id == model.Id,
                   Builders<LogModel>.Update.Set(p => p.row.Row, row), new UpdateOptions { IsUpsert = false });
 
-                return new JsonResult(true);
+                return Ok(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(e.StackTrace);
+                return BadRequest(e.Message);
             }
 
         }
