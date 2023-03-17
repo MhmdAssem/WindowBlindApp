@@ -272,7 +272,7 @@
                   <TextRun>
                     <Value>=First(Fields!lathe.Value, "EzStop")</Value>
                     <Style>
-                      <FontSize>6pt</FontSize>
+                      <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -357,7 +357,7 @@
                   <TextRun>
                     <Value>=First(Fields!someoftotal.Value, "EzStop")</Value>
                     <Style>
-                      <FontSize>6pt</FontSize>
+                      <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>

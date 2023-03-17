@@ -104,7 +104,7 @@ namespace WindowBlind.Api.Controllers
                     {
                         row.row.Row["Packed"] = RowsWithTheSameCBNumber.Count.ToString();
                     }
-
+                    row.row.Row["Blind Number"] = (Convert.ToInt32(row.row.Row["Alpha"][0]) - 64).ToString();
                     data.Rows.Add(row.row);
 
                 }

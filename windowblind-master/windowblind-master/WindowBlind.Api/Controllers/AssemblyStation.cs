@@ -34,12 +34,16 @@ namespace WindowBlind.Api.Controllers
             ColumnMapper.Add("Drop", "Measured Drop");
             ColumnMapper.Add("Fabric", "Fabric Type");
             ColumnMapper.Add("Colour", "Fabric Colour");
-            ColumnMapper.Add("Pull Type / Control Type /Draw Type", "B/rail");
+            ColumnMapper.Add("Pull Type / Control Type /Draw Type", "Control Type");
+
+
+            CurentColumnMapper.Add("Control Type", "B/rail");
 
         }
         private IRepository _repository;
         private IWebHostEnvironment _env;
-        Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
+        Dictionary<string, string> ColumnMapper = new Dictionary<string, string>(); /// this one maps the columns with the same values coming from Fabric/Logcut/ezstop
+        Dictionary<string, string> CurentColumnMapper = new Dictionary<string, string>(); /// this one change the columns and values to new ones
 
 
 
@@ -68,7 +72,7 @@ namespace WindowBlind.Api.Controllers
 
                     if (ColumnMapper.ContainsKey(AssemblyColumns[i]))
                     {
-                        AssemblyColumns[i] = ColumnMapper[AssemblyColumns[i]];
+                        AssemblyColumns[i] = CurentColumnMapper.ContainsKey(ColumnMapper[AssemblyColumns[i]]) ?CurentColumnMapper[ColumnMapper[AssemblyColumns[i]]] : ColumnMapper[AssemblyColumns[i]];
                     }
                 }
 
@@ -104,6 +108,14 @@ namespace WindowBlind.Api.Controllers
                     row.row.UniqueId = row.Id;
                     row.row.rows_AssociatedIds.Add(row.Id);
                     Total = int.Parse(row.row.Row["Total"]);
+                    foreach (var col in CurentColumnMapper)
+                    {
+                        if (row.row.Row.ContainsKey(col.Key))
+                        {
+                            row.row.Row[col.Value] = row.row.Row[col.Key];
+                        }
+                    }
+                    row.row.Row["Blind Number"] = (Convert.ToInt32(row.row.Row["Alpha"][0]) - 64).ToString();
                     data.Rows.Add(row.row);
                     cbNumber = row.row.Row["CB Number"];
                     LogCutterDic[row.LineNumber] = row;
@@ -125,7 +137,14 @@ namespace WindowBlind.Api.Controllers
                         row.row.Row["FromHoldingStation"] = "NO";
                         row.row.UniqueId = row.Id;
                         row.row.rows_AssociatedIds.Add(row.Id);
-                        row.row.rows_AssociatedIds.Add(FabricCutterDic.ContainsKey(row.LineNumber)?FabricCutterDic[row.LineNumber].Id: LogCutterDic[row.LineNumber].Id);
+                        row.row.rows_AssociatedIds.Add(FabricCutterDic.ContainsKey(row.LineNumber) ? FabricCutterDic[row.LineNumber].Id : LogCutterDic[row.LineNumber].Id);
+                        foreach (var col in CurentColumnMapper)
+                        {
+                            if (row.row.Row.ContainsKey(col.Key))
+                            {
+                                row.row.Row[col.Value] = row.row.Row[col.Key];
+                            }
+                        }
                         data.Rows.Add(row.row);
                         cbNumber = row.row.Row["CB Number"];
                     }
@@ -135,7 +154,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (data.Rows.Count == Total && Total != 0)
                 {
-                    await AddRowsWithoutDepartment(data, cbNumber,Total);
+                    await AddRowsWithoutDepartment(data, cbNumber, Total);
                 }
 
                 data.ColumnNames = AssemblyColumns;
@@ -169,15 +188,15 @@ namespace WindowBlind.Api.Controllers
                     log.UserName = model.userName;
                     log.LineNumber = row.Row["Line No"];
                     log.CBNumber = row.Row["CB Number"];
-                    log.Item =row.Row.ContainsKey("item")? row.Row["item"]:"NONE";
+                    log.Item = row.Row.ContainsKey("item") ? row.Row["item"] : "NONE";
                     log.dateTime = DateTime.Now.ToString();
                     log.status = "Assembly";
                     log.ProcessType = "Assembly";
                     log.TableName = model.tableName;
                     log.Message = "This Line No.: " + log.LineNumber + ", has been assembled at " + log.dateTime;
-                    
+
                     await _repository.AssemblyStation.InsertOneAsync(log);
-                    
+
                     foreach (var id in row.rows_AssociatedIds)
                     {
                         await _repository.Logs.UpdateOneAsync(log => log.Id == id,
@@ -268,7 +287,7 @@ namespace WindowBlind.Api.Controllers
 
         }
 
-        private async Task AddRowsWithoutDepartment(FabricCutterCBDetailsModel data, string cbNumber,int Total)
+        private async Task AddRowsWithoutDepartment(FabricCutterCBDetailsModel data, string cbNumber, int Total)
         {
             /// get the dumb file Path
             var ctbsodumpSetting = await _repository.Settings.FindAsync(e => e.settingName == "ctbsodump");
@@ -318,7 +337,7 @@ namespace WindowBlind.Api.Controllers
                         if (Headertext == "W/Order NO" && cell != cbNumber)
                         {
                             System.IO.File.Delete(ctbsodumpPath);
-                            return; 
+                            return;
                         }
                         if (Headertext == "Name-key" && cell == "")
                         {
@@ -338,7 +357,7 @@ namespace WindowBlind.Api.Controllers
                     {
                         NewRow.Row["FromHoldingStation"] = "";
                         NewRow.Row["Total"] = Total.ToString();
-                        NewRow.UniqueId = Guid.NewGuid().ToString(); 
+                        NewRow.UniqueId = Guid.NewGuid().ToString();
                         data.Rows.Add(NewRow);
                     }
                 }

@@ -75,6 +75,7 @@ namespace WindowBlind.Api.Controllers
                     row.row.Row["FromHoldingStation"] = "NO";
                     row.row.UniqueId = row.Id;
                     row.row.rows_AssociatedIds.Add(row.Id);
+                    row.row.Row["Blind Number"] = (Convert.ToInt32(row.row.Row["Alpha"][0]) - 64).ToString();
                     data.Rows.Add(row.row);
                 }
 
