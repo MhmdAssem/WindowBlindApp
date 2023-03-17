@@ -113,6 +113,7 @@ namespace WindowBlind.Api.Controllers
 
                 data.ColumnNames = PackingColumns;
                 data.ColumnNames.Add("Status");
+                data.ColumnNames.Insert(0, "Blind Number");
 
                 return Ok(data);
             }

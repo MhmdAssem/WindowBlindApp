@@ -159,7 +159,7 @@ export class AssemblyStationComponent implements OnInit {
         this.ReviewtableModelColNames = this.ReviewtableModelColNames.concat(data.columnNames);
 
         this.tableModelColNamesWithActions.push('SelectColumn')
-
+        
         data.rows.forEach(element => {
 
           if (this.DataInTheTable[element.uniqueId] == null || this.DataInTheTable[element.uniqueId] == undefined) {

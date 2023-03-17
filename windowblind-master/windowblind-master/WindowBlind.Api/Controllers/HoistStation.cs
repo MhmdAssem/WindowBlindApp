@@ -79,6 +79,7 @@ namespace WindowBlind.Api.Controllers
                 }
 
                 data.ColumnNames = HoistColumns;
+                data.ColumnNames.Insert(0, "Blind Number");
                 return Ok(data);
             }
             catch (Exception e)
