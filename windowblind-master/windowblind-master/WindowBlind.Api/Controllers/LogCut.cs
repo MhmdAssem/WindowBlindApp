@@ -787,7 +787,7 @@ namespace WindowBlind.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return Ok(e.Message);
             }
 
 

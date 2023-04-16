@@ -324,7 +324,9 @@ namespace WindowBlind.Api.Controllers
                         await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
                                             Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Done"), new UpdateOptions { IsUpsert = false });
                     if (item.Row["Department"] == "") continue;
-                    var someoftotalprefix = item.Row["SomeOfTotal"].Trim();
+                    // var someoftotalprefix = item.Row["SomeOfTotal"].Trim();
+                    var someofTotal = item.Row["Blind Number"].Trim() + " of " + item.Row["Total"].Trim(); //Line changed by Dhaval Since SomeofTotal is missing
+                    var someoftotalprefix = someofTotal; //Line changed by Dhaval Since SomeofTotal is missing
                     someoftotalprefix = someoftotalprefix.Substring(0, someoftotalprefix.IndexOf(" "));
                     someoftotalprefix = new string('0', 4 - someoftotalprefix.Length) + someoftotalprefix;
 
@@ -335,7 +337,7 @@ namespace WindowBlind.Api.Controllers
                     strconcat = item.Row["Debtor Order Number"] + "/" + someoftotalprefix + "@" + item.Row["CB Number"];
                     strconcat += "@" + item.Row["Debtor Order Number"].Substring(0, item.Row["Debtor Order Number"].IndexOf(' ')) + "@" + item.Row["Order Department"] + "@" + "Viewscape Pty.Ltd";//item.Row["Supplier"];
                     strconcat += "@" + item.Row["Department"] + "@" + item.Row["Location"] + "@" + item.Row["Width"];
-                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Line No"] + "@" + item.Row["SomeOfTotal"];
+                    strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Line No"] + "@" + someofTotal;
                     strconcat += "@" + item.Row["Customer"] + "@" + item.Row["Carrier"] + " " + LastwordOfAddress3;
                     strconcat += "@" + item.Row["Address 1"];
                     strconcat += "@" + ((!String.IsNullOrEmpty(item.Row["Address 1"].Trim())) ? ", " : "") + item.Row["Address 2"];
@@ -348,7 +350,9 @@ namespace WindowBlind.Api.Controllers
                     labels.Add(strconcat);
                     strRS232Width += item.Row["CutWidth"].ToString().Replace("mm", "");
 
-                    bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToString(), item.Row["Alpha"], "LogCut", item);
+                  
+
+                        bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToString(), item.Row["Alpha"], "LogCut", item);
 
                 }
 
@@ -370,7 +374,7 @@ namespace WindowBlind.Api.Controllers
             }
             catch (Exception e)
             {
-                return Ok(e.Message);
+                return BadRequest(e.Message);
             }
 
 
@@ -406,7 +410,17 @@ namespace WindowBlind.Api.Controllers
             log.Message = (cbNumber + " " + barCode + " " + tableNo + " " + uName + " " + datetime);
             log.ProcessType = ProcessType;
             log.TableName = tableNo;
+
+            var checkLog = await _repository.Logs.FindAsync(log=>log.LineNumber == barCode && log.TableName == "Packing Station").Result.ToListAsync();
+
+            //  PackingStation.FindAsync(log => log.CBNumber == model.data.Rows[0].Row["CB Number"] && log.status == "Packed").Result.ToListAsync();
+
+            if (checkLog == null)
+            {
             await _repository.Logs.InsertOneAsync(log);
+            }
+
+           
             return true;
 
         }

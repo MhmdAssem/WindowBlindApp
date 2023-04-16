@@ -98,6 +98,7 @@
                   <TextRun>
                     <Value>=First(Fields!cbNumber.Value, "LogCut1")</Value>
                     <Style>
+                      <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -123,6 +124,7 @@
                   <TextRun>
                     <Value>=First(Fields!width.Value, "LogCut1")</Value>
                     <Style>
+                      <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -148,6 +150,7 @@
                   <TextRun>
                     <Value>=First(Fields!drop.Value, "LogCut1")</Value>
                     <Style>
+                      <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -197,9 +200,7 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=First(Fields!department.Value, "LogCut1")</Value>
-                    <Style>
-                      <FontSize>8pt</FontSize>
-                    </Style>
+                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style>
@@ -224,9 +225,7 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=First(Fields!type.Value, "LogCut1")</Value>
-                    <Style>
-                      <FontSize>6pt</FontSize>
-                    </Style>
+                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style>
@@ -251,9 +250,7 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=First(Fields!fabric.Value, "LogCut1")</Value>
-                    <Style>
-                      <FontSize>6pt</FontSize>
-                    </Style>
+                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style>
@@ -278,9 +275,7 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=First(Fields!color.Value, "LogCut1")</Value>
-                    <Style>
-                      <FontSize>6pt</FontSize>
-                    </Style>
+                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style>
@@ -305,9 +300,7 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=First(Fields!controltype.Value, "LogCut1")</Value>
-                    <Style>
-                      <FontSize>6pt</FontSize>
-                    </Style>
+                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style>
@@ -332,9 +325,7 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=First(Fields!lathe.Value, "LogCut1")</Value>
-                    <Style>
-                      <FontSize>6pt</FontSize>
-                    </Style>
+                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style>
@@ -360,7 +351,7 @@
                   <TextRun>
                     <Value>=First(Fields!c.Value, "LogCut1")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -385,7 +376,7 @@
                   <TextRun>
                     <Value>=First(Fields!cutwidth.Value, "LogCut1")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -440,7 +431,7 @@
                   <TextRun>
                     <Value>=First(Fields!someoftotal.Value, "LogCut1")</Value>
                     <Style>
-                      <FontSize>6pt</FontSize>
+                      <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -467,7 +458,7 @@
                   <TextRun>
                     <Value>=First(Fields!cntrside.Value, "LogCut1")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>9pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>

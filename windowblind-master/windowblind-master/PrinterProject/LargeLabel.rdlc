@@ -86,7 +86,7 @@
                   <TextRun>
                     <Value>=First(Fields!CBNumber.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>12pt</FontSize>
+                      <FontSize>18pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -97,8 +97,8 @@
             <rd:DefaultName>CBNumber</rd:DefaultName>
             <Top>0.26141cm</Top>
             <Left>0.28787cm</Left>
-            <Height>0.6cm</Height>
-            <Width>3.24083cm</Width>
+            <Height>0.84694cm</Height>
+            <Width>4.19333cm</Width>
             <Style>
               <Border />
               <PaddingLeft>2pt</PaddingLeft>
@@ -108,7 +108,6 @@
             </Style>
           </Textbox>
           <Textbox Name="Carrier">
-            <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
@@ -121,14 +120,16 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Carrier</rd:DefaultName>
             <Top>0.26141cm</Top>
-            <Left>3.91266cm</Left>
+            <Left>4.78578cm</Left>
             <Height>0.6cm</Height>
-            <Width>3.79646cm</Width>
+            <Width>2.92334cm</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border />
@@ -147,7 +148,8 @@
                   <TextRun>
                     <Value>=First(Fields!Customer.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -155,7 +157,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Customer</rd:DefaultName>
-            <Top>0.96724cm</Top>
+            <Top>1.28474cm</Top>
             <Left>0.28787cm</Left>
             <Height>0.6cm</Height>
             <Width>7.42125cm</Width>
@@ -177,7 +179,8 @@
                   <TextRun>
                     <Value>=First(Fields!PO.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -185,7 +188,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>PO</rd:DefaultName>
-            <Top>1.67809cm</Top>
+            <Top>1.99559cm</Top>
             <Left>0.28787cm</Left>
             <Height>0.6cm</Height>
             <Width>7.42125cm</Width>
@@ -207,7 +210,8 @@
                   <TextRun>
                     <Value>=First(Fields!Description.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -215,7 +219,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Description</rd:DefaultName>
-            <Top>2.38392cm</Top>
+            <Top>2.70142cm</Top>
             <Left>0.28787cm</Left>
             <Height>0.6cm</Height>
             <Width>7.42125cm</Width>
@@ -237,7 +241,8 @@
                   <TextRun>
                     <Value>=First(Fields!Location.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -245,7 +250,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Location</rd:DefaultName>
-            <Top>3.08976cm</Top>
+            <Top>3.40726cm</Top>
             <Left>0.28787cm</Left>
             <Height>0.6cm</Height>
             <Width>7.42125cm</Width>
@@ -267,7 +272,8 @@
                   <TextRun>
                     <Value>=First(Fields!Width.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -275,7 +281,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Width</rd:DefaultName>
-            <Top>3.79559cm</Top>
+            <Top>4.11309cm</Top>
             <Left>0.28787cm</Left>
             <Height>0.6cm</Height>
             <Width>7.42125cm</Width>
@@ -297,7 +303,8 @@
                   <TextRun>
                     <Value>=First(Fields!Drop.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -305,7 +312,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Drop</rd:DefaultName>
-            <Top>4.50142cm</Top>
+            <Top>4.81892cm</Top>
             <Left>0.28787cm</Left>
             <Height>0.6cm</Height>
             <Width>7.42125cm</Width>
@@ -327,7 +334,8 @@
                   <TextRun>
                     <Value>=First(Fields!SomeOfTotal.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -335,7 +343,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>SomeOfTotal</rd:DefaultName>
-            <Top>5.20726cm</Top>
+            <Top>5.52476cm</Top>
             <Left>0.28787cm</Left>
             <Height>0.6cm</Height>
             <Width>7.42125cm</Width>
@@ -357,7 +365,8 @@
                   <TextRun>
                     <Value>=First(Fields!FittingAddress.Value, "BigLabel")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -365,7 +374,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>FittingAddress</rd:DefaultName>
-            <Top>5.91309cm</Top>
+            <Top>6.23059cm</Top>
             <Left>0.28787cm</Left>
             <Height>0.6cm</Height>
             <Width>7.42125cm</Width>

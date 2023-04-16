@@ -127,6 +127,7 @@
                   <TextRun>
                     <Value>=First(Fields!CCNumber.Value, "PinklLabel")</Value>
                     <Style>
+                      <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -365,7 +366,8 @@
                   <TextRun>
                     <Value>=First(Fields!SomeOfTotal.Value, "PinklLabel")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>9pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -418,6 +420,7 @@
                     <Value>=First(Fields!Carrier.Value, "PinklLabel")</Value>
                     <Style>
                       <FontSize>8pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -494,7 +497,9 @@
                 <TextRuns>
                   <TextRun>
                     <Value>=First(Fields!Status.Value, "PinklLabel")</Value>
-                    <Style />
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
