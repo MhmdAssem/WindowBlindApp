@@ -47,7 +47,7 @@ namespace WindowBlind.Api.Controllers
         bool CBSearch;
         string CB;
         string LineNumber;
-        Dictionary<string, string> ColumnMapper = new Dictionary<string, string>();
+        Dictionary<string, string> ColumnMapper = new();
 
 
         public void Init()
@@ -507,12 +507,27 @@ namespace WindowBlind.Api.Controllers
 
 
                 bool checks = CheckPaths();
-                if (!checks) return Ok(false);
+                if (!checks) return (IActionResult)new ResultModel
+                {
+                    Message = "Missing configuration check settings page for EzStop settings",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
 
                 var Data = ReadData();
 
-
+                if (Data == null)
+                {
+                    return (IActionResult)new ResultModel
+                    {
+                        Message = "Something wrong with the ctbsodumpfile",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
+                }
                 EzStopProcessing(ref Data);
 
                 Data.Rows = Data.Rows.Where(e => e.Row["Line No"] == CBNumberOrLineNumber).ToList();
@@ -538,12 +553,12 @@ namespace WindowBlind.Api.Controllers
                 FinalData.ColumnNames = LogCut.AddColumnIfNotExists(FinalData.ColumnNames, "Colour");
 
 
-                return Ok(FinalData);
+                return Repository.ReturnSuccessfulRequest(FinalData);
 
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -612,13 +627,13 @@ namespace WindowBlind.Api.Controllers
                     FinalData.Rows.AddRange(EzStopData[i].data.Rows);
                 }
 
-                return Ok(FinalData);
+                return Repository.ReturnSuccessfulRequest(FinalData);
 
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }
@@ -632,12 +647,30 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var EzStopOutputSetting = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var EzStopFilePath = EzStopOutputSetting.FirstOrDefault().OutputPath;
-                if (EzStopFilePath == "") return Ok(false);
+                if (EzStopFilePath == "") return (IActionResult)new ResultModel
+                {
+                    Message = "EzStop output path is missing check the configuration",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
                 DirectoryInfo f = new DirectoryInfo(EzStopFilePath);
 
-                if (!f.Exists) return Ok(false);
+                if (!f.Exists) return (IActionResult)new ResultModel
+                {
+                    Message = "EzStop output folder is not found",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
-                if (model.printer == null || model.printer == "") return Ok(false);
+                if (model.printer == null || model.printer == "") return (IActionResult)new ResultModel
+                {
+                    Message = "EzStop printer is not found",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
                 var data = model.data;
                 var printerName = model.printer;
@@ -771,11 +804,11 @@ namespace WindowBlind.Api.Controllers
                     var ret1 = PrintReport("EzStop.rdlc", printerName, strParameterArray.ToList());
 
                 }
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -934,13 +967,13 @@ namespace WindowBlind.Api.Controllers
 
 
 
-                return Ok(Data);
+                return Repository.ReturnSuccessfulRequest(Data);
 
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -957,12 +990,12 @@ namespace WindowBlind.Api.Controllers
 
                     await _repository.EzStopData.DeleteOneAsync(e => e.id == item.UniqueId);
                 }
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }

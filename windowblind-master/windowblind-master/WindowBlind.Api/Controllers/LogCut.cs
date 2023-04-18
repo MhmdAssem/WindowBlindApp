@@ -614,9 +614,26 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
                 var Checks = CheckPaths();
 
-                if (!Checks) return BadRequest(false);
+                if (!Checks) return (IActionResult)new ResultModel
+                {
+                    Message = "Some configuration are missing for LogCut please go to settings page",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
                 var Data = ReadingData();
+
+                if (Data == null)
+                {
+                    return (IActionResult)new ResultModel
+                    {
+                        Message = "there is a problem with the ctbsodump file",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
+                }
 
                 FabricCutterCBDetailsModel FinalizedData = new FabricCutterCBDetailsModel();
 
@@ -624,13 +641,13 @@ namespace WindowBlind.Api.Controllers
 
                 CustomizeTheColumns(ref FinalizedData);
 
-                return Ok(FinalizedData);
+                return Repository.ReturnSuccessfulRequest(FinalizedData);
 
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -642,12 +659,30 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var LogCutOutputSettings = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().OutputPath;
-                if (LogCutOutputPath == "") return BadRequest(false);
+                if (LogCutOutputPath == "") return (IActionResult)new ResultModel
+                {
+                    Message = "LogCutOutputPath is empty please check configuration",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
                 DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
 
-                if (!f.Exists) return BadRequest(false);
+                if (!f.Exists) return (IActionResult)new ResultModel
+                {
+                    Message = "LogCutOutput folder is not found",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
-                if (model.printer == null || model.printer == "") return BadRequest("Printer Not Found");
+                if (model.printer == null || model.printer == "") return (IActionResult)new ResultModel
+                {
+                    Message = "LogCut printer is not found",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
                 var data = model.data;
                 var printerName = model.printer;
@@ -783,11 +818,11 @@ namespace WindowBlind.Api.Controllers
 
 
                 }
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
-                return Ok(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
 
@@ -1019,7 +1054,13 @@ namespace WindowBlind.Api.Controllers
 
                 var check = CheckPaths();
 
-                if (!check) return BadRequest(false);
+                if (!check) return new ResultModel
+                {
+                    Message = "Missing configuration check settings page for Logcut settings",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
 
                 var HeldObjects = await _repository.Rejected.FindAsync(rej => rej.ForwardedToStation == "LogCut" && rej.TableName == tableName).Result.ToListAsync();
@@ -1040,13 +1081,13 @@ namespace WindowBlind.Api.Controllers
 
                 });
 
-                return Data;
+                return Repository.ReturnSuccessfulRequest(Data);
 
             }
             catch (Exception e)
             {
 
-                return new FabricCutterCBDetailsModel();
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -1061,12 +1102,12 @@ namespace WindowBlind.Api.Controllers
                         await _repository.Rejected.UpdateOneAsync(rej => rej.Id == item.UniqueId,
                                             Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
                 }
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return Ok(e.Message);
+                return Repository.ReturnSuccessfulRequest(e.Message);
             }
 
         }
@@ -1084,7 +1125,13 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
                 var check = CheckPaths();
 
-                if (!check) return BadRequest(false);
+                if (!check) return (IActionResult)new ResultModel
+                {
+                    Message = "LogCut configuration is not correct please check",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
                 var AutoUploadDirSetting = await _repository.Settings.FindAsync(e => e.settingName == "AutoUploadDir" && e.applicationSetting == "_LogCut");
                 var AutoUploadDirPath = AutoUploadDirSetting.FirstOrDefault().settingPath;
 
@@ -1093,7 +1140,13 @@ namespace WindowBlind.Api.Controllers
 
                 var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
                 if (AutoUploadFolder.Exists == false)
-                    return BadRequest(false);
+                    return (IActionResult)new ResultModel
+                    {
+                        Message = "LogCut auto upload folder is not found",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
 
                 var AutoUploadErrorsPath = ViewedUplaodsPath.Substring(0, ViewedUplaodsPath.LastIndexOf(Path.DirectorySeparatorChar.ToString())) + Path.DirectorySeparatorChar.ToString() + "AutoUploadErrorFolder";
 
@@ -1365,7 +1418,6 @@ namespace WindowBlind.Api.Controllers
                     }
                     catch (Exception e)
                     {
-
                         #region Moving Files with Errors to the error specified Folder
 
                         FileInfo checking = new FileInfo(Path.Combine(ViewedUplaodsPath, AutoUploadFile.Name));
@@ -1380,8 +1432,6 @@ namespace WindowBlind.Api.Controllers
 
 
                         #endregion
-
-
                     }
                 }
 
@@ -1430,14 +1480,12 @@ namespace WindowBlind.Api.Controllers
                 #endregion
 
 
-                return Ok(Finalized);
+                return Repository.ReturnSuccessfulRequest(Finalized);
 
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
-
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -1452,12 +1500,11 @@ namespace WindowBlind.Api.Controllers
                     await _repository.AutoUploads.DeleteOneAsync(entry => entry.Id == id);
                 }
 
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
-
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
 

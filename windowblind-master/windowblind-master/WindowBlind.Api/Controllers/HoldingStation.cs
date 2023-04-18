@@ -38,13 +38,19 @@ namespace WindowBlind.Api.Controllers
                 var Rejected = await _repository.Rejected.FindAsync(e => e.ForwardedToStation == "Admin");
 
                 if (Rejected != null)
-                    return new JsonResult(Rejected.ToList());
+                    return Repository.ReturnSuccessfulRequest(Rejected.ToList());
 
-                return Ok();
+                return (IActionResult)new ResultModel
+                {
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    Message = "No Rejected Orders Found",
+                    Data = null,
+                    StackTrace = null
+                };
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -94,12 +100,12 @@ namespace WindowBlind.Api.Controllers
                 }
 
 
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -123,12 +129,12 @@ namespace WindowBlind.Api.Controllers
                 }
 
 
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -192,12 +198,12 @@ namespace WindowBlind.Api.Controllers
                 row["Hold Reasons"] = row["Hold Reasons"].Trim();
                 _repository.Logs.UpdateOne(log => log.Id == model.orderid,
                   Builders<LogModel>.Update.Set(p => p.row.Row, row), new UpdateOptions { IsUpsert = false });
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -217,12 +223,12 @@ namespace WindowBlind.Api.Controllers
                                         Builders<RejectionModel>.Update.Set(p => p.ForwardedToStation, "Deleted By: " + UserName), new UpdateOptions { IsUpsert = false });
 
                 }
-                return new JsonResult(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return new JsonResult(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }
@@ -242,12 +248,12 @@ namespace WindowBlind.Api.Controllers
                 _repository.Logs.UpdateOne(log => log.Id == model.Id,
                   Builders<LogModel>.Update.Set(p => p.row.Row, row), new UpdateOptions { IsUpsert = false });
 
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }

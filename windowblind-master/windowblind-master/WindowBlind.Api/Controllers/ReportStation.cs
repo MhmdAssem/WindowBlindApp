@@ -85,12 +85,12 @@ namespace WindowBlind.Api.Controllers
                 GenerateStatusForLineNumber(ref data, HeldObjsList, "", ref LineNumberIndex);
 
 
-                return Ok(data);
+                return Repository.ReturnSuccessfulRequest(data);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
 
