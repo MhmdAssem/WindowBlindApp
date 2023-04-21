@@ -2,10 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { type } from 'os';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { CreateFileAndLabelModel } from './CreateFileAndLabelModel';
-import { FabricCutterCBDetailsModel } from './FabricCutterCBDetailsModel';
+import { FabricCutterCBDetailsModel, ResultModel } from './FabricCutterCBDetailsModel';
 
 @Injectable({
   providedIn: 'root'
@@ -137,8 +137,11 @@ export class FabricCutterService {
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/GetHeldObjects', { headers }).pipe(
-        tap(
+        map(
           data => {
+            console.log(data);
+            let model = data as unknown as ResultModel;
+            return model.data;
             if (!data) {
               alert("Sorry Configuration is not done , please contact your admin !");
             }

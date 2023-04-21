@@ -30,7 +30,7 @@ namespace WindowBlind.Api.Controllers
 
         [HttpGet("GetAllRejectedOrders")]
 
-        public async Task<IActionResult> GetAllRejectedOrders()
+        public async Task<ResultModel> GetAllRejectedOrders()
         {
             try
             {
@@ -40,7 +40,7 @@ namespace WindowBlind.Api.Controllers
                 if (Rejected != null)
                     return Repository.ReturnSuccessfulRequest(Rejected.ToList());
 
-                return (IActionResult)new ResultModel
+                return (ResultModel)new ResultModel
                 {
                     Status = System.Net.HttpStatusCode.BadRequest,
                     Message = "No Rejected Orders Found",
@@ -56,7 +56,7 @@ namespace WindowBlind.Api.Controllers
 
         [HttpPost("RejectThisRow")]
 
-        public async Task<IActionResult> RejectThisRow([FromBody] List<RejectionModel> model)
+        public async Task<ResultModel> RejectThisRow([FromBody] List<RejectionModel> model)
         {
 
             try
@@ -112,7 +112,7 @@ namespace WindowBlind.Api.Controllers
 
         [HttpPost("ApproveThisOrders")]
 
-        public async Task<IActionResult> ApproveThisOrders([FromBody] OrdersApprovalModel model)
+        public async Task<ResultModel> ApproveThisOrders([FromBody] OrdersApprovalModel model)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpPost("UpdateReasonsForHeldObject")]
-        public IActionResult UpdateReasonsForHeldObject([FromBody] ReasonModel model)
+        public ResultModel UpdateReasonsForHeldObject([FromBody] ReasonModel model)
         {
 
             try
@@ -210,7 +210,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpPost("ClearOrdersFromHoldingStation")]
-        public async Task<IActionResult> ClearOrdersFromHoldingStation([FromBody] List<RejectionModel> Model, [FromHeader] string UserName)
+        public async Task<ResultModel> ClearOrdersFromHoldingStation([FromBody] List<RejectionModel> Model, [FromHeader] string UserName)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("SaveAdminNotes")]
-        public async Task<IActionResult> SaveAdminNotes([FromBody] RejectionModel model)
+        public async Task<ResultModel> SaveAdminNotes([FromBody] RejectionModel model)
         {
             try
             {

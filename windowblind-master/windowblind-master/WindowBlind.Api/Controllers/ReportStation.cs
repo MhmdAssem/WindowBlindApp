@@ -29,7 +29,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("GenerateReports")]
-        public async Task<IActionResult> GenerateReports([FromHeader] string CBNumber)
+        public async Task<ResultModel> GenerateReports([FromHeader] string CBNumber)
         {
 
             try

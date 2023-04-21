@@ -49,7 +49,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("GetReadyToAssemble")]
-        public async Task<IActionResult> GetReadyToAssemble([FromHeader] string CbOrLineNumber)
+        public async Task<ResultModel> GetReadyToAssemble([FromHeader] string CbOrLineNumber)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpPost("pushLinesNoToAssemblyStation")]
-        public async Task<IActionResult> pushLinesNoToAssemblyStation(CreateFileAndLabelModel model)
+        public async Task<ResultModel> pushLinesNoToAssemblyStation(CreateFileAndLabelModel model)
         {
 
             try
@@ -218,7 +218,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("GetHeldObjects")]
-        public async Task<IActionResult> GetHeldObjects([FromHeader] string tableName)
+        public async Task<ResultModel> GetHeldObjects([FromHeader] string tableName)
         {
             try
             {
@@ -263,7 +263,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("ClearOrdersFromAssembly")]
-        public async Task<IActionResult> ClearOrdersFromAssembly([FromBody] CreateFileAndLabelModel model)
+        public async Task<ResultModel> ClearOrdersFromAssembly([FromBody] CreateFileAndLabelModel model)
         {
             try
             {

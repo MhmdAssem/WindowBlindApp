@@ -53,7 +53,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("GetReadyToPack")]
-        public async Task<IActionResult> GetReadyToPack([FromHeader] string CbOrLineNumber)
+        public async Task<ResultModel> GetReadyToPack([FromHeader] string CbOrLineNumber)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpPost("pushLinesNoToPackingStation")]
-        public async Task<IActionResult> pushLinesNoToPackingStation(CreateFileAndLabelModel model)
+        public async Task<ResultModel> pushLinesNoToPackingStation(CreateFileAndLabelModel model)
         {
 
             try
@@ -225,7 +225,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("GetHeldObjects")]
-        public async Task<IActionResult> GetHeldObjects([FromHeader] string tableName)
+        public async Task<ResultModel> GetHeldObjects([FromHeader] string tableName)
         {
             try
             {
@@ -271,7 +271,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("ClearOrdersFromPacking")]
-        public async Task<IActionResult> ClearOrdersFromPacking([FromBody] CreateFileAndLabelModel model)
+        public async Task<ResultModel> ClearOrdersFromPacking([FromBody] CreateFileAndLabelModel model)
         {
             try
             {
@@ -297,14 +297,14 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("PackingSend")]
-        public async Task<IActionResult> PackingSend(CreateFileAndLabelModel model)
+        public async Task<ResultModel> PackingSend(CreateFileAndLabelModel model)
         {
             try
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var LogCutOutputSettings = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().OutputPath;
-                if (LogCutOutputPath == "") return (IActionResult)new ResultModel
+                if (LogCutOutputPath == "") return (ResultModel)new ResultModel
                 {
                     Message = "Packing station configuration is missing please go to settings page",
                     Data = null,
@@ -314,7 +314,7 @@ namespace WindowBlind.Api.Controllers
 
                 DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
 
-                if (!f.Exists) return (IActionResult) new ResultModel
+                if (!f.Exists) return (ResultModel) new ResultModel
                 {
                     Message = "Packing station output path is not found",
                     Data = null,
@@ -322,7 +322,7 @@ namespace WindowBlind.Api.Controllers
                     StackTrace = null
                 };
 
-                if (model.printer == null || model.printer == "" || model.printer2nd == null || model.printer2nd == "-") return (IActionResult)new ResultModel
+                if (model.printer == null || model.printer == "" || model.printer2nd == null || model.printer2nd == "-") return (ResultModel)new ResultModel
                 {
                     Message = "Packing station printers are not found",
                     Data = null,

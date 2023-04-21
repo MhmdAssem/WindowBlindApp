@@ -197,6 +197,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
     this.Loading = true;
 
     this.FBRservice.getCBNumberDetails(cb.toString()).subscribe(data => {
+      
       if (data && data.columnNames.length != 0) {
 
 
@@ -784,6 +785,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
       this.FBRservice.GetHeldObjects(tableName).subscribe(
         data => {
+          console.log(data)
           if (data && data.columnNames.length != 0) {
 
             this.tableModelColNames = data.columnNames;

@@ -418,7 +418,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("getCBNumberDetails")]
-        public async Task<IActionResult> getCBNumberDetails([FromHeader] string CBNumber)
+        public async Task<ResultModel> getCBNumberDetails([FromHeader] string CBNumber)
         {
             try
             {
@@ -430,7 +430,7 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
 
                 var check = CheckingPaths();
-                if (!check) return (IActionResult)new ResultModel
+                if (!check) return (ResultModel)new ResultModel
                 {
                     Message = "Missing configuration check settings page for FabricCut settings",
                     Data = null,
@@ -442,7 +442,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (Data == null)
                 {
-                    return (IActionResult)new ResultModel
+                    return (ResultModel)new ResultModel
                     {
                         Message = "Something wrong with the ctbsodumpfile",
                         Data = null,
@@ -640,7 +640,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("CreateFilesAndLabels")]
-        public async Task<IActionResult> CreateFilesAndLabels([FromBody] CreateFileAndLabelModel model)
+        public async Task<ResultModel> CreateFilesAndLabels([FromBody] CreateFileAndLabelModel model)
         {
             try
             {
@@ -651,7 +651,7 @@ namespace WindowBlind.Api.Controllers
                 var FBRSetting = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var FBRPath = FBRSetting.FirstOrDefault().OutputPath;
 
-                if (FBRPath == "") return (IActionResult)new ResultModel
+                if (FBRPath == "") return (ResultModel)new ResultModel
                 {
                     Message = "Missing configuration for FabricCut go to settings page",
                     Data = null,
@@ -659,7 +659,7 @@ namespace WindowBlind.Api.Controllers
                     StackTrace = null
                 };
                 DirectoryInfo F = new DirectoryInfo(FBRPath);
-                if (!F.Exists) return (IActionResult)new ResultModel
+                if (!F.Exists) return (ResultModel)new ResultModel
                 {
                     Message = "FabricCut output folder is not found",
                     Data = null,
@@ -761,7 +761,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("PrintLabelsOnly")]
-        public async Task<IActionResult> PrintLabelsOnly([FromBody] CreateFileAndLabelModel model)
+        public async Task<ResultModel> PrintLabelsOnly([FromBody] CreateFileAndLabelModel model)
         {
             try
             {
@@ -823,7 +823,7 @@ namespace WindowBlind.Api.Controllers
                 string labeldata = labels.ToString().TrimEnd('|');
 
                 var error = PrintLabels(PrinterName + "|" + labeldata);
-                return (error.Trim() == "" ? Repository.ReturnSuccessfulRequest(true) : (IActionResult)new ResultModel
+                return (error.Trim() == "" ? Repository.ReturnSuccessfulRequest(true) : (ResultModel)new ResultModel
                 {
                     Message = error,
                     Data = null,
@@ -845,7 +845,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("GetDataUsingAutoUpload")]
-        public async Task<IActionResult> GetDataUsingAutoUpload([FromHeader] string TableName, [FromHeader] string UserName, [FromHeader] string Shift, [FromHeader] string Type)
+        public async Task<ResultModel> GetDataUsingAutoUpload([FromHeader] string TableName, [FromHeader] string UserName, [FromHeader] string Shift, [FromHeader] string Type)
         {
             try
             {
@@ -857,7 +857,7 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
                 var check = CheckingPaths();
 
-                if (!check) return (IActionResult)new ResultModel
+                if (!check) return (ResultModel)new ResultModel
                 {
                     Message = "Missing configuration for Fabric Cut please go to settings page",
                     Data = null,
@@ -873,7 +873,7 @@ namespace WindowBlind.Api.Controllers
 
                 var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
                 if (AutoUploadFolder.Exists == false)
-                    return (IActionResult)new ResultModel
+                    return (ResultModel)new ResultModel
                     {
                         Message = "AutoUploadFolder doesn't exist",
                         Data = null,
@@ -1238,7 +1238,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (Type == "Normal")
                 {
-                    FabricCutterCBDetailsModel newdata = (FabricCutterCBDetailsModel)(await GetHeldObjects(TableName));
+                    FabricCutterCBDetailsModel newdata = (FabricCutterCBDetailsModel)(await GetHeldObjects(TableName)).Data;
                     if (Data.Rows != null)
                     {
                         newdata.Rows.AddRange(Data.Rows);
@@ -1266,7 +1266,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("UpdateRows")]
-        public async Task<IActionResult> UpdateRows(List<string> ids)
+        public async Task<ResultModel> UpdateRows(List<string> ids)
         {
 
             try
@@ -1288,7 +1288,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("GetHeldObjects")]
-        public async Task<object> GetHeldObjects([FromHeader] string tableName)
+        public async Task<ResultModel> GetHeldObjects([FromHeader] string tableName)
         {
             try
             {
@@ -1303,7 +1303,7 @@ namespace WindowBlind.Api.Controllers
 
                 var check = CheckingPaths();
 
-                if (!check) return (IActionResult)new ResultModel
+                if (!check) return (ResultModel)new ResultModel
                 {
                     Message = "Some configuration are missing for FabricCut please go to settings page",
                     Data = null,
@@ -1341,7 +1341,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("ClearOrdersFromFabricCutter")]
-        public async Task<IActionResult> ClearOrdersFromFabricCutter([FromBody] CreateFileAndLabelModel model)
+        public async Task<ResultModel> ClearOrdersFromFabricCutter([FromBody] CreateFileAndLabelModel model)
         {
             try
             {

@@ -491,7 +491,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("getCBNumberDetails")]
-        public async Task<IActionResult> getCBNumberDetails(string CBNumberOrLineNumber)
+        public async Task<ResultModel> getCBNumberDetails(string CBNumberOrLineNumber)
         {
             try
             {
@@ -507,7 +507,7 @@ namespace WindowBlind.Api.Controllers
 
 
                 bool checks = CheckPaths();
-                if (!checks) return (IActionResult)new ResultModel
+                if (!checks) return (ResultModel)new ResultModel
                 {
                     Message = "Missing configuration check settings page for EzStop settings",
                     Data = null,
@@ -520,7 +520,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (Data == null)
                 {
-                    return (IActionResult)new ResultModel
+                    return (ResultModel)new ResultModel
                     {
                         Message = "Something wrong with the ctbsodumpfile",
                         Data = null,
@@ -595,7 +595,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("RefreshEzStopTable")]
-        public async Task<IActionResult> RefreshEzStopTable()
+        public async Task<ResultModel> RefreshEzStopTable()
         {
 
             try
@@ -640,14 +640,14 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpPost("EzStopSend")]
-        public async Task<IActionResult> EzStopSend(CreateFileAndLabelModel model)
+        public async Task<ResultModel> EzStopSend(CreateFileAndLabelModel model)
         {
             try
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var EzStopOutputSetting = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var EzStopFilePath = EzStopOutputSetting.FirstOrDefault().OutputPath;
-                if (EzStopFilePath == "") return (IActionResult)new ResultModel
+                if (EzStopFilePath == "") return (ResultModel)new ResultModel
                 {
                     Message = "EzStop output path is missing check the configuration",
                     Data = null,
@@ -656,7 +656,7 @@ namespace WindowBlind.Api.Controllers
                 };
                 DirectoryInfo f = new DirectoryInfo(EzStopFilePath);
 
-                if (!f.Exists) return (IActionResult)new ResultModel
+                if (!f.Exists) return (ResultModel)new ResultModel
                 {
                     Message = "EzStop output folder is not found",
                     Data = null,
@@ -664,7 +664,7 @@ namespace WindowBlind.Api.Controllers
                     StackTrace = null
                 };
 
-                if (model.printer == null || model.printer == "") return (IActionResult)new ResultModel
+                if (model.printer == null || model.printer == "") return (ResultModel)new ResultModel
                 {
                     Message = "EzStop printer is not found",
                     Data = null,
@@ -928,7 +928,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("GetHeldObjects")]
-        public async Task<IActionResult> GetHeldObjects([FromHeader] string tableName)
+        public async Task<ResultModel> GetHeldObjects([FromHeader] string tableName)
         {
             try
             {
@@ -978,7 +978,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("ClearOrdersFromEzStop")]
-        public async Task<IActionResult> ClearOrdersFromEzStop([FromBody] CreateFileAndLabelModel model)
+        public async Task<ResultModel> ClearOrdersFromEzStop([FromBody] CreateFileAndLabelModel model)
         {
             try
             {

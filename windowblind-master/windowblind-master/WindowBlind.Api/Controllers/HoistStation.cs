@@ -40,7 +40,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("GetReadyToQualify")]
-        public async Task<IActionResult> GetReadyToQualify([FromHeader] string CbOrLineNumber)
+        public async Task<ResultModel> GetReadyToQualify([FromHeader] string CbOrLineNumber)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpPost("pushLinesNoToHoistStation")]
-        public async Task<IActionResult> pushLinesNoToHoistStation(CreateFileAndLabelModel model)
+        public async Task<ResultModel> pushLinesNoToHoistStation(CreateFileAndLabelModel model)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpGet("GetHeldObjects")]
-        public async Task<IActionResult> GetHeldObjects([FromHeader] string tableName)
+        public async Task<ResultModel> GetHeldObjects([FromHeader] string tableName)
         {
             try
             {
@@ -179,7 +179,7 @@ namespace WindowBlind.Api.Controllers
 
 
         [HttpPost("ClearOrdersFromHoist")]
-        public async Task<IActionResult> ClearOrdersFromHoist([FromBody] CreateFileAndLabelModel model)
+        public async Task<ResultModel> ClearOrdersFromHoist([FromBody] CreateFileAndLabelModel model)
         {
             try
             {

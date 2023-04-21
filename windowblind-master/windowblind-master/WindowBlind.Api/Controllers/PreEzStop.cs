@@ -25,7 +25,7 @@ namespace WindowBlind.Api.Controllers
         private readonly IRepository _repository;
 
         [HttpGet("GenerateXMLFile")]
-        public async Task<IActionResult> GenerateXMLFile([FromHeader] string LineNumber)
+        public async Task<ResultModel> GenerateXMLFile([FromHeader] string LineNumber)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace WindowBlind.Api.Controllers
                 var XMLDirectory = await _repository.Settings.FindAsync(set => set.settingName == "XML Folder").Result.FirstOrDefaultAsync();
 
                 if (!Directory.Exists(XMLDirectory.settingPath))
-                    return BadRequest("File Doesnt Exists");
+                    return new ResultModel { Message = "File Doesnt Exists",Data = null, Status = System.Net.HttpStatusCode.BadRequest,StackTrace = "" };
 
                 doc.Save(Path.Combine(XMLDirectory.settingPath, RandomNameGenerator(LineNumber)));
 

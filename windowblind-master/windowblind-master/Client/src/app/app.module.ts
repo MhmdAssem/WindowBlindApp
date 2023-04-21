@@ -44,7 +44,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { LabelsComponent } from './labels/labels.component';
 
 import { NgxBarcode6Module } from 'ngx-barcode6';
@@ -71,6 +71,7 @@ import { HoldingStationComponent } from './holding-station/holding-station.compo
 import { PreEzStopComponent } from './Pre-EzStop/pre-ez-stop.component';
 import { TablesComponent } from './tables/tables.component';
 import { AdminNotesModelComponent } from './report-station/Admin_Notes_Model/admin-notes-model/admin-notes-model.component';
+import { UserActionsInterceptorInterceptor } from './Interceptors/user-actions-interceptor.interceptor';
 
 
 const materialModules = [
@@ -163,7 +164,7 @@ const materialModules = [
   exports: [
     ...materialModules,
   ],
-  providers: [],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: UserActionsInterceptorInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

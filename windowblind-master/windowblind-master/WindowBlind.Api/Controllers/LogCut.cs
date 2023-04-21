@@ -599,7 +599,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpGet("getCBNumberDetails")]
-        public async Task<IActionResult> getCBNumberDetails([FromHeader] string CBNumberOrLineNumber)
+        public async Task<ResultModel> getCBNumberDetails([FromHeader] string CBNumberOrLineNumber)
         {
             try
             {
@@ -614,7 +614,7 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
                 var Checks = CheckPaths();
 
-                if (!Checks) return (IActionResult)new ResultModel
+                if (!Checks) return (ResultModel)new ResultModel
                 {
                     Message = "Some configuration are missing for LogCut please go to settings page",
                     Data = null,
@@ -626,7 +626,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (Data == null)
                 {
-                    return (IActionResult)new ResultModel
+                    return (ResultModel)new ResultModel
                     {
                         Message = "there is a problem with the ctbsodump file",
                         Data = null,
@@ -652,14 +652,14 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("LogCutSend")]
-        public async Task<IActionResult> LogCutSend(CreateFileAndLabelModel model)
+        public async Task<ResultModel> LogCutSend(CreateFileAndLabelModel model)
         {
             try
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var LogCutOutputSettings = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().OutputPath;
-                if (LogCutOutputPath == "") return (IActionResult)new ResultModel
+                if (LogCutOutputPath == "") return (ResultModel)new ResultModel
                 {
                     Message = "LogCutOutputPath is empty please check configuration",
                     Data = null,
@@ -668,7 +668,7 @@ namespace WindowBlind.Api.Controllers
                 };
                 DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
 
-                if (!f.Exists) return (IActionResult)new ResultModel
+                if (!f.Exists) return (ResultModel)new ResultModel
                 {
                     Message = "LogCutOutput folder is not found",
                     Data = null,
@@ -676,7 +676,7 @@ namespace WindowBlind.Api.Controllers
                     StackTrace = null
                 };
 
-                if (model.printer == null || model.printer == "") return (IActionResult)new ResultModel
+                if (model.printer == null || model.printer == "") return (ResultModel)new ResultModel
                 {
                     Message = "LogCut printer is not found",
                     Data = null,
@@ -1092,7 +1092,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("ClearOrdersFromLogCut")]
-        public async Task<IActionResult> ClearOrdersFromLogCut([FromBody] CreateFileAndLabelModel model)
+        public async Task<ResultModel> ClearOrdersFromLogCut([FromBody] CreateFileAndLabelModel model)
         {
             try
             {
@@ -1107,13 +1107,13 @@ namespace WindowBlind.Api.Controllers
             catch (Exception e)
             {
 
-                return Repository.ReturnSuccessfulRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }
 
         [HttpGet("GetDataUsingAutoUpload")]
-        public async Task<IActionResult> GetDataUsingAutoUpload([FromHeader] string TableName, [FromHeader] string UserName, [FromHeader] string Shift, [FromHeader] string Type)
+        public async Task<ResultModel> GetDataUsingAutoUpload([FromHeader] string TableName, [FromHeader] string UserName, [FromHeader] string Shift, [FromHeader] string Type)
         {
             try
             {
@@ -1125,7 +1125,7 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
                 var check = CheckPaths();
 
-                if (!check) return (IActionResult)new ResultModel
+                if (!check) return (ResultModel)new ResultModel
                 {
                     Message = "LogCut configuration is not correct please check",
                     Data = null,
@@ -1140,7 +1140,7 @@ namespace WindowBlind.Api.Controllers
 
                 var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
                 if (AutoUploadFolder.Exists == false)
-                    return (IActionResult)new ResultModel
+                    return (ResultModel)new ResultModel
                     {
                         Message = "LogCut auto upload folder is not found",
                         Data = null,
@@ -1490,7 +1490,7 @@ namespace WindowBlind.Api.Controllers
         }
 
         [HttpPost("UpdateRows")]
-        public async Task<IActionResult> UpdateRows(List<string> ids)
+        public async Task<ResultModel> UpdateRows(List<string> ids)
         {
 
             try

@@ -11,3 +11,11 @@ export class FabricCutterCBDetailsModelTableRow {
   PackingType:string;
   rows_AssociatedIds:[] = [];
 }
+
+
+export class ResultModel{
+  data:FabricCutterCBDetailsModel;
+  status:number;
+  message:string;
+  stackTrace:string;
+}

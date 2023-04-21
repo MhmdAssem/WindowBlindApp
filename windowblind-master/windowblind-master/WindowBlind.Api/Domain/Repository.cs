@@ -388,9 +388,9 @@ namespace WindowBlind.Api
 
         }
 
-        public static IActionResult ReturnSuccessfulRequest(object data)
+        public static ResultModel ReturnSuccessfulRequest(object data)
         {
-            return (IActionResult)new ResultModel
+            return new ResultModel
             {
                 Data = data,
                 Status = HttpStatusCode.OK,
@@ -399,9 +399,10 @@ namespace WindowBlind.Api
             };
         }
 
-        public static IActionResult ReturnBadRequest(Exception e)
+        public static ResultModel ReturnBadRequest(Exception e)
         {
-            return (IActionResult) new ResultModel
+
+            return  new ResultModel
             {
                 Data = null,
                 Status = HttpStatusCode.BadRequest,
