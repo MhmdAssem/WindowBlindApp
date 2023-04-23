@@ -115,12 +115,12 @@ namespace WindowBlind.Api.Controllers
                 data.ColumnNames.Add("Status");
                 data.ColumnNames.Insert(0, "Blind Number");
 
-                return Ok(data);
+                return Repository.ReturnSuccessfulRequest(data);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -169,12 +169,12 @@ namespace WindowBlind.Api.Controllers
                 }
 
 
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -260,13 +260,13 @@ namespace WindowBlind.Api.Controllers
                 if (Data.Rows.Count != 0)
                     Data.ColumnNames = PackingColumns;
 
-                return Ok(Data);
+                return Repository.ReturnSuccessfulRequest(Data);
 
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -286,12 +286,12 @@ namespace WindowBlind.Api.Controllers
                                                                 Builders<LogModel>.Update.Set(p => p.status, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
                     }
                 }
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }
@@ -304,12 +304,32 @@ namespace WindowBlind.Api.Controllers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 var LogCutOutputSettings = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var LogCutOutputPath = LogCutOutputSettings.FirstOrDefault().OutputPath;
-                if (LogCutOutputPath == "") return Ok(false);
+                if (LogCutOutputPath == "") return (IActionResult)new ResultModel
+                {
+                    Message = "Packing station configuration is missing please go to settings page",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
+
                 DirectoryInfo f = new DirectoryInfo(LogCutOutputPath);
 
-                if (!f.Exists) return Ok(false);
+                if (!f.Exists) return (IActionResult) new ResultModel
+                {
+                    Message = "Packing station output path is not found",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
-                if (model.printer == null || model.printer == "" || model.printer2nd == null || model.printer2nd == "-") return Ok(false);
+                if (model.printer == null || model.printer == "" || model.printer2nd == null || model.printer2nd == "-") return (IActionResult)new ResultModel
+                {
+                    Message = "Packing station printers are not found",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
+
 
                 var data = model.data;
                 var printerName = model.printer;
@@ -370,11 +390,11 @@ namespace WindowBlind.Api.Controllers
 
 
                 }
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
 

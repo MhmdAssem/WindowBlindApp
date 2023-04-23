@@ -20,9 +20,9 @@ namespace WindowBlind.Api.Controllers
     {
         public PreEzStop(IRepository repository)
         {
-            Repository = repository;
+            _repository = repository;
         }
-        private IRepository Repository;
+        private readonly IRepository _repository;
 
         [HttpGet("GenerateXMLFile")]
         public async Task<IActionResult> GenerateXMLFile([FromHeader] string LineNumber)
@@ -53,18 +53,18 @@ namespace WindowBlind.Api.Controllers
                 element1.AppendChild(element2);
                 element2.AppendChild(text1);
 
-                var XMLDirectory = await Repository.Settings.FindAsync(set => set.settingName == "XML Folder").Result.FirstOrDefaultAsync();
+                var XMLDirectory = await _repository.Settings.FindAsync(set => set.settingName == "XML Folder").Result.FirstOrDefaultAsync();
 
                 if (!Directory.Exists(XMLDirectory.settingPath))
                     return BadRequest("File Doesnt Exists");
 
                 doc.Save(Path.Combine(XMLDirectory.settingPath, RandomNameGenerator(LineNumber)));
 
-                return Ok();
+                return Repository.ReturnSuccessfulRequest("");
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 

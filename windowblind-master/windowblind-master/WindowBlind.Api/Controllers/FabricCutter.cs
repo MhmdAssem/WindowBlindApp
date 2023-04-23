@@ -430,21 +430,38 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
 
                 var check = CheckingPaths();
-                if (!check) return new JsonResult(false);
+                if (!check) return (IActionResult)new ResultModel
+                {
+                    Message = "Missing configuration check settings page for FabricCut settings",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
                 FabricCutterCBDetailsModel Data = ReadingData(CBNumber);
+
+                if (Data == null)
+                {
+                    return (IActionResult)new ResultModel
+                    {
+                        Message = "Something wrong with the ctbsodumpfile",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
+                }
 
                 FabricCutProcess(ref Data);
 
                 if (!CBSearchOrLineNumberSearch)
                     Data.Rows = Data.Rows.Where(e => e.Row["Line No"] == CBNumber).ToList();
 
-                return Ok(Data);
+                return Repository.ReturnSuccessfulRequest(Data);
 
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -634,9 +651,21 @@ namespace WindowBlind.Api.Controllers
                 var FBRSetting = await _repository.Tables.FindAsync(e => e.TableName == model.tableName);
                 var FBRPath = FBRSetting.FirstOrDefault().OutputPath;
 
-                if (FBRPath == "") return new JsonResult(false);
+                if (FBRPath == "") return (IActionResult)new ResultModel
+                {
+                    Message = "Missing configuration for FabricCut go to settings page",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
                 DirectoryInfo F = new DirectoryInfo(FBRPath);
-                if (!F.Exists) return new JsonResult(false);
+                if (!F.Exists) return (IActionResult)new ResultModel
+                {
+                    Message = "FabricCut output folder is not found",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
 
                 StringBuilder sb = new StringBuilder();
@@ -721,12 +750,12 @@ namespace WindowBlind.Api.Controllers
 
                 PrintLabels(PrinterName + "|" + labeldata);
 
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }
@@ -794,11 +823,17 @@ namespace WindowBlind.Api.Controllers
                 string labeldata = labels.ToString().TrimEnd('|');
 
                 var error = PrintLabels(PrinterName + "|" + labeldata);
-                return (error.Trim() == "" ? Ok(true) : BadRequest(error));
+                return (error.Trim() == "" ? Repository.ReturnSuccessfulRequest(true) : (IActionResult)new ResultModel
+                {
+                    Message = error,
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                });
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -822,7 +857,14 @@ namespace WindowBlind.Api.Controllers
                 await ReadConfig();
                 var check = CheckingPaths();
 
-                if (!check) return new JsonResult(false);
+                if (!check) return (IActionResult)new ResultModel
+                {
+                    Message = "Missing configuration for Fabric Cut please go to settings page",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
+
                 var AutoUploadDirSetting = await _repository.Settings.FindAsync(e => e.settingName == "AutoUploadDir" && e.applicationSetting == "_FabricCutter");
                 var AutoUploadDirPath = AutoUploadDirSetting.FirstOrDefault().settingPath;
 
@@ -831,7 +873,13 @@ namespace WindowBlind.Api.Controllers
 
                 var AutoUploadFolder = new DirectoryInfo(AutoUploadDirPath);
                 if (AutoUploadFolder.Exists == false)
-                    return new JsonResult(false);
+                    return (IActionResult)new ResultModel
+                    {
+                        Message = "AutoUploadFolder doesn't exist",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
 
                 var AutoUploadErrorsPath = ViewedUplaodsPath.Substring(0, ViewedUplaodsPath.LastIndexOf(Path.DirectorySeparatorChar.ToString())) + Path.DirectorySeparatorChar.ToString() + "AutoUploadErrorFolder";
 
@@ -1206,14 +1254,14 @@ namespace WindowBlind.Api.Controllers
 
                 Data.ColumnNames.Add("Roll Width");
 
-                return Ok(Data);
+                return Repository.ReturnSuccessfulRequest(Data);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -1228,12 +1276,12 @@ namespace WindowBlind.Api.Controllers
                     await _repository.AutoUploads.DeleteOneAsync(entry => entry.Id == id);
                 }
 
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(false);
+                return Repository.ReturnBadRequest(e);
             }
 
 
@@ -1255,7 +1303,13 @@ namespace WindowBlind.Api.Controllers
 
                 var check = CheckingPaths();
 
-                if (!check) return new JsonResult(false);
+                if (!check) return (IActionResult)new ResultModel
+                {
+                    Message = "Some configuration are missing for FabricCut please go to settings page",
+                    Data = null,
+                    Status = System.Net.HttpStatusCode.BadRequest,
+                    StackTrace = null
+                };
 
 
 
@@ -1277,13 +1331,12 @@ namespace WindowBlind.Api.Controllers
                      }
                  });
 
-                return Ok(Data);
+                return Repository.ReturnSuccessfulRequest(Data);
 
             }
             catch (Exception e)
             {
-
-                return BadRequest(false);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -1300,12 +1353,12 @@ namespace WindowBlind.Api.Controllers
 
                     await _repository.AutoUploads.DeleteOneAsync(entry => entry.Id == item.UniqueId);
                 }
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }

@@ -1,10 +1,12 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WindowBlind.Api.Models;
@@ -386,6 +388,27 @@ namespace WindowBlind.Api
 
         }
 
+        public static IActionResult ReturnSuccessfulRequest(object data)
+        {
+            return (IActionResult)new ResultModel
+            {
+                Data = data,
+                Status = HttpStatusCode.OK,
+                Message = null,
+                StackTrace = null
+            };
+        }
+
+        public static IActionResult ReturnBadRequest(Exception e)
+        {
+            return (IActionResult) new ResultModel
+            {
+                Data = null,
+                Status = HttpStatusCode.BadRequest,
+                Message = e.Message,
+                StackTrace = e.StackTrace
+            };
+        }
 
     }
 }

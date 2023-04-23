@@ -81,12 +81,12 @@ namespace WindowBlind.Api.Controllers
 
                 data.ColumnNames = HoistColumns;
                 data.ColumnNames.Insert(0, "Blind Number");
-                return Ok(data);
+                return Repository.ReturnSuccessfulRequest(data);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -121,12 +121,12 @@ namespace WindowBlind.Api.Controllers
                        Builders<LogModel>.Update.Set(p => p.status, "Qualified"), new UpdateOptions { IsUpsert = false });
                 }
 
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -168,13 +168,12 @@ namespace WindowBlind.Api.Controllers
                 if (Data.Rows.Count != 0)
                     Data.ColumnNames = HoistColumns;
 
-                return Ok(Data);
+                return Repository.ReturnSuccessfulRequest(Data);
 
             }
             catch (Exception e)
             {
-
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
         }
 
@@ -195,12 +194,12 @@ namespace WindowBlind.Api.Controllers
                                                                 Builders<LogModel>.Update.Set(p => p.status, "Deleted By: " + model.userName), new UpdateOptions { IsUpsert = false });
                     }
                 }
-                return Ok(true);
+                return Repository.ReturnSuccessfulRequest(true);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return Repository.ReturnBadRequest(e);
             }
 
         }
