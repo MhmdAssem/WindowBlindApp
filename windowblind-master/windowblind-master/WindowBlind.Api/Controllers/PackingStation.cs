@@ -478,7 +478,7 @@ namespace WindowBlind.Api.Controllers
                 obj.Location = "Location: " + strParameterArray[6].ToString();
                 obj.Width = "W: " + strParameterArray[7].ToString();
                 obj.Drop = "D: " + strParameterArray[8].ToString();
-                obj.LineNumber = strParameterArray[0].ToString().Split(" ").Last(); // strParameterArray[9].ToString();
+                obj.LineNumber = strParameterArray[0].ToString(); // strParameterArray[9].ToString();
                 obj.SomeOfTotal = strParameterArray[10].ToString();
                 obj.Customer = "Ship To: " + strParameterArray[11].ToString();
                 obj.Carrier = strParameterArray[12].ToString();

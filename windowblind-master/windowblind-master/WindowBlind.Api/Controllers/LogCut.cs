@@ -704,12 +704,13 @@ namespace WindowBlind.Api.Controllers
                     strconcat += "@" + item.Row["Total"];
                     strconcat += "@" + item.Row["CutWidth"].Replace("mm", "");
                     strconcat += "@" + item.Row["Line No"];
-                    strconcat += "@" + item.Row["ControlSide"];
+                    strconcat += "@" +  (item.Row.ContainsKey("ControlSide") ? item.Row["ControlSide"] : " "); //isTrue ? 1 : 0 Cntrl Side
+                    
                     labels.Add(strconcat);
                     strRS232Width += item.Row["CutWidth"].ToString().Replace("mm", "");
 
                     bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToString(), item.Row["Alpha"], "LogCut", item);
-
+                    
                 }
                 // doing the port thing 
                 ComportModel comport = new ComportModel
