@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { CreateFileAndLabelModel } from '../fabric-cutter/CreateFileAndLabelModel';
 import { FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetailsModel';
@@ -9,6 +9,7 @@ import { User } from '../models/user';
 import { OrdersApprovalModel } from './OrdersApprovalModel';
 import { ReasonModel } from './ReasonModel';
 import { RejectionModel } from './RejectionModel';
+import { UserActionsInterceptorInterceptor } from '../Interceptors/user-actions-interceptor.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +22,9 @@ export class HoldingStationService {
 
     return this.httpClient
       .post<any>(environment.apiUrl + 'HoldingStation/ClearOrdersFromHoldingStation', Model, { headers }).pipe(
-        tap(
+        map(
           data => {
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -33,17 +35,12 @@ export class HoldingStationService {
 
     return this.httpClient
       .post<boolean>(environment.apiUrl + 'HoldingStation/UpdateReasonsForHeldObject', model, { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Error Happend while updating this row!");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
-
       );
-
-
   }
 
   constructor(private httpClient: HttpClient) { }
@@ -53,14 +50,11 @@ export class HoldingStationService {
 
     return this.httpClient
       .post<boolean>(environment.apiUrl + 'HoldingStation/RejectThisRow', model, { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Error Happend while holding this row!");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
-
       );
   }
 
@@ -69,14 +63,11 @@ export class HoldingStationService {
 
     return this.httpClient
       .post<boolean>(environment.apiUrl + 'HoldingStation/ApproveThisOrders', model, { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Error Happend while Sending these data!");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
-
       );
   }
 
@@ -85,32 +76,25 @@ export class HoldingStationService {
 
     return this.httpClient
       .get<RejectionModel[]>(environment.apiUrl + 'HoldingStation/GetAllRejectedOrders', { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Error Happend while holding this row!");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
       );
   }
-
 
   public SaveAdminNotes(model: RejectionModel): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.httpClient
       .post<any>(environment.apiUrl + 'HoldingStation/SaveAdminNotes', model, { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Error Happend while holding this row!");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
-
       );
   }
-
 }

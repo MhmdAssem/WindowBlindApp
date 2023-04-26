@@ -6,8 +6,8 @@ import {
   HttpInterceptor,
   HttpResponse
 } from '@angular/common/http';
-import { EMPTY, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FabricCutterCBDetailsModel, ResultModel } from '../fabric-cutter/FabricCutterCBDetailsModel';
 
 
@@ -23,13 +23,18 @@ export class UserActionsInterceptorInterceptor implements HttpInterceptor {
         if (event instanceof HttpResponse) {
           let model = event.body as unknown as ResultModel;
           if (model.status != undefined && model.status != 200) {
-            console.log("Error Message: " + event.body.message);
+            alert("Error Message: " + event.body.message);
             console.log("StackTrace: " + event.body.stackTrace)
           }
         }
         return event;
       }));
 
+  }
+
+  public static ParseToDataModel(event: any) {
+    let model = (event as unknown as ResultModel);
+    return model.data;
   }
 }
 

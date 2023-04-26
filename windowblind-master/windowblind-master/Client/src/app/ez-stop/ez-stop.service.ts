@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { CreateFileAndLabelModel } from '../fabric-cutter/CreateFileAndLabelModel';
 import { FabricCutterCBDetailsModel } from '../fabric-cutter/FabricCutterCBDetailsModel';
+import { UserActionsInterceptorInterceptor } from '../Interceptors/user-actions-interceptor.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,9 @@ export class EzStopService {
 
     return this.httpClient
       .post<any>(environment.apiUrl + 'EzStop/ClearOrdersFromEzStop', model, { headers }).pipe(
-        tap(
+        map(
           data => {
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -40,11 +42,9 @@ export class EzStopService {
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'EzStop/RefreshEzStopTable', { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -61,11 +61,9 @@ export class EzStopService {
     }
     return this.httpClient
       .post<any>(environment.apiUrl + 'EzStop/EzStopSend', model, { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            
           }
         )
 
@@ -78,11 +76,9 @@ export class EzStopService {
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'EzStop/GetHeldObjects', { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 

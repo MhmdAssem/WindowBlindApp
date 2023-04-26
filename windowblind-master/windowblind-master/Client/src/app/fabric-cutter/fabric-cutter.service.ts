@@ -6,6 +6,7 @@ import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { CreateFileAndLabelModel } from './CreateFileAndLabelModel';
 import { FabricCutterCBDetailsModel, ResultModel } from './FabricCutterCBDetailsModel';
+import { UserActionsInterceptorInterceptor } from '../Interceptors/user-actions-interceptor.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +31,9 @@ export class FabricCutterService {
 
     return this.httpClient
       .post<any>(environment.apiUrl + 'FabricCutter/ClearOrdersFromFabricCutter', model, { headers }).pipe(
-        tap(
+        map(
           data => {
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -43,11 +45,9 @@ export class FabricCutterService {
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/getCBNumberDetails', { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -65,11 +65,9 @@ export class FabricCutterService {
     }
     return this.httpClient
       .post<any>(environment.apiUrl + 'FabricCutter/CreateFilesAndLabels', model, { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -86,12 +84,9 @@ export class FabricCutterService {
     }
     return this.httpClient
       .post<any>(environment.apiUrl + 'FabricCutter/PrintLabelsOnly', model, { headers }).pipe(
-        tap(
+        map(
           data => {
-            console.log(data);
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -103,11 +98,9 @@ export class FabricCutterService {
 
     return this.httpClient
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/GetDataUsingAutoUpload', { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -120,11 +113,9 @@ export class FabricCutterService {
 
     return this.httpClient
       .post<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/UpdateRows', ids, { headers }).pipe(
-        tap(
+        map(
           data => {
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 
@@ -139,12 +130,7 @@ export class FabricCutterService {
       .get<FabricCutterCBDetailsModel>(environment.apiUrl + 'FabricCutter/GetHeldObjects', { headers }).pipe(
         map(
           data => {
-            console.log(data);
-            let model = data as unknown as ResultModel;
-            return model.data;
-            if (!data) {
-              alert("Sorry Configuration is not done , please contact your admin !");
-            }
+            return UserActionsInterceptorInterceptor.ParseToDataModel(data);
           }
         )
 

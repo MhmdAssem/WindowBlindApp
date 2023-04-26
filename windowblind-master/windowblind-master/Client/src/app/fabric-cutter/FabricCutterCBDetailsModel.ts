@@ -14,7 +14,7 @@ export class FabricCutterCBDetailsModelTableRow {
 
 
 export class ResultModel{
-  data:FabricCutterCBDetailsModel;
+  data:any;
   status:number;
   message:string;
   stackTrace:string;
