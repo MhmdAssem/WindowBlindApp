@@ -509,7 +509,7 @@ namespace WindowBlind.Api.Controllers
                 bool checks = CheckPaths();
                 if (!checks) return (ResultModel)new ResultModel
                 {
-                    Message = "Missing configuration check settings page for EzStop settings",
+                    Message = "Missing configuration files !",
                     Data = null,
                     Status = System.Net.HttpStatusCode.BadRequest,
                     StackTrace = null
@@ -528,6 +528,18 @@ namespace WindowBlind.Api.Controllers
                         StackTrace = null
                     };
                 }
+
+                if (Data.Rows.Count == 0)
+                {
+                    return (ResultModel)new ResultModel
+                    {
+                        Message = "CC/line number is not found",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
+                };
+
                 EzStopProcessing(ref Data);
 
                 Data.Rows = Data.Rows.Where(e => e.Row["Line No"] == CBNumberOrLineNumber).ToList();

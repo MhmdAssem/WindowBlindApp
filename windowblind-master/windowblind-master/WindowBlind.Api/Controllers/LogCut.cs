@@ -1,24 +1,20 @@
 ﻿
 using AspNetCore.Reporting;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Reporting.NETCore;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using PrstringerProject;
+using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using WindowBlind.Api.Models;
-using PrstringerProject;
-using Spire.Pdf;
 
 namespace WindowBlind.Api.Controllers
 {
@@ -616,7 +612,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (!Checks) return (ResultModel)new ResultModel
                 {
-                    Message = "Some configuration are missing for LogCut please go to settings page",
+                    Message = "Missing configuration files !",
                     Data = null,
                     Status = System.Net.HttpStatusCode.BadRequest,
                     StackTrace = null
@@ -635,9 +631,39 @@ namespace WindowBlind.Api.Controllers
                     };
                 }
 
+                if (Data.Rows.Count == 0)
+                {
+                    return (ResultModel)new ResultModel
+                    {
+                        Message = "CC/line number is not found",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
+                };
+               
+                for (int i = 0; i < Data.Rows.Count(); i++)
+                { 
+                //For each row check Qty > 1 then duplicate the row to next row and make the qty for both to 1
+
+                 
+
+                }
+
                 FabricCutterCBDetailsModel FinalizedData = new FabricCutterCBDetailsModel();
 
                 LogCutProcess(ref FinalizedData, ref Data);
+
+                if (FinalizedData.Rows.Count == 0)
+                {
+                    return (ResultModel)new ResultModel
+                    {
+                        Message = "CC/line number is missing information",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
+                };
 
                 CustomizeTheColumns(ref FinalizedData);
 
@@ -892,11 +918,11 @@ namespace WindowBlind.Api.Controllers
 
             var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
             //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Encoding.GetEncoding("us-ascii");
+           // Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //Encoding.GetEncoding("us-ascii");
             AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
 
-
+            
 
 
 
@@ -919,8 +945,9 @@ namespace WindowBlind.Api.Controllers
                 List<LogCut2> ls = new List<LogCut2> {
                     obj
                     };
+                
                 report.AddDataSource("LogCut2", ls);
-
+               // ls.Clear();
 
             }
             else
@@ -944,10 +971,12 @@ namespace WindowBlind.Api.Controllers
                 List<LogCut1> ls = new List<LogCut1> {
                     obj
                     };
+               
                 report.AddDataSource("LogCut1", ls);
+                
             }
 
-
+            
             byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
 
             /*LocalReport report = new LocalReport();
@@ -963,6 +992,7 @@ namespace WindowBlind.Api.Controllers
             using (FileStream stream = new FileStream(outputPath, FileMode.Create))
             {
                 stream.Write(result, 0, result.Length);
+              //  stream.Close();
             }
 
 
@@ -986,7 +1016,8 @@ namespace WindowBlind.Api.Controllers
 
             //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
             doc.Print();
-
+            // doc.Dispose();
+            GC.Collect(0);
             return true;
 
         }
@@ -1057,7 +1088,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (!check) return new ResultModel
                 {
-                    Message = "Missing configuration check settings page for Logcut settings",
+                    Message = "Missing configuration files !",
                     Data = null,
                     Status = System.Net.HttpStatusCode.BadRequest,
                     StackTrace = null
@@ -1128,7 +1159,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (!check) return (ResultModel)new ResultModel
                 {
-                    Message = "LogCut configuration is not correct please check",
+                    Message = "Missing configuration files !",
                     Data = null,
                     Status = System.Net.HttpStatusCode.BadRequest,
                     StackTrace = null

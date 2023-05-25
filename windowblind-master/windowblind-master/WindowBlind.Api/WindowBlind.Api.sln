@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowBlind.Api", "WindowBl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrinterProject", "..\PrinterProject\PrinterProject.csproj", "{655331E1-0F4E-47F1-B8ED-132C2765067D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinkLabelV2", "..\PinkLabelV2\PinkLabelV2.csproj", "{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{655331E1-0F4E-47F1-B8ED-132C2765067D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{655331E1-0F4E-47F1-B8ED-132C2765067D}.Release|x64.ActiveCfg = Release|Any CPU
 		{655331E1-0F4E-47F1-B8ED-132C2765067D}.Release|x64.Build.0 = Release|Any CPU
+		{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}.Debug|x64.Build.0 = Debug|Any CPU
+		{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}.Release|x64.ActiveCfg = Release|Any CPU
+		{14395D58-04CF-4477-9B7F-1D8A6DE04FB3}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

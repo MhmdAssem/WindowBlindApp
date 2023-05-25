@@ -103,7 +103,9 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>cbNumber</rd:DefaultName>
@@ -129,7 +131,9 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>width</rd:DefaultName>
@@ -155,7 +159,9 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>drop</rd:DefaultName>
@@ -249,7 +255,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Fields!fabric.Value, "LogCut1")</Value>
+                    <Value>=First(Left(Fields!fabric.Value, Len(Fields!fabric.Value) - 6), "LogCut1")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -329,14 +335,14 @@
                   </TextRun>
                 </TextRuns>
                 <Style>
-                  <TextAlign>Left</TextAlign>
+                  <TextAlign>Center</TextAlign>
                 </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lathe</rd:DefaultName>
             <Top>0.45799in</Top>
             <Left>2.27473in</Left>
-            <Height>0.16319in</Height>
+            <Height>0.13541in</Height>
             <Width>0.72151in</Width>
             <ZIndex>9</ZIndex>
             <Style>
@@ -394,7 +400,6 @@
             </Style>
           </Textbox>
           <Textbox Name="lineNumber">
-            <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
@@ -402,7 +407,7 @@
                   <TextRun>
                     <Value>="*" +First(Fields!lineNumber.Value, "LogCut1") +"*"</Value>
                     <Style>
-                      <FontFamily>3 of 9 Barcode</FontFamily>
+                      <FontFamily>IDAutomationHC39M Free Version</FontFamily>
                       <FontSize>20pt</FontSize>
                     </Style>
                   </TextRun>
@@ -411,10 +416,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>lineNumber</rd:DefaultName>
-            <Top>0.63507in</Top>
-            <Left>0.59207in</Left>
-            <Height>0.25in</Height>
-            <Width>1.62849in</Width>
+            <Top>0.69062in</Top>
+            <Left>0.76708in</Left>
+            <Height>0.19445in</Height>
+            <Width>1.40001in</Width>
             <ZIndex>12</ZIndex>
             <Style>
               <Border>

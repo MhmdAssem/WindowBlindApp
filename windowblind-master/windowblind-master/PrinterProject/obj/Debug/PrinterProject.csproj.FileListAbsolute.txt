@@ -187,3 +187,6 @@ F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\o
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Debug\PrinterProject.csproj.CopyComplete
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Debug\PrinterProject.exe
 F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Debug\PrinterProject.pdb
+C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.exe
+C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.pdb
+C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.exe.config

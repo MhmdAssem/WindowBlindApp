@@ -9,11 +9,18 @@
       </ConnectionProperties>
       <rd:DataSourceID>c9f5bbbf-7cd5-46c2-9514-9f3dd54457fb</rd:DataSourceID>
     </DataSource>
+    <DataSource Name="PinkLabelV2">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>e3c09fb6-ed90-4cef-aaeb-31c2d4c571e0</rd:DataSourceID>
+    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="PinklLabel">
       <Query>
-        <DataSourceName>PrstringerProject</DataSourceName>
+        <DataSourceName>PinkLabelV2</DataSourceName>
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
@@ -83,9 +90,9 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>PrstringerProject</rd:DataSetName>
-        <rd:TableName>PinkLabel</rd:TableName>
-        <rd:ObjectDataSourceType>PrstringerProject.PinkLabel, PrinterProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+        <rd:DataSetName>PinkLabelV2</rd:DataSetName>
+        <rd:TableName>PinkLabel2</rd:TableName>
+        <rd:ObjectDataSourceType>PinkLabelV2.PinkLabel2, PinkLabelV2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
@@ -328,6 +335,7 @@
             </Style>
           </Textbox>
           <Textbox Name="LineNumber">
+            <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
@@ -336,7 +344,7 @@
                     <Value>="*" + First(Fields!LineNumber.Value, "PinklLabel") + "*"</Value>
                     <Style>
                       <FontFamily>3 of 9 Barcode</FontFamily>
-                      <FontSize>20pt</FontSize>
+                      <FontSize>16pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -347,9 +355,9 @@
             </Paragraphs>
             <rd:DefaultName>LineNumber</rd:DefaultName>
             <Top>2.32599cm</Top>
-            <Left>0.34078cm</Left>
-            <Height>0.64475cm</Height>
-            <Width>7.23195cm</Width>
+            <Left>0.3937cm</Left>
+            <Height>0.46836cm</Height>
+            <Width>7.31132cm</Width>
             <ZIndex>9</ZIndex>
             <Style>
               <Border>
@@ -358,7 +366,6 @@
             </Style>
           </Textbox>
           <Textbox Name="SomeOfTotal">
-            <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
@@ -371,7 +378,9 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>SomeOfTotal</rd:DefaultName>
@@ -385,7 +394,6 @@
             </Style>
           </Textbox>
           <Textbox Name="Customer">
-            <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
@@ -403,15 +411,14 @@
             <rd:DefaultName>Customer</rd:DefaultName>
             <Top>2.97074cm</Top>
             <Left>0.0762cm</Left>
-            <Height>0.6cm</Height>
-            <Width>4.16688cm</Width>
+            <Height>0.36865cm</Height>
+            <Width>7.6641cm</Width>
             <ZIndex>11</ZIndex>
             <Style>
               <Border />
             </Style>
           </Textbox>
           <Textbox Name="Carrier">
-            <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
@@ -424,14 +431,16 @@
                     </Style>
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Carrier</rd:DefaultName>
-            <Top>2.97074cm</Top>
-            <Left>6.6402cm</Left>
-            <Height>0.6cm</Height>
-            <Width>2.5cm</Width>
+            <Top>2.99655cm</Top>
+            <Left>7.88141cm</Left>
+            <Height>0.40393cm</Height>
+            <Width>2.06692cm</Width>
             <ZIndex>12</ZIndex>
             <Style>
               <Border />
@@ -456,7 +465,7 @@
             <rd:DefaultName>Address1</rd:DefaultName>
             <Top>3.40995cm</Top>
             <Left>0.0762cm</Left>
-            <Height>0.6cm</Height>
+            <Height>0.35455cm</Height>
             <Width>9.87213cm</Width>
             <ZIndex>13</ZIndex>
             <Style>
@@ -482,7 +491,7 @@
             <rd:DefaultName>PostCode</rd:DefaultName>
             <Top>3.87033cm</Top>
             <Left>0.0762cm</Left>
-            <Height>0.6cm</Height>
+            <Height>0.30896cm</Height>
             <Width>2.57938cm</Width>
             <ZIndex>14</ZIndex>
             <Style>
@@ -508,7 +517,7 @@
             <rd:DefaultName>Status</rd:DefaultName>
             <Top>3.87033cm</Top>
             <Left>6.66609cm</Left>
-            <Height>0.6cm</Height>
+            <Height>0.30896cm</Height>
             <Width>2.5cm</Width>
             <ZIndex>15</ZIndex>
             <Style>

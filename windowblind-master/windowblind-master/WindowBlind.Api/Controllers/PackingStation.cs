@@ -352,10 +352,11 @@ namespace WindowBlind.Api.Controllers
 
                     var wordsOfAddress3 = item.Row["Address 3"].Split(" ");
                     var LastwordOfAddress3 = wordsOfAddress3[wordsOfAddress3.Length - 1];
-
+                    int backSlashIndex = item.Row["Debtor Order Number"].IndexOf(' ');
+                    var domain = (backSlashIndex >= 0) ? item.Row["Debtor Order Number"].Substring(0, backSlashIndex) : item.Row["Debtor Order Number"];
 
                     strconcat = item.Row["Debtor Order Number"] + "/" + someoftotalprefix + "@" + item.Row["CB Number"];
-                    strconcat += "@" + item.Row["Debtor Order Number"].Substring(0, item.Row["Debtor Order Number"].IndexOf(' ')) + "@" + item.Row["Order Department"] + "@" + "Viewscape Pty.Ltd";//item.Row["Supplier"];
+                    strconcat += "@" + domain + "@" + item.Row["Order Department"] + "@" + "Viewscape Pty.Ltd";//item.Row["Supplier"];
                     strconcat += "@" + item.Row["Department"] + "@" + item.Row["Location"] + "@" + item.Row["Width"];
                     strconcat += "@" + item.Row["Drop"] + "@" + item.Row["Line No"] + "@" + someofTotal;
                     strconcat += "@" + item.Row["Customer"] + "@" + item.Row["Carrier"] + " " + LastwordOfAddress3;
@@ -453,11 +454,12 @@ namespace WindowBlind.Api.Controllers
             var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
             //var path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
 
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Encoding.GetEncoding("us-ascii");
+          //  Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //Encoding.GetEncoding("us-ascii");
 
             LocalReport report = new LocalReport(path);
-
+            
+            
             for (int i = 0; i < strParameterArray.Length; i++)
             {
                 while (strParameterArray[i].IndexOf("  ") != -1)
@@ -468,7 +470,9 @@ namespace WindowBlind.Api.Controllers
 
             if (StrReportPath == "PinkLabel.rdlc")
             {
-                PinkLabel obj = new PinkLabel();
+               // PinkLabel obj = new PinkLabel();
+                PinkLabelV2.PinkLabel2 obj = new PinkLabelV2.PinkLabel2();
+
                 obj.PO = "PO#: " + strParameterArray[0].ToString().Split(" ").Last();
                 obj.CCNumber = strParameterArray[1].ToString();
                 obj.Cust = "Cust: " + strParameterArray[2].ToString();
@@ -478,7 +482,7 @@ namespace WindowBlind.Api.Controllers
                 obj.Location = "Location: " + strParameterArray[6].ToString();
                 obj.Width = "W: " + strParameterArray[7].ToString();
                 obj.Drop = "D: " + strParameterArray[8].ToString();
-                obj.LineNumber = strParameterArray[0].ToString(); // strParameterArray[9].ToString();
+                obj.LineNumber = strParameterArray[0].ToString().Split(" ").Last();//  strParameterArray[9].ToString();
                 obj.SomeOfTotal = strParameterArray[10].ToString();
                 obj.Customer = "Ship To: " + strParameterArray[11].ToString();
                 obj.Carrier = strParameterArray[12].ToString();
@@ -486,10 +490,12 @@ namespace WindowBlind.Api.Controllers
                 obj.Address1 += strParameterArray[14].ToString() + strParameterArray[15].ToString();
                 obj.PostCode = strParameterArray[16].ToString();
                 obj.Status = strParameterArray[18].ToString();
-                List<PinkLabel> ls = new List<PinkLabel> {
+                List <PinkLabelV2.PinkLabel2> ls = new List<PinkLabelV2.PinkLabel2> {
                     obj
                     };
                 report.AddDataSource("PinklLabel", ls);
+
+               // ls.Clear();
 
             }
             else
@@ -512,19 +518,21 @@ namespace WindowBlind.Api.Controllers
                     obj
                     };
                 report.AddDataSource("BigLabel", ls);
+                
             }
-
-
+           
+            
             byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
-
+            
             var outputPath = Path.Combine("E:\\Webapp_input files", "Printer Driver", "PackingStationPrintFiles", Guid.NewGuid().ToString() + ".pdf");
             //var //outputPath = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject\\Delete", Guid.NewGuid().ToString() + ".jpg");
             using (FileStream stream = new FileStream(outputPath, FileMode.Create))
             {
                 stream.Write(result, 0, result.Length);
+            //    stream.Close();
             }
-
-
+            
+            
 
             bool printedOK = true;
             string printErrorMessage = "";
@@ -545,7 +553,8 @@ namespace WindowBlind.Api.Controllers
             doc.PrintSettings.Landscape = false;
             //doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
             doc.Print();
-
+            GC.Collect(0);
+           // doc.Dispose();
             return "";
 
         }

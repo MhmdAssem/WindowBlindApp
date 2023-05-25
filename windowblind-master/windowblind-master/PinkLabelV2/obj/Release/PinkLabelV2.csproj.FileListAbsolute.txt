@@ -1,0 +1,7 @@
+C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\bin\Release\PinkLabelV2.exe.config
+C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\bin\Release\PinkLabelV2.exe
+C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\bin\Release\PinkLabelV2.pdb
+C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Release\PinkLabelV2.csproj.AssemblyReference.cache
+C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Release\PinkLabelV2.csproj.CoreCompileInputs.cache
+C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Release\PinkLabelV2.exe
+C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Release\PinkLabelV2.pdb

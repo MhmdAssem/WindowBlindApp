@@ -92,7 +92,7 @@
             <ng-container matColumnDef="{{col}}" *ngIf="col != 'SelectColumn'">
               <th mat-header-cell *matHeaderCellDef> {{col}} </th>
               <td mat-cell *matCellDef="let element" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
-              element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+              element.row['DropColour'].toString().toLowerCase() =='yellow'?'Yellow':
               element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
                 [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
                                 element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
@@ -105,7 +105,7 @@
           <ng-container matColumnDef="SelectColumn">
             <th mat-header-cell *matHeaderCellDef> SelectColumn </th>
             <td mat-cell *matCellDef="let element;let i = index" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
-            element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+            element.row['DropColour'].toString().toLowerCase() =='yellow'?'Yellow':
             element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
               [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
                               element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
@@ -147,7 +147,7 @@
             <ng-container matColumnDef="{{col}}" *ngIf="col != 'SelectColumn'">
               <th mat-header-cell *matHeaderCellDef> {{col}} </th>
               <td mat-cell *matCellDef="let element" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
-              element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+              element.row['DropColour'].toString().toLowerCase() =='yellow'?'Yellow':
               element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
                 [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
                                 element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
@@ -159,7 +159,7 @@
           <ng-container matColumnDef="SelectColumn">
             <th mat-header-cell *matHeaderCellDef> SelectColumn </th>
             <td mat-cell *matCellDef="let element;let i = index" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
-            element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+            element.row['DropColour'].toString().toLowerCase() =='yellow'?'Yellow':
             element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
               [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
                               element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
@@ -200,7 +200,7 @@
         <ng-container matColumnDef="{{col}}" *ngIf="col != 'SelectColumn'">
           <th mat-header-cell *matHeaderCellDef> {{col}} </th>
           <td mat-cell *matCellDef="let element" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
-          element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+          element.row['DropColour'].toString().toLowerCase() =='yellow'?'Yellow':
           element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
             [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
                             element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':
@@ -212,7 +212,7 @@
       <ng-container matColumnDef="SelectColumn">
         <th mat-header-cell *matHeaderCellDef> SelectColumn </th>
         <td mat-cell *matCellDef="let element;let i = index" [style.background-color]="element.row['FromHoldingStation'] == 'YES'?'crimson':
-        element.row['DropColour'].toString().toLowerCase() =='yellow'?'LightYellow':
+        element.row['DropColour'].toString().toLowerCase() =='yellow'?'Yellow':
         element.row['DropColour'].toString().toLowerCase() != 'white'?element.row['DropColour']:'white'"
           [style.color]=" element.row['FromHoldingStation'] == 'YES'?'white':
                           element.row['DropColour'].toString().toLowerCase() =='yellow'?'black':

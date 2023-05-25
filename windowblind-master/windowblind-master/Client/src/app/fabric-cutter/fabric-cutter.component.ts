@@ -224,8 +224,7 @@ export class FabricCutterComponent implements OnInit, AfterViewInit {
 
 
       }
-      if (this.Data.length == 0)
-        alert("This CB or Line number is not found !");
+     
       this.Loading = false;
       (document.getElementById("CBNumber") as HTMLInputElement).value = "";
     });

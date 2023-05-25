@@ -176,8 +176,6 @@ export class LogCutComponent implements OnInit {
 
       }
 
-      if (this.Data.length == 0)
-        alert("This CB or Line number is not found !");
       this.LineLoading = false;
       this.CBLoading = false;
       (document.getElementById("CBNumber") as HTMLInputElement).value = "";

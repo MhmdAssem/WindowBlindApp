@@ -432,7 +432,7 @@ namespace WindowBlind.Api.Controllers
                 var check = CheckingPaths();
                 if (!check) return (ResultModel)new ResultModel
                 {
-                    Message = "Missing configuration check settings page for FabricCut settings",
+                    Message = "Missing configuration files !",
                     Data = null,
                     Status = System.Net.HttpStatusCode.BadRequest,
                     StackTrace = null
@@ -450,6 +450,17 @@ namespace WindowBlind.Api.Controllers
                         StackTrace = null
                     };
                 }
+
+                if (Data.Rows.Count == 0)
+                {
+                    return (ResultModel)new ResultModel
+                    {
+                        Message = "CC/line number is not found",
+                        Data = null,
+                        Status = System.Net.HttpStatusCode.BadRequest,
+                        StackTrace = null
+                    };
+                };
 
                 FabricCutProcess(ref Data);
 
@@ -682,7 +693,7 @@ namespace WindowBlind.Api.Controllers
                     sb.Append("MEASURED WIDTH\t" + item.Row["Measured Width"].ToString().TrimEnd() + Environment.NewLine);
                     sb.Append("MEASURED DROP\t" + item.Row["Measured Drop"].ToString().TrimEnd() + Environment.NewLine);
                     sb.Append(Environment.NewLine);
-                    sb.Append("CONTROL TYPE\t" + item.Row["Control Type"].ToString().TrimEnd() + Environment.NewLine);
+                    sb.Append("CONTROL TYPE\t" + (item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd() == "" ? "Pin" : item.Row["Bind Type/# Panels/Rope/Operation"].ToString().TrimEnd()) + Environment.NewLine);
                     sb.Append(Environment.NewLine);
                     sb.Append("HEM\t" + Environment.NewLine);
                     sb.Append("FABRIC TYPE\t" + item.Row["Roll Width"].ToString().TrimEnd() + Environment.NewLine);
@@ -859,7 +870,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (!check) return (ResultModel)new ResultModel
                 {
-                    Message = "Missing configuration for Fabric Cut please go to settings page",
+                    Message = "Missing configuration files !",
                     Data = null,
                     Status = System.Net.HttpStatusCode.BadRequest,
                     StackTrace = null
@@ -1305,7 +1316,7 @@ namespace WindowBlind.Api.Controllers
 
                 if (!check) return (ResultModel)new ResultModel
                 {
-                    Message = "Some configuration are missing for FabricCut please go to settings page",
+                    Message = "Missing configuration files !",
                     Data = null,
                     Status = System.Net.HttpStatusCode.BadRequest,
                     StackTrace = null

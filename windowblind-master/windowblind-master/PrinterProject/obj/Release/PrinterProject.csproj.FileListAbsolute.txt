@@ -93,3 +93,6 @@ C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Release
 C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Release\PrinterProject.csproj.CopyComplete
 C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Release\PrinterProject.exe
 C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\obj\Release\PrinterProject.pdb
+C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Release\PinkLabelV2.exe
+C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Release\PinkLabelV2.pdb
+C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Release\PinkLabelV2.exe.config
