@@ -190,3 +190,6 @@ F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\o
 C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.exe
 C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.pdb
 C:\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.exe.config
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.exe
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.pdb
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PrinterProject\bin\Debug\PinkLabelV2.exe.config

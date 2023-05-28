@@ -530,6 +530,7 @@ namespace WindowBlind.Api.Controllers
 
                             var Quantity = int.Parse(item.Row["Qty"]);
                             item.Row["Qty"] = "1";
+                            item.Row["Quantity"] = "1";
                             for (int j = 0; j < Quantity; j++)
                             {
                                 var FinalRow = new FabricCutterCBDetailsModelTableRow
@@ -562,6 +563,7 @@ namespace WindowBlind.Api.Controllers
                             {
                                 var Quantity = int.Parse(item.Row["Qty"]);
                                 item.Row["Qty"] = "1";
+                                item.Row["Quantity"] = "1";
                                 for (int j = 0; j < Quantity; j++)
                                 {
 

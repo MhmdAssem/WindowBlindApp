@@ -4,3 +4,11 @@ C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\bin\Debug\Pink
 C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Debug\PinkLabelV2.csproj.CoreCompileInputs.cache
 C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Debug\PinkLabelV2.exe
 C:\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Debug\PinkLabelV2.pdb
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\bin\Debug\PinkLabelV2.exe.config
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\bin\Debug\PinkLabelV2.exe
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\bin\Debug\PinkLabelV2.pdb
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Debug\PinkLabelV2.csproj.AssemblyReference.cache
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Debug\PinkLabelV2.csproj.SuggestedBindingRedirects.cache
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Debug\PinkLabelV2.csproj.CoreCompileInputs.cache
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Debug\PinkLabelV2.exe
+F:\FreeLance\BlindsWebapp\windowblind-master\windowblind-master\PinkLabelV2\obj\Debug\PinkLabelV2.pdb
