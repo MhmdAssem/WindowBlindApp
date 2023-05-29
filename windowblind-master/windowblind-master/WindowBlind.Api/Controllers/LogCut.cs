@@ -358,7 +358,6 @@ namespace WindowBlind.Api.Controllers
         {
 
             var f = 0;
-            var a = 0;
             var Fbindex = 0;
             var blindNumber = 1;
 
@@ -369,7 +368,6 @@ namespace WindowBlind.Api.Controllers
                 {
                     CurrentCBNumber = item.Row["CB Number"];
                     f = 0;
-                    a = 0;
                     Fbindex = 0;
                     blindNumber = 1;
 
@@ -394,7 +392,6 @@ namespace WindowBlind.Api.Controllers
 
                     }
                     f += 1;
-                    a += 1;
                 }
                 else
                 {
@@ -406,27 +403,10 @@ namespace WindowBlind.Api.Controllers
 
                 if (Fbindex > 0)
                 {
-                    if (CBSearch)
-                    {
-                        item.Row["item"] = CalculateAlphabeticFromNumber(f);
-                    }
-                    else
-                    {
-                        a = 1;
-                        f = 1;
-                        for (int j = 0; j < Data.Rows.Count; j++)
-                        {
-                            if (Data.Rows[j].Row["Line No"] == item.Row["Line No"])
-                            {
-                                item.Row["item"] = CalculateAlphabeticFromNumber(f); break;
-                            }
-                            f = f + 1;
-                            a = a + 1;
-                        }
-
-                    }
+                    if (!CBSearch && item.Row["Line No"] != LineNumber)
+                        blindNumber += (Convert.ToInt32(item.Row["Quantity"].Trim()));
                     item.Row["Total"] = TotalQty.ToString();
-
+                    
                 }
                 else
                     continue;
@@ -491,7 +471,6 @@ namespace WindowBlind.Api.Controllers
 
 
                 //Data for Label
-                item.Row["SRLineNumber"] = a.ToString();
                 if (item.Row["Drop"] != string.Empty)
                 {
                     if (item.Row["Width"].ToString() != string.Empty)
@@ -504,7 +483,7 @@ namespace WindowBlind.Api.Controllers
                 item.Row["Type"] = item.Row["Track Col/Roll Type/Batten Col"].Trim();
                 item.Row["Control Type"] = item.Row["Pull Colour/Bottom Weight/Wand Len"].Trim();
                 item.Row["Lathe"] = item.Row["Finish"].Trim();
-                item.Row["Alpha"] = item.Row["item"];
+
                 item.Row["Department"] = item.Row["Department"].Trim();
                 if (item.Row["Cntrl Side"].ToString().Trim() != String.Empty)
                     item.Row["ControlSide"] = item.Row["Cntrl Side"].ToString().Trim().Substring(0, 1);
@@ -539,23 +518,28 @@ namespace WindowBlind.Api.Controllers
                                     BlindNumbers = item.BlindNumbers,
                                     CreationDate = item.CreationDate,
                                     PackingType = item.PackingType,
-                                    Row = item.Row,
+                                    Row = new Dictionary<string, string>(),
                                     rows_AssociatedIds = new List<string>(),
                                     UniqueId = ""
                                 };
 
+                                foreach (var key in item.Row.Keys)
+                                {
+                                    FinalRow.Row[key] = item.Row[key];
+                                }
                                 FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                 FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
                                 FinalRow.Row["SomeOfTotal"] = blindNumber.ToString() + " of " + TotalQty.ToString();
+                                FinalRow.Row["item"] = CalculateAlphabeticFromNumber(blindNumber);
+                                FinalRow.Row["Alpha"] = FinalRow.Row["item"];
                                 FinalRow.Row["FromHoldingStation"] = "NO";
                                 FinalRow.UniqueId = Guid.NewGuid().ToString();
 
                                 blindNumber++;
-                                a += 1;
                                 FinalRow.rows_AssociatedIds.Add(FinalRow.UniqueId);
                                 FinalizedData.Rows.Add(FinalRow);
-
                             }
+                            f = blindNumber;
                         }
                         else
                         {
@@ -566,29 +550,36 @@ namespace WindowBlind.Api.Controllers
                                 item.Row["Quantity"] = "1";
                                 for (int j = 0; j < Quantity; j++)
                                 {
-
                                     var FinalRow = new FabricCutterCBDetailsModelTableRow
                                     {
                                         FileName = item.FileName,
                                         BlindNumbers = item.BlindNumbers,
                                         CreationDate = item.CreationDate,
                                         PackingType = item.PackingType,
-                                        Row = item.Row,
+                                        Row = new Dictionary<string, string>(),
                                         rows_AssociatedIds = new List<string>(),
                                         UniqueId = ""
                                     };
+
+                                    foreach (var key in item.Row.Keys)
+                                    {
+                                        FinalRow.Row[key] = item.Row[key];
+                                    }
+
                                     FinalRow.Row["Blind Number"] = (blindNumber).ToString();
                                     FinalRow.Row["SRLineNumber"] = blindNumber.ToString();
+                                    FinalRow.Row["item"] = CalculateAlphabeticFromNumber(blindNumber);
+                                    FinalRow.Row["Alpha"] = FinalRow.Row["item"];
                                     FinalRow.Row["FromHoldingStation"] = "NO";
                                     FinalRow.UniqueId = Guid.NewGuid().ToString();
                                     FinalRow.rows_AssociatedIds.Add(FinalRow.UniqueId);
 
                                     blindNumber++;
-                                    a += 1;
 
                                     FinalizedData.Rows.Add(FinalRow);
                                 }
                             }
+                            f = blindNumber;
                         }
                     }
                 }
@@ -643,12 +634,12 @@ namespace WindowBlind.Api.Controllers
                         StackTrace = null
                     };
                 };
-               
-                for (int i = 0; i < Data.Rows.Count(); i++)
-                { 
-                //For each row check Qty > 1 then duplicate the row to next row and make the qty for both to 1
 
-                 
+                for (int i = 0; i < Data.Rows.Count(); i++)
+                {
+                    //For each row check Qty > 1 then duplicate the row to next row and make the qty for both to 1
+
+
 
                 }
 
@@ -732,13 +723,13 @@ namespace WindowBlind.Api.Controllers
                     strconcat += "@" + item.Row["Total"];
                     strconcat += "@" + item.Row["CutWidth"].Replace("mm", "");
                     strconcat += "@" + item.Row["Line No"];
-                    strconcat += "@" +  (item.Row.ContainsKey("ControlSide") ? item.Row["ControlSide"] : " "); //isTrue ? 1 : 0 Cntrl Side
-                    
+                    strconcat += "@" + (item.Row.ContainsKey("ControlSide") ? item.Row["ControlSide"] : " "); //isTrue ? 1 : 0 Cntrl Side
+
                     labels.Add(strconcat);
                     strRS232Width += item.Row["CutWidth"].ToString().Replace("mm", "");
 
                     bool res = await insertLog(item.Row["CB Number"].ToString().TrimEnd(), item.Row["Barcode"].ToString().TrimEnd(), model.tableName, model.userName, System.DateTime.Now.ToString(), item.Row["Alpha"], "LogCut", item);
-                    
+
                 }
                 // doing the port thing 
                 ComportModel comport = new ComportModel
@@ -920,11 +911,11 @@ namespace WindowBlind.Api.Controllers
 
             var path = Path.Combine("E:\\Webapp_input files", "Printer Driver", StrReportPath);
             //path = Path.Combine("F:\\FreeLance\\BlindsWebapp\\windowblind-master\\windowblind-master\\PrinterProject", StrReportPath);
-           // Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            // Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             //Encoding.GetEncoding("us-ascii");
             AspNetCore.Reporting.LocalReport report = new AspNetCore.Reporting.LocalReport(path);
 
-            
+
 
 
 
@@ -947,9 +938,9 @@ namespace WindowBlind.Api.Controllers
                 List<LogCut2> ls = new List<LogCut2> {
                     obj
                     };
-                
+
                 report.AddDataSource("LogCut2", ls);
-               // ls.Clear();
+                // ls.Clear();
 
             }
             else
@@ -973,12 +964,12 @@ namespace WindowBlind.Api.Controllers
                 List<LogCut1> ls = new List<LogCut1> {
                     obj
                     };
-               
+
                 report.AddDataSource("LogCut1", ls);
-                
+
             }
 
-            
+
             byte[] result = report.Execute(RenderType.Pdf, extension, null, mimtype).MainStream;
 
             /*LocalReport report = new LocalReport();
@@ -994,7 +985,7 @@ namespace WindowBlind.Api.Controllers
             using (FileStream stream = new FileStream(outputPath, FileMode.Create))
             {
                 stream.Write(result, 0, result.Length);
-              //  stream.Close();
+                //  stream.Close();
             }
 
 
