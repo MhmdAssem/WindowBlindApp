@@ -583,6 +583,10 @@ namespace WindowBlind.Api.Controllers
                         }
                     }
                 }
+            else
+                {
+                    blindNumber++;
+                }
             }
 
         }
