@@ -9,7 +9,7 @@ namespace WindowBlind.Api.Models
         public HttpStatusCode Status { get; set; }
         public object Data { get; set; }
         public string Message { get; set; }
-        public string StackTrace { get; set; }
+        public string StackTrace {  get; set; }
 
     }
 }

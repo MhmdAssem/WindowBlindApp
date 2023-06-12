@@ -29,9 +29,8 @@ export class PreEzStopComponent implements OnInit {
     if (LineNumber == '') return;
     this.Generating = true;
     this.PreEzStopService.getCBNumberDetails(LineNumber).subscribe(data => {
-      if (data == true) {
-        (document.getElementById("LineNumber") as HTMLInputElement).value = "";
-      }
+
+      (document.getElementById("LineNumber") as HTMLInputElement).value = "";
       this.Generating = false;
     })
 

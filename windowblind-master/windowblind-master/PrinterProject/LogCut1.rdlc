@@ -255,7 +255,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Left(Fields!fabric.Value, Len(Fields!fabric.Value) - 6), "LogCut1")</Value>
+                    <Value>=Left(CStr(Fields!fabric.Value), Len(CStr(Fields!fabric.Value)) - 6)</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>

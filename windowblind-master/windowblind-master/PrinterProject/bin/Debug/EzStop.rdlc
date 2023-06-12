@@ -82,7 +82,7 @@
                   <TextRun>
                     <Value>=First(Fields!drop.Value, "EzStop")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -109,7 +109,7 @@
                     <Value>=First(Fields!width.Value, "EzStop")</Value>
                     <Style>
                       <FontFamily>arial</FontFamily>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>12pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -300,7 +300,7 @@
                   <TextRun>
                     <Value>=First(Fields!c.Value, "EzStop")</Value>
                     <Style>
-                      <FontSize>8pt</FontSize>
+                      <FontSize>12pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -357,7 +357,7 @@
                   <TextRun>
                     <Value>=First(Fields!someoftotal.Value, "EzStop")</Value>
                     <Style>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>12pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
